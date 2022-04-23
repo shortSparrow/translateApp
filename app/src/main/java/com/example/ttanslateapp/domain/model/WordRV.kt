@@ -1,6 +1,8 @@
 package com.example.ttanslateapp.domain.model
 
-data class WordRV(
+import javax.inject.Inject
+
+data class WordRV @Inject constructor(
     val id: Long,
     val value: String,
     val translations: List<TranslationItem>,

@@ -6,6 +6,7 @@ import com.example.ttanslateapp.domain.model.AnswerItem
 import com.example.ttanslateapp.domain.model.HintItem
 import com.example.ttanslateapp.domain.model.TranslationItem
 import com.example.ttanslateapp.util.TABLE_NAME
+import javax.inject.Inject
 
 @Entity(tableName = TABLE_NAME)
 data class TranslatedWordDb(

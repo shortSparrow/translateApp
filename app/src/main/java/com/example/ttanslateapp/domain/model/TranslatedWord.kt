@@ -1,9 +1,8 @@
 package com.example.ttanslateapp.domain.model
 
-import androidx.room.PrimaryKey
+import javax.inject.Inject
 
-data class TranslatedWord(
-    @PrimaryKey(autoGenerate = true)
+data class TranslatedWord @Inject constructor(
     val id: Long,
     val value: String,
     val translations: List<TranslationItem>,

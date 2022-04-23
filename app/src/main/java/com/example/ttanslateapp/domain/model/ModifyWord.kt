@@ -1,6 +1,8 @@
 package com.example.ttanslateapp.domain.model
 
-data class ModifyWord(
+import javax.inject.Inject
+
+data class ModifyWord @Inject constructor(
     val id: Long,
     val value: String,
     val translations: List<TranslationItem>,
