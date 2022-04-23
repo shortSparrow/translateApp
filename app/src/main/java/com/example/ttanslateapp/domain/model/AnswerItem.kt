@@ -1,8 +1,8 @@
-package com.example.ttanslateapp.domain
+package com.example.ttanslateapp.domain.model
 
 import java.util.*
 
-data class TranslationItem(
+data class AnswerItem(
     val id: Long,
     val createdAt: Date,
     val updatedAt: Date,

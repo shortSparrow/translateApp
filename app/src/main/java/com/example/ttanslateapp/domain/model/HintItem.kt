@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain
+package com.example.ttanslateapp.domain.model
 
 import java.util.*
 
