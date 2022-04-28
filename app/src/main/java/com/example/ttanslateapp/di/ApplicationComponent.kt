@@ -5,10 +5,11 @@ import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
 import dagger.BindsInstance
 import dagger.Component
 
-@Component(modules = [DataModule::class])
+@ApplicationScope
+@Component(modules = [DataModule::class, ViewModelModule::class])
 interface ApplicationComponent {
 
-    fun inject(fragment: ModifyWordFragment)
+    fun inject(modifyWordFragment: ModifyWordFragment)
 
     @Component.Factory
     interface ApplicationFactory {

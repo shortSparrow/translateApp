@@ -2,16 +2,19 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.*
-import android.view.View.OnTouchListener
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
+import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.TranslateApp
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.presentation.ViewModelFactory
+import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import javax.inject.Inject
 
 
@@ -57,25 +60,55 @@ class ModifyWordFragment : Fragment() {
         component.inject(this)
 
         setupClickListener()
-        descriptionScrollListener()
+        editTextScrollListener()
+        liveDataListeners()
+    }
+
+    private fun liveDataListeners() {
+        additionalFieldListener()
+    }
+
+    private fun additionalFieldListener() {
+
+        model.isAdditionalFieldVisible.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.addHints.root.visibility = View.VISIBLE
+            } else {
+                binding.addHints.root.visibility = View.GONE
+            }
+        }
     }
 
     private fun setupClickListener() {
         with(binding) {
-            saveTranslatedWord.setOnClickListener {
-//                val word = englishWord.text.toString()
-//                val description = description.text.toString()
-//
-//                model.addTranslatedWord(word = word, description = description)
+            save.setOnClickListener {
+                val word = inputTranslatedWord.englishWordInput.text.toString()
+                val description = translateWordDescription.descriptionInput.text.toString()
+
+                model.saveWord(word = word, description = description)
             }
 
             getWords.setOnClickListener {
-                model.getWordById(100)
+                val word = model.getWordById(100)
+                Log.d("ModifyWordFragment", word.toString())
             }
 
             addHints.translateHintItem.hintItem.setOnClickListener {
                 showMenu(it, R.menu.translate_hint_menu)
             }
+
+
+            // FIXME Зробити через RV
+            addTranslate.chipItemContainer.allViews.forEach {
+                it.setOnClickListener {
+                    showMenu(it, R.menu.translate_hint_menu)
+                }
+            }
+
+            toggleAdditionalField.setOnClickListener {
+                model.toggleVisibleAdditionalField()
+            }
+
         }
     }
 
@@ -94,22 +127,26 @@ class ModifyWordFragment : Fragment() {
         popup.show()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun descriptionScrollListener() {
-        // scroll edit text inside scrollview
+//    @SuppressLint("ClickableViewAccessibility")
+    private fun editTextScrollListener() {
+//        // scroll edit text inside scrollview
+//        ScrollEditTextInsideScrollView()
+//            .allowScroll(binding.translateWordDescription.descriptionInput)
 
-        binding.translateWordDescription.descriptionInput.setOnTouchListener(OnTouchListener { v, event ->
-            if (binding.translateWordDescription.descriptionInput.hasFocus()) {
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                when (event.action and MotionEvent.ACTION_MASK) {
-                    MotionEvent.ACTION_SCROLL -> {
-                        v.parent.requestDisallowInterceptTouchEvent(false)
-                        return@OnTouchListener true
-                    }
-                }
-            }
-            false
-        })
+
+//        binding.rootScrollView.setOnTouchListener { v, event ->
+//            binding.translateWordDescription.descriptionInput.parent.requestDisallowInterceptTouchEvent(false)
+//            false
+//        }
+//
+//        binding.translateWordDescription.descriptionInput.setOnTouchListener { v, event ->
+//            binding.translateWordDescription.descriptionInput.parent
+//                .requestDisallowInterceptTouchEvent(true)
+//            false
+//        }
+//        binding.translateWordDescription.descriptionInput.movementMethod = ScrollingMovementMethod()
+
+
     }
 
     override fun onDestroyView() {

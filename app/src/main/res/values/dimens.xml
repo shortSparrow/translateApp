@@ -3,4 +3,5 @@
     <dimen name="large_gutter">40dp</dimen>
     <dimen name="gutter">20dp</dimen>
     <dimen name="small_gutter">8dp</dimen>
+    <integer name="input_max_lines">1</integer>
 </resources>

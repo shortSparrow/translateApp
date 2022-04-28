@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.data
+package com.example.ttanslateapp.data.database
 
 import android.app.Application
 import androidx.room.Database
@@ -16,7 +16,7 @@ abstract class AppDatabase: RoomDatabase() {
         private var LOCK = Any()
         private const val DB_NAME = "dictionary"
 
-        fun getInstance(application: Application):AppDatabase {
+        fun getInstance(application: Application): AppDatabase {
             INSTANCE?.let {
                 return it
             }

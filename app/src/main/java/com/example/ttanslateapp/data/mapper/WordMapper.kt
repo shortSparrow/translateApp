@@ -16,6 +16,4 @@ class WordMapper @Inject constructor() {
         description = wordDb.description,
         sound = wordDb.sound,
     )
-
-
 }

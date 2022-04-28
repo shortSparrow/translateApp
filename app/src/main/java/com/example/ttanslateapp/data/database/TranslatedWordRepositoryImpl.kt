@@ -1,11 +1,11 @@
-package com.example.ttanslateapp.data
+package com.example.ttanslateapp.data.database
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.data.model.TranslatedWordDb
 import com.example.ttanslateapp.domain.TranslatedWordRepository
-import com.example.ttanslateapp.domain.model.TranslatedWord
 import com.example.ttanslateapp.domain.model.WordRV
 import javax.inject.Inject
 

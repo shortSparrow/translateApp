@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.data
+package com.example.ttanslateapp.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -11,10 +11,10 @@ import com.example.ttanslateapp.util.TABLE_NAME
 @Dao
 interface TranslatedWordDao {
     @Query("SELECT * FROM $TABLE_NAME")
-    suspend fun getWordList(): LiveData<List<TranslatedWordDb>>
+    fun getWordList(): LiveData<List<TranslatedWordDb>>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE value= :wordValue")
-    suspend fun getWordListBySearch(wordValue: String): LiveData<List<TranslatedWordDb>>
+    fun getWordListBySearch(wordValue: String): LiveData<List<TranslatedWordDb>>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): TranslatedWordDb
@@ -24,6 +24,4 @@ interface TranslatedWordDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyWord(translatedWord: TranslatedWordDb)
-
-
 }

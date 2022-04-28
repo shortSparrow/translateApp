@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_modify_word_container, fragment)
-            .addToBackStack(null)
             .commit()
     }
 
