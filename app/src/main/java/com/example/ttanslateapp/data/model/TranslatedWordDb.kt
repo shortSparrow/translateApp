@@ -29,13 +29,13 @@ class TranslationConverters {
 
 class HintConverters {
     @TypeConverter
-    fun fromList(hints: List<HintItem>): String {
+    fun fromList(hints: List<HintItem>?): String {
         val gson = Gson()
         return gson.toJson(hints)
     }
 
     @TypeConverter
-    fun fromString(hints: String): List<HintItem> {
+    fun fromString(hints: String): List<HintItem>? {
         val listType: Type = object : TypeToken<List<HintItem>?>() {}.type
         return Gson().fromJson(hints, listType)
     }
@@ -44,13 +44,13 @@ class HintConverters {
 
 class AnswerConverters {
     @TypeConverter
-    fun fromList(answers: List<AnswerItem>): String {
+    fun fromList(answers: List<AnswerItem>?): String {
         val gson = Gson()
         return gson.toJson(answers)
     }
 
     @TypeConverter
-    fun fromString(answers: String): List<AnswerItem> {
+    fun fromString(answers: String): List<AnswerItem>? {
         val listType: Type = object : TypeToken<List<AnswerItem>?>() {}.type
         return Gson().fromJson(answers, listType)
     }
@@ -81,6 +81,6 @@ data class TranslatedWordDb(
     val sound: Sound?, // english sound
     val langFrom: String,
     val langTo: String,
-    val hintList: List<HintItem>,
-    val answerList: List<AnswerItem>
+    val hintList: List<HintItem>?,
+    val answerList: List<AnswerItem>?
 )

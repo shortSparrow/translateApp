@@ -10,4 +10,6 @@ data class WordRV @Inject constructor(
     val translations: List<TranslateWordItem>,
     val description: String,
     val sound: Sound?, // english sound
+    val langFrom: String,
+    val langTo: String,
 )

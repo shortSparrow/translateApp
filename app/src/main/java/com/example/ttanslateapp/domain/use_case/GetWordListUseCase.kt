@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetWordListUseCase @Inject constructor(
     private val repository: TranslatedWordRepository
 ){
-    suspend operator fun invoke() = repository.getWordList()
+    operator fun invoke() = repository.getWordList()
 }

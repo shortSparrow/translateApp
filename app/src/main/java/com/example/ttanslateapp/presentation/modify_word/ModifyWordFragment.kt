@@ -16,6 +16,7 @@ import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import com.example.ttanslateapp.presentation.ViewModelFactory
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
+import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import javax.inject.Inject
 
 
@@ -137,6 +138,14 @@ class ModifyWordFragment : Fragment() {
                 binding.addTranslate.cancelEditTranslate.visibility = View.INVISIBLE
             }
         }
+
+
+        model.wordList.observe(viewLifecycleOwner) {
+            for (word in it) {
+                Log.d("wordItem", word.toString())
+            }
+
+        }
     }
 
     private fun additionalFieldListener() {
@@ -152,15 +161,16 @@ class ModifyWordFragment : Fragment() {
     private fun setupClickListener() {
         with(binding) {
             save.setOnClickListener {
-                val word = inputTranslatedWord.englishWordInput.text.toString()
-                val description = translateWordDescription.descriptionInput.text.toString()
-
-                model.saveWord(word = word, description = description)
+//                val word = inputTranslatedWord.englishWordInput.text.toString()
+//                val description = translateWordDescription.descriptionInput.text.toString()
+//
+//                model.saveWord(word = word, description = description)
             }
 
             getWords.setOnClickListener {
-                val word = model.getWordById(100)
-                Log.d("ModifyWordFragment", word.toString())
+//                val word = model.getWordById(100)
+//                Log.d("ModifyWordFragment", word.toString())
+                model.getWordList()
             }
 
 
@@ -188,6 +198,10 @@ class ModifyWordFragment : Fragment() {
                 model.toggleVisibleAdditionalField()
             }
 
+            saveTranslatedWord.setOnClickListener {
+                model.saveWord()
+            }
+
         }
     }
 
@@ -197,9 +211,9 @@ class ModifyWordFragment : Fragment() {
 
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
 
-            when(menuItem.itemId) {
+            when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                   binding.addHints.inputHint.setText(hintChip.value)
+                    binding.addHints.inputHint.setText(hintChip.value)
                     model.setEditableHint(hintChip)
                 }
             }
@@ -215,14 +229,14 @@ class ModifyWordFragment : Fragment() {
 
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
 
-            when(menuItem.itemId) {
+            when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     binding.addTranslate.translateInput.setText(translateChip.value)
                     model.setEditableTranslate(translateChip)
                 }
 
                 R.id.menu_delete -> {
-                   model.deleteTranslate(translateChip.id)
+                    model.deleteTranslate(translateChip.id)
                 }
             }
             false
@@ -232,12 +246,10 @@ class ModifyWordFragment : Fragment() {
     }
 
 
-
     //    @SuppressLint("ClickableViewAccessibility")
     private fun editTextScrollListener() {
 //        // scroll edit text inside scrollview
-//        ScrollEditTextInsideScrollView()
-//            .allowScroll(binding.translateWordDescription.descriptionInput)
+        ScrollEditTextInsideScrollView.allowScroll(binding.translateWordDescription.descriptionInput)
 
 
 //        binding.rootScrollView.setOnTouchListener { v, event ->

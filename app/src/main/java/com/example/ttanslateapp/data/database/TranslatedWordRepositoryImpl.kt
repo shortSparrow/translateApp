@@ -13,13 +13,16 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     private val translatedWordDao: TranslatedWordDao,
     private val mapper: WordMapper
 ) : TranslatedWordRepository {
-    override suspend fun getWordList(): LiveData<List<WordRV>> {
-        return Transformations.map(translatedWordDao.getWordList()){
+    override fun getWordList(): LiveData<List<WordRV>> {
+
+//        Log.d("wordItem", translatedWordDao.getWordList().value.toString())
+        return Transformations.map(translatedWordDao.getWordList()) {
             mapper.wordListDbToWordList(it)
         }
     }
 
     override suspend fun getWordById(id: Long): WordRV {
+//        Log.d("wordItem", translatedWordDao.getWordById(id).value)
         return mapper.wordDbToWordRV(translatedWordDao.getWordById(id))
     }
 
@@ -38,7 +41,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun findWord(query: String): LiveData<List<WordRV>> {
-        return Transformations.map(translatedWordDao.getWordListBySearch(query)){
+        return Transformations.map(translatedWordDao.getWordListBySearch(query)) {
             mapper.wordListDbToWordList(it)
         }
     }
