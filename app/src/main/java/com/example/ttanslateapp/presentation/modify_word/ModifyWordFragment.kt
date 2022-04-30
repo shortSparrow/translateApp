@@ -1,20 +1,21 @@
 package com.example.ttanslateapp.presentation.modify_word
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
-import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.TranslateApp
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
+import com.example.ttanslateapp.domain.model.Chip
+import com.example.ttanslateapp.domain.model.edit.HintItem
+import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import com.example.ttanslateapp.presentation.ViewModelFactory
-import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
+import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
+import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import javax.inject.Inject
 
 
@@ -62,14 +63,83 @@ class ModifyWordFragment : Fragment() {
         setupClickListener()
         editTextScrollListener()
         liveDataListeners()
+        setAdapters()
+    }
+
+    private fun setAdapters() {
+        val translateAdapter = TranslateAdapter()
+        binding.addTranslate.translateChipsRv.adapter = translateAdapter
+        binding.addTranslate.translateChipsRv.itemAnimator = null
+
+
+        val hintAdapter = HintAdapter()
+        binding.addHints.hintChipsRv.adapter = hintAdapter
+        binding.addHints.hintChipsRv.itemAnimator = null
+
+
+        observeAdapter(translateAdapter, hintAdapter)
+        setAdaptersClickListener(translateAdapter, hintAdapter)
+    }
+
+
+    private fun observeAdapter(adapter: TranslateAdapter, hintAdapter: HintAdapter) {
+        model.translates.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+
+        model.hints.observe(viewLifecycleOwner) {
+            hintAdapter.submitList(it)
+        }
+
+    }
+
+    private fun setAdaptersClickListener(
+        translateAdapter: TranslateAdapter,
+        hintAdapter: HintAdapter
+    ) {
+        translateAdapter.onChipClickListener = object : TranslateAdapter.OnChipClickListener {
+            override fun onChipClick(it: View, translateWordItem: TranslateWordItem) {
+                createTranslatePopupMenu(it, translateWordItem)
+            }
+        }
+
+        hintAdapter.onChipClickListener = object : HintAdapter.OnChipClickListener {
+            override fun onChipClick(it: View, hintItem: HintItem) {
+                createHintPopupMenu(it, hintItem)
+            }
+
+            override fun onDeleteClick(hintItem: HintItem) {
+                model.deleteHint(hintItem.id)
+            }
+
+        }
     }
 
     private fun liveDataListeners() {
         additionalFieldListener()
+
+        model.editableHint.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.addHints.button.text = "Edit"
+                binding.addHints.cancelEditHint.visibility = View.VISIBLE
+            } else {
+                binding.addHints.button.text = "Add"
+                binding.addHints.cancelEditHint.visibility = View.INVISIBLE
+            }
+        }
+
+        model.editableTranslate.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.addTranslate.button.text = "Edit"
+                binding.addTranslate.cancelEditTranslate.visibility = View.VISIBLE
+            } else {
+                binding.addTranslate.button.text = "Add"
+                binding.addTranslate.cancelEditTranslate.visibility = View.INVISIBLE
+            }
+        }
     }
 
     private fun additionalFieldListener() {
-
         model.isAdditionalFieldVisible.observe(viewLifecycleOwner) {
             if (it) {
                 binding.addHints.root.visibility = View.VISIBLE
@@ -93,16 +163,25 @@ class ModifyWordFragment : Fragment() {
                 Log.d("ModifyWordFragment", word.toString())
             }
 
-            addHints.translateHintItem.hintItem.setOnClickListener {
-                showMenu(it, R.menu.translate_hint_menu)
+
+            addTranslate.button.setOnClickListener {
+                model.addTranslate(addTranslate.translateInput.text.toString())
+                addTranslate.translateInput.setText("")
             }
 
+            binding.addTranslate.cancelEditTranslate.setOnClickListener {
+                model.setEditableTranslate(null)
+                binding.addTranslate.translateInput.setText("")
+            }
 
-            // FIXME Зробити через RV
-            addTranslate.chipItemContainer.allViews.forEach {
-                it.setOnClickListener {
-                    showMenu(it, R.menu.translate_hint_menu)
-                }
+            addHints.button.setOnClickListener {
+                model.addHint(addHints.inputHint.text.toString())
+                addHints.inputHint.setText("")
+            }
+
+            binding.addHints.cancelEditHint.setOnClickListener {
+                model.setEditableHint(null)
+                binding.addHints.inputHint.setText("")
             }
 
             toggleAdditionalField.setOnClickListener {
@@ -112,22 +191,49 @@ class ModifyWordFragment : Fragment() {
         }
     }
 
-    private fun showMenu(v: View, @MenuRes menuRes: Int) {
-        val popup = PopupMenu(requireContext(), v)
-        popup.menuInflater.inflate(menuRes, popup.menu)
+    private fun createHintPopupMenu(v: View, hintChip: HintItem) {
+        val popupMenu = PopupMenu(requireContext(), v)
+        popupMenu.menuInflater.inflate(R.menu.hint_item_menu, popupMenu.menu)
 
-        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            // Respond to menu item click.
-            true
+        popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
+
+            when(menuItem.itemId) {
+                R.id.menu_edit -> {
+                   binding.addHints.inputHint.setText(hintChip.value)
+                    model.setEditableHint(hintChip)
+                }
+            }
+            false
         }
-        popup.setOnDismissListener {
-            // Respond to popup being dismissed.
-        }
-        // Show the popup menu.
-        popup.show()
+
+        popupMenu.show()
     }
 
-//    @SuppressLint("ClickableViewAccessibility")
+    private fun createTranslatePopupMenu(v: View, translateChip: TranslateWordItem) {
+        val popupMenu = PopupMenu(requireContext(), v)
+        popupMenu.menuInflater.inflate(R.menu.trasnlate_item_menu, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
+
+            when(menuItem.itemId) {
+                R.id.menu_edit -> {
+                    binding.addTranslate.translateInput.setText(translateChip.value)
+                    model.setEditableTranslate(translateChip)
+                }
+
+                R.id.menu_delete -> {
+                   model.deleteTranslate(translateChip.id)
+                }
+            }
+            false
+        }
+
+        popupMenu.show()
+    }
+
+
+
+    //    @SuppressLint("ClickableViewAccessibility")
     private fun editTextScrollListener() {
 //        // scroll edit text inside scrollview
 //        ScrollEditTextInsideScrollView()
@@ -155,6 +261,8 @@ class ModifyWordFragment : Fragment() {
     }
 
     companion object {
+        private const val MENU_HINT = "menu-hint"
+        private const val MENU_TRANSLATE = "menu-translate"
 
         @JvmStatic
         fun newInstanceAdd() =
@@ -171,4 +279,5 @@ class ModifyWordFragment : Fragment() {
                 }
             }
     }
+
 }

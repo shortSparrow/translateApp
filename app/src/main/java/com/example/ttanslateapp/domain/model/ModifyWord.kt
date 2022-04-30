@@ -15,6 +15,6 @@ data class ModifyWord @Inject constructor(
     val sound: Sound?, // english sound
     val langFrom: String,
     val langTo: String,
-    val hintList: List<HintItem?>,
-    val answerList: List<AnswerItem?>
+    val hintList: List<HintItem>,
+    val answerList: List<AnswerItem>
 )

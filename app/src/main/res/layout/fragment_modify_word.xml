@@ -29,7 +29,7 @@
 
         <include
             android:id="@+id/translate_word_description"
-            layout="@layout/translate_word_description"
+            layout="@layout/word_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gutter"
@@ -52,7 +52,6 @@
             layout="@layout/add_hints"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gutter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toggleAdditionalField" />

@@ -5,12 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/cancel_edit_translate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_edit"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/english_word_container"
+        app:layout_constraintEnd_toEndOf="@+id/english_word_container" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/english_word_container"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/gutter"
+        android:layout_marginTop="@dimen/gutter"
         android:hint="@string/input_translate"
         app:errorEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/button"
@@ -19,7 +29,7 @@
         app:shapeAppearance="?attr/shapeAppearanceSmallComponent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/english_word_input"
+            android:id="@+id/translate_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="@integer/input_max_lines"
@@ -39,25 +49,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/english_word_container" />
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/chip_item_container"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/translate_chips_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:alignItems="center"
-        app:flexWrap="wrap"
-        app:layout_constraintTop_toBottomOf="@+id/english_word_container">
-
-        <include layout="@layout/chips" />
-
-        <include layout="@layout/chips" />
-
-        <include layout="@layout/chips" />
-
-        <include layout="@layout/chips" />
-
-        <include layout="@layout/chips" />
-
-    </com.google.android.flexbox.FlexboxLayout>
+        android:orientation="horizontal"
+        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/english_word_container"
+        tools:listitem="@layout/translate_chip" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

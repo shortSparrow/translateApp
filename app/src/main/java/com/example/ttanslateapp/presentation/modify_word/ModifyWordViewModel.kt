@@ -4,12 +4,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.ttanslateapp.data.model.Sound
+import com.example.ttanslateapp.domain.model.AnswerItem
 import com.example.ttanslateapp.domain.model.ModifyWord
+import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.edit.HintItem
+import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class ModifyWordViewModel @Inject constructor(
@@ -20,11 +26,33 @@ class ModifyWordViewModel @Inject constructor(
     private val _word = MutableLiveData<ModifyWord>()
     val word: LiveData<ModifyWord> = _word
 
+
+    private val _wordValue = MutableLiveData<String>()
+    val wordValue: LiveData<String> = _wordValue
+
+    private val _translates = MutableLiveData<List<TranslateWordItem>>()
+    val translates: LiveData<List<TranslateWordItem>> = _translates
+
+
+    private val _description = MutableLiveData<String>()
+    val description: LiveData<String> = _description
+
+    private val _hints = MutableLiveData<List<HintItem>>()
+    val hints: LiveData<List<HintItem>> = _hints
+
+    private val _editableHint = MutableLiveData<HintItem?>()
+    val editableHint: LiveData<HintItem?> = _editableHint
+
+    private val _editableTranslate = MutableLiveData<TranslateWordItem?>()
+    val editableTranslate: LiveData<TranslateWordItem?> = _editableTranslate
+
+
     private val _isAdditionalFieldVisible = MutableLiveData(false)
     val isAdditionalFieldVisible: LiveData<Boolean> = _isAdditionalFieldVisible
 
 
     private val scope = CoroutineScope(Dispatchers.IO)
+    private fun getTimestamp(): Long = System.currentTimeMillis()
 
     fun saveWord(word: String, description: String) {
         scope.launch {
@@ -39,61 +67,94 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Ми маємо created_at, updated_at, id
-     * Як найкраще їх оброблювати, вразовуючи що буде локальна БД + сервер
-     *
-     * У мене на клік буде відриватися меню, де будуть певні дію.
-     * 1. Чи варто робити це список через RV + враховувати що є menu
-     * 2. Як найкраще передати, який саме chip я клікнув, чи add_translate чи add_hint
-     * 3. Як перевикористати логіку для обох випадків, оскільки структура однакова.
-     * Abstract Class якось не працює, тай треба буде пов'язати з LiveData
-     *
-     * Чи може створти баьківський клас для add_translate чи add_hint, але вони ж data class.
-     * Чи може просто сворити універсальний клас chips, але що робити, коли в якомусь з них з'явиться додаткве
-     * поле
-     *
-     * Якщо будемо виносити логіку в окрмений клас, то я обробити обидва класа, поліморфізм чи
-     * краще окремі функції
-     *
-     *
-     * //////////
-     * add scroll for every EditText inside scrollView & description scroll work not correct (velocity)
-     */
 
-    // FIXME translate chips and hint has the same structures and click logic
-    fun addTranslate(translateItem: String) {
-        // TODO add created_at & updated_at & correct id
-//        val newTranslateItem = TranslateWordItem(value = translateItem, id = -1)
-//        val oldTranslations = _word.value?.translateWords
-//
-//        if (oldTranslations != null) {
-//            _word.value = _word.value?.copy(
-//                translateWords = oldTranslations + newTranslateItem
-//            )
-//        } else {
-//            error("translations list is null")
-//        }
+    fun addTranslate(translateValue: String) {
+        val newTranslateItem =  _editableTranslate.value?.copy(value = translateValue, updatedAt = getTimestamp()) ?:TranslateWordItem(
+            value = translateValue,
+            id = UUID.randomUUID().toString(),
+            createdAt = getTimestamp(),
+            updatedAt = getTimestamp()
+        )
 
-    }
 
-    fun editTranslate(translateItemId: Long, newValue: String) {
-        var isItemExist = _word.value?.translateWords?.find {
-            it.id == translateItemId
-        }
-        if (isItemExist != null) {
-            // TODO add created_at & updated_at
-            isItemExist.copy(value = newValue).also { isItemExist = it }
+        if (_translates.value == null) {
+            _translates.value = listOf(newTranslateItem)
         } else {
-            // TODO
+            val hintAlreadyExist = _translates.value?.find { it.id == newTranslateItem.id }
+
+            if (hintAlreadyExist == null) {
+                _translates.value = _translates.value?.plus(newTranslateItem)
+            } else {
+                _translates.value = _translates.value?.map {
+                    if (it.id == newTranslateItem.id) {
+                        return@map newTranslateItem
+                    }
+                    return@map it
+                }
+            }
+
+            // clear editableHint, because we finish edit
+            setEditableTranslate(null)
         }
     }
+
+    fun deleteTranslate(translateId: String) {
+        if (translateId == editableTranslate.value?.id) {
+            setEditableTranslate(null)
+        }
+        _translates.value = _translates.value?.filter { it.id != translateId }
+    }
+
 
 
     // Валідацію робити на EditableItem
-    fun addHint(HintItem: String) {
-        // TODO
+    fun addHint(hintValue: String) {
+        val newHintItem =
+            _editableHint.value?.copy(value = hintValue, updatedAt = getTimestamp()) ?: HintItem(
+                value = hintValue,
+                id = UUID.randomUUID().toString(),
+                createdAt = getTimestamp(),
+                updatedAt = getTimestamp()
+            )
+
+        if (_hints.value == null) {
+            _hints.value = listOf(newHintItem)
+        } else {
+            val hintAlreadyExist = _hints.value?.find { it.id == newHintItem.id }
+
+            if (hintAlreadyExist == null) {
+                _hints.value = _hints.value?.plus(newHintItem)
+            } else {
+                _hints.value = _hints.value?.map {
+                    if (it.id == newHintItem.id) {
+                        return@map newHintItem
+                    }
+                    return@map it
+                }
+            }
+
+            // clear editableHint, because we finish edit
+            setEditableHint(null)
+        }
     }
+
+    fun deleteHint(hintId: String) {
+        if (hintId == editableHint.value?.id) {
+            setEditableHint(null)
+        }
+        _hints.value = _hints.value?.filter { it.id != hintId }
+    }
+
+    fun setEditableHint(editableHint: HintItem?) {
+        _editableHint.value = editableHint
+    }
+
+    fun setEditableTranslate(editableTranslateWordItem: TranslateWordItem?) {
+        _editableTranslate.value = editableTranslateWordItem
+    }
+
+
+
 
     fun toggleVisibleAdditionalField() {
         val oldValue = _isAdditionalFieldVisible.value!!

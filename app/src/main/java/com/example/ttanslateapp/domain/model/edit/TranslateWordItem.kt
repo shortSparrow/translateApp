@@ -1,12 +1,12 @@
 package com.example.ttanslateapp.domain.model.edit
 
-import com.example.ttanslateapp.domain.model.Chips
+import com.example.ttanslateapp.domain.model.Chip
 import java.util.*
 import javax.inject.Inject
 
 data class TranslateWordItem @Inject constructor(
-    override val id: Long,
-    override val createdAt: Date,
-    override val updatedAt: Date,
+    override val id: String,
+    override val createdAt: Long,
+    override val updatedAt: Long,
     override val value: String,
-):Chips
+):Chip
