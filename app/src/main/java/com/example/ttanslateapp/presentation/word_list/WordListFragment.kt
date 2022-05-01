@@ -1,14 +1,19 @@
 package com.example.ttanslateapp.presentation.word_list
 
+import android.content.res.Resources.getSystem
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.TranslateApp
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
+import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.presentation.ViewModelFactory
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
@@ -71,6 +76,7 @@ class WordListFragment : Fragment() {
     private fun setAdapter() {
         val wordListAdapter = WordListAdapter(requireContext()) // FIXME delete requireContext
         binding.wordListRv.adapter = wordListAdapter
+
 
         model.wordList.observe(viewLifecycleOwner) {
             wordListAdapter.submitList(it)
