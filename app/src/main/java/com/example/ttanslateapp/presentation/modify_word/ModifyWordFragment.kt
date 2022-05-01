@@ -4,18 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
-import androidx.annotation.MenuRes
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.TranslateApp
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
-import com.example.ttanslateapp.domain.model.Chip
 import com.example.ttanslateapp.domain.model.edit.HintItem
 import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import com.example.ttanslateapp.presentation.ViewModelFactory
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
+import com.example.ttanslateapp.setOnTextChange
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import javax.inject.Inject
 
@@ -68,6 +68,14 @@ class ModifyWordFragment : Fragment() {
         liveDataListeners()
         setAdapters()
 
+        binding.inputTranslatedWord.englishWordInput.setOnTextChange {
+            model.setWordValueError(false)
+        }
+
+        binding.addTranslate.translateInput.setOnTextChange {
+            model.setTranslatesError(false)
+        }
+
 //        binding.inputTranslatedWord.test()
     }
 
@@ -76,11 +84,9 @@ class ModifyWordFragment : Fragment() {
         binding.addTranslate.translateChipsRv.adapter = translateAdapter
         binding.addTranslate.translateChipsRv.itemAnimator = null
 
-
         val hintAdapter = HintAdapter()
         binding.addHints.hintChipsRv.adapter = hintAdapter
         binding.addHints.hintChipsRv.itemAnimator = null
-
 
         observeAdapter(translateAdapter, hintAdapter)
         setAdaptersClickListener(translateAdapter, hintAdapter)
@@ -143,13 +149,21 @@ class ModifyWordFragment : Fragment() {
             }
         }
 
-
-        model.wordList.observe(viewLifecycleOwner) {
-            for (word in it) {
-                Log.d("wordItem", word.toString())
+        model.wordValueError.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.inputTranslatedWord.englishWordContainer.error = "This field is required"
+            } else {
+                binding.inputTranslatedWord.englishWordContainer.error = null
             }
-
         }
+        model.translatesError.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.addTranslate.englishWordContainer.error = "This field is required"
+            } else {
+                binding.addTranslate.englishWordContainer.error = null
+            }
+        }
+
     }
 
     private fun additionalFieldListener() {
@@ -164,20 +178,6 @@ class ModifyWordFragment : Fragment() {
 
     private fun setupClickListener() {
         with(binding) {
-            save.setOnClickListener {
-//                val word = inputTranslatedWord.englishWordInput.text.toString()
-//                val description = translateWordDescription.descriptionInput.text.toString()
-//
-//                model.saveWord(word = word, description = description)
-            }
-
-            getWords.setOnClickListener {
-//                val word = model.getWordById(100)
-//                Log.d("ModifyWordFragment", word.toString())
-                model.getWordList()
-            }
-
-
             addTranslate.button.setOnClickListener {
                 model.addTranslate(addTranslate.translateInput.text.toString())
                 addTranslate.translateInput.setText("")
@@ -203,7 +203,15 @@ class ModifyWordFragment : Fragment() {
             }
 
             saveTranslatedWord.setOnClickListener {
-                model.saveWord()
+                with(binding) {
+                    model.saveWord(
+                        value = inputTranslatedWord.englishWordInput.text.toString(),
+                        description = translateWordDescription.descriptionInput.text.toString(),
+                        langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
+                        langTo = "UA"
+                    )
+                }
+
             }
 
         }

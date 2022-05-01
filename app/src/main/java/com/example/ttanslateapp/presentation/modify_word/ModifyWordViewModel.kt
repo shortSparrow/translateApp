@@ -24,20 +24,16 @@ import javax.inject.Inject
 class ModifyWordViewModel @Inject constructor(
     private val modifyWordUseCase: ModifyWordUseCase,
     private val getWordItemUseCase: GetWordItemUseCase,
-    private val getWordListUseCase: GetWordListUseCase,
 ) : ViewModel() {
 
-//    private val _word = MutableLiveData<ModifyWord>()
-//    val word: LiveData<ModifyWord> = _word
-
-//    private val _wordValue = MutableLiveData<String>()
-//    val wordValue: LiveData<String> = _wordValue
+    private val _wordValueError = MutableLiveData<Boolean>()
+    val wordValueError: LiveData<Boolean> = _wordValueError
 
     private val _translates = MutableLiveData<List<TranslateWordItem>>()
     val translates: LiveData<List<TranslateWordItem>> = _translates
 
-    private val _description = MutableLiveData<String>()
-    val description: LiveData<String> = _description
+    private val _translatesError = MutableLiveData<Boolean>()
+    val translatesError: LiveData<Boolean> = _translatesError
 
     private val _hints = MutableLiveData<List<HintItem>>()
     val hints: LiveData<List<HintItem>> = _hints
@@ -53,25 +49,56 @@ class ModifyWordViewModel @Inject constructor(
     val isAdditionalFieldVisible: LiveData<Boolean> = _isAdditionalFieldVisible
 
 
-    private val _wordList = MutableLiveData<List<WordRV>>()
-    val wordList: LiveData<List<WordRV>> = _wordList
-
-
     private val scope = CoroutineScope(Dispatchers.IO)
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
-    fun saveWord() {
+    fun setWordValueError(value: Boolean) {
+        _wordValueError.value = value
+    }
+
+    fun setTranslatesError(value: Boolean) {
+        _translatesError.value = value
+    }
+
+    private fun validateWord(value: String): Boolean {
+        var isValid = true
+
+        if (value.trim().isEmpty()) {
+            _wordValueError.value = true
+            isValid = false
+        }
+
+        if (_translates.value?.size == 0 || _translates.value == null) {
+            _translatesError.value = true
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    fun saveWord(
+        value: String = "",
+        description: String = "",
+        langFrom: String = "",
+        langTo: String = ""
+    ) {
+        val isValid = validateWord(value = value)
+
+        if (!isValid) {
+            return
+        }
+
+        val word = ModifyWord(
+            value = value,
+            translateWords = translates.value!!,
+            description = description,
+            sound = null,
+            langFrom = langFrom,
+            langTo = langTo,
+            hintList = _hints.value,
+        )
+
         scope.launch {
-            val word = ModifyWord(
-                value = "",
-                translateWords = translates.value!!,
-                description = "",
-                sound = null,
-                langFrom = "UA",
-                langTo = "EN",
-                hintList = _hints.value,
-                answerList = null
-            )
             modifyWordUseCase(word)
         }
     }
@@ -81,13 +108,6 @@ class ModifyWordViewModel @Inject constructor(
             val word = getWordItemUseCase(id)
             Log.d("ModifyWordViewModel", word.toString())
         }
-    }
-
-
-    fun getWordList() {
-//        getWordListUseCase().observeForever {
-//            _wordList.value = it
-//        }
     }
 
 

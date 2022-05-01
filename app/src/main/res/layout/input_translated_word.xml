@@ -28,7 +28,7 @@
 
 
     <TextView
-        android:id="@+id/translate_language_lable"
+        android:id="@+id/translate_language_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/gutter"
@@ -44,7 +44,7 @@
         android:layout_marginStart="30dp"
         android:drawSelectorOnTop="true"
         android:entries="@array/translate_from_language"
-        app:layout_constraintBottom_toBottomOf="@+id/translate_language_lable"
-        app:layout_constraintStart_toEndOf="@+id/translate_language_lable"
-        app:layout_constraintTop_toTopOf="@+id/translate_language_lable" />
+        app:layout_constraintBottom_toBottomOf="@+id/translate_language_label"
+        app:layout_constraintStart_toEndOf="@+id/translate_language_label"
+        app:layout_constraintTop_toTopOf="@+id/translate_language_label" />
 </androidx.constraintlayout.widget.ConstraintLayout>

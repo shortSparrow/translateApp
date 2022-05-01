@@ -82,5 +82,4 @@ data class TranslatedWordDb(
     val langFrom: String,
     val langTo: String,
     val hintList: List<HintItem>?,
-    val answerList: List<AnswerItem>?
 )

@@ -10,10 +10,5 @@ class WordListViewModel @Inject constructor(
 ) : ViewModel() {
     val wordList = getWordListUseCase()
 
-    private val _isShowMoreOpen = MutableLiveData(false)
-    val isShowMoreOpen = _isShowMoreOpen
 
-    fun toggleIsShowMoreOpen() {
-        _isShowMoreOpen.value = !_isShowMoreOpen.value!!
-    }
 }

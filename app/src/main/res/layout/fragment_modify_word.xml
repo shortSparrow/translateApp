@@ -13,11 +13,33 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/gutter">
 
+<!--        <com.example.ttanslateapp.presentation.layout.TranslatedWord-->
+<!--            app:state="close"-->
+<!--            android:id="@+id/input_translated_word"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
         <include
             android:id="@+id/input_translated_word"
             layout="@layout/input_translated_word"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+<!--        <com.example.ttanslateapp.presentation.layout.AddTranslate-->
+<!--            android:id="@+id/add_translate"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/gutter"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/input_translated_word" />-->
 
         <include
             android:id="@+id/add_translate"
@@ -25,7 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gutter"
-            app:layout_constraintTop_toBottomOf="@+id/input_translated_word" />
+            app:layout_constraintTop_toBottomOf="@+id/input_translated_word"
+            tools:layout_editor_absoluteX="20dp" />
 
         <include
             android:id="@+id/translate_word_description"
@@ -56,27 +79,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toggleAdditionalField" />
 
-        <Button
-            android:id="@+id/save"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/large_gutter"
-            android:layout_marginBottom="@dimen/gutter"
-            android:text="@string/save"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_hints" />
-
-
-        <Button
-            android:id="@+id/get_words"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/large_gutter"
-            android:text="get translation words"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/save" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/save_translated_word"
@@ -86,7 +88,7 @@
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/get_words" />
+            app:layout_constraintTop_toBottomOf="@+id/add_hints" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

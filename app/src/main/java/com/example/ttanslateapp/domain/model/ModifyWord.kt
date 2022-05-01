@@ -17,7 +17,6 @@ data class ModifyWord @Inject constructor(
     val langFrom: String,
     val langTo: String,
     val hintList: List<HintItem>?,
-    val answerList: List<AnswerItem>?
 ) {
     companion object {
         const val UNDEFINED_ID = 0L

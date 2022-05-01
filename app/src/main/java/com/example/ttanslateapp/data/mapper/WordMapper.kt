@@ -33,6 +33,5 @@ class WordMapper @Inject constructor() {
         langFrom = modifyWord.langFrom,
         langTo = modifyWord.langTo,
         hintList = modifyWord.hintList,
-        answerList = modifyWord.answerList,
     )
 }
