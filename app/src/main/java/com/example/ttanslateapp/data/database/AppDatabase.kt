@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.ttanslateapp.data.model.TranslatedWordDb
 
 
-@Database(entities = [TranslatedWordDb::class], version = 1, exportSchema = false)
+@Database(entities = [TranslatedWordDb::class], version = 2, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun translatedWordDao(): TranslatedWordDao
 
@@ -30,7 +30,8 @@ abstract class AppDatabase: RoomDatabase() {
                     application,
                     AppDatabase::class.java,
                     DB_NAME
-                ).build()
+                ).fallbackToDestructiveMigration()
+                    .build()
 
                 INSTANCE = db
                 return  db

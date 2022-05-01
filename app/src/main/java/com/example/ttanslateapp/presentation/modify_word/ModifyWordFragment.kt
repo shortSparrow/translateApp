@@ -1,45 +1,36 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.MenuItem
+import android.view.View
 import android.widget.PopupMenu
-import android.widget.Spinner
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.TranslateApp
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.domain.model.edit.HintItem
 import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
-import com.example.ttanslateapp.presentation.ViewModelFactory
+import com.example.ttanslateapp.presentation.core.BaseFragment
+import com.example.ttanslateapp.presentation.core.BindingInflater
+import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.setOnTextChange
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
-import javax.inject.Inject
-
+import com.example.ttanslateapp.util.getAppComponent
 
 private const val MODE_ADD = "mode-add"
 private const val MODE_EDIT = "mode-edit"
 private const val MODE = "mode"
 
-class ModifyWordFragment : Fragment() {
-    private var _binding: FragmentModifyWordBinding? = null
-    private val binding get() = _binding!!
+class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    override val bindingInflater: BindingInflater<FragmentModifyWordBinding>
+        get() = FragmentModifyWordBinding::inflate
 
-    val model by lazy {
-        ViewModelProvider(this, viewModelFactory)[ModifyWordViewModel::class.java]
-    }
+    private val viewModel by viewModels { get(ModifyWordViewModel::class.java) }
 
     private var mode: String? = null
-
-    private val component by lazy {
-        (requireActivity().application as TranslateApp).component
-    }
+    private val translateAdapter = TranslateAdapter()
+    private val hintAdapter = HintAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,88 +39,34 @@ class ModifyWordFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentModifyWordBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getAppComponent().inject(this)
 
-        component.inject(this)
-
-        // TODO є 2 різних адаптера, і підписки до них, вони майже однакові
-        //  див (setAdapters, observeAdapter, setAdaptersClickListener, setupClickListener,createHintPopupMenu,createTranslatePopupMenu)
         setupClickListener()
         editTextScrollListener()
-        liveDataListeners()
-        setAdapters()
-
-        binding.inputTranslatedWord.englishWordInput.setOnTextChange {
-            model.setWordValueError(false)
-        }
-
-        binding.addTranslate.translateInput.setOnTextChange {
-            model.setTranslatesError(false)
-        }
-
+        prepareAdapters()
+        setupView()
+        setObservers()
 //        binding.inputTranslatedWord.test()
     }
 
-    private fun setAdapters() {
-        val translateAdapter = TranslateAdapter()
-        binding.addTranslate.translateChipsRv.adapter = translateAdapter
-        binding.addTranslate.translateChipsRv.itemAnimator = null
+    private fun setupView() = with(binding) {
+        addTranslate.translateChipsRv.adapter = translateAdapter
+        addTranslate.translateChipsRv.itemAnimator = null
+        addTranslate.translateInput.setOnTextChange { viewModel.setTranslatesError(false) }
 
-        val hintAdapter = HintAdapter()
-        binding.addHints.hintChipsRv.adapter = hintAdapter
-        binding.addHints.hintChipsRv.itemAnimator = null
+        addHints.hintChipsRv.adapter = hintAdapter
+        addHints.hintChipsRv.itemAnimator = null
 
-        observeAdapter(translateAdapter, hintAdapter)
-        setAdaptersClickListener(translateAdapter, hintAdapter)
+        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.setWordValueError(false) }
     }
 
+    private fun setObservers() = with(viewModel) {
+        translates.observe(viewLifecycleOwner) { translateAdapter.submitList(it) }
+        hints.observe(viewLifecycleOwner) { hintAdapter.submitList(it) }
 
-    private fun observeAdapter(adapter: TranslateAdapter, hintAdapter: HintAdapter) {
-        model.translates.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-
-        model.hints.observe(viewLifecycleOwner) {
-            hintAdapter.submitList(it)
-        }
-
-    }
-
-    private fun setAdaptersClickListener(
-        translateAdapter: TranslateAdapter,
-        hintAdapter: HintAdapter
-    ) {
-        translateAdapter.onChipClickListener = object : TranslateAdapter.OnChipClickListener {
-            override fun onChipClick(it: View, translateWordItem: TranslateWordItem) {
-                createTranslatePopupMenu(it, translateWordItem)
-            }
-        }
-
-        hintAdapter.onChipClickListener = object : HintAdapter.OnChipClickListener {
-            override fun onChipClick(it: View, hintItem: HintItem) {
-                createHintPopupMenu(it, hintItem)
-            }
-
-            override fun onDeleteClick(hintItem: HintItem) {
-                model.deleteHint(hintItem.id)
-            }
-
-        }
-    }
-
-    private fun liveDataListeners() {
-        additionalFieldListener()
-
-        model.editableHint.observe(viewLifecycleOwner) {
+        editableHint.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.addHints.button.text = "Edit"
                 binding.addHints.cancelEditHint.visibility = View.VISIBLE
@@ -138,8 +75,7 @@ class ModifyWordFragment : Fragment() {
                 binding.addHints.cancelEditHint.visibility = View.INVISIBLE
             }
         }
-
-        model.editableTranslate.observe(viewLifecycleOwner) {
+        editableTranslate.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.addTranslate.button.text = "Edit"
                 binding.addTranslate.cancelEditTranslate.visibility = View.VISIBLE
@@ -149,69 +85,81 @@ class ModifyWordFragment : Fragment() {
             }
         }
 
-        model.wordValueError.observe(viewLifecycleOwner) {
-            if (it == true) {
-                binding.inputTranslatedWord.englishWordContainer.error = "This field is required"
-            } else {
-                binding.inputTranslatedWord.englishWordContainer.error = null
-            }
-        }
-        model.translatesError.observe(viewLifecycleOwner) {
-            if (it == true) {
-                binding.addTranslate.englishWordContainer.error = "This field is required"
-            } else {
-                binding.addTranslate.englishWordContainer.error = null
-            }
-        }
-
-    }
-
-    private fun additionalFieldListener() {
-        model.isAdditionalFieldVisible.observe(viewLifecycleOwner) {
+        /* additional fields */
+        isAdditionalFieldVisible.observe(viewLifecycleOwner) {
             if (it) {
                 binding.addHints.root.visibility = View.VISIBLE
             } else {
                 binding.addHints.root.visibility = View.GONE
             }
         }
+
+        wordValueError.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.inputTranslatedWord.englishWordContainer.error = "This field is required"
+            } else {
+                binding.inputTranslatedWord.englishWordContainer.error = null
+            }
+        }
+        translatesError.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.addTranslate.englishWordContainer.error = "This field is required"
+            } else {
+                binding.addTranslate.englishWordContainer.error = null
+            }
+        }
     }
 
-    private fun setupClickListener() {
-        with(binding) {
-            addTranslate.button.setOnClickListener {
-                model.addTranslate(addTranslate.translateInput.text.toString())
-                addTranslate.translateInput.setText("")
+    private fun prepareAdapters() {
+        translateAdapter.clickListener =
+            object : ModifyWordAdapter.OnItemClickListener<TranslateWordItem> {
+                override fun onItemClick(it: View, item: TranslateWordItem) {
+                    createTranslatePopupMenu(it, item)
+                }
             }
 
-            binding.addTranslate.cancelEditTranslate.setOnClickListener {
-                model.setEditableTranslate(null)
-                binding.addTranslate.translateInput.setText("")
-            }
-
-            addHints.button.setOnClickListener {
-                model.addHint(addHints.inputHint.text.toString())
-                addHints.inputHint.setText("")
-            }
-
-            binding.addHints.cancelEditHint.setOnClickListener {
-                model.setEditableHint(null)
-                binding.addHints.inputHint.setText("")
-            }
-
-            toggleAdditionalField.setOnClickListener {
-                model.toggleVisibleAdditionalField()
-            }
-
-            saveTranslatedWord.setOnClickListener {
-                with(binding) {
-                    model.saveWord(
-                        value = inputTranslatedWord.englishWordInput.text.toString(),
-                        description = translateWordDescription.descriptionInput.text.toString(),
-                        langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
-                        langTo = "UA"
-                    )
+        hintAdapter.clickListener =
+            object : ModifyWordAdapter.OnItemMultiClickListener<HintItem> {
+                override fun onItemClick(it: View, item: HintItem) {
+                    createHintPopupMenu(it, item)
                 }
 
+                override fun onItemDeleteClick(item: HintItem) {
+                    viewModel.deleteHint(item.id)
+                }
+            }
+    }
+
+    private fun setupClickListener() = with(binding) {
+        addTranslate.button.setOnClickListener {
+            viewModel.addTranslate(addTranslate.translateInput.text.toString())
+            addTranslate.translateInput.setText("")
+        }
+
+        addTranslate.cancelEditTranslate.setOnClickListener {
+            viewModel.setEditableTranslate(null)
+            binding.addTranslate.translateInput.setText("")
+        }
+
+        addHints.button.setOnClickListener {
+            viewModel.addHint(addHints.inputHint.text.toString())
+            addHints.inputHint.setText("")
+        }
+
+        binding.addHints.cancelEditHint.setOnClickListener {
+            viewModel.setEditableHint(null)
+            binding.addHints.inputHint.setText("")
+        }
+
+        toggleAdditionalField.setOnClickListener { viewModel.toggleVisibleAdditionalField() }
+        saveTranslatedWord.setOnClickListener {
+            with(binding) {
+                viewModel.saveWord(
+                    value = inputTranslatedWord.englishWordInput.text.toString(),
+                    description = translateWordDescription.descriptionInput.text.toString(),
+                    langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
+                    langTo = "UA"
+                )
             }
 
         }
@@ -220,35 +168,30 @@ class ModifyWordFragment : Fragment() {
     private fun createHintPopupMenu(v: View, hintChip: HintItem) {
         val popupMenu = PopupMenu(requireContext(), v)
         popupMenu.menuInflater.inflate(R.menu.hint_item_menu, popupMenu.menu)
-
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
-
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     binding.addHints.inputHint.setText(hintChip.value)
-                    model.setEditableHint(hintChip)
+                    viewModel.setEditableHint(hintChip)
                 }
             }
             false
         }
-
         popupMenu.show()
     }
 
     private fun createTranslatePopupMenu(v: View, translateChip: TranslateWordItem) {
         val popupMenu = PopupMenu(requireContext(), v)
         popupMenu.menuInflater.inflate(R.menu.trasnlate_item_menu, popupMenu.menu)
-
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
-
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     binding.addTranslate.translateInput.setText(translateChip.value)
-                    model.setEditableTranslate(translateChip)
+                    viewModel.setEditableTranslate(translateChip)
                 }
 
                 R.id.menu_delete -> {
-                    model.deleteTranslate(translateChip.id)
+                    viewModel.deleteTranslate(translateChip.id)
                 }
             }
             false
@@ -277,11 +220,6 @@ class ModifyWordFragment : Fragment() {
 //        binding.translateWordDescription.descriptionInput.movementMethod = ScrollingMovementMethod()
 
 
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {
