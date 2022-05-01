@@ -1,26 +1,19 @@
 package com.example.ttanslateapp.presentation.modify_word.adapter.hints
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import com.example.ttanslateapp.databinding.HintChipBinding
-import com.example.ttanslateapp.databinding.TranslateChipBinding
 import com.example.ttanslateapp.domain.model.edit.HintItem
+import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 
+private typealias ClickListener = ModifyWordAdapter.OnItemMultiClickListener<HintItem>
 
-class HintAdapter :
-    ListAdapter<HintItem, HintItemViewHolder>(HintAdapterDiffCallback()) {
+class HintAdapter : ModifyWordAdapter<HintItem, HintItemViewHolder, ClickListener>() {
 
-    var onChipClickListener: OnChipClickListener? = null
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): HintItemViewHolder {
-        val itemBinding =
-            HintChipBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HintItemViewHolder(itemBinding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HintItemViewHolder {
+        return HintChipBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+            .run { HintItemViewHolder(this) }
     }
 
     override fun onBindViewHolder(
@@ -31,21 +24,8 @@ class HintAdapter :
 
         with(holder.binding) {
             hintItem.text = hint.value
-
-            hintItem.setOnClickListener {
-                onChipClickListener?.onChipClick(it, hint)
-            }
-
-            deleteHint.setOnClickListener {
-                onChipClickListener?.onDeleteClick(hint)
-            }
+            hintItem.setOnClickListener { clickListener?.onItemClick(it, hint) }
+            deleteHint.setOnClickListener { clickListener?.onItemDeleteClick(hint) }
         }
     }
-
-    interface OnChipClickListener {
-        fun onChipClick(it: View, hintItem: HintItem)
-        fun onDeleteClick(hintItem: HintItem)
-    }
-
-
 }

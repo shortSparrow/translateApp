@@ -1,6 +1,5 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +15,14 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.translate.Trans
 import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
-
-class WordListAdapter(private val context: Context) :
-    ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
+class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
 
     private val isOpenedSet = mutableMapOf<Long, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordItemViewHolder {
-        val itemBinding =
-            WordRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return WordItemViewHolder(itemBinding)
+        return WordRvItemBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+            .run { WordItemViewHolder(this) }
     }
 
     private fun open(binding: WordRvItemBinding) {
