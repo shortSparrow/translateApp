@@ -11,12 +11,11 @@ import dagger.Component
 interface ApplicationComponent {
 
     fun inject(modifyWordFragment: ModifyWordFragment)
+
     fun inject(wordListFragment: WordListFragment)
 
     @Component.Factory
     interface ApplicationFactory {
-        fun create(
-            @BindsInstance context: Application
-        ): ApplicationComponent
+        fun create(@BindsInstance context: Application): ApplicationComponent
     }
 }
