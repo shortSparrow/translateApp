@@ -61,10 +61,14 @@ class ModifyWordFragment : Fragment() {
 
         component.inject(this)
 
+        // TODO є 2 різних адаптера, і підписки до них, вони майже однакові
+        //  див (setAdapters, observeAdapter, setAdaptersClickListener, setupClickListener,createHintPopupMenu,createTranslatePopupMenu)
         setupClickListener()
         editTextScrollListener()
         liveDataListeners()
         setAdapters()
+
+//        binding.inputTranslatedWord.test()
     }
 
     private fun setAdapters() {

@@ -88,7 +88,6 @@ class WordListFragment : Fragment() {
         wordListAdapter.onClickListener = object : WordListAdapter.OnClickListener {
             override fun onClickShowMore(view: CardView) {
                 if (model.isShowMoreOpen.value == false) {
-
                     val params: ViewGroup.LayoutParams = view.layoutParams
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT
                     view.layoutParams = params
