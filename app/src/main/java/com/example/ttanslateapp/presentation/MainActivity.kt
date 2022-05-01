@@ -11,7 +11,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        launchModifyFragment()
+        if (savedInstanceState == null) {
+            launchModifyFragment()
+        }
     }
 
     private fun launchModifyFragment() {
