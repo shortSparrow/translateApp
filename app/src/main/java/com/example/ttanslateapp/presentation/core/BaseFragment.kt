@@ -41,4 +41,5 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     /** Makes obtaining process of view models much easier */
     protected fun <T> viewModels(getter: ViewModelProvider.() -> T): Lazy<T> =
         lazySimple { ViewModelProvider(this, viewModelFactory).getter() }
+
 }

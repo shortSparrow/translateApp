@@ -76,10 +76,10 @@ data class TranslatedWordDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val value: String,
-    val translations: List<TranslateWordItem>,
+    val translates: List<TranslateWordItem>,
     val description: String,
     val sound: Sound?, // english sound
     val langFrom: String,
     val langTo: String,
-    val hintList: List<HintItem>?,
+    val hints: List<HintItem>?,
 )

@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ListAdapter
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.WordRvItemBinding
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
 
+    var onClickListener: OnClickListener? = null
     private val isOpenedSet = mutableMapOf<Long, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordItemViewHolder {
@@ -27,7 +26,6 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
 
     private fun open(binding: WordRvItemBinding) {
         with(binding) {
-            Log.d("XXX_open", root.measuredHeight.toString())
             root.updateLayoutParams {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
@@ -38,7 +36,6 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
 
     private fun close(binding: WordRvItemBinding) {
         with(binding) {
-            Log.d("XXX_close", root.measuredHeight.toString())
             val params: ViewGroup.LayoutParams = root.layoutParams
             params.height = 400
             root.layoutParams = params
@@ -53,6 +50,7 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
             isOpenedSet[word.id] = false
         }
 
+        // TODO: add show more button
 
         with(holder.binding) {
             langFrom.text = word.langFrom
@@ -73,31 +71,24 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
                 } else {
                     close(holder.binding)
                 }
-                Log.d("Click", isOpenedSet[word.id].toString())
-                Log.d("Click_id", word.id.toString())
-                Log.d("Click_map", isOpenedSet.toString())
-
             }
 
-            // TODO використовуємо TranslateAdapter, звернути увагу, якщо його буде змінено
             val translateAdapter = TranslateAdapter()
             translateList.adapter = translateAdapter
-            translateAdapter.submitList(word.translations)
+            translateAdapter.submitList(word.translates)
 
 
-            root.doOnPreDraw {
-                Log.d("FFF", root.measuredHeight.toString())
-                if (root.measuredHeight > 400) {
-                    holder.binding.showMore.visibility = View.VISIBLE
-
-                    if (isOpenedSet[word.id] == true) {
-                        open(holder.binding)
-                    } else {
-                        close(holder.binding)
-                    }
-
-                }
+            playSound.setOnClickListener {
+                Log.d("DDD", "D")
+            }
+            root.setOnClickListener {
+                Log.d("DDD_2", "D")
+                onClickListener?.onRootClickListener(word.id)
             }
         }
+    }
+
+    interface OnClickListener {
+        fun onRootClickListener(wordId: Long)
     }
 }

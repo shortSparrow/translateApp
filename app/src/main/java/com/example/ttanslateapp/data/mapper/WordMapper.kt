@@ -1,12 +1,8 @@
 package com.example.ttanslateapp.data.mapper
 
-import com.example.ttanslateapp.data.model.Sound
 import com.example.ttanslateapp.data.model.TranslatedWordDb
-import com.example.ttanslateapp.domain.model.AnswerItem
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
-import com.example.ttanslateapp.domain.model.edit.HintItem
-import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import javax.inject.Inject
 
 class WordMapper @Inject constructor() {
@@ -14,24 +10,35 @@ class WordMapper @Inject constructor() {
         wordDbToWordRV(it)
     }
 
-    fun wordDbToWordRV(wordDb: TranslatedWordDb): WordRV = WordRV(
+    private fun wordDbToWordRV(wordDb: TranslatedWordDb): WordRV = WordRV(
         id = wordDb.id,
         value = wordDb.value,
-        translations = wordDb.translations,
+        translates = wordDb.translates,
         description = wordDb.description,
         sound = wordDb.sound,
         langFrom = wordDb.langFrom,
         langTo = wordDb.langTo,
     )
 
+    fun wordDbToModifyWord(wordDb: TranslatedWordDb): ModifyWord = ModifyWord(
+        id = wordDb.id,
+        value = wordDb.value,
+        translates = wordDb.translates,
+        description = wordDb.description,
+        sound = wordDb.sound,
+        langFrom = wordDb.langFrom,
+        langTo = wordDb.langTo,
+        hints = wordDb.hints
+    )
+
     fun modifyWordToDbWord(modifyWord: ModifyWord) = TranslatedWordDb(
         id = modifyWord.id,
         value = modifyWord.value,
-        translations = modifyWord.translateWords,
+        translates = modifyWord.translates,
         description = modifyWord.description,
         sound = modifyWord.sound,
         langFrom = modifyWord.langFrom,
         langTo = modifyWord.langTo,
-        hintList = modifyWord.hintList,
+        hints = modifyWord.hints,
     )
 }

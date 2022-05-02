@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.data.model.TranslatedWordDb
 import com.example.ttanslateapp.domain.TranslatedWordRepository
+import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
 import javax.inject.Inject
 
@@ -21,9 +22,9 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWordById(id: Long): WordRV {
+    override suspend fun getWordById(id: Long): ModifyWord {
 //        Log.d("wordItem", translatedWordDao.getWordById(id).value)
-        return mapper.wordDbToWordRV(translatedWordDao.getWordById(id))
+        return mapper.wordDbToModifyWord(translatedWordDao.getWordById(id))
     }
 
     override suspend fun deleteWord(id: Long): Boolean {

@@ -7,7 +7,7 @@ import javax.inject.Inject
 data class WordRV @Inject constructor(
     val id: Long,
     val value: String,
-    val translations: List<TranslateWordItem>,
+    val translates: List<TranslateWordItem>,
     val description: String,
     val sound: Sound?, // english sound
     val langFrom: String,

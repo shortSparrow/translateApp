@@ -1,11 +1,13 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
+import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.edit.HintItem
 import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import com.example.ttanslateapp.presentation.core.BaseFragment
@@ -17,9 +19,11 @@ import com.example.ttanslateapp.setOnTextChange
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 
+
 private const val MODE_ADD = "mode-add"
 private const val MODE_EDIT = "mode-edit"
 private const val MODE = "mode"
+private const val WORD_ID = "word_id"
 
 class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
@@ -29,6 +33,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private val viewModel by viewModels { get(ModifyWordViewModel::class.java) }
 
     private var mode: String? = null
+    private var wordId: Long? = null
     private val translateAdapter = TranslateAdapter()
     private val hintAdapter = HintAdapter()
 
@@ -36,13 +41,16 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             mode = it.getString(MODE)
+            wordId = it.getLong(WORD_ID)
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
+        launchRightMode()
         setupClickListener()
         editTextScrollListener()
         prepareAdapters()
@@ -50,6 +58,46 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         setObservers()
 //        binding.inputTranslatedWord.test()
     }
+
+    private fun launchRightMode() {
+        when (mode) {
+            MODE_ADD -> launchAddMode()
+            MODE_EDIT -> launchEditMode()
+        }
+    }
+
+    private fun launchEditMode() {
+        val id = wordId ?: error("wordId is null")
+        viewModel.getWordById(id)
+        viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
+            override fun onLoaded(word: ModifyWord) {
+                with(binding) {
+                    inputTranslatedWord.englishWordInput.setText(word.value);
+                    translateWordDescription.descriptionInput.setText(word.description)
+
+
+                    val langList = mutableMapOf<String, Int>()
+
+                    val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
+                    for (i in 0 until adapter.count) {
+                        langList[adapter.getItem(i).toString()] = i
+                    }
+
+                    // FIXME change spinner for text view on edit mode
+                    val spinnerValue = langList[word.langFrom] ?: 0
+                    inputTranslatedWord.selectLanguageSpinner.setSelection(spinnerValue)
+                    inputTranslatedWord.selectLanguageSpinner.isEnabled = false
+                }
+            }
+
+        }
+
+    }
+
+    private fun launchAddMode() {
+
+    }
+
 
     private fun setupView() = with(binding) {
         addTranslate.translateChipsRv.adapter = translateAdapter
@@ -101,6 +149,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 binding.inputTranslatedWord.englishWordContainer.error = null
             }
         }
+
         translatesError.observe(viewLifecycleOwner) {
             if (it == true) {
                 binding.addTranslate.englishWordContainer.error = "This field is required"
@@ -161,7 +210,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     langTo = "UA"
                 )
             }
-
         }
     }
 
@@ -223,9 +271,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     }
 
     companion object {
-        private const val MENU_HINT = "menu-hint"
-        private const val MENU_TRANSLATE = "menu-translate"
-
         @JvmStatic
         fun newInstanceAdd() =
             ModifyWordFragment().apply {
@@ -234,10 +279,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 }
             }
 
-        fun newInstanceEdit() =
+        fun newInstanceEdit(wordId: Long) =
             ModifyWordFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE, MODE_EDIT)
+                    putLong(WORD_ID, wordId)
                 }
             }
     }

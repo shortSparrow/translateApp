@@ -26,6 +26,8 @@ class ModifyWordViewModel @Inject constructor(
     private val getWordItemUseCase: GetWordItemUseCase,
 ) : ViewModel() {
 
+    private var _editableWordId: Long? = null
+
     private val _wordValueError = MutableLiveData<Boolean>()
     val wordValueError: LiveData<Boolean> = _wordValueError
 
@@ -48,8 +50,8 @@ class ModifyWordViewModel @Inject constructor(
     private val _isAdditionalFieldVisible = MutableLiveData(false)
     val isAdditionalFieldVisible: LiveData<Boolean> = _isAdditionalFieldVisible
 
+    var successLoadWordById: SuccessLoadWordById? = null
 
-    private val scope = CoroutineScope(Dispatchers.IO)
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
     fun setWordValueError(value: Boolean) {
@@ -76,6 +78,10 @@ class ModifyWordViewModel @Inject constructor(
         return isValid
     }
 
+    override fun onCleared() {
+        _editableWordId = null
+    }
+
     fun saveWord(
         value: String = "",
         description: String = "",
@@ -89,29 +95,38 @@ class ModifyWordViewModel @Inject constructor(
         }
 
         val word = ModifyWord(
+            id = _editableWordId ?: 0L,
             value = value,
-            translateWords = translates.value!!,
+            translates = translates.value!!,
             description = description,
             sound = null,
             langFrom = langFrom,
             langTo = langTo,
-            hintList = _hints.value,
+            hints = _hints.value,
         )
 
-        scope.launch {
+        viewModelScope.launch {
             modifyWordUseCase(word)
         }
     }
 
     fun getWordById(id: Long) {
-        scope.launch {
+        viewModelScope.launch {
             val word = getWordItemUseCase(id)
+            _translates.postValue(word.translates)
+            _hints.postValue(word.hints)
+
+            _editableWordId = word.id
+
+            successLoadWordById?.onLoaded(word)
             Log.d("ModifyWordViewModel", word.toString())
         }
     }
 
 
     fun addTranslate(translateValue: String) {
+        if (translateValue.trim().isEmpty()) return
+
         val newTranslateItem =
             _editableTranslate.value?.copy(value = translateValue, updatedAt = getTimestamp())
                 ?: TranslateWordItem(
@@ -149,36 +164,6 @@ class ModifyWordViewModel @Inject constructor(
         }
         _translates.value = _translates.value?.filter { it.id != translateId }
     }
-
-//    fun <T> modifyChip(
-//        item: T,
-//        liveData: MutableLiveData<List<T>>,
-//        editableChip: MutableLiveData<T?>
-//    ) {
-//
-//        val liveDataField = liveData as MutableLiveData<List<Chip>>
-//        val newItem = item as Chip
-//        val editable = editableChip as MutableLiveData<Chip>
-//
-//        if (liveDataField.value == null) {
-//            liveDataField.value = listOf(newItem)
-//        } else {
-//            val hintAlreadyExist = liveDataField.value?.find { it.id == newItem.id }
-//            if (hintAlreadyExist == null) {
-//                liveDataField.value = liveDataField.value?.plus(newItem)
-//            } else {
-//                liveDataField.value = liveDataField.value?.map {
-//                    if (it.id == newItem.id) {
-//                        return@map newItem
-//                    }
-//                    return@map it
-//                }
-//            }
-//
-//            editable.value = null
-//        }
-//    }
-
 
     // Валідацію робити на EditableItem
     fun addHint(hintValue: String) {
@@ -232,5 +217,11 @@ class ModifyWordViewModel @Inject constructor(
     fun toggleVisibleAdditionalField() {
         val oldValue = _isAdditionalFieldVisible.value!!
         _isAdditionalFieldVisible.value = !oldValue
+    }
+
+
+
+    interface SuccessLoadWordById {
+        fun onLoaded(word: ModifyWord)
     }
 }

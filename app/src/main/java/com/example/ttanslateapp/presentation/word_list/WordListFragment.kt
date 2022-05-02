@@ -2,6 +2,7 @@ package com.example.ttanslateapp.presentation.word_list
 
 import android.content.res.Resources.getSystem
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
@@ -29,6 +30,13 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         setAdapter()
         makeSearchBarClickable()
         viewModel.wordList.observe(viewLifecycleOwner) { wordListAdapter.submitList(it) }
+
+        wordListAdapter.onClickListener = object : WordListAdapter.OnClickListener {
+            override fun onRootClickListener(wordId: Long) {
+                launchEditWordScreen(wordId)
+            }
+        }
+
     }
 
     private fun makeSearchBarClickable() = with(binding) {
@@ -38,6 +46,15 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
     private fun launchAddWordScreen() {
         val fragment = ModifyWordFragment.newInstanceAdd()
+        launchModifyScreen(fragment)
+    }
+
+    private fun launchEditWordScreen(wordId: Long) {
+        val fragment = ModifyWordFragment.newInstanceEdit(wordId)
+        launchModifyScreen(fragment)
+    }
+
+    private fun launchModifyScreen(fragment: ModifyWordFragment) {
         val supportFragmentManager = requireActivity().supportFragmentManager
 
         supportFragmentManager
