@@ -6,7 +6,7 @@ import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
 
 interface TranslatedWordRepository {
-    fun getWordList(): LiveData<List<WordRV>>
+    suspend fun getWordList(): LiveData<List<WordRV>>
 
     suspend fun getWordById(id: Long): ModifyWord
 
@@ -14,5 +14,5 @@ interface TranslatedWordRepository {
 
     suspend fun modifyWord(translatedWordDb: TranslatedWordDb): Boolean
 
-    suspend fun findWord(query: String): LiveData<List<WordRV>>
+    suspend fun searchWordList(query: String): LiveData<List<WordRV>>
 }

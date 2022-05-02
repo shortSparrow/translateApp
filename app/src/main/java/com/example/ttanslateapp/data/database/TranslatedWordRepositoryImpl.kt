@@ -1,6 +1,5 @@
 package com.example.ttanslateapp.data.database
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.ttanslateapp.data.mapper.WordMapper
@@ -14,16 +13,13 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     private val translatedWordDao: TranslatedWordDao,
     private val mapper: WordMapper
 ) : TranslatedWordRepository {
-    override fun getWordList(): LiveData<List<WordRV>> {
-
-//        Log.d("wordItem", translatedWordDao.getWordList().value.toString())
+    override suspend fun getWordList(): LiveData<List<WordRV>> {
         return Transformations.map(translatedWordDao.getWordList()) {
             mapper.wordListDbToWordList(it)
         }
     }
 
     override suspend fun getWordById(id: Long): ModifyWord {
-//        Log.d("wordItem", translatedWordDao.getWordById(id).value)
         return mapper.wordDbToModifyWord(translatedWordDao.getWordById(id))
     }
 
@@ -41,8 +37,8 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return true
     }
 
-    override suspend fun findWord(query: String): LiveData<List<WordRV>> {
-        return Transformations.map(translatedWordDao.getWordListBySearch(query)) {
+    override suspend fun searchWordList(query: String): LiveData<List<WordRV>> {
+        return Transformations.map(translatedWordDao.searchWordList("%$query%")) {
             mapper.wordListDbToWordList(it)
         }
     }

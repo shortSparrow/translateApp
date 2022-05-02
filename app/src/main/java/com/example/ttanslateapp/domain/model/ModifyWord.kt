@@ -5,9 +5,6 @@ import com.example.ttanslateapp.domain.model.edit.HintItem
 import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import javax.inject.Inject
 
-// look embedded annotation & foreign key
-
-// TODO delete @Inject  if it possible Maybe just delete us useless class
 data class ModifyWord @Inject constructor(
     val id: Long = UNDEFINED_ID,
     val value: String,

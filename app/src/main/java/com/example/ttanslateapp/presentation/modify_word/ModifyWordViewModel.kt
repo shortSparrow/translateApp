@@ -113,6 +113,7 @@ class ModifyWordViewModel @Inject constructor(
     fun getWordById(id: Long) {
         viewModelScope.launch {
             val word = getWordItemUseCase(id)
+
             _translates.postValue(word.translates)
             _hints.postValue(word.hints)
 

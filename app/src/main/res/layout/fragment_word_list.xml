@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".presentation.word_list.WordListFragment">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_word"
             android:layout_width="match_parent"

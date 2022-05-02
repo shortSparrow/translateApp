@@ -3,8 +3,8 @@ package com.example.ttanslateapp.domain.use_case
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import javax.inject.Inject
 
-class GetWordListUseCase @Inject constructor(
+class GetSearchedWordListUseCase @Inject constructor(
     private val repository: TranslatedWordRepository
 ){
-    suspend operator fun invoke() = repository.getWordList()
+    suspend operator fun invoke(searchValue: String) = repository.searchWordList(searchValue)
 }

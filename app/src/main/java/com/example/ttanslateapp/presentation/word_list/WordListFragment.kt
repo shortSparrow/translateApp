@@ -1,9 +1,11 @@
 package com.example.ttanslateapp.presentation.word_list
 
-import android.content.res.Resources.getSystem
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.SearchView
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
@@ -27,6 +29,7 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
+        viewModel.loadWordList()
         setAdapter()
         makeSearchBarClickable()
         viewModel.wordList.observe(viewLifecycleOwner) { wordListAdapter.submitList(it) }
@@ -37,6 +40,21 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
             }
         }
 
+        binding.searchWord.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("CCC", query.toString())
+
+                return true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                Log.d("CCC", "SEARCH")
+                viewModel.searchDebounced(query.toString())
+                return true
+            }
+
+        })
     }
 
     private fun makeSearchBarClickable() = with(binding) {
