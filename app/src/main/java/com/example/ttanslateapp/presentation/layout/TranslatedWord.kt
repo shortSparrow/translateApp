@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.withStyledAttributes
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.databinding.AddTranslateBinding
+import com.example.ttanslateapp.databinding.InputTranslatedWordBinding
 import kotlin.properties.Delegates
 
 // TODO Додати AttributeSet, щоб мати кілька стейтів
@@ -15,18 +17,25 @@ class TranslatedWord @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private var state by Delegates.notNull<Int>()
-
-    init {
-        LayoutInflater.from(context).inflate(R.layout.input_translated_word, this, true)
-        context.withStyledAttributes(attrs, R.styleable.TranslatedWord, defStyleAttr, 0) {
-            state = getInt(R.styleable.TranslatedWord_state, 0)
-        }
-    }
-
-    fun test() {
-
-    }
+//    private var state by Delegates.notNull<Int>()
+//
+//    private var _binding: InputTranslatedWordBinding =
+//        InputTranslatedWordBinding.inflate(LayoutInflater.from(context), this, true)
+//    val binding get() = _binding
+//
+//    init {
+////        LayoutInflater.from(context).inflate(R.layout.input_translated_word, this, true)
+//
+//        addView(binding.root)
+//
+//        context.withStyledAttributes(attrs, R.styleable.TranslatedWord, defStyleAttr, 0) {
+//            state = getInt(R.styleable.TranslatedWord_state, 0)
+//        }
+//    }
+//
+//    fun test() {
+//
+//    }
 }
 
 

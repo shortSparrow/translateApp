@@ -13,9 +13,6 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TABLE_NAME")
     fun getWordList(): LiveData<List<TranslatedWordDb>>
 
-//    @Query("SELECT * FROM $TABLE_NAME WHERE value= :wordValue")
-//    fun searchWordList(wordValue: String): LiveData<List<TranslatedWordDb>>
-
     @Query("SELECT * FROM $TABLE_NAME WHERE value LIKE :wordValue")
     fun searchWordList(wordValue: String): LiveData<List<TranslatedWordDb>>
 

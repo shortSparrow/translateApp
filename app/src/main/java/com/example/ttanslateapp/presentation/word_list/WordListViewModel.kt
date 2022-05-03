@@ -19,7 +19,7 @@ class WordListViewModel @Inject constructor(
     val wordList = _wordList
     private var searchJob: Job? = null
 
-    // FIXME observeForever look strange, maybe delete
+    // FIXME observeForever looks strange, maybe delete
     fun loadWordList() {
         viewModelScope.launch {
             getWordListUseCase().observeForever {
@@ -27,7 +27,6 @@ class WordListViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun searchWord(value: String) {
         if (value.isEmpty()) {

@@ -50,7 +50,7 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
             isOpenedSet[word.id] = false
         }
 
-        // TODO: add show more button
+        // FIXME: add show more button
 
         with(holder.binding) {
             langFrom.text = word.langFrom

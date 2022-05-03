@@ -1,7 +1,6 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -15,9 +14,10 @@ import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
-import com.example.ttanslateapp.setOnTextChange
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
+import com.example.ttanslateapp.util.lazySimple
+import com.example.ttanslateapp.util.setOnTextChange
 
 
 private const val MODE_ADD = "mode-add"
@@ -36,6 +36,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private var wordId: Long? = null
     private val translateAdapter = TranslateAdapter()
     private val hintAdapter = HintAdapter()
+
+    private val modifyWordObservers by lazySimple {
+        ModifyWordObservers(viewModel,binding)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +61,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         prepareAdapters()
         setupView()
         setObservers()
-//        binding.inputTranslatedWord.test()
+
+        viewLifecycleOwner.lifecycle.addObserver(modifyWordObservers)
     }
 
     private fun launchRightMode() {
@@ -113,50 +119,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private fun setObservers() = with(viewModel) {
         translates.observe(viewLifecycleOwner) { translateAdapter.submitList(it) }
         hints.observe(viewLifecycleOwner) { hintAdapter.submitList(it) }
-
-        editableHint.observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.addHints.button.text = "Edit"
-                binding.addHints.cancelEditHint.visibility = View.VISIBLE
-            } else {
-                binding.addHints.button.text = "Add"
-                binding.addHints.cancelEditHint.visibility = View.INVISIBLE
-            }
-        }
-        editableTranslate.observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.addTranslate.button.text = "Edit"
-                binding.addTranslate.cancelEditTranslate.visibility = View.VISIBLE
-            } else {
-                binding.addTranslate.button.text = "Add"
-                binding.addTranslate.cancelEditTranslate.visibility = View.INVISIBLE
-            }
-        }
-
-        /* additional fields */
-        isAdditionalFieldVisible.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.addHints.root.visibility = View.VISIBLE
-            } else {
-                binding.addHints.root.visibility = View.GONE
-            }
-        }
-
-        wordValueError.observe(viewLifecycleOwner) {
-            if (it == true) {
-                binding.inputTranslatedWord.englishWordContainer.error = "This field is required"
-            } else {
-                binding.inputTranslatedWord.englishWordContainer.error = null
-            }
-        }
-
-        translatesError.observe(viewLifecycleOwner) {
-            if (it == true) {
-                binding.addTranslate.englishWordContainer.error = "This field is required"
-            } else {
-                binding.addTranslate.englishWordContainer.error = null
-            }
-        }
     }
 
     private fun prepareAdapters() {
@@ -187,7 +149,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
         addTranslate.cancelEditTranslate.setOnClickListener {
             viewModel.setEditableTranslate(null)
-            binding.addTranslate.translateInput.setText("")
+            addTranslate.translateInput.setText("")
         }
 
         addHints.button.setOnClickListener {
@@ -195,21 +157,19 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             addHints.inputHint.setText("")
         }
 
-        binding.addHints.cancelEditHint.setOnClickListener {
+        addHints.cancelEditHint.setOnClickListener {
             viewModel.setEditableHint(null)
-            binding.addHints.inputHint.setText("")
+            addHints.inputHint.setText("")
         }
 
         toggleAdditionalField.setOnClickListener { viewModel.toggleVisibleAdditionalField() }
         saveTranslatedWord.setOnClickListener {
-            with(binding) {
-                viewModel.saveWord(
-                    value = inputTranslatedWord.englishWordInput.text.toString(),
-                    description = translateWordDescription.descriptionInput.text.toString(),
-                    langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
-                    langTo = "UA"
-                )
-            }
+            viewModel.saveWord(
+                value = inputTranslatedWord.englishWordInput.text.toString(),
+                description = translateWordDescription.descriptionInput.text.toString(),
+                langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
+                langTo = "UA"
+            )
         }
     }
 
@@ -248,26 +208,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         popupMenu.show()
     }
 
-
-    //    @SuppressLint("ClickableViewAccessibility")
     private fun editTextScrollListener() {
-//        // scroll edit text inside scrollview
         ScrollEditTextInsideScrollView.allowScroll(binding.translateWordDescription.descriptionInput)
-
-
-//        binding.rootScrollView.setOnTouchListener { v, event ->
-//            binding.translateWordDescription.descriptionInput.parent.requestDisallowInterceptTouchEvent(false)
-//            false
-//        }
-//
-//        binding.translateWordDescription.descriptionInput.setOnTouchListener { v, event ->
-//            binding.translateWordDescription.descriptionInput.parent
-//                .requestDisallowInterceptTouchEvent(true)
-//            false
-//        }
-//        binding.translateWordDescription.descriptionInput.movementMethod = ScrollingMovementMethod()
-
-
     }
 
     companion object {
