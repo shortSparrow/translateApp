@@ -24,16 +24,12 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteWord(id: Long): Boolean {
-        translatedWordDao.deleteWord(id)
-
-        // FIXME Boolean -> true if success, and false is fail
-        return true
+        return translatedWordDao.deleteWord(id) != -1
     }
 
+    // FIXME Boolean -> add compare comparison with returned ID
     override suspend fun modifyWord(translatedWordDb: TranslatedWordDb): Boolean {
         translatedWordDao.modifyWord(translatedWordDb)
-
-        // FIXME Boolean -> true if success, and false is fail
         return true
     }
 

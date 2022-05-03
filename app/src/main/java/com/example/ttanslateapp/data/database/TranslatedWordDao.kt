@@ -20,8 +20,9 @@ interface TranslatedWordDao {
     suspend fun getWordById(wordId: Long): TranslatedWordDb
 
     @Query("DELETE FROM $TABLE_NAME WHERE id = :wordId")
-    suspend fun deleteWord(wordId: Long)
+    suspend fun deleteWord(wordId: Long): Int
 
+    // TODO: add returning type as Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyWord(translatedWord: TranslatedWordDb)
 }
