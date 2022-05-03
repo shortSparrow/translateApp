@@ -1,9 +1,6 @@
 package com.example.ttanslateapp.presentation.word_list
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import com.example.ttanslateapp.R
@@ -13,6 +10,7 @@ import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import com.example.ttanslateapp.util.getAppComponent
+import timber.log.Timber
 
 class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
@@ -43,17 +41,15 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         binding.searchWord.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("CCC", query.toString())
-
+                Timber.d(query.toString())
                 return true
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                Log.d("CCC", "SEARCH")
+                Timber.d("SEARCH")
                 viewModel.searchDebounced(query.toString())
                 return true
             }
-
         })
     }
 

@@ -28,7 +28,6 @@ class WordListViewModel @Inject constructor(
         }
     }
 
-
     private fun searchWord(value: String) {
         if (value.isEmpty()) {
             loadWordList()
@@ -40,7 +39,6 @@ class WordListViewModel @Inject constructor(
             }
         }
     }
-
 
     fun searchDebounced(searchText: String) {
         searchJob?.cancel()
