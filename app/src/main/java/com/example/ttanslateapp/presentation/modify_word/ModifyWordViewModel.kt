@@ -18,6 +18,7 @@ import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -53,6 +54,11 @@ class ModifyWordViewModel @Inject constructor(
     var successLoadWordById: SuccessLoadWordById? = null
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
+
+    init {
+        _translates.value = listOf()
+        _hints.value = listOf()
+    }
 
     fun setWordValueError(value: Boolean) {
         _wordValueError.value = value
@@ -113,18 +119,15 @@ class ModifyWordViewModel @Inject constructor(
     fun getWordById(id: Long) {
         viewModelScope.launch {
             val word = getWordItemUseCase(id)
-
             _translates.postValue(word.translates)
             _hints.postValue(word.hints)
-
             _editableWordId = word.id
-
             successLoadWordById?.onLoaded(word)
-            Log.d("ModifyWordViewModel", word.toString())
         }
     }
 
 
+    // FIXME зробити валідацію на TranslateWordItem
     fun addTranslate(translateValue: String) {
         if (translateValue.trim().isEmpty()) return
 
@@ -137,37 +140,16 @@ class ModifyWordViewModel @Inject constructor(
                     updatedAt = getTimestamp()
                 )
 
+        addChip<LiveData<List<TranslateWordItem>>>(_translates, newTranslateItem)
 
-        if (_translates.value == null) {
-            _translates.value = listOf(newTranslateItem)
-        } else {
-            val hintAlreadyExist = _translates.value?.find { it.id == newTranslateItem.id }
-
-            if (hintAlreadyExist == null) {
-                _translates.value = _translates.value?.plus(newTranslateItem)
-            } else {
-                _translates.value = _translates.value?.map {
-                    if (it.id == newTranslateItem.id) {
-                        return@map newTranslateItem
-                    }
-                    return@map it
-                }
-            }
-
-            // clear editableHint, because we finish edit
-            setEditableTranslate(null)
-        }
+        // clear editableHint, because we finish edit
+        setEditableTranslate(null)
     }
 
-    fun deleteTranslate(translateId: String) {
-        if (translateId == editableTranslate.value?.id) {
-            setEditableTranslate(null)
-        }
-        _translates.value = _translates.value?.filter { it.id != translateId }
-    }
-
-    // Валідацію робити на EditableItem
+    // FIXME зробити валідацію на EditableItem
     fun addHint(hintValue: String) {
+        if (hintValue.trim().isEmpty()) return
+
         val newHintItem =
             _editableHint.value?.copy(value = hintValue, updatedAt = getTimestamp()) ?: HintItem(
                 value = hintValue,
@@ -176,26 +158,34 @@ class ModifyWordViewModel @Inject constructor(
                 updatedAt = getTimestamp()
             )
 
-//        modifyChip(newHintItem, _hints, _editableHint)
-        if (_hints.value == null) {
-            _hints.value = listOf(newHintItem)
+        addChip<LiveData<List<HintItem>>>(_hints, newHintItem)
+
+        // clear editableHint, because we finish edit
+        setEditableHint(null)
+    }
+
+    private fun <T> addChip(chips: T, newChipItem:Chip) {
+        val chipList = (chips as MutableLiveData<List<Chip>>)
+        val hintAlreadyExist =
+            chipList.value?.find { it.id == newChipItem.id }
+
+        if (hintAlreadyExist == null) {
+            chipList.value = chipList.value?.plus(newChipItem)
         } else {
-            val hintAlreadyExist = _hints.value?.find { it.id == newHintItem.id }
-
-            if (hintAlreadyExist == null) {
-                _hints.value = _hints.value?.plus(newHintItem)
-            } else {
-                _hints.value = _hints.value?.map {
-                    if (it.id == newHintItem.id) {
-                        return@map newHintItem
-                    }
-                    return@map it
+            chipList.value = chipList.value?.map {
+                if (it.id == newChipItem.id) {
+                    return@map newChipItem
                 }
+                return@map it
             }
-
-            // clear editableHint, because we finish edit
-            setEditableHint(null)
         }
+    }
+
+    fun deleteTranslate(translateId: String) {
+        if (translateId == editableTranslate.value?.id) {
+            setEditableTranslate(null)
+        }
+        _translates.value = _translates.value?.filter { it.id != translateId }
     }
 
     fun deleteHint(hintId: String) {
@@ -219,8 +209,6 @@ class ModifyWordViewModel @Inject constructor(
         val oldValue = _isAdditionalFieldVisible.value!!
         _isAdditionalFieldVisible.value = !oldValue
     }
-
-
 
     interface SuccessLoadWordById {
         fun onLoaded(word: ModifyWord)

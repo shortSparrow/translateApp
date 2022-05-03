@@ -19,7 +19,9 @@ class WordListViewModel @Inject constructor(
     val wordList = _wordList
     private var searchJob: Job? = null
 
-    // FIXME observeForever looks strange, maybe delete
+    // FIXME Change LiveDate on Flow
+    // searchValue will be as liveDate, we observe it and when it has value launch getSearchedWordListUseCase else
+    //  getWordListUseCase. So we will have one _wordList which filled by two useCases
     fun loadWordList() {
         viewModelScope.launch {
             getWordListUseCase().observeForever {

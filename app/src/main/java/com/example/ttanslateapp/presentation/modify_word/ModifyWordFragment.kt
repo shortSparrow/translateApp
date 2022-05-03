@@ -58,7 +58,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         launchRightMode()
         setupClickListener()
         editTextScrollListener()
-        prepareAdapters()
+        setAdaptersClickListener()
         setupView()
         setObservers()
 
@@ -67,7 +67,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
     private fun launchRightMode() {
         when (mode) {
-            MODE_ADD -> launchAddMode()
             MODE_EDIT -> launchEditMode()
         }
     }
@@ -80,7 +79,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 with(binding) {
                     inputTranslatedWord.englishWordInput.setText(word.value);
                     translateWordDescription.descriptionInput.setText(word.description)
-
 
                     val langList = mutableMapOf<String, Int>()
 
@@ -95,25 +93,19 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     inputTranslatedWord.selectLanguageSpinner.isEnabled = false
                 }
             }
-
         }
-
-    }
-
-    private fun launchAddMode() {
-
     }
 
 
     private fun setupView() = with(binding) {
+        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.setWordValueError(false) }
+
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
         addTranslate.translateInput.setOnTextChange { viewModel.setTranslatesError(false) }
 
         addHints.hintChipsRv.adapter = hintAdapter
         addHints.hintChipsRv.itemAnimator = null
-
-        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.setWordValueError(false) }
     }
 
     private fun setObservers() = with(viewModel) {
@@ -121,7 +113,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         hints.observe(viewLifecycleOwner) { hintAdapter.submitList(it) }
     }
 
-    private fun prepareAdapters() {
+    private fun setAdaptersClickListener() {
         translateAdapter.clickListener =
             object : ModifyWordAdapter.OnItemClickListener<TranslateWordItem> {
                 override fun onItemClick(it: View, item: TranslateWordItem) {
