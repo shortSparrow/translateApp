@@ -41,7 +41,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         ModifyWordObservers(viewModel,binding)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

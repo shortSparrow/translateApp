@@ -7,6 +7,7 @@ import com.example.ttanslateapp.data.model.TranslatedWordDb
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
+import timber.log.Timber
 import javax.inject.Inject
 
 class TranslatedWordRepositoryImpl @Inject constructor(
@@ -24,13 +25,12 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteWord(id: Long): Boolean {
-        return translatedWordDao.deleteWord(id) != -1
+        return translatedWordDao.deleteWord(id) != WORD_IS_NOT_FOUND
     }
 
-    // FIXME Boolean -> add compare comparison with returned ID
     override suspend fun modifyWord(translatedWordDb: TranslatedWordDb): Boolean {
-        translatedWordDao.modifyWord(translatedWordDb)
-        return true
+        val modifiedWordId = translatedWordDao.modifyWord(translatedWordDb)
+        return modifiedWordId.toInt() != WORD_IS_NOT_FOUND
     }
 
     override suspend fun searchWordList(query: String): LiveData<List<WordRV>> {
@@ -38,4 +38,8 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             mapper.wordListDbToWordList(it)
         }
     }
+    companion object {
+        private const val WORD_IS_NOT_FOUND = -1
+    }
+
 }

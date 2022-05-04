@@ -1,22 +1,16 @@
 package com.example.ttanslateapp.presentation.modify_word
 
-import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ttanslateapp.data.model.Sound
-import com.example.ttanslateapp.domain.model.AnswerItem
 import com.example.ttanslateapp.domain.model.Chip
 import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.edit.HintItem
 import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
-import com.example.ttanslateapp.domain.use_case.GetWordListUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -47,9 +41,11 @@ class ModifyWordViewModel @Inject constructor(
     private val _editableTranslate = MutableLiveData<TranslateWordItem?>()
     val editableTranslate: LiveData<TranslateWordItem?> = _editableTranslate
 
-
     private val _isAdditionalFieldVisible = MutableLiveData(false)
     val isAdditionalFieldVisible: LiveData<Boolean> = _isAdditionalFieldVisible
+
+    private val _savedWordResult = MutableLiveData<Boolean>()
+    val savedWordResult: LiveData<Boolean> = _savedWordResult
 
     var successLoadWordById: SuccessLoadWordById? = null
 
@@ -112,17 +108,21 @@ class ModifyWordViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            modifyWordUseCase(word)
+            val value = modifyWordUseCase(word)
+            _savedWordResult.value = value
+            Timber.d("value $value")
         }
     }
 
     fun getWordById(id: Long) {
         viewModelScope.launch {
             val word = getWordItemUseCase(id)
+            Timber.d("word $word")
             _translates.postValue(word.translates)
             _hints.postValue(word.hints)
             _editableWordId = word.id
             successLoadWordById?.onLoaded(word)
+
         }
     }
 
@@ -164,7 +164,7 @@ class ModifyWordViewModel @Inject constructor(
         setEditableHint(null)
     }
 
-    private fun <T> addChip(chips: T, newChipItem:Chip) {
+    private fun <T> addChip(chips: T, newChipItem: Chip) {
         val chipList = (chips as MutableLiveData<List<Chip>>)
         val hintAlreadyExist =
             chipList.value?.find { it.id == newChipItem.id }

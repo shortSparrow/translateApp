@@ -24,5 +24,5 @@ interface TranslatedWordDao {
 
     // TODO: add returning type as Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun modifyWord(translatedWord: TranslatedWordDb)
+    suspend fun modifyWord(translatedWord: TranslatedWordDb): Long
 }

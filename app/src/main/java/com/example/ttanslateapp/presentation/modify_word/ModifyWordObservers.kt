@@ -1,8 +1,10 @@
 package com.example.ttanslateapp.presentation.modify_word
 
+import android.widget.Toast
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
+import timber.log.Timber
 
 class ModifyWordObservers(
     val viewModel: ModifyWordViewModel,
@@ -53,6 +55,15 @@ class ModifyWordObservers(
             } else {
                 binding.addTranslate.englishWordContainer.error = null
             }
+        }
+
+        savedWordResult.observe(owner) {
+            val message = if (it == true) {
+                "Success"
+            } else {
+                "fail"
+            }
+            Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
         }
     }
 }

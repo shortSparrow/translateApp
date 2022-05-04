@@ -12,21 +12,5 @@ class ModifyWordUseCase @Inject constructor(
     private val repository: TranslatedWordRepository,
     private val mapper: WordMapper
 ) {
-    suspend operator fun invoke(word: ModifyWord) {
-//        val validateResults = ValidateTranslatedWord.validateInput()
-
-//        val newWord = TranslatedWordDb(
-//            id = 100,
-//            value = word,
-//            translations = listOf(TranslateWordItem(value = word, id = "100", createdAt = System.currentTimeMillis(), updatedAt =System.currentTimeMillis())),
-//            description = description,
-//            sound = null,
-//            langFrom = "UA",
-//            langTo = "EN",
-//            hintList = listOf(),
-//            answerList = listOf()
-//        )
-
-        repository.modifyWord(mapper.modifyWordToDbWord(word))
-    }
+    suspend operator fun invoke(word: ModifyWord) =  repository.modifyWord(mapper.modifyWordToDbWord(word))
 }
