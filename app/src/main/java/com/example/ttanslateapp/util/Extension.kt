@@ -3,6 +3,7 @@ package com.example.ttanslateapp.util
 import android.content.res.Resources
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.ttanslateapp.TranslateApp
 import com.example.ttanslateapp.di.ApplicationComponent
@@ -26,7 +27,5 @@ internal inline fun TextInputEditText.setOnTextChange(crossinline block: () -> U
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = block()
     })
 
+fun View.t(resourceId: Int) = this.context.getString(resourceId)
 
-
-val Int.toPx get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-val Int.toDp get() = (this / Resources.getSystem().displayMetrics.density).toInt()

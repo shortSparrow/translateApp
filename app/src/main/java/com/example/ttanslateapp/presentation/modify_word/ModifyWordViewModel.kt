@@ -1,6 +1,5 @@
 package com.example.ttanslateapp.presentation.modify_word
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

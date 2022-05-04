@@ -1,65 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/cancel_edit_hint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel_edit"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/input_hint_container"
-        app:layout_constraintEnd_toEndOf="@+id/input_hint_container" />
+    <data>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_hint_container"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/gutter"
-        android:layout_marginTop="@dimen/gutter"
-        android:hint="@string/input_hint"
-        app:layout_constraintEnd_toStartOf="@+id/button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearance="?attr/shapeAppearanceSmallComponent">
+        <variable
+            name="editableHint"
+            type="com.example.ttanslateapp.domain.model.edit.HintItem" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_hint"
+        <variable
+            name="additionalFieldVisibility"
+            type="Boolean" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:additionalFieldVisibility="@{additionalFieldVisibility}">
+
+        <TextView
+            android:id="@+id/cancel_edit_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_edit"
+            app:cancelEditHint="@{editableHint}"
+            app:layout_constraintBottom_toTopOf="@+id/input_hint_container"
+            app:layout_constraintEnd_toEndOf="@+id/input_hint_container" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_hint_container"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gutter"
+            android:layout_marginRight="@dimen/gutter"
+            android:hint="@string/input_hint"
+            app:layout_constraintEnd_toStartOf="@+id/button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="?attr/shapeAppearanceSmallComponent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="@integer/input_max_lines"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:addHintButton="@{editableHint}"
+            app:layout_constraintBottom_toBottomOf="@+id/input_hint_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/input_hint_container" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hint_chips_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="@integer/input_max_lines"
+            android:orientation="horizontal"
+            app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/input_hint_container"
+            tools:listitem="@layout/hint_chip" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="add"
-        app:layout_constraintBottom_toBottomOf="@+id/input_hint_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/input_hint_container" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hint_chips_rv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_hint_container"
-        tools:listitem="@layout/hint_chip"
-
-        />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

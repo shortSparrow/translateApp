@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.domain.model.ModifyWord
@@ -26,7 +27,6 @@ private const val MODE = "mode"
 private const val WORD_ID = "word_id"
 
 class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
-
     override val bindingInflater: BindingInflater<FragmentModifyWordBinding>
         get() = FragmentModifyWordBinding::inflate
 
@@ -37,10 +37,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private val translateAdapter = TranslateAdapter()
     private val hintAdapter = HintAdapter()
 
-    private val modifyWordObservers by lazySimple {
-        ModifyWordObservers(viewModel,binding)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -49,10 +45,12 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
+
+        binding.model = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         launchRightMode()
         setupClickListener()
@@ -60,8 +58,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         setAdaptersClickListener()
         setupView()
         setObservers()
-
-        viewLifecycleOwner.lifecycle.addObserver(modifyWordObservers)
     }
 
     private fun launchRightMode() {
@@ -110,6 +106,15 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private fun setObservers() = with(viewModel) {
         translates.observe(viewLifecycleOwner) { translateAdapter.submitList(it) }
         hints.observe(viewLifecycleOwner) { hintAdapter.submitList(it) }
+        savedWordResult.observe(viewLifecycleOwner) {
+            val message = if (it == true) {
+                requireActivity().supportFragmentManager.popBackStack()
+                getString(R.string.success_save_word)
+            } else {
+                getString(R.string.error_happened)
+            }
+            Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setAdaptersClickListener() {
@@ -170,7 +175,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    binding.addHints.inputHint.setText(hintChip.value)
+                    with(binding.addHints.inputHint) {
+                        setText(hintChip.value)
+                        requestFocus()
+                        setSelection(length())
+                    }
                     viewModel.setEditableHint(hintChip)
                 }
             }
@@ -185,7 +194,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    binding.addTranslate.translateInput.setText(translateChip.value)
+                    with(binding.addTranslate.translateInput) {
+                        setText(translateChip.value)
+                        requestFocus()
+                        setSelection(length())
+                    }
                     viewModel.setEditableTranslate(translateChip)
                 }
 
