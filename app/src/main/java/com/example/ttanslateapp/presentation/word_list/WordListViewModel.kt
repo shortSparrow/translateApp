@@ -8,7 +8,9 @@ import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
 import com.example.ttanslateapp.domain.use_case.GetWordListUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class WordListViewModel @Inject constructor(
@@ -19,27 +21,23 @@ class WordListViewModel @Inject constructor(
     val wordList = _wordList
     private var searchJob: Job? = null
 
-    // FIXME Change LiveDate on Flow
-    // searchValue will be as liveDate, we observe it and when it has value launch getSearchedWordListUseCase else
-    //  getWordListUseCase. So we will have one _wordList which filled by two useCases
     fun loadWordList() {
         viewModelScope.launch {
-            getWordListUseCase().observeForever {
-                wordList.value = it
-            }
+            getWordListUseCase()
+                .collect {
+                    _wordList.value = it
+                }
         }
     }
 
-    private fun searchWord(value: String) {
-        if (value.isEmpty()) {
+    private suspend fun searchWord(searchValue: String) {
+        if (searchValue.isEmpty()) {
             loadWordList()
         }
-
-        viewModelScope.launch {
-            getSearchedWordListUseCase(value).observeForever {
+        getSearchedWordListUseCase(searchValue)
+            .collect {
                 wordList.value = it
             }
-        }
     }
 
     fun searchDebounced(searchText: String) {
