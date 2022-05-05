@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ttanslateapp.domain.model.Chip
+import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 
 abstract class ModifyWordAdapter<
         T : Chip,

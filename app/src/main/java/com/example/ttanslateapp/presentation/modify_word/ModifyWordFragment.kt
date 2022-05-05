@@ -8,8 +8,8 @@ import android.widget.Toast
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.edit.HintItem
-import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
@@ -17,7 +17,6 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapt
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
-import com.example.ttanslateapp.util.lazySimple
 import com.example.ttanslateapp.util.setOnTextChange
 
 
@@ -73,6 +72,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             override fun onLoaded(word: ModifyWord) {
                 with(binding) {
                     inputTranslatedWord.englishWordInput.setText(word.value);
+                    inputTranslatedWord.englishTranscriptionInput.setText(word.transcription)
                     translateWordDescription.descriptionInput.setText(word.description)
 
                     val langList = mutableMapOf<String, Int>()
@@ -109,7 +109,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         savedWordResult.observe(viewLifecycleOwner) {
             val message = if (it == true) {
                 requireActivity().supportFragmentManager.popBackStack()
-                getString(R.string.success_save_word)
+                getString(R.string.modify_word_success_save_word)
             } else {
                 getString(R.string.error_happened)
             }
@@ -163,6 +163,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             viewModel.saveWord(
                 value = inputTranslatedWord.englishWordInput.text.toString(),
                 description = translateWordDescription.descriptionInput.text.toString(),
+                transcription = inputTranslatedWord.englishTranscriptionInput.text.toString(),
                 langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
                 langTo = "UA"
             )

@@ -1,13 +1,14 @@
 <resources>
     <!--Modify word fragment -->
-    <string name="select_translated_language">Select translated language</string>
-    <string name="english_word_hint">English word</string>
-    <string name="input_translate">Input translate</string>
-    <string name="description">description:</string>
-    <string name="input_hint">Input hint</string>
-    <string name="cancel_edit">Cancel edit</string>
-    <string name="show_more">Розкрити</string>
-    <string name="success_save_word">Word saved successfully</string>
+    <string name="modify_word_select_translated_language">Select translated language</string>
+    <string name="modify_word_english_word_hint">English word</string>
+    <string name="modify_word_input_translate">Input translate</string>
+    <string name="modify_word_description">description:</string>
+    <string name="modify_word_transcription">word transcription</string>
+    <string name="modify_word_input_hint">Input hint</string>
+    <string name="modify_word_cancel_edit">Cancel edit</string>
+    <string name="modify_word_show_more">Розкрити</string>
+    <string name="modify_word_success_save_word">Word saved successfully</string>
 
     <!--Validation -->
     <string name="validation_required_field">This field is required</string>

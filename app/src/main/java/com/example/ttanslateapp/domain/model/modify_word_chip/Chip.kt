@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain.model
+package com.example.ttanslateapp.domain.model.modify_word_chip
 
 interface Chip {
     val id: String

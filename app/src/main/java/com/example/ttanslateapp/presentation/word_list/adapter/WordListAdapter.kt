@@ -30,6 +30,7 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
             langFrom.text = word.langFrom
             englishWord.text = word.value
             langTo.text = word.langTo
+            transcription.text = word.transcription
             if (word.description.isNotEmpty()) {
                 descriptionValue.text = word.description
             }

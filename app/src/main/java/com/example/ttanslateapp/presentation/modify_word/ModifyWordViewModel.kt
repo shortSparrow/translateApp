@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ttanslateapp.domain.model.Chip
+import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.edit.HintItem
-import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import kotlinx.coroutines.launch
@@ -86,6 +86,7 @@ class ModifyWordViewModel @Inject constructor(
     fun saveWord(
         value: String = "",
         description: String = "",
+        transcription: String = "",
         langFrom: String = "",
         langTo: String = ""
     ) {
@@ -104,6 +105,7 @@ class ModifyWordViewModel @Inject constructor(
             langFrom = langFrom,
             langTo = langTo,
             hints = _hints.value,
+            transcription = transcription
         )
 
         viewModelScope.launch {

@@ -18,6 +18,7 @@ class WordMapper @Inject constructor() {
         sound = wordDb.sound,
         langFrom = wordDb.langFrom,
         langTo = wordDb.langTo,
+        transcription = wordDb.transcription
     )
 
     fun wordDbToModifyWord(wordDb: TranslatedWordDb): ModifyWord = ModifyWord(
@@ -28,7 +29,8 @@ class WordMapper @Inject constructor() {
         sound = wordDb.sound,
         langFrom = wordDb.langFrom,
         langTo = wordDb.langTo,
-        hints = wordDb.hints
+        hints = wordDb.hints,
+        transcription = wordDb.transcription,
     )
 
     fun modifyWordToDbWord(modifyWord: ModifyWord) = TranslatedWordDb(
@@ -40,5 +42,6 @@ class WordMapper @Inject constructor() {
         langFrom = modifyWord.langFrom,
         langTo = modifyWord.langTo,
         hints = modifyWord.hints,
+        transcription = modifyWord.transcription
     )
 }

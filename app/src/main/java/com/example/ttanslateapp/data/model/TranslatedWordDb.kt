@@ -4,9 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.example.ttanslateapp.domain.model.AnswerItem
-import com.example.ttanslateapp.domain.model.edit.HintItem
-import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.util.TABLE_NAME
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -41,23 +40,6 @@ class HintConverters {
     }
 }
 
-
-class AnswerConverters {
-    @TypeConverter
-    fun fromList(answers: List<AnswerItem>?): String {
-        val gson = Gson()
-        return gson.toJson(answers)
-    }
-
-    @TypeConverter
-    fun fromString(answers: String): List<AnswerItem>? {
-        val listType: Type = object : TypeToken<List<AnswerItem>?>() {}.type
-        return Gson().fromJson(answers, listType)
-    }
-}
-
-
-
 class SoundConvertor {
     @TypeConverter
     fun fromSound(sound: Sound?) = sound?.path //  if value exist set value, else null
@@ -71,7 +53,7 @@ class SoundConvertor {
 }
 
 @Entity(tableName = TABLE_NAME)
-@TypeConverters(SoundConvertor::class, TranslationConverters::class, HintConverters::class, AnswerConverters::class)
+@TypeConverters(SoundConvertor::class, TranslationConverters::class, HintConverters::class)
 data class TranslatedWordDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
@@ -82,4 +64,5 @@ data class TranslatedWordDb(
     val langFrom: String,
     val langTo: String,
     val hints: List<HintItem>?,
+    val transcription: String,
 )

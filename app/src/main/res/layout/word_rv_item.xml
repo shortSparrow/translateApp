@@ -85,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:text="@string/show_more"
+                android:text="@string/modify_word_show_more"
                 android:textAlignment="textEnd"
                 android:textColor="@color/purple_700"
                 android:translationZ="1dp"
@@ -105,7 +105,7 @@
                     android:id="@+id/description_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/description"
+                    android:text="@string/modify_word_description"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

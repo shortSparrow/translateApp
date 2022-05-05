@@ -3,7 +3,7 @@ package com.example.ttanslateapp.presentation.modify_word.adapter.translate
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.ttanslateapp.databinding.TranslateChipBinding
-import com.example.ttanslateapp.domain.model.edit.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 
 private typealias ClickListener = ModifyWordAdapter.OnItemClickListener<TranslateWordItem>

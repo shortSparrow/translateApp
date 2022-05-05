@@ -3,7 +3,7 @@ package com.example.ttanslateapp.presentation.modify_word.adapter.hints
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.ttanslateapp.databinding.HintChipBinding
-import com.example.ttanslateapp.domain.model.edit.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 
 private typealias ClickListener = ModifyWordAdapter.OnItemMultiClickListener<HintItem>

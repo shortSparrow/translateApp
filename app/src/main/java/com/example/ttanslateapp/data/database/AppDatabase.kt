@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.ttanslateapp.data.model.TranslatedWordDb
 
 
-@Database(entities = [TranslatedWordDb::class], version = 3, exportSchema = false)
+@Database(entities = [TranslatedWordDb::class], version = 4, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun translatedWordDao(): TranslatedWordDao
 

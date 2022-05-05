@@ -1,7 +1,5 @@
-package com.example.ttanslateapp.domain.model.edit
+package com.example.ttanslateapp.domain.model.modify_word_chip
 
-import com.example.ttanslateapp.domain.model.Chip
-import java.util.*
 import javax.inject.Inject
 
 data class TranslateWordItem @Inject constructor(
@@ -9,4 +7,4 @@ data class TranslateWordItem @Inject constructor(
     override val createdAt: Long,
     override val updatedAt: Long,
     override val value: String,
-):Chip
+): Chip

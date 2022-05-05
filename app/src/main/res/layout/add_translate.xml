@@ -5,11 +5,13 @@
 
     <data>
 
-        <variable name="validationError" type="Boolean"/>
+        <variable
+            name="validationError"
+            type="Boolean" />
 
         <variable
             name="editableTranslate"
-            type="com.example.ttanslateapp.domain.model.edit.TranslateWordItem" />
+            type="com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +22,7 @@
             android:id="@+id/cancel_edit_translate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cancel_edit"
+            android:text="@string/modify_word_cancel_edit"
             app:cancelEditTranslate="@{editableTranslate}"
             app:layout_constraintBottom_toTopOf="@+id/english_word_container"
             app:layout_constraintEnd_toEndOf="@+id/english_word_container" />
@@ -28,13 +30,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/english_word_container"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            addTranslateError="@{validationError}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gutter"
             android:layout_marginRight="@dimen/gutter"
-            android:hint="@string/input_translate"
+            android:hint="@string/modify_word_input_translate"
             app:errorEnabled="true"
-            addTranslateError="@{validationError}"
             app:layout_constraintEnd_toStartOf="@+id/button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,7 +61,8 @@
             app:addTranslateButton="@{editableTranslate}"
             app:layout_constraintBottom_toBottomOf="@+id/english_word_container"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/english_word_container" />
+            app:layout_constraintTop_toTopOf="@+id/english_word_container"
+            tools:text="@string/add" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/translate_chips_rv"
