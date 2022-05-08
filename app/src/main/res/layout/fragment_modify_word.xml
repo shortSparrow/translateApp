@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/gutter">
 
+            <!--                        <include layout="@layout/view_record_audio"/>-->
             <include
                 android:id="@+id/input_translated_word"
                 layout="@layout/input_translated_word"
@@ -54,15 +55,36 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_translate" />
 
+            <ImageView
+                android:id="@+id/record_english_pronunciation"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/gutter"
+                android:src="@drawable/mic_active"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/translate_word_description" />
+
+            <TextView
+                android:id="@+id/is_record_added"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/audio_has_been_added"
+                android:textColor="#59B6A4"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/record_english_pronunciation" />
+
             <TextView
                 android:id="@+id/toggleAdditionalField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gutter"
+                android:layout_marginTop="@dimen/medium_gutter"
                 android:text="Additional"
                 android:textColor="#2196F3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/translate_word_description" />
+                app:layout_constraintTop_toBottomOf="@+id/record_english_pronunciation" />
 
             <include
                 android:id="@+id/add_hints"
@@ -74,6 +96,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toggleAdditionalField" />
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/save_translated_word"

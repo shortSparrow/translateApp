@@ -1,10 +1,13 @@
 package com.example.ttanslateapp.presentation.modify_word
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.domain.model.ModifyWord
@@ -12,18 +15,25 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
+import com.example.ttanslateapp.presentation.core.RecordAudioBottomSheet
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
+import timber.log.Timber
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 private const val MODE_ADD = "mode-add"
 private const val MODE_EDIT = "mode-edit"
 private const val MODE = "mode"
 private const val WORD_ID = "word_id"
+private const val RECORD_AUDIO_RC = 1
+private const val STORAGE_RC = 2
 
 class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     override val bindingInflater: BindingInflater<FragmentModifyWordBinding>
@@ -75,6 +85,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     inputTranslatedWord.englishTranscriptionInput.setText(word.transcription)
                     translateWordDescription.descriptionInput.setText(word.description)
 
+                    if (word.sound != null) {
+                        recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
+                        isRecordAdded.visibility = View.VISIBLE
+                    }
+
                     val langList = mutableMapOf<String, Int>()
 
                     val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
@@ -91,7 +106,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         }
     }
 
-
     private fun setupView() = with(binding) {
         inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.setWordValueError(false) }
 
@@ -101,6 +115,80 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
         addHints.hintChipsRv.adapter = hintAdapter
         addHints.hintChipsRv.itemAnimator = null
+
+        recordEnglishPronunciation.setOnClickListener {
+            requestRecordPermission()
+        }
+    }
+
+    private fun requestRecordPermission() {
+        val recordPermissionGranted = ActivityCompat.checkSelfPermission(
+            requireContext(),
+            android.Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+
+        val storagePermissionGranted = ActivityCompat.checkSelfPermission(
+            requireContext(),
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+
+
+        if (recordPermissionGranted && storagePermissionGranted) {
+            openRecordBottomSheet()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    android.Manifest.permission.RECORD_AUDIO,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                RECORD_AUDIO_RC
+            )
+        }
+    }
+
+    private fun openRecordBottomSheet() {
+        val recordSheetDialog =
+            RecordAudioBottomSheet(modifiedPath = viewModel.soundPath, "Test Word")
+        recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
+        recordSheetDialog.callbackListener = object : RecordAudioBottomSheet.CallbackListener {
+            override fun saveAudio(path: String?) {
+                if (path != null) {
+                    Toast.makeText(requireContext(), "audio added successfully", Toast.LENGTH_SHORT)
+                        .show()
+                    viewModel.soundPath = path
+                    binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
+                    binding.isRecordAdded.visibility = View.VISIBLE
+                } else {
+                    viewModel.soundPath = path
+                    binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
+                    binding.isRecordAdded.visibility = View.INVISIBLE
+                }
+
+            }
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == RECORD_AUDIO_RC && grantResults.isNotEmpty()) {
+            val permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+            if (permissionGranted) {
+                openRecordBottomSheet()
+            } else {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                        requireActivity(),
+                        android.Manifest.permission.RECORD_AUDIO
+                    )
+                ) {
+                    Toast.makeText(context, "enable permission", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun setObservers() = with(viewModel) {
@@ -234,5 +322,4 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 }
             }
     }
-
 }

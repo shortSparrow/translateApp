@@ -19,6 +19,7 @@
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="error_happened">Error happened</string>
+    <string name="audio_has_been_added">audio has been added</string>
 
     <string-array name="translate_from_language">
         <item>UA</item>

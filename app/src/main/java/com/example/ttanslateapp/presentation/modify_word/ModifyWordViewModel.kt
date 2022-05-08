@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ttanslateapp.data.model.Sound
 import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
@@ -45,6 +46,8 @@ class ModifyWordViewModel @Inject constructor(
 
     private val _savedWordResult = MutableLiveData<Boolean>()
     val savedWordResult: LiveData<Boolean> = _savedWordResult
+
+    var soundPath: String? = null
 
     var successLoadWordById: SuccessLoadWordById? = null
 
@@ -88,7 +91,7 @@ class ModifyWordViewModel @Inject constructor(
         description: String = "",
         transcription: String = "",
         langFrom: String = "",
-        langTo: String = ""
+        langTo: String = "",
     ) {
         val isValid = validateWord(value = value)
 
@@ -96,12 +99,18 @@ class ModifyWordViewModel @Inject constructor(
             return
         }
 
+
+        val sound = object : Sound {
+            override val path: String
+                get() = soundPath ?: ""
+        }
+
         val word = ModifyWord(
             id = _editableWordId ?: 0L,
             value = value,
             translates = translates.value!!,
             description = description,
-            sound = null,
+            sound = sound,
             langFrom = langFrom,
             langTo = langTo,
             hints = _hints.value,
@@ -109,21 +118,18 @@ class ModifyWordViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            val value = modifyWordUseCase(word)
-            _savedWordResult.value = value
-            Timber.d("value $value")
+            _savedWordResult.value = modifyWordUseCase(word)
         }
     }
 
     fun getWordById(id: Long) {
         viewModelScope.launch {
             val word = getWordItemUseCase(id)
-            Timber.d("word $word")
             _translates.postValue(word.translates)
             _hints.postValue(word.hints)
             _editableWordId = word.id
             successLoadWordById?.onLoaded(word)
-
+            soundPath = word.sound?.path
         }
     }
 
