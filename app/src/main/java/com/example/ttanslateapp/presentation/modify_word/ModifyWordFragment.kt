@@ -2,12 +2,13 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.domain.model.ModifyWord
@@ -23,36 +24,30 @@ import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
 import timber.log.Timber
-import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 
-private const val MODE_ADD = "mode-add"
-private const val MODE_EDIT = "mode-edit"
-private const val MODE = "mode"
-private const val WORD_ID = "word_id"
 private const val RECORD_AUDIO_RC = 1
 private const val STORAGE_RC = 2
+
+enum class ModifyWordModes {
+    MODE_ADD, MODE_EDIT
+}
 
 class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     override val bindingInflater: BindingInflater<FragmentModifyWordBinding>
         get() = FragmentModifyWordBinding::inflate
 
-    private val viewModel by viewModels { get(ModifyWordViewModel::class.java) }
+    private val args by navArgs<ModifyWordFragmentArgs>()
 
-    private var mode: String? = null
-    private var wordId: Long? = null
+    private val viewModel by viewModels {
+
+        get(ModifyWordViewModel::class.java)
+    }
+
     private val translateAdapter = TranslateAdapter()
     private val hintAdapter = HintAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            mode = it.getString(MODE)
-            wordId = it.getLong(WORD_ID)
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,13 +65,18 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     }
 
     private fun launchRightMode() {
-        when (mode) {
-            MODE_EDIT -> launchEditMode()
+        when (args.mode) {
+            ModifyWordModes.MODE_EDIT -> launchEditMode()
         }
     }
 
     private fun launchEditMode() {
-        val id = wordId ?: error("wordId is null")
+        val id = if (args.wordId == -1L) {
+            error("wordId is null")
+        } else {
+            args.wordId
+        }
+
         viewModel.getWordById(id)
         viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
             override fun onLoaded(word: ModifyWord) {
@@ -196,7 +196,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         hints.observe(viewLifecycleOwner) { hintAdapter.submitList(it) }
         savedWordResult.observe(viewLifecycleOwner) {
             val message = if (it == true) {
-                requireActivity().supportFragmentManager.popBackStack()
+                findNavController().popBackStack()
                 getString(R.string.modify_word_success_save_word)
             } else {
                 getString(R.string.error_happened)
@@ -305,21 +305,4 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         ScrollEditTextInsideScrollView.allowScroll(binding.translateWordDescription.descriptionInput)
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstanceAdd() =
-            ModifyWordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(MODE, MODE_ADD)
-                }
-            }
-
-        fun newInstanceEdit(wordId: Long) =
-            ModifyWordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(MODE, MODE_EDIT)
-                    putLong(WORD_ID, wordId)
-                }
-            }
-    }
 }

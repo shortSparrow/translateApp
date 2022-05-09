@@ -16,11 +16,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            launchModifyFragment()
-        }
-
-
 //        // clear work manger by tag
 //        WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DailyWorker.TAG)
 
@@ -36,17 +31,5 @@ class MainActivity : AppCompatActivity() {
 //                dailyWorkRequest
 //            )
 
-
     }
-
-
-    private fun launchModifyFragment() {
-        val fragment = WordListFragment.newInstance()
-        supportFragmentManager.popBackStack()
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.root_container, fragment)
-            .commit()
-    }
-
 }

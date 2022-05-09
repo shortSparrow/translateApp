@@ -1,14 +1,10 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.children
 import androidx.recyclerview.widget.ListAdapter
 import com.example.ttanslateapp.databinding.WordRvItemBinding
 import com.example.ttanslateapp.domain.model.WordRV
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
-import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import timber.log.Timber
 import kotlin.collections.set

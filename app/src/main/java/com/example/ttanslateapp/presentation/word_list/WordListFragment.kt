@@ -3,11 +3,13 @@ package com.example.ttanslateapp.presentation.word_list
 import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
+import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
+import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import com.example.ttanslateapp.util.getAppComponent
 import timber.log.Timber
@@ -59,23 +61,18 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     }
 
     private fun launchAddWordScreen() {
-        val fragment = ModifyWordFragment.newInstanceAdd()
-        launchModifyScreen(fragment)
+        findNavController().navigate(
+                WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(ModifyWordModes.MODE_ADD)
+            )
     }
 
     private fun launchEditWordScreen(wordId: Long) {
-        val fragment = ModifyWordFragment.newInstanceEdit(wordId)
-        launchModifyScreen(fragment)
-    }
-
-    private fun launchModifyScreen(fragment: ModifyWordFragment) {
-        val supportFragmentManager = requireActivity().supportFragmentManager
-
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.root_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        findNavController().navigate(
+            WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
+                mode=ModifyWordModes.MODE_EDIT,
+                wordId=wordId
+            )
+        )
     }
 
     private fun setAdapter() {
@@ -83,8 +80,4 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
             .apply { binding.wordListRv.adapter = this }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = WordListFragment()
-    }
 }
