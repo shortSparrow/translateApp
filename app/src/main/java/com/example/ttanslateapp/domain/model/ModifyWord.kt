@@ -13,7 +13,7 @@ data class ModifyWord @Inject constructor(
     val sound: Sound?, // english sound
     val langFrom: String,
     val langTo: String,
-    val hints: List<HintItem>?,
+    val hints: List<HintItem>,
     val transcription: String
 ) {
     companion object {

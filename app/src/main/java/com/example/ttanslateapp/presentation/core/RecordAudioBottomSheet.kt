@@ -33,7 +33,7 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
         val date = Date()
         "Recording_" + formatter.format(date) + ".3gp"
     }
-    private val dirName = "/storage/emulated/0/Android/data/com.example.ttanslateapp/files"
+    private val dirName = "/storage/emulated/0/Android/data/com.example.ttanslateapp/files" // FIXME add correct path
     private val path = modifiedPath ?: "$dirName/$fileName"
 
     private var recorder: MediaRecorder? = null

@@ -5,14 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.data.model.Sound
-import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 import com.example.ttanslateapp.domain.model.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -99,7 +98,7 @@ class ModifyWordViewModel @Inject constructor(
             return
         }
 
-
+        // FIXME shadow strange behavior on word list rv item. If set sound as null - all are great
         val sound = object : Sound {
             override val path: String
                 get() = soundPath ?: ""
@@ -113,12 +112,14 @@ class ModifyWordViewModel @Inject constructor(
             sound = sound,
             langFrom = langFrom,
             langTo = langTo,
-            hints = _hints.value,
+            hints = _hints.value!!, // FIXME why it is nullable?
             transcription = transcription
         )
 
         viewModelScope.launch {
-            _savedWordResult.value = modifyWordUseCase(word)
+            modifyWordUseCase(word).apply {
+                _savedWordResult.value = this
+            }
         }
     }
 

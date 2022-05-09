@@ -23,8 +23,6 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.translate.Trans
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
-import timber.log.Timber
-import java.util.*
 
 
 private const val RECORD_AUDIO_RC = 1
@@ -81,7 +79,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
             override fun onLoaded(word: ModifyWord) {
                 with(binding) {
-                    inputTranslatedWord.englishWordInput.setText(word.value);
+                    inputTranslatedWord.englishWordInput.setText(word.value)
                     inputTranslatedWord.englishTranscriptionInput.setText(word.transcription)
                     translateWordDescription.descriptionInput.setText(word.description)
 
