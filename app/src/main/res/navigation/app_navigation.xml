@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@id/wordListFragment">
+    app:startDestination="@id/examKnowledgeWordsFragment">
 
     <fragment
         android:label="WordListFragment"
@@ -27,5 +27,14 @@
             android:name="wordId"
             app:argType="long"
             android:defaultValue="-1L" />
+    </fragment>
+    <fragment
+        android:id="@+id/examKnowledgeWordsFragment"
+        tools:layout="@layout/fragment_exam_knowledge_words"
+        android:name="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment"
+        android:label="ExamKnowledgeWordsFragment" >
+        <action
+            android:id="@+id/action_examKnowledgeWordsFragment_to_wordListFragment"
+            app:destination="@id/wordListFragment" />
     </fragment>
 </navigation>

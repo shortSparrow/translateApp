@@ -29,7 +29,7 @@ class WordMapper @Inject constructor() {
         sound = wordDb.sound,
         langFrom = wordDb.langFrom,
         langTo = wordDb.langTo,
-        hints = wordDb.hints,
+        hints = wordDb.hints!!, // FIXME delete !!
         transcription = wordDb.transcription,
     )
 

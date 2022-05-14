@@ -1,6 +1,7 @@
 package com.example.ttanslateapp.di
 
 import android.app.Application
+import com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
 import com.example.ttanslateapp.presentation.word_list.WordListFragment
 import dagger.BindsInstance
@@ -13,6 +14,8 @@ interface ApplicationComponent {
     fun inject(modifyWordFragment: ModifyWordFragment)
 
     fun inject(wordListFragment: WordListFragment)
+
+    fun inject(examKnowledgeWordsFragment: ExamKnowledgeWordsFragment)
 
     @Component.Factory
     interface ApplicationFactory {

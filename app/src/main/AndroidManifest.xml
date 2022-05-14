@@ -7,7 +7,7 @@
 
 
     <application
-        android:name=".TranslateApp"
+        android:name=".presentation.TranslateApp"
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

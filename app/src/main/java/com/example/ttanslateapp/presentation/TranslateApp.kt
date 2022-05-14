@@ -1,7 +1,7 @@
-package com.example.ttanslateapp
+package com.example.ttanslateapp.presentation
 
 import android.app.Application
-import android.content.Context
+import com.example.ttanslateapp.BuildConfig
 import com.example.ttanslateapp.di.DaggerApplicationComponent
 import timber.log.Timber
 
