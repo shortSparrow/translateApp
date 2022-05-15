@@ -5,5 +5,6 @@ import javax.inject.Inject
 
 class DeleteWordUseCase @Inject constructor(
     private val repository: TranslatedWordRepository
-){
+) {
+
 }

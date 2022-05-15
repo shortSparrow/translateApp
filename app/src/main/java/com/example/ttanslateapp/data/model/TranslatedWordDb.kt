@@ -57,6 +57,7 @@ class SoundConvertor {
 data class TranslatedWordDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
+    val priority: Int,
     val value: String,
     val translates: List<TranslateWordItem>,
     val description: String,

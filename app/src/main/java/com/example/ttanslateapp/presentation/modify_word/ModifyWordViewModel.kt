@@ -106,6 +106,7 @@ class ModifyWordViewModel @Inject constructor(
 
         val word = ModifyWord(
             id = _editableWordId ?: 0L,
+            priority = 5, // FIXME default value
             value = value,
             translates = translates.value!!,
             description = description,

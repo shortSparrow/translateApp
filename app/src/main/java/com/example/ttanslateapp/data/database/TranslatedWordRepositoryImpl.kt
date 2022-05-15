@@ -5,6 +5,7 @@ import com.example.ttanslateapp.data.model.TranslatedWordDb
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.exam.ExamWord
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -18,6 +19,14 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.getWordList().map { list ->
             mapper.wordListDbToWordList(list)
         }
+    }
+
+    override suspend fun getExamWordList(count: Int): List<ExamWord> {
+        return translatedWordDao.getExamWordList(count).map { mapper.wordDbToExamWord(it) }
+    }
+
+    override suspend fun updatePriorityById(priority: Int, id: Long): Boolean {
+        return translatedWordDao.updatePriorityById(priority, id).toInt() != WORD_IS_NOT_FOUND
     }
 
     override suspend fun searchWordList(query: String): Flow<List<WordRV>> {

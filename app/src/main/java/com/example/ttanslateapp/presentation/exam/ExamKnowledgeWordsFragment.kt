@@ -87,7 +87,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         viewModel.isShownHintsVisible.observe(viewLifecycleOwner) {
             if (it) {
                 showHintsContainer.visibility = View.VISIBLE
-                showNextHintButton.visibility = if (viewModel.allHintsShown.value == false) View.VISIBLE else View.GONE
+                showNextHintButton.visibility =
+                    if (viewModel.allHintsShown.value == true || viewModel.currentWord.value?.hints?.isEmpty() == true) View.GONE else View.VISIBLE
             } else {
                 showHintsContainer.visibility = View.GONE
                 showNextHintButton.visibility = View.GONE
@@ -120,8 +121,11 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             examWordName.text = it.value
             examWordInput.text = null
             renderShowVariants(it)
-            viewModel.countShownHints.observe(viewLifecycleOwner) {count->
-                generateHints(it, count)
+        }
+
+        viewModel.countShownHints.observe(viewLifecycleOwner) { count ->
+            if (viewModel.currentWord.value?.hints?.isNotEmpty() == true && count > 0) {
+                generateHints(viewModel.currentWord.value!!, count)
             }
         }
 
@@ -133,7 +137,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     }
 
 
-    private fun generateHints(examWord: ExamWord,count: Int) = with(binding) {
+    private fun generateHints(examWord: ExamWord, count: Int) = with(binding) {
         showHintsContainer.removeAllViews()
         for (i in (0 until count)) {
             val view = LayoutInflater.from(showHintsContainer.context)
@@ -175,7 +179,15 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         centerOfScreen
                     )
 
-                    examCheckAnswer.text = "Next"
+                    if (viewModel.isExamEnd.value == false) {
+                        examCheckAnswer.text = "Next"
+                    } else {
+                        examCheckAnswer.text = "Finish"
+                        examCheckAnswer.setOnClickListener {
+                            Timber.d(viewModel.examWordList.value?.map { it.priority }.toString())
+                        }
+                    }
+
                 }
 
             } else {

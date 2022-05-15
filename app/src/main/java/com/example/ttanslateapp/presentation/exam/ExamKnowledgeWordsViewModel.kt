@@ -3,11 +3,18 @@ package com.example.ttanslateapp.presentation.exam
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
+import com.example.ttanslateapp.domain.use_case.GetWordListUseCase
+import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
+import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.AnswerResult.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,7 +22,10 @@ enum class AnswerResult {
     SUCCESS, FAILED, EMPTY
 }
 
-class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
+class ExamKnowledgeWordsViewModel @Inject constructor(
+    val getExamWordListUseCase: GetExamWordListUseCase,
+    val updateWordPriorityUseCase: UpdateWordPriorityUseCase
+) : ViewModel() {
     private val _examWordList = MutableLiveData<List<ExamWord>>()
     val examWordList: LiveData<List<ExamWord>> = _examWordList
 
@@ -28,7 +38,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
     private val _isExamEnd = MutableLiveData(false)
     val isExamEnd: LiveData<Boolean> = _isExamEnd
 
-    private val _countShownHints = MutableLiveData(1)
+    private val _countShownHints = MutableLiveData(0)
     val countShownHints: LiveData<Int> = _countShownHints
 
     private val _allHintsShown = MutableLiveData(false)
@@ -46,6 +56,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
     var activeWordPosition = 0
 
     fun toggleVisibleHint() {
+        if (_countShownHints.value == 0) {
+            _countShownHints.value = 1
+        }
         _isShownHintsVisible.value = !_isShownHintsVisible.value!!
     }
 
@@ -67,10 +80,12 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
         _countShownHints.value = newCount
     }
 
-    // TODO temporary
     fun generateWordsList() {
-        _examWordList.value = generateList()
-        _currentWord.value = generateList()[0]
+        viewModelScope.launch {
+            val list = getExamWordListUseCase().mapIndexed { index, examWord -> if (index == 0) examWord.copy(status = ExamWordStatus.IN_PROCESS) else examWord }
+            _examWordList.value = list
+            _currentWord.value = list[0]
+        }
     }
 
     private fun validateAnswer(answer: String): Boolean {
@@ -85,9 +100,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
             return
         }
 
-        // invoke callback if validate is success
-        cb()
-
         val answerIsCorrect = _currentWord.value!!.translates.find { translate ->
             translate.value.lowercase() == answerQuery
         }
@@ -99,21 +111,43 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
         }
 
         updatePositionColors()
+        updatePriority()
         if (_examWordList.value?.last()!!.id == _currentWord.value!!.id) {
             _isExamEnd.value = true
         }
+
+        // invoke callback if validate is success
+        cb()
     }
 
 
     private fun updatePositionColors() {
-        val isAnswerCorrect = getIsAnswerCorrect()
+        val newList = _examWordList.value?.mapIndexed { index, it ->
 
+            if (index == activeWordPosition) {
+                return@mapIndexed it.copy(status = getCorrectStatus())
+            }
+
+            return@mapIndexed it
+        }
+
+        newList?.let {
+            _examWordList.value = it
+
+        }
+    }
+
+    private fun updatePriority() {
+        val isAnswerCorrect = getIsAnswerCorrect()
         val newList = _examWordList.value?.mapIndexed { index, it ->
             var newPriority = if (isAnswerCorrect) it.priority - 1 else it.priority + 1
             if (newPriority < 0) newPriority = 0
 
             if (index == activeWordPosition) {
-                return@mapIndexed it.copy(status = getCorrectStatus(), priority = newPriority)
+                viewModelScope.launch {
+                    updateWordPriorityUseCase(priority = newPriority, id = it.id)
+                }
+                return@mapIndexed it.copy(priority = newPriority)
             }
 
             return@mapIndexed it
@@ -127,8 +161,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
 
     fun goToNextQuestion() {
         activeWordPosition++
-        if (activeWordPosition >= generateList().size) {
-            activeWordPosition = 0
+        if (activeWordPosition >= _examWordList.value!!.size) {
+            return
         }
         goNext()
     }
@@ -150,160 +184,20 @@ class ExamKnowledgeWordsViewModel @Inject constructor() : ViewModel() {
                 ExamWordStatus.IN_PROCESS
             }
         }
-
     }
 
     private fun goNext() {
-
-        Timber.d("currentPosition $activeWordPosition")
-        // close hints and variants when go to text word
-        _isShownHintsVisible.value = false
-        _allHintsShown.value = false
-        _isShownVariants.value = false
-
-        _answerResult.value = EMPTY
+        resetWordSateToDefault()
         updatePositionColors()
         _currentWord.value = _examWordList.value!![activeWordPosition]
     }
 
-}
-
-
-fun generateList(): List<ExamWord> {
-    return listOf(
-        ExamWord(
-            priority = 5,
-            id = 1L,
-            value = "Apple",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "яблуко"
-                ),
-                TranslateWordItem(
-                    id = "2",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "dwdw"
-                ),
-                TranslateWordItem(
-                    id = "3",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "банан"
-                ),
-                TranslateWordItem(
-                    id = "4",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "кіт"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "an fruit"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "green"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "you can eat this"
-                ),
-            ),
-            status = ExamWordStatus.IN_PROCESS,
-            answerVariants = listOf(
-                "Груша", "апельсин", "груша", "яблучко",
-                "яблуко", "машина", "тост",
-            ),
-        ),
-
-        ExamWord(
-            priority = 5,
-            id = 2L,
-            value = "Car",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "Машина"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "може їздити"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "має 4 колеса"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "робить біп-біп"
-                ),
-            ),
-            status = ExamWordStatus.UNPROCESSED,
-            answerVariants = listOf(
-                "Парус", "апельсин", "машина", "яблучко",
-                "яблуко", "тост",
-            ),
-        ),
-        ExamWord(
-            priority = 5,
-            id = 3L,
-            value = "Frog",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "жаба"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "зелене"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "квакає"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "живе біля водойми"
-                ),
-            ),
-            status = ExamWordStatus.UNPROCESSED,
-            answerVariants = listOf(
-                "Ялинка", "апельсин", "жабка", "яблучко",
-                "яблуко", "жаба",
-            ),
-        )
-    )
+    private fun resetWordSateToDefault() {
+        // close hints and variants when go to text word
+        _isShownHintsVisible.value = false
+        _allHintsShown.value = false
+        _isShownVariants.value = false
+        _answerResult.value = EMPTY
+    }
 }
 

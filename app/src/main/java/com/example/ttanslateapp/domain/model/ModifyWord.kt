@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 data class ModifyWord @Inject constructor(
     val id: Long = UNDEFINED_ID,
+    val priority: Int,
     val value: String,
     val translates: List<TranslateWordItem>,
     val description: String,

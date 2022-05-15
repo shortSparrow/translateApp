@@ -16,6 +16,12 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE value LIKE :wordValue")
     fun searchWordList(wordValue: String): Flow<List<TranslatedWordDb>>
 
+    @Query("SELECT * FROM $TABLE_NAME ORDER BY priority DESC LIMIT :count")
+    suspend fun getExamWordList(count: Int): List<TranslatedWordDb>
+
+    @Query("UPDATE $TABLE_NAME SET priority=:priority WHERE id = :id")
+   suspend fun updatePriorityById(priority: Int, id: Long): Int
+
     @Query("SELECT * FROM $TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): TranslatedWordDb
 
