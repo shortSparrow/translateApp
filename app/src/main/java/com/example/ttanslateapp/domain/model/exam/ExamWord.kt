@@ -11,6 +11,6 @@ data class ExamWord(
     val priority: Int,
 
     val status: ExamWordStatus,
-    val answerVariants:List<String> // FIXME maybe change String on smth more full
+    val answerVariants:List<ExamAnswerVariant>
 )
 

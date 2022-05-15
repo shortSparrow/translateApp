@@ -6,14 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.use_case.GetExamAnswerVariantsUseCase
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
-import com.example.ttanslateapp.domain.use_case.GetWordListUseCase
-import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.AnswerResult.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,8 +20,9 @@ enum class AnswerResult {
 
 class ExamKnowledgeWordsViewModel @Inject constructor(
     val getExamWordListUseCase: GetExamWordListUseCase,
-    val updateWordPriorityUseCase: UpdateWordPriorityUseCase
-) : ViewModel() {
+    val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
+
+    ) : ViewModel() {
     private val _examWordList = MutableLiveData<List<ExamWord>>()
     val examWordList: LiveData<List<ExamWord>> = _examWordList
 
@@ -55,6 +52,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     var activeWordPosition = 0
 
+
     fun toggleVisibleHint() {
         if (_countShownHints.value == 0) {
             _countShownHints.value = 1
@@ -82,9 +80,17 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     fun generateWordsList() {
         viewModelScope.launch {
-            val list = getExamWordListUseCase().mapIndexed { index, examWord -> if (index == 0) examWord.copy(status = ExamWordStatus.IN_PROCESS) else examWord }
-            _examWordList.value = list
-            _currentWord.value = list[0]
+
+            val list = getExamWordListUseCase().mapIndexed { index, examWord ->
+                if (index == 0) examWord.copy(status = ExamWordStatus.IN_PROCESS) else examWord
+            }
+
+            Timber.d("LISTS ${list}")
+
+            if (list.isNotEmpty()) {
+                _examWordList.value = list
+                _currentWord.value = list[0]
+            }
         }
     }
 
@@ -172,7 +178,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     private fun getCorrectStatus(): ExamWordStatus {
-        Timber.d(_answerResult.value.toString())
         return when (_answerResult.value!!) {
             SUCCESS -> {
                 ExamWordStatus.SUCCESS
@@ -200,4 +205,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _answerResult.value = EMPTY
     }
 }
+
+
 

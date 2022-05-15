@@ -26,7 +26,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updatePriorityById(priority: Int, id: Long): Boolean {
-        return translatedWordDao.updatePriorityById(priority, id).toInt() != WORD_IS_NOT_FOUND
+        return translatedWordDao.updatePriorityById(priority, id) != WORD_IS_NOT_FOUND
     }
 
     override suspend fun searchWordList(query: String): Flow<List<WordRV>> {

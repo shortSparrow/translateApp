@@ -1,8 +1,10 @@
 package com.example.ttanslateapp.data.mapper
 
+import com.example.ttanslateapp.data.model.ExamAnswerVariantDb
 import com.example.ttanslateapp.data.model.TranslatedWordDb
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
@@ -46,7 +48,7 @@ class WordMapper @Inject constructor() {
         hints = wordDb.hints!!, // FIXME delete !!
         priority = wordDb.priority,
         status = ExamWordStatus.UNPROCESSED,
-        answerVariants = listOf("Hello", "car", "kotlin") // FIXME change on real answer list
+        answerVariants = listOf() // FIXME change on real answer list
     )
 
 
@@ -61,6 +63,16 @@ class WordMapper @Inject constructor() {
         langTo = modifyWord.langTo,
         hints = modifyWord.hints,
         transcription = modifyWord.transcription
+    )
+
+    fun examAnswerToExamAnswerDb(examAnswer: ExamAnswerVariant) = ExamAnswerVariantDb(
+        id = examAnswer.id,
+        value = examAnswer.value,
+    )
+
+    fun examAnswerDbToExamAnswer(examAnswer: ExamAnswerVariantDb) = ExamAnswerVariant(
+        id = examAnswer.id,
+        value = examAnswer.value
     )
 
 }

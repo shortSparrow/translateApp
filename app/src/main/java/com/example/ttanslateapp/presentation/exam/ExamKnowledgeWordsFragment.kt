@@ -152,7 +152,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             val view = LayoutInflater.from(showVariantsContainer.context)
                 .inflate(R.layout.translate_chip, showVariantsContainer, false)
             val textItem = view.findViewById<TextView>(R.id.chip_item)
-            textItem.text = examWord.answerVariants[i]
+            textItem.text = examWord.answerVariants[i].value
 
             textItem.setOnClickListener {
                 showVariantsContainer.allViews.forEach {

@@ -6,7 +6,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
-import com.example.ttanslateapp.util.TABLE_NAME
+import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -52,7 +52,7 @@ class SoundConvertor {
     }
 }
 
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = TRANSLATED_WORDS_TABLE_NAME)
 @TypeConverters(SoundConvertor::class, TranslationConverters::class, HintConverters::class)
 data class TranslatedWordDb(
     @PrimaryKey(autoGenerate = true)

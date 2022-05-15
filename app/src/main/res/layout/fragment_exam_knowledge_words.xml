@@ -152,6 +152,15 @@
                 app:layout_constraintEnd_toEndOf="@+id/show_hints_container" />
 
 
+            <Button
+                android:id="@+id/add_answer_word"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="add answer word"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/show_hints_container" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
