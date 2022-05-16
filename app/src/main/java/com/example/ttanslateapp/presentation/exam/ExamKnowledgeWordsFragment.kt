@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
@@ -184,7 +185,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     } else {
                         examCheckAnswer.text = "Finish"
                         examCheckAnswer.setOnClickListener {
-                            Timber.d(viewModel.examWordList.value?.map { it.priority }.toString())
+                            findNavController().popBackStack()
                         }
                     }
 
