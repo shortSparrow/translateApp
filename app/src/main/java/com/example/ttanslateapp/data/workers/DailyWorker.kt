@@ -7,8 +7,10 @@ import android.os.Build
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.*
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.presentation.MainActivity
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -49,10 +51,18 @@ class DailyWorker(val context: Context, params: WorkerParameters) : Worker(conte
             notificationManager.createNotificationChannel(notificationChanel)
         }
 
+        val pendingIntent = NavDeepLinkBuilder(context)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(R.navigation.app_navigation)
+            .setDestination(R.id.examKnowledgeWordsFragment)
+            .createPendingIntent()
+
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Test title2")
-            .setContentText("Lol kek2")
+            .setContentIntent(pendingIntent)
+            .setContentTitle("Час повторити слова")
+            .setContentText("Пройдіть тест, щоб перевірити на скільки добре ви вивчили слова")
             .setSmallIcon(R.drawable.mic_successful)
+            .setAutoCancel(true)
             .build()
 
 
