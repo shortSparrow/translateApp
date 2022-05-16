@@ -9,7 +9,7 @@ import com.example.ttanslateapp.util.EXAM_WORD_ANSWERS_TABLE_NAME
 
 @Dao
 interface ExamWordAnswerDao {
-    @Query("SELECT * FROM $EXAM_WORD_ANSWERS_TABLE_NAME LIMIT :limit")
+    @Query("SELECT * FROM $EXAM_WORD_ANSWERS_TABLE_NAME ORDER BY RANDOM() LIMIT :limit")
     suspend fun getWordAnswerList(limit: Int): List<ExamAnswerVariantDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -8,6 +8,7 @@ import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
+import com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
@@ -58,19 +59,22 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     private fun makeSearchBarClickable() = with(binding) {
         searchWord.setOnClickListener { searchWord.isIconified = false }
         addNewWord.setOnClickListener { launchAddWordScreen() }
+        goToExam.setOnClickListener {
+            findNavController().navigate(WordListFragmentDirections.actionWordListFragmentToExamKnowledgeWordsFragment())
+        }
     }
 
     private fun launchAddWordScreen() {
         findNavController().navigate(
-                WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(ModifyWordModes.MODE_ADD)
-            )
+            WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(ModifyWordModes.MODE_ADD)
+        )
     }
 
     private fun launchEditWordScreen(wordId: Long) {
         findNavController().navigate(
             WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
-                mode=ModifyWordModes.MODE_EDIT,
-                wordId=wordId
+                mode = ModifyWordModes.MODE_EDIT,
+                wordId = wordId
             )
         )
     }

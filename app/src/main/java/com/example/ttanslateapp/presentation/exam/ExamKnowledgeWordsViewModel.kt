@@ -4,10 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ttanslateapp.data.model.Sound
+import com.example.ttanslateapp.domain.TranslatedWordRepository
+import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetExamAnswerVariantsUseCase
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
+import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.AnswerResult.*
 import kotlinx.coroutines.launch
@@ -21,6 +27,7 @@ enum class AnswerResult {
 class ExamKnowledgeWordsViewModel @Inject constructor(
     val getExamWordListUseCase: GetExamWordListUseCase,
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
+//    val modifyWordUseCase: ModifyWordUseCase
 
     ) : ViewModel() {
     private val _examWordList = MutableLiveData<List<ExamWord>>()
@@ -53,6 +60,14 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     var activeWordPosition = 0
 
 
+//    init {
+//        viewModelScope.launch {
+//            for (word in generateList()) {
+//                modifyWordUseCase(word)
+//            }
+//        }
+//    }
+
     fun toggleVisibleHint() {
         if (_countShownHints.value == 0) {
             _countShownHints.value = 1
@@ -80,12 +95,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     fun generateWordsList() {
         viewModelScope.launch {
-
             val list = getExamWordListUseCase().mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(status = ExamWordStatus.IN_PROCESS) else examWord
             }
-
-            Timber.d("LISTS ${list}")
 
             if (list.isNotEmpty()) {
                 _examWordList.value = list
@@ -205,6 +217,216 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _answerResult.value = EMPTY
     }
 }
+
+
+fun generateList(): List<ModifyWord> {
+    return listOf(
+        ModifyWord(
+            priority = 5,
+            value = "Apple",
+            translates = listOf(
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "яблуко"
+                ),
+                TranslateWordItem(
+                    id = "2",
+                    createdAt = 2L,
+                    updatedAt = 2L,
+                    value = "яблучко"
+                )
+            ),
+            hints = listOf(
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "an fruit"
+                ),
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "green"
+                ),
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "you can eat this"
+                ),
+            ),
+            description = "",
+            langFrom = "en",
+            langTo = "ua",
+            sound = null,
+            transcription = ""
+        ),
+
+        ModifyWord(
+            priority = 5,
+            value = "Car",
+            translates = listOf(
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "Машина"
+                )
+            ),
+            hints = listOf(
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "може їздити"
+                ),
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "має 4 колеса"
+                ),
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "робить біп-біп"
+                ),
+            ),
+            description = "",
+            langFrom = "en",
+            langTo = "ua",
+            sound = null,
+            transcription = ""
+        ),
+        ModifyWord(
+            priority = 5,
+            value = "Frog",
+            translates = listOf(
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "жаба"
+                ),
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "жабеня"
+                ),
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "жабка"
+                )
+            ),
+            hints = listOf(
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "зелене"
+                ),
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "квакає"
+                ),
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "живе біля водойми"
+                ),
+            ),
+            description = "звичайна жабка, що живе у пруді",
+            langFrom = "en",
+            langTo = "ua",
+            sound = null,
+            transcription = ""
+        ),
+
+
+        ModifyWord(
+            priority = 5,
+            value = "Fish",
+            translates = listOf(
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "риба"
+                ),
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "рибка"
+                )
+            ),
+            hints = listOf(
+                HintItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "плаває"
+                ),
+            ),
+            description = "",
+            langFrom = "en",
+            langTo = "ua",
+            sound = null,
+            transcription = ""
+        ),
+
+        ModifyWord(
+            priority = 5,
+            value = "Computer",
+            translates = listOf(
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "комп'ютер"
+                ),
+            ),
+            hints = listOf(),
+            description = "",
+            langFrom = "en",
+            langTo = "ua",
+            sound = null,
+            transcription = ""
+        ),
+
+
+        ModifyWord(
+            priority = 5,
+            value = "ball",
+            translates = listOf(
+                TranslateWordItem(
+                    id = "1",
+                    createdAt = 1L,
+                    updatedAt = 1L,
+                    value = "м'яч"
+                ),
+            ),
+            hints = listOf(),
+            description = "",
+            langFrom = "en",
+            langTo = "ua",
+            sound = null,
+            transcription = ""
+        )
+    )
+}
+
+
 
 
 
