@@ -8,6 +8,8 @@ import androidx.work.WorkManager
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.data.workers.DailyWorker
 import com.example.ttanslateapp.presentation.word_list.WordListFragment
+import com.example.ttanslateapp.util.getExamWorkerDelay
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -19,17 +21,18 @@ class MainActivity : AppCompatActivity() {
 //        // clear work manger by tag
 //        WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DailyWorker.TAG)
 
-//        val dailyWorkRequest = OneTimeWorkRequestBuilder<DailyWorker>()
-//            .setInitialDelay(0L, TimeUnit.MILLISECONDS)
-//            .addTag(DailyWorker.TAG)
-//            .build()
-//
-//        WorkManager.getInstance(applicationContext)
-//            .enqueueUniqueWork(
-//                DailyWorker.NAME,
-//                ExistingWorkPolicy.REPLACE,
-//                dailyWorkRequest
-//            )
+
+        val dailyWorkRequest = OneTimeWorkRequestBuilder<DailyWorker>()
+            .setInitialDelay(getExamWorkerDelay(), TimeUnit.MILLISECONDS)
+            .addTag(DailyWorker.TAG)
+            .build()
+
+        WorkManager.getInstance(applicationContext)
+            .enqueueUniqueWork(
+                DailyWorker.NAME,
+                ExistingWorkPolicy.REPLACE,
+                dailyWorkRequest
+            )
 
     }
 }

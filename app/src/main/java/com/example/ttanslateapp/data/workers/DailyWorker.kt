@@ -4,29 +4,24 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.*
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.presentation.MainActivity
-import timber.log.Timber
-import java.util.*
+import com.example.ttanslateapp.util.getExamWorkerDelay
 import java.util.concurrent.TimeUnit
 
 class DailyWorker(val context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
-        Timber.d("OK")
         showNotification()
 
         val dailyWorkRequest = OneTimeWorkRequestBuilder<DailyWorker>()
-            .setInitialDelay(15_000L, TimeUnit.MILLISECONDS)
+            .setInitialDelay(getExamWorkerDelay(), TimeUnit.MILLISECONDS)
             .addTag(TAG)
             .build()
 
-//        WorkManager.getInstance(applicationContext)
-//            .enqueue(dailyWorkRequest)
         WorkManager.getInstance(applicationContext)
             .enqueueUniqueWork(
                 NAME,
