@@ -10,7 +10,6 @@
             name="model"
             type="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsViewModel" />
     </data>
-    <!-- TODO View must have success and fail layout. Maybe will be better do it in custom layout-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -4,20 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ttanslateapp.data.model.Sound
-import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
-import com.example.ttanslateapp.domain.use_case.GetExamAnswerVariantsUseCase
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.AnswerResult.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 enum class AnswerResult {
@@ -29,7 +25,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
 //    val modifyWordUseCase: ModifyWordUseCase
 
-    ) : ViewModel() {
+) : ViewModel() {
     private val _examWordList = MutableLiveData<List<ExamWord>>()
     val examWordList: LiveData<List<ExamWord>> = _examWordList
 
@@ -62,7 +58,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
 //    init {
 //        viewModelScope.launch {
-//            for (word in generateList()) {
+//            // set Modify Word list (for dev - quickly fill database)
+//            for (word in generateModifyWordList()) {
 //                modifyWordUseCase(word)
 //            }
 //        }
@@ -173,7 +170,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         newList?.let {
             _examWordList.value = it
-
         }
     }
 
@@ -219,7 +215,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 }
 
 
-fun generateList(): List<ModifyWord> {
+fun generateModifyWordList(): List<ModifyWord> {
     return listOf(
         ModifyWord(
             priority = 5,

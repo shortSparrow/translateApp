@@ -136,7 +136,6 @@ class ModifyWordViewModel @Inject constructor(
     }
 
 
-    // FIXME зробити валідацію на TranslateWordItem
     fun addTranslate(translateValue: String) {
         if (translateValue.trim().isEmpty()) return
 
@@ -155,7 +154,6 @@ class ModifyWordViewModel @Inject constructor(
         setEditableTranslate(null)
     }
 
-    // FIXME зробити валідацію на EditableItem
     fun addHint(hintValue: String) {
         if (hintValue.trim().isEmpty()) return
 

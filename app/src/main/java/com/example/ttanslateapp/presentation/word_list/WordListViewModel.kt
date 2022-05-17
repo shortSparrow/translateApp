@@ -16,7 +16,7 @@ class WordListViewModel @Inject constructor(
     private val getWordListUseCase: GetWordListUseCase,
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase
 ) : ViewModel() {
-    // FIXME: a lot of invokes, and adapter shadow look strange
+    // FIXME: a lot of invokes, and adapter shadow looks strange
     private val _wordList = MutableLiveData<List<WordRV>>()
     val wordList = _wordList
     private var searchJob: Job? = null

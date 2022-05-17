@@ -44,7 +44,7 @@ fun bindCancelEditTranslate(textView: TextView, translateWordItem: TranslateWord
 @BindingAdapter("englishWordError")
 fun bindEnglishWordError(textInputLayout: TextInputLayout, error: Boolean) {
     textInputLayout.error = if (error) {
-        textInputLayout.t(R.string.validation_required_field) // TODO add as string resource
+        textInputLayout.t(R.string.validation_required_field)
     } else {
         null
     }
