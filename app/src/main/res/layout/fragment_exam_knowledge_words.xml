@@ -10,6 +10,7 @@
             name="model"
             type="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsViewModel" />
     </data>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,9 +18,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/gutter"
-            >
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/gutter">
 
             <TextView
                 android:id="@+id/textView"
@@ -35,7 +35,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/word_position_rv"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gutter"
                 android:clipToPadding="false"
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/gutter"
                 android:layout_marginTop="@dimen/gutter"
-                android:hint="word translate"
+                android:hint="@string/word_translate"
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_gutter"
-                android:text="check answer"
+                android:text="@string/check_answer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exam_word_container" />
@@ -97,9 +97,9 @@
                 android:id="@+id/show_variants_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/gutter"
+                android:layout_marginStart="@dimen/gutter"
                 android:layout_marginTop="@dimen/medium_gutter"
-                android:text="show variants"
+                android:text="@string/show_variants"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exam_check_answer" />
 
@@ -120,8 +120,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:layout_marginRight="@dimen/gutter"
-                android:text="show hints"
+                android:layout_marginEnd="@dimen/gutter"
+                android:text="@string/show_hints"
                 app:layout_constraintBottom_toBottomOf="@+id/show_variants_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exam_check_answer" />
@@ -131,8 +131,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/gutter"
-                android:paddingRight="60dp"
+                android:paddingStart="@dimen/gutter"
+                android:paddingEnd="60dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/show_variants_container"
@@ -142,10 +142,11 @@
                 android:id="@+id/show_next_hint_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="bottom|right"
-                android:layout_marginRight="16dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/shape_circle"
                 android:backgroundTint="@color/blue"
+                android:contentDescription="@string/next"
                 android:src="@drawable/add"
                 app:layout_constraintBottom_toBottomOf="@id/show_hints_container"
                 app:layout_constraintEnd_toEndOf="@+id/show_hints_container" />

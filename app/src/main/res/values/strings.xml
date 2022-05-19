@@ -9,6 +9,7 @@
     <string name="modify_word_cancel_edit">Cancel edit</string>
     <string name="modify_word_show_more">Розкрити</string>
     <string name="modify_word_success_save_word">Word saved successfully</string>
+    <string name="modify_word_invalid_word_value">Invalid Word</string>
 
     <!--Validation -->
     <string name="validation_required_field">This field is required</string>
@@ -20,6 +21,13 @@
     <string name="edit">Edit</string>
     <string name="error_happened">Error happened</string>
     <string name="audio_has_been_added">audio has been added</string>
+    <string name="next">next</string>
+    <string name="finish">finish</string>
+    <string name="check_answer">check answer</string>
+    <string name="add_audio_scuccess">audio added successfully</string>
+    <string name="show_variants">show variants</string>
+    <string name="word_translate">word translate</string>
+    <string name="show_hints">show hints</string>
 
     <string-array name="translate_from_language">
         <item>UA</item>

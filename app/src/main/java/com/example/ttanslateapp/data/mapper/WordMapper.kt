@@ -37,7 +37,8 @@ class WordMapper @Inject constructor() {
         sound = wordDb.sound,
         langFrom = wordDb.langFrom,
         langTo = wordDb.langTo,
-        hints = wordDb.hints!!, // FIXME delete !! Why liveData values nullable, could i fix this?
+        hints = wordDb.hints
+            ?: emptyList(),
         transcription = wordDb.transcription,
     )
 
@@ -45,10 +46,10 @@ class WordMapper @Inject constructor() {
         id = wordDb.id,
         value = wordDb.value,
         translates = wordDb.translates,
-        hints = wordDb.hints!!, // FIXME delete !!
+        hints = wordDb.hints ?: emptyList(),
         priority = wordDb.priority,
         status = ExamWordStatus.UNPROCESSED,
-        answerVariants = listOf() // FIXME is it ok add here empty list and fill it later?
+        answerVariants = emptyList()
     )
 
 

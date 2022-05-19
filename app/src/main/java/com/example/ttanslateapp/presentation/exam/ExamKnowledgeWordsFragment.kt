@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
 import androidx.navigation.fragment.findNavController
@@ -21,11 +20,10 @@ import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
-import timber.log.Timber
 
 
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
-    var selectableHint: TextView? = null
+    private var selectableHint: TextView? = null
 
     override val bindingInflater: BindingInflater<FragmentExamKnowledgeWordsBinding>
         get() = FragmentExamKnowledgeWordsBinding::inflate
@@ -73,7 +71,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
         viewModel.isInoutWordInvalid.observe(viewLifecycleOwner) {
             if (it) {
-                examWordContainer.error = "Invalid Word"
+                examWordContainer.error = getString(R.string.modify_word_invalid_word_value)
             }
         }
 
@@ -96,21 +94,21 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             }
         }
 
-        viewModel.isExamEnd.observe(viewLifecycleOwner) {
-            if (it) {
-                Toast.makeText(requireContext(), "The end", Toast.LENGTH_SHORT).show()
-            }
-        }
+//        viewModel.isExamEnd.observe(viewLifecycleOwner) {
+//            if (it) {
+//                Toast.makeText(requireContext(), "The end", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
         viewModel.answerResult.observe(viewLifecycleOwner) {
             if (it == AnswerResult.SUCCESS) {
                 selectableHint?.backgroundTintList =
-                    requireContext().resources.getColorStateList(R.color.green)
+                    ContextCompat.getColorStateList(requireContext(), R.color.green)
             }
 
             if (it == AnswerResult.FAILED) {
                 selectableHint?.backgroundTintList =
-                    requireContext().resources.getColorStateList(R.color.red)
+                    ContextCompat.getColorStateList(requireContext(), R.color.red)
             }
 
             showVariantsContainer.allViews.forEach {
@@ -161,7 +159,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 }
 
                 it.backgroundTintList =
-                    requireContext().resources.getColorStateList(R.color.blue)
+                    ContextCompat.getColorStateList(requireContext(), R.color.blue)
+
                 selectableHint = textItem
                 examWordInput.setText(textItem.text)
             }
@@ -181,9 +180,9 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     )
 
                     if (viewModel.isExamEnd.value == false) {
-                        examCheckAnswer.text = "Next"
+                        examCheckAnswer.text = getString(R.string.next)
                     } else {
-                        examCheckAnswer.text = "Finish"
+                        examCheckAnswer.text = getString(R.string.finish)
                         examCheckAnswer.setOnClickListener {
                             findNavController().popBackStack()
                         }
@@ -194,7 +193,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             } else {
                 showVariantsContainer.removeAllViews()
                 viewModel.goToNextQuestion()
-                examCheckAnswer.text = "Check answer"
+                examCheckAnswer.text = getString(R.string.check_answer)
             }
         }
 

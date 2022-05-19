@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 data class ModifyWord @Inject constructor(
     val id: Long = UNDEFINED_ID,
-    val priority: Int,
+    val priority: Int = DEFAULT_PRIORITY,
     val value: String,
     val translates: List<TranslateWordItem>,
     val description: String,
@@ -19,5 +19,6 @@ data class ModifyWord @Inject constructor(
 ) {
     companion object {
         const val UNDEFINED_ID = 0L
+        const val DEFAULT_PRIORITY = 5
     }
 }

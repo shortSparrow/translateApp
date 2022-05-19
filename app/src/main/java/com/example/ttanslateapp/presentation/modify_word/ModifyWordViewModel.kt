@@ -12,6 +12,7 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -54,7 +55,7 @@ class ModifyWordViewModel @Inject constructor(
 
     init {
         _translates.value = listOf()
-        _hints.value = listOf()
+        _hints.value = emptyList()
     }
 
     fun setWordValueError(value: Boolean) {
@@ -98,22 +99,24 @@ class ModifyWordViewModel @Inject constructor(
             return
         }
 
-        // FIXME shadow strange behavior on word list rv item. If set sound as null - all are great
-        val sound = object : Sound {
-            override val path: String
-                get() = soundPath ?: ""
+        // if soundPath had been changed and != null we make anonymous class, else null
+        val sound = soundPath?.let {
+            object : Sound {
+                override val path: String
+                    get() = it
+            }
         }
 
         val word = ModifyWord(
             id = _editableWordId ?: 0L,
-            priority = 5, // FIXME default value
+            priority = ModifyWord.DEFAULT_PRIORITY,
             value = value,
-            translates = translates.value!!,
+            translates = translates.value ?: emptyList(),
             description = description,
             sound = sound,
             langFrom = langFrom,
             langTo = langTo,
-            hints = _hints.value!!, // FIXME why it is nullable?
+            hints = _hints.value ?: emptyList(),
             transcription = transcription
         )
 

@@ -1,12 +1,12 @@
 package com.example.ttanslateapp.presentation.modify_word
 
-import android.content.pm.PackageManager
+import android.Manifest.permission
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
@@ -25,9 +25,6 @@ import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
 
 
-private const val RECORD_AUDIO_RC = 1
-private const val STORAGE_RC = 2
-
 enum class ModifyWordModes {
     MODE_ADD, MODE_EDIT
 }
@@ -39,13 +36,36 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private val args by navArgs<ModifyWordFragmentArgs>()
 
     private val viewModel by viewModels {
-
         get(ModifyWordViewModel::class.java)
     }
+    private val recordPermission =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val audio = permissions[permission.RECORD_AUDIO]
+            val storage = permissions[permission.WRITE_EXTERNAL_STORAGE]
+
+            if (audio == true && storage == true) {
+                openRecordBottomSheet()
+            } else {
+
+                val showRationaleRecord =
+                    shouldShowRequestPermissionRationale(permission.RECORD_AUDIO)
+                val showRationaleStorage =
+                    shouldShowRequestPermissionRationale(permission.WRITE_EXTERNAL_STORAGE)
+
+                if (!showRationaleRecord) {
+                    Toast.makeText(context, "enable RECORD_AUDIO", Toast.LENGTH_SHORT).show()
+                }
+
+                if (showRationaleStorage) {
+                    Toast.makeText(context, "enable WRITE_EXTERNAL_STORAGE", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+
 
     private val translateAdapter = TranslateAdapter()
     private val hintAdapter = HintAdapter()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,6 +85,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private fun launchRightMode() {
         when (args.mode) {
             ModifyWordModes.MODE_EDIT -> launchEditMode()
+            else -> {}
         }
     }
 
@@ -75,7 +96,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             args.wordId
         }
 
-        viewModel.getWordById(id)
         viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
             override fun onLoaded(word: ModifyWord) {
                 with(binding) {
@@ -102,6 +122,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 }
             }
         }
+        viewModel.getWordById(id)
     }
 
     private fun setupView() = with(binding) {
@@ -120,39 +141,29 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     }
 
     private fun requestRecordPermission() {
-        val recordPermissionGranted = ActivityCompat.checkSelfPermission(
-            requireContext(),
-            android.Manifest.permission.RECORD_AUDIO
-        ) == PackageManager.PERMISSION_GRANTED
-
-        val storagePermissionGranted = ActivityCompat.checkSelfPermission(
-            requireContext(),
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-
-
-        if (recordPermissionGranted && storagePermissionGranted) {
-            openRecordBottomSheet()
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
-                    android.Manifest.permission.RECORD_AUDIO,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                RECORD_AUDIO_RC
+        recordPermission.launch(
+            arrayOf(
+                permission.RECORD_AUDIO,
+                permission.WRITE_EXTERNAL_STORAGE
             )
-        }
+        )
     }
 
     private fun openRecordBottomSheet() {
         val recordSheetDialog =
-            RecordAudioBottomSheet(modifiedPath = viewModel.soundPath, "Test Word")
+            RecordAudioBottomSheet(
+                modifiedPath = viewModel.soundPath,
+                binding.inputTranslatedWord.englishWordInput.text.toString()
+            )
         recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
         recordSheetDialog.callbackListener = object : RecordAudioBottomSheet.CallbackListener {
             override fun saveAudio(path: String?) {
                 if (path != null) {
-                    Toast.makeText(requireContext(), "audio added successfully", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.add_audio_scuccess),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                     viewModel.soundPath = path
                     binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
@@ -163,28 +174,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     binding.isRecordAdded.visibility = View.INVISIBLE
                 }
 
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == RECORD_AUDIO_RC && grantResults.isNotEmpty()) {
-            val permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-            if (permissionGranted) {
-                openRecordBottomSheet()
-            } else {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                        requireActivity(),
-                        android.Manifest.permission.RECORD_AUDIO
-                    )
-                ) {
-                    Toast.makeText(context, "enable permission", Toast.LENGTH_LONG).show()
-                }
             }
         }
     }

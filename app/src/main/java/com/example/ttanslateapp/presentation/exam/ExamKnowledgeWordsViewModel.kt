@@ -69,25 +69,31 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         if (_countShownHints.value == 0) {
             _countShownHints.value = 1
         }
-        _isShownHintsVisible.value = !_isShownHintsVisible.value!!
+        _isShownHintsVisible.value = !toBooleanSafety(_isShownHintsVisible.value)
     }
 
     fun toggleVisibleVariants() {
-        _isShownVariants.value = !_isShownVariants.value!!
+        _isShownVariants.value = !toBooleanSafety(_isShownVariants.value)
+    }
+
+    private fun toBooleanSafety(value: Boolean?): Boolean {
+        return value ?: false
     }
 
     fun showNextHint() {
-        val newCount = _countShownHints.value!!.plus(1)
+        val newCount = _countShownHints.value?.plus(1) ?: 0
 
-        if (newCount == _currentWord.value!!.hints.size) {
-            _allHintsShown.value = true
+        _currentWord.value?.let {
+            if (newCount == it.hints.size) {
+                _allHintsShown.value = true
+            }
+
+            if (newCount > it.hints.size) {
+                return
+            }
+
+            _countShownHints.value = newCount
         }
-
-        if (newCount > _currentWord.value!!.hints.size) {
-            return
-        }
-
-        _countShownHints.value = newCount
     }
 
     fun generateWordsList() {
@@ -115,7 +121,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             return
         }
 
-        val answerIsCorrect = _currentWord.value!!.translates.find { translate ->
+        val answerIsCorrect = _currentWord.value?.translates?.find { translate ->
             translate.value.lowercase() == answerQuery
         }
 
@@ -127,7 +133,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         updatePositionColors()
         updatePriority()
-        if (_examWordList.value?.last()!!.id == _currentWord.value!!.id) {
+        if (_examWordList.value?.last()?.id == _currentWord.value?.id) {
             _isExamEnd.value = true
         }
 
@@ -148,7 +154,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         newList?.let {
             _examWordList.value = it
-
         }
     }
 

@@ -11,30 +11,48 @@ import kotlinx.coroutines.coroutineScope
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 class GetExamWordListUseCase @Inject constructor(
     private val repository: TranslatedWordRepository,
-    private val getExamAnswerVariantsUseCase: GetExamAnswerVariantsUseCase, // TODO is it good solution (have here use_case instead of repository)?
+    private val examWordAnswerRepository: ExamWordAnswerRepository,
     val mapper: WordMapper,
 ) {
     suspend operator fun invoke(count: Int = EXAM_WORD_LIST_COUNT) = coroutineScope {
-        val answerList = getExamAnswerVariantsUseCase(count)
+        val answerList = getExamAnswerVariants(count)
         repository.getExamWordList(count)
             .mapIndexed { index, examWord ->
                 val from = index * EXAM_WORD_ANSWER_LIST_SIZE
                 val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
 
-                val randomI = Random.nextInt()
-                Timber.d("random $randomI") // FIXME the same values
+                val randomWordTranslateIndex = Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
                 examWord.copy(
                     answerVariants = answerList.slice(from until to)
-                        .plus(ExamAnswerVariant(value = examWord.translates.random().value))
+                        .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
                         .shuffled()
                 )
             }
     }
 
+    private suspend fun getExamAnswerVariants(examWordListCount: Int) = coroutineScope {
+        val limit = examWordListCount * EXAM_WORD_ANSWER_LIST_SIZE
+        val list = examWordAnswerRepository.getWordAnswerList(limit)
+
+        if (list.isEmpty()) {
+            for (wordItem in temporarryAnswerList) {
+                val word = ExamAnswerVariant(
+                    value = wordItem,
+                )
+                val dbWord = mapper.examAnswerToExamAnswerDb(word)
+                examWordAnswerRepository.modifyWordAnswer(dbWord)
+            }
+            examWordAnswerRepository.getWordAnswerList(limit)
+        } else {
+            list
+        }
+    }
+
     companion object {
-        private const val EXAM_WORD_LIST_COUNT = 4
+        private const val EXAM_WORD_LIST_COUNT = 10
     }
 }
