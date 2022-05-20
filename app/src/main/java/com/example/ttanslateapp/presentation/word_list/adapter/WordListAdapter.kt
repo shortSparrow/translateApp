@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -9,21 +10,17 @@ import kotlin.collections.set
 
 class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
     var onClickListener: OnClickListener? = null
-    private val isOpenedSet = mutableMapOf<Long, Boolean>()
+    private val player = MediaPlayer()
+    private val playingList = mutableMapOf<Long, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordItemViewHolder {
         return WordRvItemBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
-            .run { WordItemViewHolder(this) }
+            .run { WordItemViewHolder(this, player, playingList) }
     }
 
     override fun onBindViewHolder(holder: WordItemViewHolder, position: Int) {
         val word = getItem(position)
-
-        if (!isOpenedSet.containsKey(word.id)) {
-            isOpenedSet[word.id] = false
-        }
-
         holder.bind(word, onClickListener)
     }
 

@@ -1,12 +1,23 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
+import android.media.MediaPlayer
+import android.widget.ImageButton
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ttanslateapp.R
+import com.example.ttanslateapp.data.model.Sound
 import com.example.ttanslateapp.databinding.WordRvItemBinding
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
+import com.example.ttanslateapp.util.getAudioPath
 import timber.log.Timber
+import java.io.IOException
 
-class WordItemViewHolder(val binding: WordRvItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class WordItemViewHolder(
+    val binding: WordRvItemBinding,
+    private val player: MediaPlayer,
+    private val playingList: MutableMap<Long, Boolean>
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(word: WordRV, onClickListener: WordListAdapter.OnClickListener?) = with(binding) {
         langFrom.text = word.langFrom
         englishWord.text = word.value
@@ -20,17 +31,57 @@ class WordItemViewHolder(val binding: WordRvItemBinding) : RecyclerView.ViewHold
         translateList.adapter = translateAdapter
         translateAdapter.submitList(word.translates)
 
-        // FIXME click not work in chip
-        // make translateAdapter clickable false, because it interrupt parent click, and I can't go to modify screen
-        translateList.suppressLayout(true)
-
-        playSound.setOnClickListener {
-            // TODO: ADD PLAY SOUND
-            Timber.d("playSoundClickListener")
-        }
-        root.setOnClickListener {
-            with(Timber) { d("onRootClickListener") }
+        binding.frame.setOnClickListener {
             onClickListener?.onRootClickListener(word.id)
         }
+
+        setVolumeImage(playSound, word)
+
+        playSound.setOnClickListener {
+            if (!player.isPlaying) {
+                playingList[word.id] = playingList[word.id]?.let { !it } ?: true
+
+                playAudio(playSound, word)
+            }
+        }
+    }
+
+    private fun playAudio(playSound: ImageButton, word: WordRV) {
+        setVolumeImage(playSound, word)
+
+        player.apply {
+            try {
+                reset()
+                setDataSource(getAudioPath(playSound.context, word.sound!!.fileName))
+                prepare()
+                start()
+            } catch (e: IOException) {
+                Timber.e("prepare() failed $e")
+            }
+        }
+        player.setOnCompletionListener {
+            playingList[word.id] = false
+            setVolumeImage(playSound, word)
+        }
+    }
+
+    private fun setVolumeImage(playSound: ImageButton, word: WordRV) {
+        if (playingList[word.id] == true) {
+            playSound.background =
+                AppCompatResources.getDrawable(playSound.context, R.drawable.volume_up_active)
+
+        } else {
+            if (word.sound?.fileName != null) {
+                playSound.background =
+                    AppCompatResources.getDrawable(
+                        playSound.context,
+                        R.drawable.volume_up_available
+                    )
+            } else {
+                playSound.background =
+                    AppCompatResources.getDrawable(playSound.context, R.drawable.volume_up_inactive)
+            }
+        }
+
     }
 }

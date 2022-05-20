@@ -1,6 +1,7 @@
 package com.example.ttanslateapp.presentation.core
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.DialogInterface
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -12,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ViewRecordAudioBinding
+import com.example.ttanslateapp.util.generateFileName
+import com.example.ttanslateapp.util.getAudioPath
 import com.example.ttanslateapp.util.lazySimple
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
@@ -21,26 +24,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class RecordAudioBottomSheet(private val modifiedPath: String?, private val word: String?) :
+class RecordAudioBottomSheet(private val modifiedFileName: String?, private val word: String?) :
     BottomSheetDialogFragment() {
+
     private var _binding: ViewRecordAudioBinding? = null
     private val binding get() = _binding!!
 
     var callbackListener: CallbackListener? = null
-
-    private val fileName by lazySimple {
-        val formatter = SimpleDateFormat("yyyy_MM_dd_hh_mm_ss")
-        val date = Date()
-        "Recording_" + formatter.format(date) + ".3gp"
-    }
-    private val dirName = "/storage/emulated/0/Android/data/com.example.ttanslateapp/files" // FIXME add correct path
-    private val path = modifiedPath ?: "$dirName/$fileName"
+    private val fileName = modifiedFileName ?: generateFileName()
+    private val audioPath by lazy { getAudioPath(requireContext(), fileName) }
 
     private var recorder: MediaRecorder? = null
     private var player: MediaPlayer? = null
 
     private var isPlaying = false
-    private var isFilePathSaved = modifiedPath != null
+    private var isFilePathSaved = modifiedFileName != null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +57,7 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
 
     private fun setupView() = with(binding) {
         wordValue.text = word
-        if (modifiedPath != null) {
+        if (modifiedFileName != null) {
             listenRecord.isEnabled = true
         }
     }
@@ -98,10 +96,14 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
 
 
     private fun startRecording() {
+        val file = File(audioPath)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setOutputFile(path)
+            setOutputFile(file.absolutePath)
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
             try {
@@ -133,7 +135,7 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
     }
 
     private fun saveRecording() {
-        callbackListener?.saveAudio(path)
+        callbackListener?.saveAudio(fileName)
         isFilePathSaved = true
         this.dismiss()
     }
@@ -154,7 +156,7 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
     }
 
     private fun deleteAudioFile() {
-        val file = File(path)
+        val file = File(audioPath)
         file.delete()
         with(binding) {
             deleteRecord.setImageResource(R.drawable.delete_disabled)
@@ -181,7 +183,7 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
     private fun startPlaying() {
         player = MediaPlayer().apply {
             try {
-                setDataSource(path)
+                setDataSource(audioPath)
                 prepare()
                 start()
             } catch (e: IOException) {
@@ -193,7 +195,7 @@ class RecordAudioBottomSheet(private val modifiedPath: String?, private val word
     // close bottom sheet
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        Timber.d("isFilePathSaved $isFilePathSaved $modifiedPath")
+        player?.stop()
         if (!isFilePathSaved) {
             deleteRecording()
             callbackListener?.saveAudio(null)

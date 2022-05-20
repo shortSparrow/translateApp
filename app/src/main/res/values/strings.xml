@@ -28,6 +28,7 @@
     <string name="show_variants">show variants</string>
     <string name="word_translate">word translate</string>
     <string name="show_hints">show hints</string>
+    <string name="play_sound">Play sound</string>
 
     <string-array name="translate_from_language">
         <item>UA</item>

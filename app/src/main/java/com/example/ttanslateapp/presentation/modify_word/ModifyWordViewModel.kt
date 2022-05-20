@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ttanslateapp.data.model.Sound
 import com.example.ttanslateapp.domain.model.ModifyWord
+import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
@@ -47,7 +47,7 @@ class ModifyWordViewModel @Inject constructor(
     private val _savedWordResult = MutableLiveData<Boolean>()
     val savedWordResult: LiveData<Boolean> = _savedWordResult
 
-    var soundPath: String? = null
+    var soundFileName: String? = null
 
     var successLoadWordById: SuccessLoadWordById? = null
 
@@ -99,13 +99,8 @@ class ModifyWordViewModel @Inject constructor(
             return
         }
 
-        // if soundPath had been changed and != null we make anonymous class, else null
-        val sound = soundPath?.let {
-            object : Sound {
-                override val path: String
-                    get() = it
-            }
-        }
+        val sound = soundFileName?.let { WordAudio(it) }
+        Timber.d("SOUND is $sound")
 
         val word = ModifyWord(
             id = _editableWordId ?: 0L,
@@ -130,14 +125,14 @@ class ModifyWordViewModel @Inject constructor(
     fun getWordById(id: Long) {
         viewModelScope.launch {
             val word = getWordItemUseCase(id)
+            Timber.d("getWordItemUseCase $word")
             _translates.postValue(word.translates)
             _hints.postValue(word.hints)
             _editableWordId = word.id
             successLoadWordById?.onLoaded(word)
-            soundPath = word.sound?.path
+            soundFileName = word.sound?.fileName
         }
     }
-
 
     fun addTranslate(translateValue: String) {
         if (translateValue.trim().isEmpty()) return
@@ -205,7 +200,6 @@ class ModifyWordViewModel @Inject constructor(
         _hints.value = _hints.value?.filter { it.id != hintId }
     }
 
-
     fun setEditableHint(editableHint: HintItem?) {
         _editableHint.value = editableHint
     }
@@ -218,6 +212,15 @@ class ModifyWordViewModel @Inject constructor(
     fun toggleVisibleAdditionalField() {
         val oldValue = _isAdditionalFieldVisible.value!!
         _isAdditionalFieldVisible.value = !oldValue
+    }
+
+    fun saveAudio(fileName: String?) {
+        viewModelScope.launch {
+            _editableWordId?.let {
+                val sound = if (fileName == null) null else WordAudio(fileName = fileName)
+                modifyWordUseCase.modifyOnlySound(it, sound = sound)
+            }
+        }
     }
 
     interface SuccessLoadWordById {

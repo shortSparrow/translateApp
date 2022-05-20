@@ -1,10 +1,8 @@
 package com.example.ttanslateapp.data.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.ttanslateapp.data.model.TranslatedWordDb
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 import kotlinx.coroutines.flow.Flow
 

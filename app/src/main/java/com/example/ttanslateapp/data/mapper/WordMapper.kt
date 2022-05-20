@@ -7,9 +7,6 @@ import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
-import com.example.ttanslateapp.presentation.exam.AnswerResult
 import javax.inject.Inject
 
 class WordMapper @Inject constructor() {
@@ -25,7 +22,7 @@ class WordMapper @Inject constructor() {
         sound = wordDb.sound,
         langFrom = wordDb.langFrom,
         langTo = wordDb.langTo,
-        transcription = wordDb.transcription
+        transcription = wordDb.transcription,
     )
 
     fun wordDbToModifyWord(wordDb: TranslatedWordDb): ModifyWord = ModifyWord(

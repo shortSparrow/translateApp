@@ -23,6 +23,7 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.translate.Trans
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
+import timber.log.Timber
 
 
 enum class ModifyWordModes {
@@ -41,24 +42,15 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private val recordPermission =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val audio = permissions[permission.RECORD_AUDIO]
-            val storage = permissions[permission.WRITE_EXTERNAL_STORAGE]
 
-            if (audio == true && storage == true) {
+            if (audio == true) {
                 openRecordBottomSheet()
             } else {
-
                 val showRationaleRecord =
                     shouldShowRequestPermissionRationale(permission.RECORD_AUDIO)
-                val showRationaleStorage =
-                    shouldShowRequestPermissionRationale(permission.WRITE_EXTERNAL_STORAGE)
 
                 if (!showRationaleRecord) {
                     Toast.makeText(context, "enable RECORD_AUDIO", Toast.LENGTH_SHORT).show()
-                }
-
-                if (showRationaleStorage) {
-                    Toast.makeText(context, "enable WRITE_EXTERNAL_STORAGE", Toast.LENGTH_SHORT)
-                        .show()
                 }
             }
         }
@@ -152,28 +144,28 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private fun openRecordBottomSheet() {
         val recordSheetDialog =
             RecordAudioBottomSheet(
-                modifiedPath = viewModel.soundPath,
+                modifiedFileName = viewModel.soundFileName,
                 binding.inputTranslatedWord.englishWordInput.text.toString()
             )
         recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
         recordSheetDialog.callbackListener = object : RecordAudioBottomSheet.CallbackListener {
-            override fun saveAudio(path: String?) {
-                if (path != null) {
+            override fun saveAudio(fileName: String?) {
+                if (fileName != null) {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.add_audio_scuccess),
                         Toast.LENGTH_SHORT
                     )
                         .show()
-                    viewModel.soundPath = path
+                    viewModel.soundFileName = fileName
                     binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
                     binding.isRecordAdded.visibility = View.VISIBLE
                 } else {
-                    viewModel.soundPath = path
+                    viewModel.soundFileName = fileName
                     binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
                     binding.isRecordAdded.visibility = View.INVISIBLE
+                    viewModel.saveAudio(null)
                 }
-
             }
         }
     }
