@@ -12,5 +12,7 @@ fun getExamWorkerDelay(): Long {
     if (dueDate.before(currentDate)) {
         dueDate.add(Calendar.HOUR_OF_DAY, 24)
     }
+
+//    dueDate.add(Calendar.MINUTE, 1)
     return dueDate.timeInMillis - currentDate.timeInMillis
 }
