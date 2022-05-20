@@ -23,10 +23,10 @@ class ExamAdapter :
     override fun onBindViewHolder(holder: ExamAdapterViewHolder, position: Int) {
         val item = getItem(position)
         with(holder.binding) {
-            wordPosition.text = (position + 1).toString()
+            wordPosition.text = position.plus(1).toString()
             wordPosition.backgroundTintList = setBG(item.status, wordPosition.context)
 
-            if (position === currentList.size - 1) {
+            if (position == currentList.size - 1) {
                 wordPositionDots.visibility = View.GONE
             } else {
                 wordPositionDots.visibility = View.VISIBLE

@@ -54,7 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Play sound"
-                android:textColor="@color/purple_700"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/transcription" />
 
@@ -77,13 +78,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gutter"
                 android:layout_marginTop="@dimen/small_gutter"
+                android:background="@color/teal_200"
                 android:orientation="horizontal"
                 app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/lang_to"
                 app:layout_constraintTop_toTopOf="@+id/lang_to"
-                android:background="@color/teal_200"
                 tools:listitem="@layout/translate_chip" />
 
             <TextView
