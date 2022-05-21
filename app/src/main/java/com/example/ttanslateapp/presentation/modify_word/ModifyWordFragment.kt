@@ -143,10 +143,16 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
     private fun openRecordBottomSheet() {
         val recordSheetDialog =
-            RecordAudioBottomSheet(
-                modifiedFileName = viewModel.soundFileName,
+            RecordAudioBottomSheet()
+
+        recordSheetDialog.arguments = Bundle().apply {
+            putString(RecordAudioBottomSheet.MODIFIED_FILE_NAME, viewModel.soundFileName)
+            putString(
+                RecordAudioBottomSheet.WORD,
                 binding.inputTranslatedWord.englishWordInput.text.toString()
             )
+        }
+
         recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
         recordSheetDialog.callbackListener = object : RecordAudioBottomSheet.CallbackListener {
             override fun saveAudio(fileName: String?) {

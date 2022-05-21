@@ -11,6 +11,7 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*

@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ViewRecordAudioBinding
 import com.example.ttanslateapp.util.generateFileName
@@ -24,21 +25,24 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class RecordAudioBottomSheet(private val modifiedFileName: String?, private val word: String?) :
-    BottomSheetDialogFragment() {
-
+class RecordAudioBottomSheet : BottomSheetDialogFragment() {
     private var _binding: ViewRecordAudioBinding? = null
     private val binding get() = _binding!!
 
     var callbackListener: CallbackListener? = null
-    private val fileName = modifiedFileName ?: generateFileName()
-    private val audioPath by lazy { getAudioPath(requireContext(), fileName) }
 
-    private var recorder: MediaRecorder? = null
-    private var player: MediaPlayer? = null
+    val viewModel by lazy { ViewModelProvider(this)[RecordAudioViewModel::class.java] }
 
-    private var isPlaying = false
-    private var isFilePathSaved = modifiedFileName != null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val modifiedFileName = arguments?.getString(MODIFIED_FILE_NAME)
+        val word = arguments?.getString(WORD)
+//        Timber.d("modifiedFileName ${modifiedFileName}")
+        viewModel.setArguments(
+            modifiedFileName = modifiedFileName,
+            word = word
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,22 +57,68 @@ class RecordAudioBottomSheet(private val modifiedFileName: String?, private val 
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupClickListener()
+        setupListeners()
     }
 
-    private fun setupView() = with(binding) {
-        wordValue.text = word
-        if (modifiedFileName != null) {
-            listenRecord.isEnabled = true
+    private fun setupListeners() = with(binding) {
+        viewModel.isRecordExist.observe(viewLifecycleOwner) {
+            Timber.d("duration ${viewModel._player?.duration}")
+            Timber.d("isRecordExist ${it}")
+            if (it) {
+                recordingChronometer.isCountDown = true
+                resetChronometer()
+                prepareAppearsAudio()
+            } else {
+                deleteAudioFile()
+                binding.recordingChronometer.base = SystemClock.elapsedRealtime()
+            }
         }
+
+        viewModel.isRecording.observe(viewLifecycleOwner) {
+            Timber.d("isRecording: ${it}")
+            if (it) {
+                recordingChronometer.isCountDown = false
+                recordingChronometer.base = SystemClock.elapsedRealtime()
+                recordingChronometer.start()
+                saveRecord.isEnabled = false
+            } else {
+                recordingChronometer.isCountDown = true
+                saveRecord.isEnabled = true
+                recordingChronometer.stop()
+            }
+        }
+
+        viewModel.isPlaying.observe(viewLifecycleOwner) {
+            if (it) {
+                resetChronometer()
+                recordingChronometer.start()
+            } else {
+                recordingChronometer.stop()
+                resetChronometer()
+            }
+        }
+    }
+
+
+    private fun resetChronometer() {
+        binding.recordingChronometer.base =
+            SystemClock.elapsedRealtime() + (viewModel._player?.duration?.toLong() ?: 0)
+    }
+
+
+    private fun setupView() = with(binding) {
+        wordValue.text = arguments?.getString(WORD)
+//        listenRecord.isEnabled = arguments?.getString(MODIFIED_FILE_NAME) != null
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupClickListener() = with(binding) {
         deleteRecord.setOnClickListener {
-            deleteRecording()
+            viewModel.deleteRecording()
+            callbackListener?.saveAudio(null)
         }
         listenRecord.setOnClickListener {
-            startPlaying()
+            viewModel.startPlaying()
         }
         saveRecord.setOnClickListener {
             saveRecording()
@@ -76,18 +126,11 @@ class RecordAudioBottomSheet(private val modifiedFileName: String?, private val 
 
         handleButtonContainer.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                Timber.d("pressIn")
-                isPlaying = true
-                handleButton.setImageResource(R.drawable.mic_active)
+//                Timber.d("pressIn")
                 startRecording()
-                saveRecord.isEnabled = false
-                binding.listenRecord.isEnabled = false
+
             } else if (event.action == MotionEvent.ACTION_UP) {
-                Timber.d("pressOut")
-                isPlaying = false
-                binding.handleButton.setImageResource(R.drawable.mic_disable)
-                binding.deleteRecord.setImageResource(R.drawable.delete_active)
-                binding.listenRecord.isEnabled = true
+//                Timber.d("pressOut")
                 endRecording()
             }
             true
@@ -95,110 +138,51 @@ class RecordAudioBottomSheet(private val modifiedFileName: String?, private val 
     }
 
 
-    private fun startRecording() {
-        val file = File(audioPath)
-        if (!file.exists()) {
-            file.createNewFile()
-        }
-        recorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setOutputFile(file.absolutePath)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+    private fun startRecording() = with(binding) {
+        viewModel.startRecording()
+        saveRecord.isEnabled = false
+        binding.listenRecord.isEnabled = false
+        handleButton.setImageResource(R.drawable.mic_active)
 
-            try {
-                prepare()
-                binding.recordingChronometer.base = SystemClock.elapsedRealtime()
-                binding.recordingChronometer.start()
-            } catch (e: IOException) {
-                Timber.e("prepare() failed: $e")
-            }
-
-            start()
-        }
     }
 
-    private fun endRecording() {
-        try {
-            recorder?.apply {
-                stop()
-                release()
-            }
-            recorder = null
-            binding.recordingChronometer.stop()
-            binding.saveRecord.isEnabled = true
-        } catch (e: Exception) {
-            Timber.e("Error endRecording $e")
-            recorder = null
-            deleteRecording()
-        }
+    private fun endRecording() = with(binding) {
+        viewModel.endRecording()
+        binding.handleButton.setImageResource(R.drawable.mic_disable)
+        binding.deleteRecord.setImageResource(R.drawable.delete_active)
+        binding.listenRecord.isEnabled = true
     }
 
     private fun saveRecording() {
-        callbackListener?.saveAudio(fileName)
-        isFilePathSaved = true
+        Timber.d("viewModel.fileName ${viewModel.fileName}")
+        viewModel.fileRecordedBuNotSaved = false
+        callbackListener?.saveAudio(viewModel.fileName)
         this.dismiss()
     }
 
-    private fun clearRecording() {
-        recorder?.apply {
-            stop()
-        }
-        recorder = null
-
-        player?.stop()
-        player = null
+    private fun prepareAppearsAudio() = with(binding) {
+        saveRecord.isEnabled = true
+        listenRecord.isEnabled = true
+        binding.deleteRecord.setImageResource(R.drawable.delete_active)
     }
 
-    private fun resetChronometer() {
-        binding.recordingChronometer.base = SystemClock.elapsedRealtime()
-        binding.recordingChronometer.stop()
+    private fun deleteAudioFile() = with(binding) {
+        deleteRecord.setImageResource(R.drawable.delete_disabled)
+        saveRecord.isEnabled = false
+        listenRecord.isEnabled = false
+        handleButton.setImageResource(R.drawable.mic_disable)
     }
 
-    private fun deleteAudioFile() {
-        val file = File(audioPath)
-        file.delete()
-        with(binding) {
-            deleteRecord.setImageResource(R.drawable.delete_disabled)
-            saveRecord.isEnabled = false
-            listenRecord.isEnabled = false
-            handleButton.setImageResource(R.drawable.mic_disable)
-        }
-    }
-
-    private fun deleteRecording() {
-        try {
-            clearRecording()
-            resetChronometer()
-            deleteAudioFile()
-
-            isFilePathSaved = false
-            Timber.d("Deletion succeeded.")
-
-        } catch (e: Exception) {
-            Timber.d("Deletion failed. $e")
-        }
-    }
-
-    private fun startPlaying() {
-        player = MediaPlayer().apply {
-            try {
-                setDataSource(audioPath)
-                prepare()
-                start()
-            } catch (e: IOException) {
-                Timber.e("prepare() failed $e")
-            }
-        }
-    }
 
     // close bottom sheet
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        player?.stop()
-        if (!isFilePathSaved) {
-            deleteRecording()
-            callbackListener?.saveAudio(null)
+        viewModel.clearRecording()
+        if (viewModel.fileRecordedBuNotSaved) {
+            viewModel.deleteRecording()
+            if ( arguments?.getString(MODIFIED_FILE_NAME) != null) {
+                callbackListener?.saveAudio(null)
+            }
         }
     }
 
@@ -208,5 +192,7 @@ class RecordAudioBottomSheet(private val modifiedFileName: String?, private val 
 
     companion object {
         const val TAG = "RecordAudioBottomSheet"
+        const val MODIFIED_FILE_NAME = "modifiedFileName"
+        const val WORD = "word"
     }
 }

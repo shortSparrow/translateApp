@@ -38,7 +38,7 @@ class WordItemViewHolder(
         setVolumeImage(playSound, word)
 
         playSound.setOnClickListener {
-            if (!player.isPlaying) {
+            if (!player.isPlaying && word.sound?.fileName != null) {
                 playingList[word.id] = playingList[word.id]?.let { !it } ?: true
 
                 playAudio(playSound, word)

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.ttanslateapp.databinding.WordRvItemBinding
 import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.presentation.MainActivity
 import kotlin.collections.set
 
 class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
