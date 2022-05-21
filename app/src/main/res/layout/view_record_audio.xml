@@ -42,10 +42,24 @@
             app:layout_constraintVertical_bias="1.0" />
 
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/record_audio_animation"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/handle_button_container"
+            app:layout_constraintEnd_toEndOf="@+id/handle_button_container"
+            app:layout_constraintStart_toStartOf="@+id/handle_button_container"
+            app:layout_constraintTop_toTopOf="@+id/handle_button_container"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/record_animation" />
+
+
         <ImageView
             android:id="@+id/handle_button_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="@dimen/large_gutter"
             android:src="@drawable/shape_circle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,10 +67,10 @@
             app:layout_constraintTop_toBottomOf="@+id/recording_chronometer" />
 
         <ImageView
-            android:clickable="false"
             android:id="@+id/handle_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="false"
             android:src="@drawable/mic_disable"
             app:layout_constraintBottom_toBottomOf="@+id/handle_button_container"
             app:layout_constraintEnd_toEndOf="@+id/handle_button_container"
@@ -68,7 +82,7 @@
             android:id="@+id/save_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gutter"
+            android:layout_marginTop="@dimen/small_gutter"
             android:enabled="false"
             android:text="save"
             app:layout_constraintEnd_toEndOf="parent"
@@ -79,10 +93,10 @@
             android:id="@+id/listen_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/gutter"
             android:enabled="false"
             android:text="listen"
             app:layout_constraintBottom_toBottomOf="@+id/handle_button_container"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/handle_button_container"
             app:layout_constraintTop_toTopOf="@+id/handle_button_container" />
     </androidx.constraintlayout.widget.ConstraintLayout>

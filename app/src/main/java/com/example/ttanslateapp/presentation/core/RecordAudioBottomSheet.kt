@@ -143,14 +143,16 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
         saveRecord.isEnabled = false
         binding.listenRecord.isEnabled = false
         handleButton.setImageResource(R.drawable.mic_active)
+        recordAudioAnimation.visibility = View.VISIBLE
 
     }
 
     private fun endRecording() = with(binding) {
         viewModel.endRecording()
-        binding.handleButton.setImageResource(R.drawable.mic_disable)
-        binding.deleteRecord.setImageResource(R.drawable.delete_active)
-        binding.listenRecord.isEnabled = true
+        listenRecord.isEnabled = true
+        handleButton.setImageResource(R.drawable.mic_disable)
+        deleteRecord.setImageResource(R.drawable.delete_active)
+        recordAudioAnimation.visibility = View.INVISIBLE
     }
 
     private fun saveRecording() {
