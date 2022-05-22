@@ -11,7 +11,6 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -48,7 +47,7 @@ class ModifyWordViewModel @Inject constructor(
     private val _savedWordResult = MutableLiveData<Boolean>()
     val savedWordResult: LiveData<Boolean> = _savedWordResult
 
-    var soundFileName: String? = null
+    val soundFileName = MutableLiveData<String?>()
 
     var successLoadWordById: SuccessLoadWordById? = null
 
@@ -100,7 +99,7 @@ class ModifyWordViewModel @Inject constructor(
             return
         }
 
-        val sound = soundFileName?.let { WordAudio(it) }
+        val sound = soundFileName.value?.let { WordAudio(it) }
         Timber.d("SOUND is $sound")
 
         val word = ModifyWord(
@@ -131,7 +130,7 @@ class ModifyWordViewModel @Inject constructor(
             _hints.postValue(word.hints)
             _editableWordId = word.id
             successLoadWordById?.onLoaded(word)
-            soundFileName = word.sound?.fileName
+            soundFileName.value = word.sound?.fileName
         }
     }
 
@@ -217,6 +216,8 @@ class ModifyWordViewModel @Inject constructor(
 
     fun saveAudio(fileName: String?) {
         viewModelScope.launch {
+            soundFileName.value = fileName
+
             _editableWordId?.let {
                 val sound = if (fileName == null) null else WordAudio(fileName = fileName)
                 modifyWordUseCase.modifyOnlySound(it, sound = sound)

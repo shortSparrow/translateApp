@@ -28,12 +28,10 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
         super.onAttach(context)
         val modifiedFileName = arguments?.getString(MODIFIED_FILE_NAME)
         val word = arguments?.getString(WORD)
-//        Timber.d("modifiedFileName ${modifiedFileName}")
         viewModel.setArguments(
             modifiedFileName = modifiedFileName,
             word = word
         )
-
     }
 
     override fun onStart() {
@@ -50,6 +48,8 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
             layoutParams.height = Resources.getSystem().displayMetrics.heightPixels;
             binding.root.layoutParams = layoutParams
         }
+
+
 
     }
 
@@ -73,7 +73,7 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
     private fun setupListeners() = with(binding) {
         viewModel.isRecordExist.observe(viewLifecycleOwner) {
 //            Timber.d("duration ${viewModel._player?.duration}")
-//            Timber.d("isRecordExist ${it}")
+            Timber.d("isRecordExist ${it}")
             if (it) {
                 recordingChronometer.isCountDown = true
                 resetChronometer()
@@ -107,13 +107,16 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
                 resetChronometer()
             }
         }
+
+        viewModel.callbackListener = object: RecordAudioViewModel.CallbackListener {
+            override fun deleteRecordingButNotSaveAudio() {
+                callbackListener?.saveAudio(null)
+            }
+        }
     }
 
 
     private fun resetChronometer() {
-//        binding.recordingChronometer.base =
-//            SystemClock.elapsedRealtime() + (viewModel._player?.duration?.toLong() ?: 0)
-
         val diff = viewModel._player?.let {
             it.duration.toLong() - it.currentPosition
         } ?: 0
@@ -125,7 +128,6 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupView() = with(binding) {
         wordValue.text = arguments?.getString(WORD)
-//        listenRecord.isEnabled = arguments?.getString(MODIFIED_FILE_NAME) != null
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -143,11 +145,9 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
 
         handleButtonContainer.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-//                Timber.d("pressIn")
                 startRecording()
 
             } else if (event.action == MotionEvent.ACTION_UP) {
-//                Timber.d("pressOut")
                 endRecording()
             }
             true
@@ -190,19 +190,6 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
         saveRecord.isEnabled = false
         listenRecord.isEnabled = false
         handleButton.setImageResource(R.drawable.mic_disable)
-    }
-
-
-    // close bottom sheet
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        viewModel.clearRecording()
-        if (viewModel.fileRecordedBuNotSaved) {
-            viewModel.deleteRecording()
-            if ( arguments?.getString(MODIFIED_FILE_NAME) != null) {
-                callbackListener?.saveAudio(null)
-            }
-        }
     }
 
     interface CallbackListener {

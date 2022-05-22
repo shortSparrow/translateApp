@@ -144,5 +144,23 @@ class RecordAudioViewModel(private val applicationContext: Application) :
             _isPlaying.value = false
         }
     }
+    var callbackListener: CallbackListener? = null
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.d("onCleared")
+        clearRecording()
+        if (fileRecordedBuNotSaved) {
+            deleteRecording()
+            if ( modifiedFileName!= null) {
+                callbackListener?.deleteRecordingButNotSaveAudio()
+            }
+        }
+    }
+
+
+    interface CallbackListener {
+        fun deleteRecordingButNotSaveAudio()
+    }
 
 }

@@ -25,6 +25,7 @@ import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import timber.log.Timber
 
 
 enum class ModifyWordModes {
@@ -73,6 +74,18 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         setAdaptersClickListener()
         setupView()
         setObservers()
+
+        with(binding) {
+            viewModel.soundFileName.observe(viewLifecycleOwner) {
+                if (it != null) {
+                    recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
+                    isRecordAdded.visibility = View.VISIBLE
+                } else {
+                    recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
+                    isRecordAdded.visibility = View.INVISIBLE
+                }
+            }
+        }
     }
 
     private fun launchRightMode() {
@@ -89,18 +102,13 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             args.wordId
         }
 
+        // FIXME should be livedate, not on loaded
         viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
             override fun onLoaded(word: ModifyWord) {
                 with(binding) {
                     inputTranslatedWord.englishWordInput.setText(word.value)
                     inputTranslatedWord.englishTranscriptionInput.setText(word.transcription)
                     translateWordDescription.descriptionInput.setText(word.description)
-
-                    // FIXME on rotate data no saved
-                    if (word.sound != null) {
-                        recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
-                        isRecordAdded.visibility = View.VISIBLE
-                    }
 
                     val langList = mutableMapOf<String, Int>()
 
@@ -146,7 +154,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private fun openRecordBottomSheet() {
         val recordSheetDialog = RecordAudioBottomSheet()
         recordSheetDialog.arguments = Bundle().apply {
-            putString(RecordAudioBottomSheet.MODIFIED_FILE_NAME, viewModel.soundFileName)
+            putString(RecordAudioBottomSheet.MODIFIED_FILE_NAME, viewModel.soundFileName.value)
             putString(
                 RecordAudioBottomSheet.WORD,
                 binding.inputTranslatedWord.englishWordInput.text.toString()
@@ -175,11 +183,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                         Toast.LENGTH_SHORT
                     )
                         .show()
-                    viewModel.soundFileName = fileName
                     binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
                     binding.isRecordAdded.visibility = View.VISIBLE
+                    viewModel.saveAudio(fileName)
                 } else {
-                    viewModel.soundFileName = fileName
+                    viewModel.soundFileName.value = null
                     binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
                     binding.isRecordAdded.visibility = View.INVISIBLE
                     viewModel.saveAudio(null)
