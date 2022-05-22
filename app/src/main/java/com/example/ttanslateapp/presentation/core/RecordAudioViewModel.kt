@@ -29,6 +29,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
 //    private val _player = MutableLiveData<MediaPlayer?>(null)
 //    val player: LiveData<MediaPlayer?> = _player
 
+    // FIXME
     var _player: MediaPlayer? = null
     val player: MediaPlayer? = _player
 
@@ -139,6 +140,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
         _isPlaying.value = true
         _player?.start()
         _player?.setOnCompletionListener {
+            it.seekTo(0)
             _isPlaying.value = false
         }
     }

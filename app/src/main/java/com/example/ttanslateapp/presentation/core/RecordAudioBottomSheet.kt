@@ -3,26 +3,17 @@ package com.example.ttanslateapp.presentation.core
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
-import android.media.MediaPlayer
-import android.media.MediaRecorder
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.SystemClock
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.lifecycle.ViewModelProvider
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ViewRecordAudioBinding
-import com.example.ttanslateapp.util.generateFileName
-import com.example.ttanslateapp.util.getAudioPath
-import com.example.ttanslateapp.util.lazySimple
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class RecordAudioBottomSheet : BottomSheetDialogFragment() {
@@ -42,7 +33,26 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
             modifiedFileName = modifiedFileName,
             word = word
         )
+
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        val behavior = BottomSheetBehavior.from(requireView().parent as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.maxWidth = WindowManager.LayoutParams.MATCH_PARENT
+
+
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            val layoutParams = binding.root.layoutParams
+            layoutParams.height = Resources.getSystem().displayMetrics.heightPixels;
+            binding.root.layoutParams = layoutParams
+        }
+
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,8 +72,8 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupListeners() = with(binding) {
         viewModel.isRecordExist.observe(viewLifecycleOwner) {
-            Timber.d("duration ${viewModel._player?.duration}")
-            Timber.d("isRecordExist ${it}")
+//            Timber.d("duration ${viewModel._player?.duration}")
+//            Timber.d("isRecordExist ${it}")
             if (it) {
                 recordingChronometer.isCountDown = true
                 resetChronometer()
@@ -101,8 +111,15 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
 
 
     private fun resetChronometer() {
+//        binding.recordingChronometer.base =
+//            SystemClock.elapsedRealtime() + (viewModel._player?.duration?.toLong() ?: 0)
+
+        val diff = viewModel._player?.let {
+            it.duration.toLong() - it.currentPosition
+        } ?: 0
+
         binding.recordingChronometer.base =
-            SystemClock.elapsedRealtime() + (viewModel._player?.duration?.toLong() ?: 0)
+            SystemClock.elapsedRealtime() + diff
     }
 
 
@@ -189,7 +206,7 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
     }
 
     interface CallbackListener {
-        fun saveAudio(path: String?)
+        fun saveAudio(fileName: String?)
     }
 
     companion object {

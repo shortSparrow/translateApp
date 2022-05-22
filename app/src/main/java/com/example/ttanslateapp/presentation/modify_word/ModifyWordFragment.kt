@@ -4,6 +4,7 @@ import android.Manifest.permission
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,7 +24,7 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.translate.Trans
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
-import timber.log.Timber
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 enum class ModifyWordModes {
@@ -95,6 +96,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     inputTranslatedWord.englishTranscriptionInput.setText(word.transcription)
                     translateWordDescription.descriptionInput.setText(word.description)
 
+                    // FIXME on rotate data no saved
                     if (word.sound != null) {
                         recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
                         isRecordAdded.visibility = View.VISIBLE
@@ -142,9 +144,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     }
 
     private fun openRecordBottomSheet() {
-        val recordSheetDialog =
-            RecordAudioBottomSheet()
-
+        val recordSheetDialog = RecordAudioBottomSheet()
         recordSheetDialog.arguments = Bundle().apply {
             putString(RecordAudioBottomSheet.MODIFIED_FILE_NAME, viewModel.soundFileName)
             putString(
@@ -154,6 +154,18 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         }
 
         recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
+        setRecordAudioBottomSheetClick(recordSheetDialog)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val bottomSheet = requireActivity().supportFragmentManager.findFragmentByTag(RecordAudioBottomSheet.TAG)
+        if(bottomSheet != null) {
+            setRecordAudioBottomSheetClick(bottomSheet  as RecordAudioBottomSheet)
+        }
+    }
+
+    private fun setRecordAudioBottomSheetClick(recordSheetDialog: RecordAudioBottomSheet) {
         recordSheetDialog.callbackListener = object : RecordAudioBottomSheet.CallbackListener {
             override fun saveAudio(fileName: String?) {
                 if (fileName != null) {
