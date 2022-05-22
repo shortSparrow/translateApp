@@ -11,7 +11,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.presentation.MainActivity
 import com.example.ttanslateapp.util.getExamWorkerDelay
 import java.util.*
 
@@ -24,11 +26,19 @@ class AlarmReceiver : BroadcastReceiver() {
             ) as NotificationManager
             createNotificationChannel(notificationManager)
 
+
+            val openExamFragmentIntent = NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.app_navigation)
+                .setDestination(R.id.examKnowledgeWordsFragment)
+                .createPendingIntent()
+
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("Час повторити слова")
                 .setContentText("Пройдіть тест, щоб перевірити на скільки добре ви вивчили слова")
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setAutoCancel(true)
+                .setContentIntent(openExamFragmentIntent)
                 .build()
 
             notificationManager.notify(NOTIFICATION_ID, notification)

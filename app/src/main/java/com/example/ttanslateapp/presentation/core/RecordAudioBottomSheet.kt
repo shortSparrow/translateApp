@@ -48,9 +48,6 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
             layoutParams.height = Resources.getSystem().displayMetrics.heightPixels;
             binding.root.layoutParams = layoutParams
         }
-
-
-
     }
 
 
@@ -72,7 +69,6 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupListeners() = with(binding) {
         viewModel.isRecordExist.observe(viewLifecycleOwner) {
-//            Timber.d("duration ${viewModel._player?.duration}")
             Timber.d("isRecordExist ${it}")
             if (it) {
                 recordingChronometer.isCountDown = true
@@ -85,7 +81,6 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
         }
 
         viewModel.isRecording.observe(viewLifecycleOwner) {
-            Timber.d("isRecording: ${it}")
             if (it) {
                 recordingChronometer.isCountDown = false
                 recordingChronometer.base = SystemClock.elapsedRealtime()
@@ -147,7 +142,7 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
 
-            } else if (event.action == MotionEvent.ACTION_UP) {
+            } else if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
                 endRecording()
             }
             true

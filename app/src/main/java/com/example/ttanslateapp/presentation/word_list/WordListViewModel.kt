@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
 import com.example.ttanslateapp.domain.use_case.GetWordListUseCase
 import kotlinx.coroutines.Job
@@ -14,12 +15,19 @@ import javax.inject.Inject
 
 class WordListViewModel @Inject constructor(
     private val getWordListUseCase: GetWordListUseCase,
-    private val getSearchedWordListUseCase: GetSearchedWordListUseCase
+    private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
+    private val deleteWordUseCase: DeleteWordUseCase
 ) : ViewModel() {
     // FIXME: a lot of invokes, and adapter shadow looks strange
     private val _wordList = MutableLiveData<List<WordRV>>()
     val wordList = _wordList
     private var searchJob: Job? = null
+
+    fun deleteWordById(wordId: Long) {
+        viewModelScope.launch {
+            deleteWordUseCase(wordId)
+        }
+    }
 
     fun loadWordList() {
         viewModelScope.launch {

@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/gutter">
 
-            <!--                        <include layout="@layout/view_record_audio"/>-->
             <include
                 android:id="@+id/input_translated_word"
                 layout="@layout/input_translated_word"
@@ -98,8 +97,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/toggleAdditionalField" />
 
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/save_translated_word"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gutter"

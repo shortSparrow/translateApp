@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
@@ -82,6 +84,25 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     private fun setAdapter() {
         wordListAdapter
             .apply { binding.wordListRv.adapter = this }
+
+        val callback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val item = wordListAdapter.currentList[viewHolder.adapterPosition]
+                viewModel.deleteWordById(item.id)
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(binding.wordListRv)
     }
 
 }

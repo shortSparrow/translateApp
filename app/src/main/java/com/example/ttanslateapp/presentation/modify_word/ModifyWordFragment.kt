@@ -68,7 +68,9 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         binding.model = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        launchRightMode()
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
         setupClickListener()
         editTextScrollListener()
         setAdaptersClickListener()
@@ -102,7 +104,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             args.wordId
         }
 
-        // FIXME should be livedate, not on loaded
         viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
             override fun onLoaded(word: ModifyWord) {
                 with(binding) {

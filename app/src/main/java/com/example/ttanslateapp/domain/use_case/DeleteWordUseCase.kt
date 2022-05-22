@@ -6,5 +6,5 @@ import javax.inject.Inject
 class DeleteWordUseCase @Inject constructor(
     private val repository: TranslatedWordRepository
 ) {
-
+    suspend operator fun invoke(wordId: Long) = repository.deleteWord(wordId)
 }

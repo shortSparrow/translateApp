@@ -16,13 +16,13 @@
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_word"
                 android:layout_width="match_parent"
-                app:queryHint="search word"
-                app:searchHintIcon="@null"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryHint="search word"
+                app:searchHintIcon="@null" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/word_list_rv"
@@ -40,27 +40,31 @@
                 tools:layout_editor_absoluteX="0dp"
                 tools:listitem="@layout/word_rv_item" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <ImageButton
                 android:id="@+id/add_new_word"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_marginEnd="@dimen/small_gutter"
                 android:layout_marginBottom="@dimen/small_gutter"
+                android:background="@drawable/shape_circle"
                 android:backgroundTint="@color/blue"
                 android:src="@drawable/add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <ImageButton
                 android:id="@+id/go_to_exam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="@dimen/small_gutter"
+                android:background="@drawable/shape_circle"
                 android:backgroundTint="@color/blue"
-                android:src="@drawable/close"
+                android:src="@drawable/exam"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/add_new_word" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>
