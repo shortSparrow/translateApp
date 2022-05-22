@@ -4,7 +4,6 @@ import android.Manifest.permission
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,8 +23,6 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.translate.Trans
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import timber.log.Timber
 
 
 enum class ModifyWordModes {

@@ -120,6 +120,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             examWordName.text = it.value
             examWordInput.text = null
             renderShowVariants(it)
+
+            if (it.hints.isEmpty()) {
+                showHintsLabel.visibility = View.GONE
+            }
         }
 
         viewModel.countShownHints.observe(viewLifecycleOwner) { count ->

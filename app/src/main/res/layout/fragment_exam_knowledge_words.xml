@@ -51,6 +51,7 @@
                 android:id="@+id/exam_word_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gutter"
                 android:layout_marginTop="@dimen/large_gutter"
                 android:textSize="23sp"
                 android:textStyle="bold"
