@@ -1,16 +1,18 @@
 package com.example.ttanslateapp.presentation.modify_word
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordAudio
-import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
+import com.example.ttanslateapp.domain.use_case.ValidateResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -21,70 +23,54 @@ class ModifyWordViewModel @Inject constructor(
     private val getWordItemUseCase: GetWordItemUseCase,
 ) : ViewModel() {
 
-    private var _editableWordId: Long? = null
+    private val _uiState = MutableLiveData<ModifyWordUiState>()
+    val uiState: LiveData<ModifyWordUiState> = _uiState
 
-    private val _wordValueError = MutableLiveData<Boolean>()
-    val wordValueError: LiveData<Boolean> = _wordValueError
-
-    private val _translates = MutableLiveData<List<TranslateWordItem>>()
-    val translates: LiveData<List<TranslateWordItem>> = _translates
-
-    private val _translatesError = MutableLiveData<Boolean>()
-    val translatesError: LiveData<Boolean> = _translatesError
-
-    private val _hints = MutableLiveData<List<HintItem>>()
-    val hints: LiveData<List<HintItem>> = _hints
-
-    private val _editableHint = MutableLiveData<HintItem?>()
-    val editableHint: LiveData<HintItem?> = _editableHint
-
-    private val _editableTranslate = MutableLiveData<TranslateWordItem?>()
-    val editableTranslate: LiveData<TranslateWordItem?> = _editableTranslate
-
-    private val _isAdditionalFieldVisible = MutableLiveData(false)
-    val isAdditionalFieldVisible: LiveData<Boolean> = _isAdditionalFieldVisible
-
-    private val _savedWordResult = MutableLiveData<Boolean>()
-    val savedWordResult: LiveData<Boolean> = _savedWordResult
-
-    val soundFileName = MutableLiveData<String?>()
-
-    var successLoadWordById: SuccessLoadWordById? = null
+    private var state = ModifyWordState()
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
+    fun getAudioFileName(): String? = state.soundFileName
 
-    init {
-        _translates.value = listOf()
-        _hints.value = emptyList()
+    fun resetWordValueError() {
+        Timber.d("resetWordValueError")
+        _uiState.value = ModifyWordUiState.EditFieldError(
+            wordValueError = null,
+            translatesError = state.translatesError
+        )
     }
 
-    fun setWordValueError(value: Boolean) {
-        _wordValueError.value = value
+    fun resetTranslatesError() {
+        Timber.d("resetTranslatesError")
+
+        _uiState.value = ModifyWordUiState.EditFieldError(
+            translatesError = null,
+            wordValueError = state.wordValueError
+        )
     }
 
-    fun setTranslatesError(value: Boolean) {
-        _translatesError.value = value
-    }
-
-    private fun validateWord(value: String): Boolean {
-        var isValid = true
-
-        if (value.trim().isEmpty()) {
-            _wordValueError.value = true
-            isValid = false
+    private fun validateWordValue(value: String): ValidateResult {
+        return if (value.isBlank()) {
+            ValidateResult(successful = false, errorMessage = "this field is required")
+        } else {
+            ValidateResult(successful = true)
         }
-
-        if (_translates.value?.size == 0 || _translates.value == null) {
-            _translatesError.value = true
-            isValid = false
-        }
-
-        return isValid
     }
+
+    private fun validateTranslates(value: List<TranslateWordItem>): ValidateResult {
+        return if (value.isEmpty()) {
+            ValidateResult(successful = false, errorMessage = "this field is required")
+        } else {
+            ValidateResult(successful = true)
+        }
+    }
+
 
     override fun onCleared() {
-        _editableWordId = null
+//        _state.value = _state.value?.copy(editableWordId = null)
     }
+
+//    fun setWordValue(value: String) = _state = _state.copy(wordValue = value)
+//    fun setDescription(value: String) = _state = _state.copy(description = value)
 
     fun saveWord(
         value: String = "",
@@ -93,52 +79,101 @@ class ModifyWordViewModel @Inject constructor(
         langFrom: String = "",
         langTo: String = "",
     ) {
-        val isValid = validateWord(value = value)
+        val wordValidation = validateWordValue(value)
+        val translatesValidation = validateTranslates(state.translates)
 
-        if (!isValid) {
+        val hasError = listOf(wordValidation, translatesValidation).any { !it.successful }
+
+        if (hasError) {
+            state = state.copy(
+                wordValueError = wordValidation.errorMessage,
+                translatesError = translatesValidation.errorMessage
+            )
+
+            _uiState.value = ModifyWordUiState.EditFieldError(
+                wordValueError = wordValidation.errorMessage,
+                translatesError = translatesValidation.errorMessage
+            )
             return
         }
 
-        val sound = soundFileName.value?.let { WordAudio(it) }
+        val sound = state.soundFileName?.let { WordAudio(it) }
         Timber.d("SOUND is $sound")
 
         val word = ModifyWord(
-            id = _editableWordId ?: 0L,
+            id = state.editableWordId ?: 0L,
             priority = ModifyWord.DEFAULT_PRIORITY,
             value = value,
-            translates = translates.value ?: emptyList(),
+            translates = state.translates,
             description = description,
             sound = sound,
             langFrom = langFrom,
             langTo = langTo,
-            hints = _hints.value ?: emptyList(),
+            hints = state.hints,
             transcription = transcription
         )
 
         viewModelScope.launch {
             modifyWordUseCase(word).apply {
-                _savedWordResult.value = this
+                _uiState.value = ModifyWordUiState.ShowResultModify(this)
             }
         }
     }
 
-    fun getWordById(id: Long) {
-        viewModelScope.launch {
+    fun launchAddMode() = _uiState.postValue(state.toUiState())
+    fun launchEditMode(wordId: Long) {
+        val id = if (wordId == -1L) {
+            error("wordId is null")
+        } else {
+            wordId
+        }
+        getWordById(id)
+    }
+
+    private fun getWordById(id: Long) {
+        _uiState.value = ModifyWordUiState.IsWordLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
             Timber.d("getWordItemUseCase $word")
-            _translates.postValue(word.translates)
-            _hints.postValue(word.hints)
-            _editableWordId = word.id
-            successLoadWordById?.onLoaded(word)
-            soundFileName.value = word.sound?.fileName
+
+            state = state.copy(
+                wordValue = word.value,
+                translates = word.translates,
+                description = word.description,
+                selectableLanguage = word.langTo,
+                hints = word.hints,
+                soundFileName = word.sound?.fileName,
+                editableWordId = word.id,
+                langFrom = word.langFrom
+            )
+            _uiState.postValue(state.toUiState())
+            _uiState.postValue(ModifyWordUiState.IsWordLoading(false))
         }
     }
 
+    private fun ModifyWordState.toUiState(): ModifyWordUiState {
+        return ModifyWordUiState.PreScreen(
+            wordValue = wordValue,
+            wordValueError = wordValueError,
+            transcription = transcription,
+            description = description,
+            translates = translates,
+            translatesError = translatesError,
+            hints = hints,
+            langFrom = langFrom,
+            soundFileName = soundFileName,
+            isAdditionalFieldVisible = isAdditionalFieldVisible,
+        )
+    }
+
     fun addTranslate(translateValue: String) {
-        if (translateValue.trim().isEmpty()) return
+        if (translateValue.isBlank()) return
+
+        val translateList = state.translates
+        val editableTranslate = state.editableTranslate
 
         val newTranslateItem =
-            _editableTranslate.value?.copy(value = translateValue, updatedAt = getTimestamp())
+            editableTranslate?.copy(value = translateValue, updatedAt = getTimestamp())
                 ?: TranslateWordItem(
                     value = translateValue,
                     id = UUID.randomUUID().toString(),
@@ -146,86 +181,108 @@ class ModifyWordViewModel @Inject constructor(
                     updatedAt = getTimestamp()
                 )
 
-        addChip<LiveData<List<TranslateWordItem>>>(_translates, newTranslateItem)
+        val hintAlreadyExist = translateList.find { it.id == newTranslateItem.id }
 
-        // clear editableHint, because we finish edit
-        setEditableTranslate(null)
-    }
-
-    fun addHint(hintValue: String) {
-        if (hintValue.trim().isEmpty()) return
-
-        val newHintItem =
-            _editableHint.value?.copy(value = hintValue, updatedAt = getTimestamp()) ?: HintItem(
-                value = hintValue,
-                id = UUID.randomUUID().toString(),
-                createdAt = getTimestamp(),
-                updatedAt = getTimestamp()
-            )
-
-        addChip<LiveData<List<HintItem>>>(_hints, newHintItem)
-
-        // clear editableHint, because we finish edit
-        setEditableHint(null)
-    }
-
-    private fun <T> addChip(chips: T, newChipItem: Chip) {
-        val chipList = (chips as MutableLiveData<List<Chip>>)
-        val hintAlreadyExist =
-            chipList.value?.find { it.id == newChipItem.id }
-
-        if (hintAlreadyExist == null) {
-            chipList.value = chipList.value?.plus(newChipItem)
+        val newList = if (hintAlreadyExist == null) {
+            translateList.plus(newTranslateItem)
         } else {
-            chipList.value = chipList.value?.map {
-                if (it.id == newChipItem.id) {
-                    return@map newChipItem
+            translateList.map {
+                if (it.id == newTranslateItem.id) {
+                    return@map newTranslateItem
                 }
                 return@map it
             }
         }
+
+        state = state.copy(translates = newList, editableTranslate = null)
+        _uiState.postValue(ModifyWordUiState.CompleteModifyTranslate(newList))
+    }
+
+
+    fun addHint(hintValue: String) {
+        if (hintValue.isBlank()) return
+
+        val hintList = state.hints
+        val editableHint = state.editableHint
+
+        val newHintItem =
+            editableHint?.copy(value = hintValue, updatedAt = getTimestamp())
+                ?: HintItem(
+                    value = hintValue,
+                    id = UUID.randomUUID().toString(),
+                    createdAt = getTimestamp(),
+                    updatedAt = getTimestamp()
+                )
+
+        val hintAlreadyExist = hintList.find { it.id == newHintItem.id }
+
+        val newList = if (hintAlreadyExist == null) {
+            hintList.plus(newHintItem)
+        } else {
+            hintList.map {
+                if (it.id == newHintItem.id) {
+                    return@map newHintItem
+                }
+                return@map it
+            }
+        }
+
+        state = state.copy(hints = newList, editableHint = null)
+        _uiState.postValue(ModifyWordUiState.CompleteModifyHint(newList))
     }
 
     fun deleteTranslate(translateId: String) {
-        if (translateId == editableTranslate.value?.id) {
-            setEditableTranslate(null)
-        }
-        _translates.value = _translates.value?.filter { it.id != translateId }
+        val updatedTranslates = state.translates.filter { it.id != translateId }
+
+        state = state.copy(editableTranslate = null, translates = updatedTranslates)
+        _uiState.value = ModifyWordUiState.DeleteTranslates(translates = updatedTranslates)
     }
 
     fun deleteHint(hintId: String) {
-        if (hintId == editableHint.value?.id) {
-            setEditableHint(null)
-        }
-        _hints.value = _hints.value?.filter { it.id != hintId }
+        val updatedHints = state.hints.filter { it.id != hintId }
+
+        state = state.copy(editableHint = null, hints = updatedHints)
+        _uiState.value = ModifyWordUiState.DeleteHints(hints = updatedHints)
     }
 
-    fun setEditableHint(editableHint: HintItem?) {
-        _editableHint.value = editableHint
+    fun setEditableHint(editableHint: HintItem) {
+        state = state.copy(editableHint = editableHint)
+        _uiState.value = ModifyWordUiState.StartModifyHint(value = editableHint.value)
     }
 
-    fun setEditableTranslate(editableTranslateWordItem: TranslateWordItem?) {
-        _editableTranslate.value = editableTranslateWordItem
+    fun cancelEditableHint() {
+        state = state.copy(editableHint = null)
+        _uiState.value = ModifyWordUiState.CompleteModifyHint(state.hints)
+    }
+
+    fun cancelEditableTranslate() {
+        state = state.copy(editableTranslate = null)
+        _uiState.value = ModifyWordUiState.CompleteModifyTranslate(state.translates)
+    }
+
+    fun setEditableTranslate(editableTranslateWordItem: TranslateWordItem) {
+        state = state.copy(editableTranslate = editableTranslateWordItem)
+        _uiState.value =
+            ModifyWordUiState.StartModifyTranslate(value = editableTranslateWordItem.value)
     }
 
 
     fun toggleVisibleAdditionalField() {
-        val oldValue = _isAdditionalFieldVisible.value!!
-        _isAdditionalFieldVisible.value = !oldValue
+        val newIsAdditionalFieldVisible =
+            if (state.isAdditionalFieldVisible == View.VISIBLE) View.GONE else View.VISIBLE
+        state = state.copy(isAdditionalFieldVisible = newIsAdditionalFieldVisible)
+        _uiState.value = ModifyWordUiState.ShowAdditionalFields(newIsAdditionalFieldVisible)
     }
 
-    fun saveAudio(fileName: String?) {
+    fun updateAudio(fileName: String?) {
         viewModelScope.launch {
-            soundFileName.value = fileName
+            state = state.copy(soundFileName = fileName)
+            _uiState.value = ModifyWordUiState.UpdateSoundFile(fileName)
 
-            _editableWordId?.let {
+            state.editableWordId?.let {
                 val sound = if (fileName == null) null else WordAudio(fileName = fileName)
                 modifyWordUseCase.modifyOnlySound(it, sound = sound)
             }
         }
-    }
-
-    interface SuccessLoadWordById {
-        fun onLoaded(word: ModifyWord)
     }
 }

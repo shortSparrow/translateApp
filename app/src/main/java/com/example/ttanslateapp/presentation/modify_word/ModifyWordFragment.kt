@@ -7,11 +7,9 @@ import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
-import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.presentation.core.BaseFragment
@@ -22,7 +20,7 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapt
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
-import com.example.ttanslateapp.util.setOnTextChange
+import timber.log.Timber
 
 
 enum class ModifyWordModes {
@@ -65,79 +63,38 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         binding.model = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        if (savedInstanceState == null) {
-            launchRightMode()
-        }
+
+        // FIXME check with audio
+//        if (savedInstanceState == null) {
+//            launchRightMode()
+//        }
+        // FIXME Livedata observe twice
+        launchRightMode()
+        setObservers()
         setupClickListener()
         editTextScrollListener()
         setAdaptersClickListener()
         setupView()
-        setObservers()
-
-        with(binding) {
-            viewModel.soundFileName.observe(viewLifecycleOwner) {
-                if (it != null) {
-                    recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
-                    isRecordAdded.visibility = View.VISIBLE
-                } else {
-                    recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
-                    isRecordAdded.visibility = View.INVISIBLE
-                }
-            }
-        }
     }
+
 
     private fun launchRightMode() {
         when (args.mode) {
-            ModifyWordModes.MODE_EDIT -> launchEditMode()
-            else -> {}
+            ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
+            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode()
         }
-    }
-
-    private fun launchEditMode() {
-        val id = if (args.wordId == -1L) {
-            error("wordId is null")
-        } else {
-            args.wordId
-        }
-
-        viewModel.successLoadWordById = object : ModifyWordViewModel.SuccessLoadWordById {
-            override fun onLoaded(word: ModifyWord) {
-                with(binding) {
-                    inputTranslatedWord.englishWordInput.setText(word.value)
-                    inputTranslatedWord.englishTranscriptionInput.setText(word.transcription)
-                    translateWordDescription.descriptionInput.setText(word.description)
-
-                    val langList = mutableMapOf<String, Int>()
-
-                    val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
-                    for (i in 0 until adapter.count) {
-                        langList[adapter.getItem(i).toString()] = i
-                    }
-
-                    // FIXME change spinner for text view on edit mode
-                    val spinnerValue = langList[word.langFrom] ?: 0
-                    inputTranslatedWord.selectLanguageSpinner.setSelection(spinnerValue)
-                    inputTranslatedWord.selectLanguageSpinner.isEnabled = false
-                }
-            }
-        }
-        viewModel.getWordById(id)
     }
 
     private fun setupView() = with(binding) {
-        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.setWordValueError(false) }
 
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
-        addTranslate.translateInput.setOnTextChange { viewModel.setTranslatesError(false) }
-
+//        addTranslate.translateInput.setOnTextChange {viewModel.resetTranslatesError()}
+//        inputTranslatedWord.englishWordInput.setOnTextChange {viewModel.resetWordValueError()}
         addHints.hintChipsRv.adapter = hintAdapter
         addHints.hintChipsRv.itemAnimator = null
 
-        recordEnglishPronunciation.setOnClickListener {
-            requestRecordPermission()
-        }
+        recordEnglishPronunciation.setOnClickListener { requestRecordPermission() }
     }
 
     private fun requestRecordPermission() {
@@ -152,22 +109,25 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     private fun openRecordBottomSheet() {
         val recordSheetDialog = RecordAudioBottomSheet()
         recordSheetDialog.arguments = Bundle().apply {
-            putString(RecordAudioBottomSheet.MODIFIED_FILE_NAME, viewModel.soundFileName.value)
+            putString(
+                RecordAudioBottomSheet.MODIFIED_FILE_NAME,
+                viewModel.getAudioFileName()
+            )
             putString(
                 RecordAudioBottomSheet.WORD,
                 binding.inputTranslatedWord.englishWordInput.text.toString()
             )
         }
-
         recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
         setRecordAudioBottomSheetClick(recordSheetDialog)
     }
 
     override fun onResume() {
         super.onResume()
-        val bottomSheet = requireActivity().supportFragmentManager.findFragmentByTag(RecordAudioBottomSheet.TAG)
-        if(bottomSheet != null) {
-            setRecordAudioBottomSheetClick(bottomSheet  as RecordAudioBottomSheet)
+        val bottomSheet =
+            requireActivity().supportFragmentManager.findFragmentByTag(RecordAudioBottomSheet.TAG)
+        if (bottomSheet != null) {
+            setRecordAudioBottomSheetClick(bottomSheet as RecordAudioBottomSheet)
         }
     }
 
@@ -181,30 +141,109 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                         Toast.LENGTH_SHORT
                     )
                         .show()
-                    binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
-                    binding.isRecordAdded.visibility = View.VISIBLE
-                    viewModel.saveAudio(fileName)
+                    viewModel.updateAudio(fileName)
                 } else {
-                    viewModel.soundFileName.value = null
-                    binding.recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
-                    binding.isRecordAdded.visibility = View.INVISIBLE
-                    viewModel.saveAudio(null)
+                    viewModel.updateAudio(null)
                 }
+                updateMicrophoneIcon(fileName)
             }
         }
     }
 
     private fun setObservers() = with(viewModel) {
-        translates.observe(viewLifecycleOwner) { translateAdapter.submitList(it) }
-        hints.observe(viewLifecycleOwner) { hintAdapter.submitList(it) }
-        savedWordResult.observe(viewLifecycleOwner) {
-            val message = if (it == true) {
-                findNavController().popBackStack()
-                getString(R.string.modify_word_success_save_word)
-            } else {
-                getString(R.string.error_happened)
+        with(binding) {
+            uiState.observe(viewLifecycleOwner) { uiState ->
+                when (uiState) {
+                    is ModifyWordUiState.IsWordLoading -> {
+                        if (uiState.isLoading) {
+                            root.visibility = View.INVISIBLE
+                        } else {
+                            root.visibility = View.VISIBLE
+                        }
+                    }
+                    is ModifyWordUiState.EditFieldError -> {
+                        inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
+                        addTranslate.englishWordContainer.error = uiState.translatesError
+                    }
+                    is ModifyWordUiState.PreScreen -> {
+                        Timber.d("ModifyWordUiState.PreScreen: ${uiState}")
+
+                        inputTranslatedWord.englishWordInput.setText(uiState.wordValue)
+                        inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
+                        inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)
+                        translateWordDescription.descriptionInput.setText(uiState.description)
+
+                        val langList = mutableMapOf<String, Int>()
+                        val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
+                        for (i in 0 until adapter.count) {
+                            langList[adapter.getItem(i).toString()] = i
+                        }
+
+                        // FIXME change spinner for text view on edit mode
+                        val spinnerValue = langList[uiState.langFrom] ?: 0
+                        inputTranslatedWord.selectLanguageSpinner.setSelection(spinnerValue)
+                        inputTranslatedWord.selectLanguageSpinner.isEnabled = false
+
+                        addTranslate.englishWordContainer.error = uiState.translatesError
+                        translateAdapter.submitList(uiState.translates)
+
+                        updateMicrophoneIcon(uiState.soundFileName)
+
+                        addHints.root.visibility = uiState.isAdditionalFieldVisible
+
+                        hintAdapter.submitList(uiState.hints)
+                    }
+                    is ModifyWordUiState.ShowAdditionalFields -> {
+                        addHints.root.visibility = uiState.isVisible
+                    }
+                    is ModifyWordUiState.ShowResultModify -> {
+                        val message = if (uiState.isSuccess) "Success" else "Fail"
+                        Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                    is ModifyWordUiState.StartModifyTranslate -> {
+                        addTranslate.cancelEditTranslate.visibility = View.VISIBLE
+                        addTranslate.button.text = "edit"
+                        addTranslate.translateInput.setText(uiState.value)
+                    }
+                    is ModifyWordUiState.CompleteModifyTranslate -> {
+                        addTranslate.cancelEditTranslate.visibility = View.INVISIBLE
+                        addTranslate.button.text = "add"
+                        addTranslate.translateInput.setText("")
+                        translateAdapter.submitList(uiState.translates)
+                    }
+                    is ModifyWordUiState.StartModifyHint -> {
+                        addHints.cancelEditHint.visibility = View.VISIBLE
+                        addHints.button.text = "edit"
+                        addHints.inputHint.setText(uiState.value)
+                    }
+                    is ModifyWordUiState.CompleteModifyHint -> {
+                        addHints.cancelEditHint.visibility = View.INVISIBLE
+                        addHints.button.text = "add"
+                        addHints.inputHint.setText("")
+                        hintAdapter.submitList(uiState.hints)
+                    }
+                    is ModifyWordUiState.DeleteHints -> {
+                        hintAdapter.submitList(uiState.hints)
+                    }
+                    is ModifyWordUiState.DeleteTranslates -> {
+                        translateAdapter.submitList(uiState.translates)
+                    }
+                    is ModifyWordUiState.UpdateSoundFile -> {
+                        updateMicrophoneIcon(uiState.name)
+                    }
+                }
             }
-            Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateMicrophoneIcon(fileName: String?) = with(binding) {
+        if (fileName == null) {
+            recordEnglishPronunciation.setImageResource(R.drawable.mic_active)
+            isRecordAdded.visibility = View.INVISIBLE
+        } else {
+            recordEnglishPronunciation.setImageResource(R.drawable.mic_successful)
+            isRecordAdded.visibility = View.VISIBLE
         }
     }
 
@@ -229,25 +268,10 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     }
 
     private fun setupClickListener() = with(binding) {
-        addTranslate.button.setOnClickListener {
-            viewModel.addTranslate(addTranslate.translateInput.text.toString())
-            addTranslate.translateInput.setText("")
-        }
-
-        addTranslate.cancelEditTranslate.setOnClickListener {
-            viewModel.setEditableTranslate(null)
-            addTranslate.translateInput.setText("")
-        }
-
-        addHints.button.setOnClickListener {
-            viewModel.addHint(addHints.inputHint.text.toString())
-            addHints.inputHint.setText("")
-        }
-
-        addHints.cancelEditHint.setOnClickListener {
-            viewModel.setEditableHint(null)
-            addHints.inputHint.setText("")
-        }
+        addTranslate.button.setOnClickListener { viewModel.addTranslate(addTranslate.translateInput.text.toString()) }
+        addTranslate.cancelEditTranslate.setOnClickListener { viewModel.cancelEditableTranslate() }
+        addHints.button.setOnClickListener { viewModel.addHint(addHints.inputHint.text.toString()) }
+        addHints.cancelEditHint.setOnClickListener { viewModel.cancelEditableHint() }
 
         toggleAdditionalField.setOnClickListener { viewModel.toggleVisibleAdditionalField() }
         saveTranslatedWord.setOnClickListener {
@@ -300,12 +324,10 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             }
             false
         }
-
         popupMenu.show()
     }
 
     private fun editTextScrollListener() {
         ScrollEditTextInsideScrollView.allowScroll(binding.translateWordDescription.descriptionInput)
     }
-
 }

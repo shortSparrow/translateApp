@@ -3,16 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="validationError"
-            type="Boolean" />
-
-        <variable
-            name="editableTranslate"
-            type="com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem" />
-    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,14 +13,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/modify_word_cancel_edit"
-            app:cancelEditTranslate="@{editableTranslate}"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/english_word_container"
-            app:layout_constraintEnd_toEndOf="@+id/english_word_container" />
+            app:layout_constraintEnd_toEndOf="@+id/english_word_container"
+            tools:visibility="visible" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/english_word_container"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            addTranslateError="@{validationError}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gutter"
@@ -58,11 +48,10 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginBottom="16.5dp"
-            app:addTranslateButton="@{editableTranslate}"
+            android:text="@string/add"
             app:layout_constraintBottom_toBottomOf="@+id/english_word_container"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/english_word_container"
-            tools:text="@string/add" />
+            app:layout_constraintTop_toTopOf="@+id/english_word_container" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/translate_chips_rv"

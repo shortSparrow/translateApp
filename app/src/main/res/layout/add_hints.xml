@@ -3,32 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="editableHint"
-            type="com.example.ttanslateapp.domain.model.modify_word_chip.HintItem" />
-
-        <variable
-            name="additionalFieldVisibility"
-            type="Boolean" />
-
-    </data>
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:additionalFieldVisibility="@{additionalFieldVisibility}">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/cancel_edit_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/modify_word_cancel_edit"
-            app:cancelEditHint="@{editableHint}"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/input_hint_container"
-            app:layout_constraintEnd_toEndOf="@+id/input_hint_container" />
+            app:layout_constraintEnd_toEndOf="@+id/input_hint_container"
+            tools:visibility="visible" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_hint_container"
@@ -58,7 +45,6 @@
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            app:addHintButton="@{editableHint}"
             android:text="@string/add"
             app:layout_constraintBottom_toBottomOf="@+id/input_hint_container"
             app:layout_constraintEnd_toEndOf="parent"
