@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.word_list
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,9 @@ class WordListViewModel @Inject constructor(
     val wordList = _wordList
     private var searchJob: Job? = null
 
+    private val _dictionaryIsEmpty = MutableLiveData<Boolean>()
+    val dictionaryIsEmpty: LiveData<Boolean> = _dictionaryIsEmpty
+
     fun deleteWordById(wordId: Long) {
         viewModelScope.launch {
             deleteWordUseCase(wordId)
@@ -34,6 +38,7 @@ class WordListViewModel @Inject constructor(
             getWordListUseCase()
                 .collect {
                     _wordList.value = it
+                    _dictionaryIsEmpty.value = it.isEmpty()
                 }
         }
     }

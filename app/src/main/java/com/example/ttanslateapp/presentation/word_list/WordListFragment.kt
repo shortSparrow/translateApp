@@ -34,14 +34,8 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
         viewModel.loadWordList()
         setAdapter()
-        makeSearchBarClickable()
-        viewModel.wordList.observe(viewLifecycleOwner) { wordListAdapter.submitList(it) }
-
-        wordListAdapter.onClickListener = object : WordListAdapter.OnClickListener {
-            override fun onRootClickListener(wordId: Long) {
-                launchEditWordScreen(wordId)
-            }
-        }
+        clickListeners()
+        observeData()
 
         binding.searchWord.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -58,12 +52,40 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         })
     }
 
-    private fun makeSearchBarClickable() = with(binding) {
+    private fun observeData() = with(binding) {
+        viewModel.wordList.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                nothingFoundContainer.root.visibility = View.VISIBLE
+                wordListRv.visibility = View.GONE
+            } else {
+                nothingFoundContainer.root.visibility = View.GONE
+                wordListRv.visibility = View.VISIBLE
+            }
+            wordListAdapter.submitList(it)
+        }
+
+        viewModel.dictionaryIsEmpty.observe(viewLifecycleOwner) {
+            if (it) {
+                emptyListContainer.root.visibility = View.VISIBLE
+                wordListContainer.visibility = View.GONE
+            } else {
+                emptyListContainer.root.visibility = View.GONE
+                wordListContainer.visibility = View.VISIBLE
+            }
+        }
+
+    }
+
+    private fun clickListeners() = with(binding) {
         searchWord.setOnClickListener { searchWord.isIconified = false }
         addNewWord.setOnClickListener { launchAddWordScreen() }
-//        goToExam.setOnClickListener {
-//            findNavController().navigate(WordListFragmentDirections.actionWordListFragmentToExamKnowledgeWordsFragment())
-//        }
+        emptyListContainer.addFirstWord.setOnClickListener { launchAddWordScreen() }
+
+        wordListAdapter.onClickListener = object : WordListAdapter.OnClickListener {
+            override fun onRootClickListener(wordId: Long) {
+                launchEditWordScreen(wordId)
+            }
+        }
     }
 
     private fun launchAddWordScreen() {
