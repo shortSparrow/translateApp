@@ -61,9 +61,9 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     private fun makeSearchBarClickable() = with(binding) {
         searchWord.setOnClickListener { searchWord.isIconified = false }
         addNewWord.setOnClickListener { launchAddWordScreen() }
-        goToExam.setOnClickListener {
-            findNavController().navigate(WordListFragmentDirections.actionWordListFragmentToExamKnowledgeWordsFragment())
-        }
+//        goToExam.setOnClickListener {
+//            findNavController().navigate(WordListFragmentDirections.actionWordListFragmentToExamKnowledgeWordsFragment())
+//        }
     }
 
     private fun launchAddWordScreen() {

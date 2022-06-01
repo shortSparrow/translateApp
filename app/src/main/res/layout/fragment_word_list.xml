@@ -52,18 +52,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageButton
-                android:id="@+id/go_to_exam"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="@dimen/small_gutter"
-                android:background="@drawable/shape_circle"
-                android:backgroundTint="@color/blue"
-                android:src="@drawable/exam"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/add_new_word" />
-
+<!--            <ImageButton-->
+<!--                android:id="@+id/go_to_exam"-->
+<!--                android:layout_width="55dp"-->
+<!--                android:layout_height="55dp"-->
+<!--                android:layout_marginEnd="16dp"-->
+<!--                android:layout_marginBottom="@dimen/small_gutter"-->
+<!--                android:background="@drawable/shape_circle"-->
+<!--                android:backgroundTint="@color/blue"-->
+<!--                android:src="@drawable/exam"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toStartOf="@+id/add_new_word" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

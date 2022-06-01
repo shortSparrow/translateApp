@@ -10,15 +10,22 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.*
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.presentation.MainActivity
-import com.example.ttanslateapp.util.getExamWorkerDelay
+import com.example.ttanslateapp.util.PushFrequency
+import com.example.ttanslateapp.util.getExamReminderDelayFromNow
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class DailyWorker(val context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
         showNotification()
 
+        val delay = getExamReminderDelayFromNow(
+            frequencyDelay = PushFrequency.ONCE_AT_DAY,
+            hours = 11,
+            minutes = 30
+        ) - Calendar.getInstance().timeInMillis
         val dailyWorkRequest = OneTimeWorkRequestBuilder<DailyWorker>()
-            .setInitialDelay(getExamWorkerDelay(), TimeUnit.MILLISECONDS)
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .addTag(TAG)
             .build()
 
@@ -34,7 +41,8 @@ class DailyWorker(val context: Context, params: WorkerParameters) : Worker(conte
     }
 
     private fun showNotification() {
-        val notificationManager = context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChanel = NotificationChannel(

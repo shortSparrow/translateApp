@@ -11,6 +11,9 @@
     <string name="modify_word_success_save_word">Word saved successfully</string>
     <string name="modify_word_invalid_word_value">Invalid Word</string>
 
+    <!-- Settings fragment -->
+    <string name="settings_reminder_label">Reminder word exam:</string>
+
     <!--Validation -->
     <string name="validation_required_field">This field is required</string>
 
@@ -33,4 +36,5 @@
     <string-array name="translate_from_language">
         <item>UA</item>
     </string-array>
+
 </resources>

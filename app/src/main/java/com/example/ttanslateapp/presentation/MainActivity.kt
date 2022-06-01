@@ -1,25 +1,31 @@
 package com.example.ttanslateapp.presentation
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.data.workers.AlarmReceiver
-import com.example.ttanslateapp.data.workers.DailyWorker
-import com.example.ttanslateapp.presentation.word_list.WordListFragment
-import com.example.ttanslateapp.util.getExamWorkerDelay
-import java.util.*
-import java.util.concurrent.TimeUnit
+import com.example.ttanslateapp.presentation.exam.ExamReminder
+import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
+import com.example.ttanslateapp.util.getAppComponent
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.MaterialToolbar
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var examReminder: ExamReminder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        (application as TranslateApp).component.inject(this)
+
+
+        topAppBarClickListener()
 
 //        // clear work manger by tag
 //        WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DailyWorker.TAG)
@@ -37,14 +43,31 @@ class MainActivity : AppCompatActivity() {
 //                dailyWorkRequest
 //            )
 
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MILLISECOND, getExamWorkerDelay().toInt())
+        examReminder.setInitialReminderIfNeeded()
+    }
 
-        val intent = AlarmReceiver.newIntent(this)
+    private fun topAppBarClickListener() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        val pendingIntent = PendingIntent.getBroadcast(this, 100, intent, PendingIntent.FLAG_IMMUTABLE)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
 
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.settings -> {
+                    navController.navigate(
+                        WordListFragmentDirections.actionWordListFragmentToSettingsFragment()
+                    )
+                    true
+                }
+                R.id.exam -> {
+                    navController.navigate(
+                        WordListFragmentDirections.actionWordListFragmentToExamKnowledgeWordsFragment()
+                    )
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.example.ttanslateapp.di
 import androidx.lifecycle.ViewModel
 import com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsViewModel
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordViewModel
+import com.example.ttanslateapp.presentation.settings.SettingsViewModel
 import com.example.ttanslateapp.presentation.word_list.WordListViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,4 +26,10 @@ interface ViewModelModule {
     @ViewModelKey(ExamKnowledgeWordsViewModel::class)
     @Binds
     fun bindExamKnowledgeWordsViewModel(impl: ExamKnowledgeWordsViewModel): ViewModel
+
+
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
+    @Binds
+    fun bindSettingsViewModel(impl: SettingsViewModel): ViewModel
 }

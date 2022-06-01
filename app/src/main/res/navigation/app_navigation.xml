@@ -18,6 +18,10 @@
             android:id="@+id/action_wordListFragment_to_examKnowledgeWordsFragment"
             app:destination="@id/examKnowledgeWordsFragment"
             app:popUpTo="@id/wordListFragment" />
+        <action
+            android:id="@+id/action_wordListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/wordListFragment" />
     </fragment>
     <fragment
         android:id="@+id/modifyWordFragment"
@@ -37,4 +41,9 @@
         tools:layout="@layout/fragment_exam_knowledge_words"
         android:name="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment"
         android:label="ExamKnowledgeWordsFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.ttanslateapp.presentation.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
