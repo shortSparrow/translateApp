@@ -32,6 +32,7 @@ sealed interface SettingsUiState {
     ) : SettingsUiState
 
     data class IsSuccessUpdateSettings(val isSuccess: Boolean) : SettingsUiState
+    data class SettingsHasBeenChanged(val isSame: Boolean) : SettingsUiState
 }
 
 data class SettingsState(
@@ -47,6 +48,7 @@ class SettingsViewModel @Inject constructor(
     private val _uiState = MutableLiveData<SettingsUiState>()
     val uiState: LiveData<SettingsUiState> = _uiState
     var state = SettingsState()
+    private var initialValues = SettingsState()
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(
@@ -72,6 +74,7 @@ class SettingsViewModel @Inject constructor(
         _uiState.value =
             SettingsUiState.SetInitial(frequency = text, timeHours = hours, timeMinutes = minutes)
         state = state.copy(frequencyValue = text, timeHours = hours, timeMinutes = minutes)
+        initialValues = state
     }
 
     private fun getTimeReminder(): ReminderTime {
@@ -85,6 +88,7 @@ class SettingsViewModel @Inject constructor(
         state = state.copy(frequencyValue = reminderFrequencyList[frequencyPosition])
         _uiState.value =
             SettingsUiState.SetReminderFrequency(reminderFrequencyList[frequencyPosition])
+        checkIsChangedExist()
     }
 
     fun updateTime(minutes: Int, hours: Int) {
@@ -93,9 +97,15 @@ class SettingsViewModel @Inject constructor(
             timeHours = convertTime(hours),
             timeMinutes = convertTime(minutes)
         )
+        checkIsChangedExist()
     }
 
-    private fun convertTime(value: Int):kotlin.String {
+    private fun checkIsChangedExist() {
+        val isSame = state == initialValues
+        _uiState.value = SettingsUiState.SettingsHasBeenChanged(isSame)
+    }
+
+    private fun convertTime(value: Int): kotlin.String {
         return if (value < 10) "0$value" else value.toString()
     }
 
@@ -156,16 +166,16 @@ class SettingsViewModel @Inject constructor(
             return
         }
 
-       try {
-           examReminder.updateReminder(
-               frequency = reminderFrequency,
-               startHour = state.timeHours.toInt(),
-               startMinute = state.timeMinutes.toInt()
-           )
+        try {
+            examReminder.updateReminder(
+                frequency = reminderFrequency,
+                startHour = state.timeHours.toInt(),
+                startMinute = state.timeMinutes.toInt()
+            )
 
-           _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
-       } catch (e: Exception) {
-           _uiState.value = SettingsUiState.IsSuccessUpdateSettings(false)
-       }
+            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
+        } catch (e: Exception) {
+            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(false)
+        }
     }
 }

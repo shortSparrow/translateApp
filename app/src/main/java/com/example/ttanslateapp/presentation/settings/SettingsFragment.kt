@@ -25,7 +25,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         get(SettingsViewModel::class.java)
     }
 
-    lateinit var timePickerDialog: TimePickerDialog
+    private lateinit var timePickerDialog: TimePickerDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,7 +40,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
                 is SettingsUiState.SetInitial -> {
-                    Timber.d("SSS ${uiState.frequency}")
                     setAdapter(uiState.frequency)
                     timePicker.text = "${uiState.timeHours}:${uiState.timeMinutes}"
                 }
@@ -55,6 +54,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }
+                is SettingsUiState.SettingsHasBeenChanged -> {
+                    save.isEnabled = !uiState.isSame
+                }
             }
         }
     }
@@ -64,19 +66,11 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         val adapter = ArrayAdapter(requireContext(), R.layout.item_menu, reminderFrequencyList)
         val menu = (binding.menuText as? AutoCompleteTextView)
         menu?.setAdapter(adapter)
-
         menu?.setOnItemClickListener { parent, view, position, id ->
-            val item = reminderFrequencyList[position]
-            Timber.d("item ${item}")
-            Timber.d("position: ${position}")
-            Timber.d("id: ${id}")
             viewModel.updateUiFrequency(position)
         }
 
-        timePicker.setOnClickListener {
-            timePickerDialog.show()
-        }
-
+        timePicker.setOnClickListener { timePickerDialog.show() }
         timeBeforeNextPush.setOnClickListener {
             val message = viewModel.getTimeBeforeNextPush()
             Toast.makeText(
@@ -85,12 +79,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 Toast.LENGTH_LONG
             ).show()
         }
-
         save.setOnClickListener {
             viewModel.updateSettingsPreferences()
         }
     }
-
 
     private fun setupView() = with(binding) {
         setAdapter()
@@ -107,5 +99,4 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         if (frequency == null) return
         menu?.setText(frequency, false)
     }
-
 }
