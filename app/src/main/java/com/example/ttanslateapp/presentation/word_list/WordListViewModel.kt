@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.word_list
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class WordListViewModel @Inject constructor(
@@ -49,7 +51,7 @@ class WordListViewModel @Inject constructor(
         }
         getSearchedWordListUseCase(searchValue)
             .collect {
-                wordList.value = it
+                wordList.value = it.sortedBy { it.value.length }
             }
     }
 

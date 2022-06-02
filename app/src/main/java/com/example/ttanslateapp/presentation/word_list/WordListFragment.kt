@@ -3,6 +3,8 @@ package com.example.ttanslateapp.presentation.word_list
 import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +17,8 @@ import com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import com.example.ttanslateapp.util.getAppComponent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class WordListFragment : BaseFragment<FragmentWordListBinding>() {
@@ -61,7 +65,9 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
                 nothingFoundContainer.root.visibility = View.GONE
                 wordListRv.visibility = View.VISIBLE
             }
-            wordListAdapter.submitList(it)
+            wordListAdapter.submitList(it) {
+                binding.wordListRv.scrollToPosition(0)
+            }
         }
 
         viewModel.dictionaryIsEmpty.observe(viewLifecycleOwner) {
@@ -98,10 +104,6 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         Timber.d("wordId ${wordId}")
 
         findNavController().navigate(
-//            WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
-//                mode = ModifyWordModes.MODE_EDIT,
-//                wordId = wordId
-//            )
             WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
                 mode = ModifyWordModes.MODE_EDIT,
                 wordId = wordId
@@ -110,6 +112,8 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     }
 
     private fun setAdapter() {
+        binding.wordListRv.itemAnimator = null;
+
         wordListAdapter
             .apply { binding.wordListRv.adapter = this }
 
