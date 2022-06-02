@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.exam.ReminderTime
+import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.util.*
 import com.google.gson.Gson
 import timber.log.Timber
@@ -29,6 +30,8 @@ sealed interface SettingsUiState {
         val timeHours: kotlin.String,
         val timeMinutes: kotlin.String,
     ) : SettingsUiState
+
+    data class IsSuccessUpdateSettings(val isSuccess: Boolean) : SettingsUiState
 }
 
 data class SettingsState(
@@ -153,10 +156,16 @@ class SettingsViewModel @Inject constructor(
             return
         }
 
-        examReminder.updateReminder(
-            frequency = reminderFrequency,
-            startHour = state.timeHours.toInt(),
-            startMinute = state.timeMinutes.toInt()
-        )
+       try {
+           examReminder.updateReminder(
+               frequency = reminderFrequency,
+               startHour = state.timeHours.toInt(),
+               startMinute = state.timeMinutes.toInt()
+           )
+
+           _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
+       } catch (e: Exception) {
+           _uiState.value = SettingsUiState.IsSuccessUpdateSettings(false)
+       }
     }
 }

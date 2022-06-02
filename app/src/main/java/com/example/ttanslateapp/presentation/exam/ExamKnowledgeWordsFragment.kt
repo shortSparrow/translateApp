@@ -2,9 +2,7 @@ package com.example.ttanslateapp.presentation.exam
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
@@ -18,8 +16,11 @@ import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
+import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
+import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
+import timber.log.Timber
 
 
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
@@ -32,6 +33,12 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         get(ExamKnowledgeWordsViewModel::class.java)
     }
     private val examAdapter = ExamAdapter()
+
+    override fun onPrepareOptionsMenu(menu: Menu){
+        super.onPrepareOptionsMenu(menu)
+        val item = menu.findItem(R.id.exam)
+        item.isVisible = false
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,10 +68,28 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         showNextHintButton.setOnClickListener {
             viewModel.showNextHint()
         }
+        emptyListContainer.addFirstWord.setOnClickListener {
+            val action =
+                ExamKnowledgeWordsFragmentDirections.actionExamKnowledgeWordsFragmentToModifyWordFragment(
+                    mode = ModifyWordModes.MODE_ADD
+                )
+            findNavController().navigate(action)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun observeLiveDate() = with(binding) {
+
+        viewModel.examWordListEmpty.observe(viewLifecycleOwner) {
+            if (it) {
+                examContainer.visibility = View.GONE
+                emptyListContainer.root.visibility = View.VISIBLE
+            } else {
+                examContainer.visibility = View.VISIBLE
+                emptyListContainer.root.visibility = View.GONE
+            }
+        }
+
         viewModel.examWordList.observe(viewLifecycleOwner) {
             examAdapter.submitList(it)
         }

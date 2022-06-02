@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentSettingsBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
@@ -48,6 +49,11 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
                 is SettingsUiState.UpdateTime -> {
                     timePicker.text = "${uiState.timeHours}:${uiState.timeMinutes}"
+                }
+                is SettingsUiState.IsSuccessUpdateSettings -> {
+                    val message = if (uiState.isSuccess) "Success" else "Failed"
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
                 }
             }
         }

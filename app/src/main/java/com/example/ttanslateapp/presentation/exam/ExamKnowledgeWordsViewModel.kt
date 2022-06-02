@@ -29,6 +29,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private val _examWordList = MutableLiveData<List<ExamWord>>()
     val examWordList: LiveData<List<ExamWord>> = _examWordList
 
+    private val _examWordListEmpty = MutableLiveData<Boolean>()
+    val examWordListEmpty: LiveData<Boolean> = _examWordListEmpty
+
     private val _currentWord = MutableLiveData<ExamWord>()
     val currentWord: LiveData<ExamWord> = _currentWord
 
@@ -103,8 +106,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
 
             if (list.isNotEmpty()) {
+                _examWordListEmpty.value = false
                 _examWordList.value = list
                 _currentWord.value = list[0]
+            } else {
+                _examWordListEmpty.value = true
             }
         }
     }

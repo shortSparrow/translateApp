@@ -40,7 +40,11 @@
         android:id="@+id/examKnowledgeWordsFragment"
         tools:layout="@layout/fragment_exam_knowledge_words"
         android:name="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment"
-        android:label="ExamKnowledgeWordsFragment" />
+        android:label="ExamKnowledgeWordsFragment" >
+        <action
+            android:id="@+id/action_examKnowledgeWordsFragment_to_modifyWordFragment"
+            app:destination="@id/modifyWordFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.ttanslateapp.presentation.settings.SettingsFragment"
