@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
@@ -155,10 +156,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             uiState.observe(viewLifecycleOwner) { uiState ->
                 when (uiState) {
                     is ModifyWordUiState.IsWordLoading -> {
+//                        Timber.d("IsWordLoading")
                         if (uiState.isLoading) {
-                            root.visibility = View.INVISIBLE
+                            rootScrollView.visibility = View.INVISIBLE
                         } else {
-                            root.visibility = View.VISIBLE
+                            rootScrollView.visibility = View.VISIBLE
                         }
                     }
                     is ModifyWordUiState.EditFieldError -> {
@@ -166,7 +168,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                         addTranslate.englishWordContainer.error = uiState.translatesError
                     }
                     is ModifyWordUiState.PreScreen -> {
-                        Timber.d("ModifyWordUiState.PreScreen: ${uiState}")
+//                        Timber.d("PreScreen")
 
                         inputTranslatedWord.englishWordInput.setText(uiState.wordValue)
                         inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
@@ -199,7 +201,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     is ModifyWordUiState.ShowResultModify -> {
                         val message = if (uiState.isSuccess) "Success" else "Fail"
                         Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
-                        requireActivity().supportFragmentManager.popBackStack()
+                        findNavController().popBackStack()
                     }
                     is ModifyWordUiState.StartModifyTranslate -> {
                         addTranslate.cancelEditTranslate.visibility = View.VISIBLE

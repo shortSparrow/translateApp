@@ -1,10 +1,7 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
@@ -13,6 +10,7 @@ import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.ValidateResult
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -132,7 +130,7 @@ class ModifyWordViewModel @Inject constructor(
 
     private fun getWordById(id: Long) {
         _uiState.value = ModifyWordUiState.IsWordLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        val loadedWord = viewModelScope.async(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
             Timber.d("getWordItemUseCase $word")
 
@@ -146,8 +144,12 @@ class ModifyWordViewModel @Inject constructor(
                 editableWordId = word.id,
                 langFrom = word.langFrom
             )
-            _uiState.postValue(state.toUiState())
-            _uiState.postValue(ModifyWordUiState.IsWordLoading(false))
+        }
+
+        viewModelScope.launch {
+            loadedWord.await()
+            _uiState.value = ModifyWordUiState.IsWordLoading(false)
+            _uiState.value = state.toUiState()
         }
     }
 

@@ -95,7 +95,13 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     }
 
     private fun launchEditWordScreen(wordId: Long) {
+        Timber.d("wordId ${wordId}")
+
         findNavController().navigate(
+//            WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
+//                mode = ModifyWordModes.MODE_EDIT,
+//                wordId = wordId
+//            )
             WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
                 mode = ModifyWordModes.MODE_EDIT,
                 wordId = wordId
