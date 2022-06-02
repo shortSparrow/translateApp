@@ -36,7 +36,10 @@
                 android:id="@+id/translate_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
                 android:maxLines="@integer/input_max_lines"
+                android:nextFocusDown="@id/description_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

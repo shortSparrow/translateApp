@@ -2,9 +2,13 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.Manifest.permission
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.PopupMenu
+import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
@@ -21,6 +25,7 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapt
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
+import com.example.ttanslateapp.util.setOnTextChange
 import timber.log.Timber
 
 
@@ -76,6 +81,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         editTextScrollListener()
         setAdaptersClickListener()
         setupView()
+
     }
 
 
@@ -90,8 +96,26 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
-//        addTranslate.translateInput.setOnTextChange {viewModel.resetTranslatesError()}
-//        inputTranslatedWord.englishWordInput.setOnTextChange {viewModel.resetWordValueError()}
+        addTranslate.translateInput.setOnTextChange {viewModel.resetTranslatesError()}
+        inputTranslatedWord.englishWordInput.setOnTextChange {viewModel.resetWordValueError()}
+
+        // focus next input on click action key
+        listOf(
+            inputTranslatedWord.englishWordInput,
+            inputTranslatedWord.englishTranscriptionInput,
+            addTranslate.translateInput
+        ).forEach {
+            it.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_NEXT || event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+                    v.focusSearch(View.FOCUS_DOWN).requestFocus()
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+
+
         addHints.hintChipsRv.adapter = hintAdapter
         addHints.hintChipsRv.itemAnimator = null
 
