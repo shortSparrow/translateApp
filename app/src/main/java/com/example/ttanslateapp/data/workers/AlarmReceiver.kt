@@ -5,6 +5,9 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -19,6 +22,7 @@ import javax.inject.Inject
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var examReminder: ExamReminder
+    private val soundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
     init {
         (TranslateApp.applicationContext() as TranslateApp).component.inject(this)
@@ -33,7 +37,6 @@ class AlarmReceiver : BroadcastReceiver() {
             ) as NotificationManager
             createNotificationChannel(notificationManager)
 
-
             val openExamFragmentIntent = NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.app_navigation)
@@ -45,6 +48,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setContentText("Пройдіть тест, щоб перевірити на скільки добре ви вивчили слова")
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setAutoCancel(true)
+                .setSound(soundUri)
+                .setVibrate(longArrayOf(0, 500, 100))
                 .setContentIntent(openExamFragmentIntent)
                 .build()
 
@@ -61,7 +66,12 @@ class AlarmReceiver : BroadcastReceiver() {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
             )
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()
 
+            notificationChanel.setSound(soundUri,audioAttributes)
             notificationManager.createNotificationChannel(notificationChanel)
         }
     }
