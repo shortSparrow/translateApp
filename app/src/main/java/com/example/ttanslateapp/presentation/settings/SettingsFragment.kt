@@ -2,6 +2,7 @@ package com.example.ttanslateapp.presentation.settings
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -31,6 +32,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
+        viewModel.setupData(savedInstanceState == null)
         setupView()
         observeData()
         onClickListeners()
@@ -42,6 +44,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 is SettingsUiState.SetInitial -> {
                     setAdapter(uiState.frequency)
                     timePicker.text = "${uiState.timeHours}:${uiState.timeMinutes}"
+                    save.isEnabled = !uiState.isSettingsTheSame
                 }
                 is SettingsUiState.SetReminderFrequency -> {
                     setAdapter(uiState.frequency)
@@ -50,12 +53,15 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     timePicker.text = "${uiState.timeHours}:${uiState.timeMinutes}"
                 }
                 is SettingsUiState.IsSuccessUpdateSettings -> {
-                    val message = if (uiState.isSuccess) "Success" else "Failed"
+                    val message = if (uiState.isSuccess) "You successfully update settings" else "Error happened"
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }
                 is SettingsUiState.SettingsHasBeenChanged -> {
                     save.isEnabled = !uiState.isSame
+                }
+                is SettingsUiState.TimeBeforePush -> {
+                    leftTimeBeforeNextPush.text = uiState.time
                 }
             }
         }
@@ -71,14 +77,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         }
 
         timePicker.setOnClickListener { timePickerDialog.show() }
-        timeBeforeNextPush.setOnClickListener {
-            val message = viewModel.getTimeBeforeNextPush()
-            Toast.makeText(
-                requireContext(),
-                message,
-                Toast.LENGTH_LONG
-            ).show()
-        }
         save.setOnClickListener {
             viewModel.updateSettingsPreferences()
         }

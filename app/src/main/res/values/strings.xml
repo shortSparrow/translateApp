@@ -19,6 +19,7 @@
 
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>
+    <string name="left_before_next_reminder">Left before next reminder:</string>
 
     <!--Validation -->
     <string name="validation_required_field">This field is required</string>

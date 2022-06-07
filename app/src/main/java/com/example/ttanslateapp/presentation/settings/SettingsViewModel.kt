@@ -3,20 +3,21 @@ package com.example.ttanslateapp.presentation.settings
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.SharedPreferences
+import android.os.CountDownTimer
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.exam.ReminderTime
-import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.util.*
 import com.google.gson.Gson
-import timber.log.Timber
 import java.lang.String
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.round
 
 sealed interface SettingsUiState {
     data class SetReminderFrequency(val frequency: kotlin.String) : SettingsUiState
@@ -29,10 +30,13 @@ sealed interface SettingsUiState {
         val frequency: kotlin.String,
         val timeHours: kotlin.String,
         val timeMinutes: kotlin.String,
+        val isSettingsTheSame: Boolean = true
     ) : SettingsUiState
 
     data class IsSuccessUpdateSettings(val isSuccess: Boolean) : SettingsUiState
     data class SettingsHasBeenChanged(val isSame: Boolean) : SettingsUiState
+
+    data class TimeBeforePush(val time: kotlin.String) : SettingsUiState
 }
 
 data class SettingsState(
@@ -57,6 +61,30 @@ class SettingsViewModel @Inject constructor(
         )
 
     init {
+//        val position =
+//            when (sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)) {
+//                PushFrequency.NONE -> 0
+//                PushFrequency.ONCE_AT_DAY -> 1
+//                PushFrequency.ONCE_AT_THREE_DAYS -> 2
+//                PushFrequency.ONCE_AT_SIX_DAYS -> 3
+//                else -> 0
+//            }
+//        val text = reminderFrequencyList[position]
+//
+//        val time = getTimeReminder()
+//        val hours = convertTime(time.hours)
+//        val minutes = convertTime(time.minutes)
+//
+//        Log.d("XXXX", "hours: ${hours}")
+//
+//        _uiState.value =
+//            SettingsUiState.SetInitial(frequency = text, timeHours = hours, timeMinutes = minutes)
+//        state = state.copy(frequencyValue = text, timeHours = hours, timeMinutes = minutes)
+//        initialValues = state
+//        showTimeBeforePush()
+    }
+
+    private fun setInitialData() {
         val position =
             when (sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)) {
                 PushFrequency.NONE -> 0
@@ -71,10 +99,28 @@ class SettingsViewModel @Inject constructor(
         val hours = convertTime(time.hours)
         val minutes = convertTime(time.minutes)
 
+//        Log.d("XXXX", "hours: ${hours}")
+
         _uiState.value =
             SettingsUiState.SetInitial(frequency = text, timeHours = hours, timeMinutes = minutes)
         state = state.copy(frequencyValue = text, timeHours = hours, timeMinutes = minutes)
         initialValues = state
+        showTimeBeforePush()
+    }
+
+    fun setupData(initialLaunch: Boolean) {
+        if (initialLaunch) {
+            setInitialData()
+        } else {
+            _uiState.value =
+                SettingsUiState.SetInitial(
+                    frequency = state.frequencyValue,
+                    timeHours = state.timeHours,
+                    timeMinutes = state.timeMinutes,
+                    isSettingsTheSame = state == initialValues
+                )
+            showTimeBeforePush()
+        }
     }
 
     private fun getTimeReminder(): ReminderTime {
@@ -109,29 +155,23 @@ class SettingsViewModel @Inject constructor(
         return if (value < 10) "0$value" else value.toString()
     }
 
-    fun getTimeBeforeNextPush(): kotlin.String {
-        val sharedPref: SharedPreferences =
-            application.getSharedPreferences(
-                MY_PREFERENCES,
-                AppCompatActivity.MODE_PRIVATE
-            )
-
+    private fun showTimeBeforePush() {
         val getNotificationPref =
             sharedPref.getLong(LEFT_BEFORE_NOTIFICATION, -1L)
+        if (getNotificationPref == -1L) return
+        val millis = getNotificationPref - Calendar.getInstance().timeInMillis
 
-        val message = if (getNotificationPref != null) {
-            if (getNotificationPref == -1L) {
-                "preferences storage value is empty string"
-            } else {
-                val millis = getNotificationPref - Calendar.getInstance().timeInMillis
-                val hms = convertTimeToHMS(millis)
-                "Before next notification: $hms"
+        val timer = object : CountDownTimer(millis, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val hms = convertTimeToHMS(millisUntilFinished)
+                _uiState.value = SettingsUiState.TimeBeforePush(time = hms)
             }
-        } else {
-            "Something went wrong"
-        }
 
-        return message
+            override fun onFinish() {
+
+            }
+        }
+        timer.start()
     }
 
     @SuppressLint("DefaultLocale")
@@ -163,6 +203,7 @@ class SettingsViewModel @Inject constructor(
 
         if (reminderFrequency == PushFrequency.NONE) {
             examReminder.resetReminder()
+            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
             return
         }
 
