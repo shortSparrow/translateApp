@@ -88,6 +88,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 examContainer.visibility = View.VISIBLE
                 emptyListContainer.root.visibility = View.GONE
             }
+            progressBar.visibility = View.GONE
         }
 
         viewModel.examWordList.observe(viewLifecycleOwner) {
