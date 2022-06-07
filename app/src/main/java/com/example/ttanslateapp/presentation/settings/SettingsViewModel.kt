@@ -60,30 +60,6 @@ class SettingsViewModel @Inject constructor(
             AppCompatActivity.MODE_PRIVATE
         )
 
-    init {
-//        val position =
-//            when (sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)) {
-//                PushFrequency.NONE -> 0
-//                PushFrequency.ONCE_AT_DAY -> 1
-//                PushFrequency.ONCE_AT_THREE_DAYS -> 2
-//                PushFrequency.ONCE_AT_SIX_DAYS -> 3
-//                else -> 0
-//            }
-//        val text = reminderFrequencyList[position]
-//
-//        val time = getTimeReminder()
-//        val hours = convertTime(time.hours)
-//        val minutes = convertTime(time.minutes)
-//
-//        Log.d("XXXX", "hours: ${hours}")
-//
-//        _uiState.value =
-//            SettingsUiState.SetInitial(frequency = text, timeHours = hours, timeMinutes = minutes)
-//        state = state.copy(frequencyValue = text, timeHours = hours, timeMinutes = minutes)
-//        initialValues = state
-//        showTimeBeforePush()
-    }
-
     private fun setInitialData() {
         val position =
             when (sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)) {
@@ -98,8 +74,6 @@ class SettingsViewModel @Inject constructor(
         val time = getTimeReminder()
         val hours = convertTime(time.hours)
         val minutes = convertTime(time.minutes)
-
-//        Log.d("XXXX", "hours: ${hours}")
 
         _uiState.value =
             SettingsUiState.SetInitial(frequency = text, timeHours = hours, timeMinutes = minutes)

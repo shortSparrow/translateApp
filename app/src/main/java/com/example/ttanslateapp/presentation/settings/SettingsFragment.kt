@@ -61,6 +61,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     save.isEnabled = !uiState.isSame
                 }
                 is SettingsUiState.TimeBeforePush -> {
+                    leftTimeBeforeNextPushLabel.visibility = View.VISIBLE
                     leftTimeBeforeNextPush.text = uiState.time
                 }
             }

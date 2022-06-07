@@ -86,9 +86,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gutter"
             android:text="@string/left_before_next_reminder"
+            android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/left_time_before_next_push"
