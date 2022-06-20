@@ -1,7 +1,10 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
@@ -137,12 +140,13 @@ class ModifyWordViewModel @Inject constructor(
             state = state.copy(
                 wordValue = word.value,
                 translates = word.translates,
+                transcription = word.transcription,
                 description = word.description,
                 selectableLanguage = word.langTo,
                 hints = word.hints,
                 soundFileName = word.sound?.fileName,
                 editableWordId = word.id,
-                langFrom = word.langFrom
+                langFrom = word.langFrom,
             )
         }
 

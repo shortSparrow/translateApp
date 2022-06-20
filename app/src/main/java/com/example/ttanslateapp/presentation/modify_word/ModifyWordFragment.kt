@@ -2,13 +2,12 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.Manifest.permission
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
@@ -96,8 +95,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
-        addTranslate.translateInput.setOnTextChange {viewModel.resetTranslatesError()}
-        inputTranslatedWord.englishWordInput.setOnTextChange {viewModel.resetWordValueError()}
+        addTranslate.translateInput.setOnTextChange { viewModel.resetTranslatesError() }
+        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.resetWordValueError() }
 
         // focus next input on click action key
         listOf(
@@ -192,8 +191,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                         addTranslate.englishWordContainer.error = uiState.translatesError
                     }
                     is ModifyWordUiState.PreScreen -> {
-//                        Timber.d("PreScreen")
-
                         inputTranslatedWord.englishWordInput.setText(uiState.wordValue)
                         inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
                         inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)

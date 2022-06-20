@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.exam
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -128,7 +129,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
 
         val answerIsCorrect = _currentWord.value?.translates?.find { translate ->
-            translate.value.lowercase() == answerQuery
+            answerQuery == translate.value.lowercase().trim()
         }
 
         if (answerIsCorrect != null) {
