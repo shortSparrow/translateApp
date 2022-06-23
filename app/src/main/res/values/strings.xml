@@ -16,6 +16,10 @@
     <string name="modify_word_show_more">Розкрити</string>
     <string name="modify_word_success_save_word">Word saved successfully</string>
     <string name="modify_word_invalid_word_value">Invalid Word</string>
+    <string name="modify_word_priority">Priority</string>
+    <string name="modify_word_additional">Additional</string>
+    <string name="modify_word_microphone">Microphone icon for record word pronunciation</string>
+
 
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>

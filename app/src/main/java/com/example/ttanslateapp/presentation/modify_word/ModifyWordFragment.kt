@@ -189,12 +189,14 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                     is ModifyWordUiState.EditFieldError -> {
                         inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
                         addTranslate.englishWordContainer.error = uiState.translatesError
+                        wordPriorityContainer.error = uiState.priorityValidation
                     }
                     is ModifyWordUiState.PreScreen -> {
                         inputTranslatedWord.englishWordInput.setText(uiState.wordValue)
                         inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
                         inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)
                         translateWordDescription.descriptionInput.setText(uiState.description)
+                        wordPriorityValue.setText(uiState.priority.toString())
 
                         val langList = mutableMapOf<String, Int>()
                         val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
@@ -303,7 +305,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 description = translateWordDescription.descriptionInput.text.toString(),
                 transcription = inputTranslatedWord.englishTranscriptionInput.text.toString(),
                 langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
-                langTo = "UA"
+                langTo = "UA",
+                priority = wordPriorityValue.text.toString()
             )
         }
     }

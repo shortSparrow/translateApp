@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.modify_word
 
+import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -57,6 +58,16 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
+    private fun validationPriority(value: String): ValidateResult {
+        return if (value.isBlank()) {
+            ValidateResult(successful = false, errorMessage = "this field is required")
+        } else if (!TextUtils.isDigitsOnly(value)) {
+            ValidateResult(successful = false, errorMessage = "must contain only digits")
+        } else {
+            ValidateResult(successful = true)
+        }
+    }
+
     private fun validateTranslates(value: List<TranslateWordItem>): ValidateResult {
         return if (value.isEmpty()) {
             ValidateResult(successful = false, errorMessage = "this field is required")
@@ -79,21 +90,26 @@ class ModifyWordViewModel @Inject constructor(
         transcription: String = "",
         langFrom: String = "",
         langTo: String = "",
+        priority: String,
     ) {
         val wordValidation = validateWordValue(value)
+        val priorityValidation = validationPriority(priority)
         val translatesValidation = validateTranslates(state.translates)
 
-        val hasError = listOf(wordValidation, translatesValidation).any { !it.successful }
+        val hasError =
+            listOf(wordValidation, translatesValidation, priorityValidation).any { !it.successful }
 
         if (hasError) {
             state = state.copy(
                 wordValueError = wordValidation.errorMessage,
-                translatesError = translatesValidation.errorMessage
+                translatesError = translatesValidation.errorMessage,
+                priorityValidation = priorityValidation.errorMessage,
             )
 
             _uiState.value = ModifyWordUiState.EditFieldError(
                 wordValueError = wordValidation.errorMessage,
-                translatesError = translatesValidation.errorMessage
+                translatesError = translatesValidation.errorMessage,
+                priorityValidation = priorityValidation.errorMessage,
             )
             return
         }
@@ -102,7 +118,7 @@ class ModifyWordViewModel @Inject constructor(
 
         val word = ModifyWord(
             id = state.editableWordId ?: 0L,
-            priority = ModifyWord.DEFAULT_PRIORITY,
+            priority = priority.toInt(),
             value = value,
             translates = state.translates,
             description = description,
@@ -163,6 +179,7 @@ class ModifyWordViewModel @Inject constructor(
         return ModifyWordUiState.PreScreen(
             wordValue = wordValue,
             wordValueError = wordValueError,
+            priority = priority,
             transcription = transcription,
             description = description,
             translates = translates,
