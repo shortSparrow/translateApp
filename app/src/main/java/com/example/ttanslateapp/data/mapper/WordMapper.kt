@@ -37,6 +37,8 @@ class WordMapper @Inject constructor() {
         hints = wordDb.hints
             ?: emptyList(),
         transcription = wordDb.transcription,
+        createdAt = wordDb.createdAt,
+        updatedAt = wordDb.updatedAt,
     )
 
     fun wordDbToExamWord(wordDb: TranslatedWordDb): ExamWord = ExamWord(
@@ -46,7 +48,7 @@ class WordMapper @Inject constructor() {
         hints = wordDb.hints ?: emptyList(),
         priority = wordDb.priority,
         status = ExamWordStatus.UNPROCESSED,
-        answerVariants = emptyList()
+        answerVariants = emptyList(),
     )
 
 
@@ -60,7 +62,9 @@ class WordMapper @Inject constructor() {
         langFrom = modifyWord.langFrom,
         langTo = modifyWord.langTo,
         hints = modifyWord.hints,
-        transcription = modifyWord.transcription
+        transcription = modifyWord.transcription,
+        createdAt = modifyWord.createdAt,
+        updatedAt = modifyWord.updatedAt,
     )
 
     fun examAnswerToExamAnswerDb(examAnswer: ExamAnswerVariant) = ExamAnswerVariantDb(
@@ -70,7 +74,7 @@ class WordMapper @Inject constructor() {
 
     fun examAnswerDbToExamAnswer(examAnswer: ExamAnswerVariantDb) = ExamAnswerVariant(
         id = examAnswer.id,
-        value = examAnswer.value
+        value = examAnswer.value,
     )
 
 }

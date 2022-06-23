@@ -270,7 +270,9 @@ fun generateModifyWordList(): List<ModifyWord> {
             langFrom = "en",
             langTo = "ua",
             sound = null,
-            transcription = ""
+            transcription = "",
+            createdAt = 1656003349041,
+            updatedAt = 1656003449041,
         ),
 
         ModifyWord(
@@ -308,7 +310,9 @@ fun generateModifyWordList(): List<ModifyWord> {
             langFrom = "en",
             langTo = "ua",
             sound = null,
-            transcription = ""
+            transcription = "",
+            createdAt = 1656003249041,
+            updatedAt = 1656003249041,
         ),
         ModifyWord(
             priority = 5,
@@ -357,7 +361,9 @@ fun generateModifyWordList(): List<ModifyWord> {
             langFrom = "en",
             langTo = "ua",
             sound = null,
-            transcription = ""
+            transcription = "",
+            createdAt = 1656003649041,
+            updatedAt = 1656003949041,
         ),
 
 
@@ -390,7 +396,9 @@ fun generateModifyWordList(): List<ModifyWord> {
             langFrom = "en",
             langTo = "ua",
             sound = null,
-            transcription = ""
+            transcription = "",
+            createdAt = 1656003349041,
+            updatedAt = 1656004449041,
         ),
 
         ModifyWord(
@@ -409,9 +417,10 @@ fun generateModifyWordList(): List<ModifyWord> {
             langFrom = "en",
             langTo = "ua",
             sound = null,
-            transcription = ""
+            transcription = "",
+            createdAt = 1656003322041,
+            updatedAt = 1656003749041,
         ),
-
 
         ModifyWord(
             priority = 5,
@@ -429,7 +438,9 @@ fun generateModifyWordList(): List<ModifyWord> {
             langFrom = "en",
             langTo = "ua",
             sound = null,
-            transcription = ""
+            transcription = "",
+            createdAt = 1656003382041,
+            updatedAt = 1656003721041,
         )
     )
 }

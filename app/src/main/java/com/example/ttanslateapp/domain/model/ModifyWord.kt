@@ -14,7 +14,9 @@ data class ModifyWord @Inject constructor(
     val langFrom: String,
     val langTo: String,
     val hints: List<HintItem>,
-    val transcription: String
+    val transcription: String,
+    val createdAt: Long,
+    val updatedAt: Long,
 ) {
     companion object {
         const val UNDEFINED_ID = 0L

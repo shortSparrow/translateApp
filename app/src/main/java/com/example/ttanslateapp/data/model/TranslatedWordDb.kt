@@ -1,9 +1,6 @@
 package com.example.ttanslateapp.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
@@ -61,8 +58,14 @@ data class TranslatedWordDb(
     val translates: List<TranslateWordItem>,
     val description: String,
     val sound: WordAudio?, // english sound
+    @ColumnInfo(name = "lang_from")
     val langFrom: String,
     val langTo: String,
     val hints: List<HintItem>?,
     val transcription: String,
+
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long,
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long,
 )

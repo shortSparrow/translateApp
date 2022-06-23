@@ -99,7 +99,6 @@ class ModifyWordViewModel @Inject constructor(
         }
 
         val sound = state.soundFileName?.let { WordAudio(it) }
-        Timber.d("SOUND is $sound")
 
         val word = ModifyWord(
             id = state.editableWordId ?: 0L,
@@ -111,7 +110,9 @@ class ModifyWordViewModel @Inject constructor(
             langFrom = langFrom,
             langTo = langTo,
             hints = state.hints,
-            transcription = transcription
+            transcription = transcription,
+            createdAt = state.createdAt ?: getTimestamp(),
+            updatedAt = getTimestamp(),
         )
 
         viewModelScope.launch {
@@ -147,6 +148,7 @@ class ModifyWordViewModel @Inject constructor(
                 soundFileName = word.sound?.fileName,
                 editableWordId = word.id,
                 langFrom = word.langFrom,
+                createdAt = word.createdAt
             )
         }
 
@@ -203,7 +205,6 @@ class ModifyWordViewModel @Inject constructor(
         state = state.copy(translates = newList, editableTranslate = null)
         _uiState.postValue(ModifyWordUiState.CompleteModifyTranslate(newList))
     }
-
 
     fun addHint(hintValue: String) {
         if (hintValue.isBlank()) return
@@ -271,7 +272,6 @@ class ModifyWordViewModel @Inject constructor(
         _uiState.value =
             ModifyWordUiState.StartModifyTranslate(value = editableTranslateWordItem.value)
     }
-
 
     fun toggleVisibleAdditionalField() {
         val newIsAdditionalFieldVisible =

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TranslatedWordDao {
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME")
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY created_at DESC")
     fun getWordList(): Flow<List<TranslatedWordDb>>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :wordValue")
@@ -18,7 +18,7 @@ interface TranslatedWordDao {
     suspend fun getExamWordList(count: Int): List<TranslatedWordDb>
 
     @Query("UPDATE $TRANSLATED_WORDS_TABLE_NAME SET priority=:priority WHERE id = :id")
-   suspend fun updatePriorityById(priority: Int, id: Long): Int
+    suspend fun updatePriorityById(priority: Int, id: Long): Int
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): TranslatedWordDb
