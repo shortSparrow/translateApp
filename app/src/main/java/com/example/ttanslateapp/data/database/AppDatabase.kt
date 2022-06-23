@@ -27,7 +27,6 @@ abstract class AppDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE $TRANSLATED_WORDS_TABLE_NAME ADD COLUMN created_at INTEGER NOT NULL DEFAULT ${System.currentTimeMillis()}")
                 database.execSQL("ALTER TABLE $TRANSLATED_WORDS_TABLE_NAME ADD COLUMN updated_at INTEGER NOT NULL DEFAULT ${System.currentTimeMillis()}")
-                database.execSQL("ALTER TABLE $TRANSLATED_WORDS_TABLE_NAME RENAME COLUMN langFrom TO lang_from")
             }
         }
 

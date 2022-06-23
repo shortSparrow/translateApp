@@ -58,7 +58,6 @@ data class TranslatedWordDb(
     val translates: List<TranslateWordItem>,
     val description: String,
     val sound: WordAudio?, // english sound
-    @ColumnInfo(name = "lang_from")
     val langFrom: String,
     val langTo: String,
     val hints: List<HintItem>?,
