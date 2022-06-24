@@ -1,6 +1,7 @@
 package com.example.ttanslateapp.presentation.word_list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.lifecycle.lifecycleScope
@@ -32,14 +33,18 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
     private val wordListAdapter = WordListAdapter()
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
-        viewModel.loadWordList()
         setAdapter()
         clickListeners()
         observeData()
+
+        binding.searchWord.setOnQueryTextFocusChangeListener { v, hasFocus ->
+            viewModel.searchInputHasFocus = hasFocus
+        }
 
         binding.searchWord.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -49,37 +54,44 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                Timber.d("SEARCH")
-                viewModel.searchDebounced(query.toString())
+                if (viewModel.searchInputHasFocus) {
+                    viewModel.searchDebounced(query.toString())
+                }
+
                 return true
             }
         })
     }
 
     private fun observeData() = with(binding) {
-        viewModel.wordList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                nothingFoundContainer.root.visibility = View.VISIBLE
-                wordListRv.visibility = View.GONE
-            } else {
-                nothingFoundContainer.root.visibility = View.GONE
-                wordListRv.visibility = View.VISIBLE
-            }
-            wordListAdapter.submitList(it) {
-                binding.wordListRv.scrollToPosition(0)
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            when (uiState) {
+                is WordListViewModelState.IsLoading -> {
+
+                }
+                is WordListViewModelState.LoadSuccess -> {
+                    if (uiState.wordList.isEmpty()) {
+                        nothingFoundContainer.root.visibility = View.VISIBLE
+                        wordListRv.visibility = View.GONE
+                    } else {
+                        nothingFoundContainer.root.visibility = View.GONE
+                        wordListRv.visibility = View.VISIBLE
+                    }
+
+                    if (uiState.dictionaryIsEmpty) {
+                        emptyListContainer.root.visibility = View.VISIBLE
+                        wordListContainer.visibility = View.GONE
+                    } else {
+                        emptyListContainer.root.visibility = View.GONE
+                        wordListContainer.visibility = View.VISIBLE
+                    }
+
+                    wordListAdapter.submitList(uiState.wordList) {
+                        binding.wordListRv.scrollToPosition(0)
+                    }
+                }
             }
         }
-
-        viewModel.dictionaryIsEmpty.observe(viewLifecycleOwner) {
-            if (it) {
-                emptyListContainer.root.visibility = View.VISIBLE
-                wordListContainer.visibility = View.GONE
-            } else {
-                emptyListContainer.root.visibility = View.GONE
-                wordListContainer.visibility = View.VISIBLE
-            }
-        }
-
     }
 
     private fun clickListeners() = with(binding) {
@@ -101,8 +113,6 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     }
 
     private fun launchEditWordScreen(wordId: Long) {
-        Timber.d("wordId ${wordId}")
-
         findNavController().navigate(
             WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
                 mode = ModifyWordModes.MODE_EDIT,
@@ -112,7 +122,7 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     }
 
     private fun setAdapter() {
-        binding.wordListRv.itemAnimator = null;
+        binding.wordListRv.itemAnimator = null
 
         wordListAdapter
             .apply { binding.wordListRv.adapter = this }

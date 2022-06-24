@@ -18,7 +18,8 @@
     <string name="modify_word_invalid_word_value">Invalid Word</string>
     <string name="modify_word_priority">Priority</string>
     <string name="modify_word_additional">Additional</string>
-    <string name="modify_word_microphone">Microphone icon for record word pronunciation</string>
+    <string name="modify_word_microphone">Record pronunciation</string>
+    <string name="modify_word_add_new_word">Add new word</string>
 
 
     <!-- Settings fragment -->

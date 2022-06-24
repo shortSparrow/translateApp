@@ -1,6 +1,5 @@
 package com.example.ttanslateapp.presentation.word_list
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,26 +7,33 @@ import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
-import com.example.ttanslateapp.domain.use_case.GetWordListUseCase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
+
+sealed interface WordListViewModelState {
+    data class IsLoading(val isLoading: Boolean) : WordListViewModelState
+    data class LoadSuccess(val wordList: List<WordRV>, val dictionaryIsEmpty: Boolean) :
+        WordListViewModelState
+}
+
 class WordListViewModel @Inject constructor(
-    private val getWordListUseCase: GetWordListUseCase,
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
     private val deleteWordUseCase: DeleteWordUseCase
 ) : ViewModel() {
-    // FIXME: a lot of invokes, and adapter shadow looks strange
-    private val _wordList = MutableLiveData<List<WordRV>>()
-    val wordList = _wordList
-    private var searchJob: Job? = null
+    private val _uiState = MutableLiveData<WordListViewModelState>()
+    val uiState: LiveData<WordListViewModelState> = _uiState
 
-    private val _dictionaryIsEmpty = MutableLiveData<Boolean>()
-    val dictionaryIsEmpty: LiveData<Boolean> = _dictionaryIsEmpty
+    private var searchJob: Job? = null
+    private var dictionaryIsEmpty = false
+
+    var searchInputHasFocus = false
+
+    init {
+        searchDebounced("")
+    }
 
     fun deleteWordById(wordId: Long) {
         viewModelScope.launch {
@@ -35,31 +41,27 @@ class WordListViewModel @Inject constructor(
         }
     }
 
-    fun loadWordList() {
-        viewModelScope.launch {
-            getWordListUseCase()
-                .collect {
-                    _wordList.value = it
-                    _dictionaryIsEmpty.value = it.isEmpty()
-                }
-        }
-    }
-
     private suspend fun searchWord(searchValue: String) {
-        if (searchValue.isEmpty()) {
-            loadWordList()
-        }
         getSearchedWordListUseCase(searchValue)
             .collect {
-                wordList.value = it.sortedBy { it.value.length }
+                val list = it.sortedBy { it.value.length }
+
+                if (searchValue.isEmpty()) {
+                    dictionaryIsEmpty = it.isEmpty()
+                }
+
+                _uiState.value = WordListViewModelState.LoadSuccess(
+                    wordList = list,
+                    dictionaryIsEmpty = dictionaryIsEmpty
+                )
             }
     }
 
     fun searchDebounced(searchText: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(500)
             searchWord(searchText)
         }
     }
+
 }
