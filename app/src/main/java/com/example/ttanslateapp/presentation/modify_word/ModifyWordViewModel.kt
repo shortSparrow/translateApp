@@ -203,7 +203,8 @@ class ModifyWordViewModel @Inject constructor(
                     value = translateValue,
                     id = UUID.randomUUID().toString(),
                     createdAt = getTimestamp(),
-                    updatedAt = getTimestamp()
+                    updatedAt = getTimestamp(),
+                    isHidden = false
                 )
 
         val hintAlreadyExist = translateList.find { it.id == newTranslateItem.id }
@@ -288,6 +289,15 @@ class ModifyWordViewModel @Inject constructor(
         state = state.copy(editableTranslate = editableTranslateWordItem)
         _uiState.value =
             ModifyWordUiState.StartModifyTranslate(value = editableTranslateWordItem.value)
+    }
+
+    fun toggleIsHiddenTranslate(item: TranslateWordItem) {
+        val newTranslateList = state.translates.map {
+            if (it.id == item.id) return@map it.copy(isHidden = !item.isHidden)
+            return@map it
+        }
+        state = state.copy(translates = newTranslateList)
+        _uiState.value = ModifyWordUiState.CompleteModifyTranslate(translates = newTranslateList)
     }
 
     fun toggleVisibleAdditionalField() {

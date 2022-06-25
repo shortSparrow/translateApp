@@ -23,6 +23,7 @@ abstract class ModifyWordAdapter<
 
     interface OnItemClickListener<in T : Chip> {
         fun onItemClick(it: View, item: T)
+        fun onLongItemClick(it: View, item: T)
     }
 
     interface OnItemMultiClickListener<in T : Chip> : OnItemClickListener<T> {

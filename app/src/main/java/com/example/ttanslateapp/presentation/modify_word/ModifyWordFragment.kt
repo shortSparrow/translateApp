@@ -68,11 +68,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         binding.model = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-
-        // FIXME check with audio
-//        if (savedInstanceState == null) {
-//            launchRightMode()
-//        }
         // FIXME Livedata observe twice
         launchRightMode()
         setObservers()
@@ -179,7 +174,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
             uiState.observe(viewLifecycleOwner) { uiState ->
                 when (uiState) {
                     is ModifyWordUiState.IsWordLoading -> {
-//                        Timber.d("IsWordLoading")
                         if (uiState.isLoading) {
                             rootScrollView.visibility = View.INVISIBLE
                         } else {
@@ -278,6 +272,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 override fun onItemClick(it: View, item: TranslateWordItem) {
                     createTranslatePopupMenu(it, item)
                 }
+
+                override fun onLongItemClick(it: View, item: TranslateWordItem) {
+                    Log.d("SSSSS", "LONG CLICK")
+                    viewModel.toggleIsHiddenTranslate(item)
+                }
             }
 
         hintAdapter.clickListener =
@@ -289,6 +288,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 override fun onItemDeleteClick(item: HintItem) {
                     viewModel.deleteHint(item.id)
                 }
+
+                override fun onLongItemClick(it: View, item: HintItem) {}
             }
     }
 

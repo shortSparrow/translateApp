@@ -44,7 +44,11 @@ class WordListViewModel @Inject constructor(
     private suspend fun searchWord(searchValue: String) {
         getSearchedWordListUseCase(searchValue)
             .collect {
-                val list = if (searchValue.isEmpty()) it else it.sortedBy { it.value.length }
+                val list = it
+                    .map { it.copy(translates = it.translates.filter { it.isHidden == false }) }
+                    .apply {
+                        if (searchValue.isEmpty()) it else it.sortedBy { it.value.length }
+                    }
 
                 if (searchValue.isEmpty()) {
                     dictionaryIsEmpty = it.isEmpty()

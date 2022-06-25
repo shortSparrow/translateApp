@@ -227,225 +227,227 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 }
 
 
-fun generateModifyWordList(): List<ModifyWord> {
-    return listOf(
-        ModifyWord(
-            priority = 5,
-            value = "Apple",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "яблуко"
-                ),
-                TranslateWordItem(
-                    id = "2",
-                    createdAt = 2L,
-                    updatedAt = 2L,
-                    value = "яблучко"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "an fruit"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "green"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "you can eat this"
-                ),
-            ),
-            description = "",
-            langFrom = "en",
-            langTo = "ua",
-            sound = null,
-            transcription = "",
-            createdAt = 1656003349041,
-            updatedAt = 1656003449041,
-        ),
-
-        ModifyWord(
-            priority = 5,
-            value = "Car",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "Машина"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "може їздити"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "має 4 колеса"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "робить біп-біп"
-                ),
-            ),
-            description = "",
-            langFrom = "en",
-            langTo = "ua",
-            sound = null,
-            transcription = "",
-            createdAt = 1656003249041,
-            updatedAt = 1656003249041,
-        ),
-        ModifyWord(
-            priority = 5,
-            value = "Frog",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "жаба"
-                ),
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "жабеня"
-                ),
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "жабка"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "зелене"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "квакає"
-                ),
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "живе біля водойми"
-                ),
-            ),
-            description = "звичайна жабка, що живе у пруді",
-            langFrom = "en",
-            langTo = "ua",
-            sound = null,
-            transcription = "",
-            createdAt = 1656003649041,
-            updatedAt = 1656003949041,
-        ),
-
-
-        ModifyWord(
-            priority = 5,
-            value = "Fish",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "риба"
-                ),
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "рибка"
-                )
-            ),
-            hints = listOf(
-                HintItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "плаває"
-                ),
-            ),
-            description = "",
-            langFrom = "en",
-            langTo = "ua",
-            sound = null,
-            transcription = "",
-            createdAt = 1656003349041,
-            updatedAt = 1656004449041,
-        ),
-
-        ModifyWord(
-            priority = 5,
-            value = "Computer",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "комп'ютер"
-                ),
-            ),
-            hints = listOf(),
-            description = "",
-            langFrom = "en",
-            langTo = "ua",
-            sound = null,
-            transcription = "",
-            createdAt = 1656003322041,
-            updatedAt = 1656003749041,
-        ),
-
-        ModifyWord(
-            priority = 5,
-            value = "ball",
-            translates = listOf(
-                TranslateWordItem(
-                    id = "1",
-                    createdAt = 1L,
-                    updatedAt = 1L,
-                    value = "м'яч"
-                ),
-            ),
-            hints = listOf(),
-            description = "",
-            langFrom = "en",
-            langTo = "ua",
-            sound = null,
-            transcription = "",
-            createdAt = 1656003382041,
-            updatedAt = 1656003721041,
-        )
-    )
-}
-
-
+//fun generateModifyWordList(): List<ModifyWord> {
+//    return listOf(
+//        ModifyWord(
+//            priority = 5,
+//            value = "Apple",
+//            translates = listOf(
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "яблуко",
+//                    isHidden = false,
+//                ),
+//                TranslateWordItem(
+//                    id = "2",
+//                    createdAt = 2L,
+//                    updatedAt = 2L,
+//                    value = "яблучко",
+//                    isHidden = true,
+//                )
+//            ),
+//            hints = listOf(
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "an fruit"
+//                ),
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "green"
+//                ),
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "you can eat this"
+//                ),
+//            ),
+//            description = "",
+//            langFrom = "en",
+//            langTo = "ua",
+//            sound = null,
+//            transcription = "",
+//            createdAt = 1656003349041,
+//            updatedAt = 1656003449041,
+//        ),
+//
+//        ModifyWord(
+//            priority = 5,
+//            value = "Car",
+//            translates = listOf(
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "Машина"
+//                )
+//            ),
+//            hints = listOf(
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "може їздити"
+//                ),
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "має 4 колеса"
+//                ),
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "робить біп-біп"
+//                ),
+//            ),
+//            description = "",
+//            langFrom = "en",
+//            langTo = "ua",
+//            sound = null,
+//            transcription = "",
+//            createdAt = 1656003249041,
+//            updatedAt = 1656003249041,
+//        ),
+//        ModifyWord(
+//            priority = 5,
+//            value = "Frog",
+//            translates = listOf(
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "жаба"
+//                ),
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "жабеня"
+//                ),
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "жабка"
+//                )
+//            ),
+//            hints = listOf(
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "зелене"
+//                ),
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "квакає"
+//                ),
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "живе біля водойми"
+//                ),
+//            ),
+//            description = "звичайна жабка, що живе у пруді",
+//            langFrom = "en",
+//            langTo = "ua",
+//            sound = null,
+//            transcription = "",
+//            createdAt = 1656003649041,
+//            updatedAt = 1656003949041,
+//        ),
+//
+//
+//        ModifyWord(
+//            priority = 5,
+//            value = "Fish",
+//            translates = listOf(
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "риба"
+//                ),
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "рибка"
+//                )
+//            ),
+//            hints = listOf(
+//                HintItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "плаває"
+//                ),
+//            ),
+//            description = "",
+//            langFrom = "en",
+//            langTo = "ua",
+//            sound = null,
+//            transcription = "",
+//            createdAt = 1656003349041,
+//            updatedAt = 1656004449041,
+//        ),
+//
+//        ModifyWord(
+//            priority = 5,
+//            value = "Computer",
+//            translates = listOf(
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "комп'ютер"
+//                ),
+//            ),
+//            hints = listOf(),
+//            description = "",
+//            langFrom = "en",
+//            langTo = "ua",
+//            sound = null,
+//            transcription = "",
+//            createdAt = 1656003322041,
+//            updatedAt = 1656003749041,
+//        ),
+//
+//        ModifyWord(
+//            priority = 5,
+//            value = "ball",
+//            translates = listOf(
+//                TranslateWordItem(
+//                    id = "1",
+//                    createdAt = 1L,
+//                    updatedAt = 1L,
+//                    value = "м'яч"
+//                ),
+//            ),
+//            hints = listOf(),
+//            description = "",
+//            langFrom = "en",
+//            langTo = "ua",
+//            sound = null,
+//            transcription = "",
+//            createdAt = 1656003382041,
+//            updatedAt = 1656003721041,
+//        )
+//    )
+//}
+//
+//
 
 
 
