@@ -83,25 +83,12 @@
                 app:layout_constraintTop_toTopOf="@+id/lang_to"
                 tools:listitem="@layout/translate_chip" />
 
-            <TextView
-                android:id="@+id/show_more"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:text="@string/modify_word_show_more"
-                android:textAlignment="textEnd"
-                android:textColor="@color/purple_700"
-                android:translationZ="1dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/show_more_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
+                android:paddingBottom="@dimen/gutter"
                 app:layout_constraintTop_toBottomOf="@+id/translate_list">
 
                 <TextView
@@ -114,11 +101,13 @@
 
                 <TextView
                     android:id="@+id/description_value"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/gutter"
-                    app:layout_constraintStart_toEndOf="@+id/description_title"
-                    app:layout_constraintTop_toTopOf="@+id/description_title"
+                    android:layout_marginLeft="@dimen/small_gutter"
+                    android:layout_marginTop="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/description_title"
                     tools:text="Lorem impsum..." />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,6 +119,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/show_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/modify_word_show_more"
+                android:textAlignment="textEnd"
+                android:textColor="@color/purple_700"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <ImageButton

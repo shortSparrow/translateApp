@@ -304,8 +304,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 value = inputTranslatedWord.englishWordInput.text.toString(),
                 description = translateWordDescription.descriptionInput.text.toString(),
                 transcription = inputTranslatedWord.englishTranscriptionInput.text.toString(),
-                langFrom = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
-                langTo = "UA",
+                langFrom = "EN",
+                langTo = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
                 priority = wordPriorityValue.text.toString()
             )
         }

@@ -1,11 +1,12 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
 import android.media.MediaPlayer
+import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.data.model.Sound
 import com.example.ttanslateapp.databinding.WordRvItemBinding
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
@@ -16,16 +17,56 @@ import java.io.IOException
 class WordItemViewHolder(
     val binding: WordRvItemBinding,
     private val player: MediaPlayer,
-    private val playingList: MutableMap<Long, Boolean>
+    private val playingList: MutableMap<Long, Boolean>,
+    private val expandedList: HashMap<Long, Boolean>,
 ) : RecyclerView.ViewHolder(binding.root) {
+
+    private fun setBaseExpanded(word: WordRV) {
+        if (word.description.isEmpty()) {
+            expandedList[word.id] = false
+        }
+
+        if (expandedList[word.id] == null) {
+            expandedList[word.id] = false
+        }
+
+    }
+
+    private fun setExpandedStyle(isExpanded: Boolean) = with(binding) {
+        if (isExpanded) {
+            showMoreContent.visibility = View.VISIBLE
+            showMore.text = "Sow less"
+        } else {
+            showMoreContent.visibility = View.GONE
+            showMore.text = "Sow more"
+        }
+    }
+
     fun bind(word: WordRV, onClickListener: WordListAdapter.OnClickListener?) = with(binding) {
+        setBaseExpanded(word = word)
+        val isExpanded = expandedList[word.id]!!
+        setExpandedStyle(isExpanded)
+
         langFrom.text = word.langFrom
         englishWord.text = word.value
         langTo.text = word.langTo
         transcription.text = word.transcription
+
+
         if (word.description.isNotEmpty()) {
             descriptionValue.text = word.description
+            showMore.visibility = View.VISIBLE
+        } else {
+            descriptionValue.text = ""
+            showMore.visibility = View.GONE
         }
+
+        showMore.setOnClickListener {
+            val newIsExpanded = !expandedList[word.id]!!
+            expandedList[word.id] = newIsExpanded
+            setExpandedStyle(newIsExpanded)
+        }
+
 
         val translateAdapter = TranslateAdapter()
         translateList.adapter = translateAdapter

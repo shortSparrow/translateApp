@@ -14,10 +14,13 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
     private val player = MediaPlayer()
     private val playingList = mutableMapOf<Long, Boolean>()
 
+    private val expandedList = hashMapOf<Long, Boolean>()
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordItemViewHolder {
         return WordRvItemBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
-            .run { WordItemViewHolder(this, player, playingList) }
+            .run { WordItemViewHolder(this, player, playingList,expandedList) }
     }
 
     override fun onBindViewHolder(holder: WordItemViewHolder, position: Int) {

@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TranslatedWordDao {
+    // TODO remove as useless
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY created_at DESC")
     fun getWordList(): Flow<List<TranslatedWordDb>>
 
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :wordValue")
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :wordValue ORDER BY created_at DESC")
     fun searchWordList(wordValue: String): Flow<List<TranslatedWordDb>>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC LIMIT :count")
