@@ -2,7 +2,7 @@ package com.example.ttanslateapp.presentation.modify_word.adapter.translate
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.ttanslateapp.databinding.TranslateChipBinding
+import com.example.ttanslateapp.databinding.ItemTranslateChipBinding
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 
@@ -11,7 +11,7 @@ private typealias ClickListener = ModifyWordAdapter.OnItemClickListener<Translat
 class TranslateAdapter : ModifyWordAdapter<TranslateWordItem, TranslateItemViewHolder, ClickListener>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TranslateItemViewHolder {
-        return TranslateChipBinding
+        return ItemTranslateChipBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
             .run { TranslateItemViewHolder(this) }
     }

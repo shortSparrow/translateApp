@@ -1,7 +1,6 @@
 package com.example.ttanslateapp.presentation.modify_word.adapter.hints
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ttanslateapp.databinding.HintChipBinding
-import com.example.ttanslateapp.databinding.TranslateChipBinding
+import com.example.ttanslateapp.databinding.ItemHintChipBinding
 
-class HintItemViewHolder(val binding: HintChipBinding) : RecyclerView.ViewHolder(binding.root)
+class HintItemViewHolder(val binding: ItemHintChipBinding) : RecyclerView.ViewHolder(binding.root)

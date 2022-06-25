@@ -81,7 +81,7 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/lang_to"
                 app:layout_constraintTop_toTopOf="@+id/lang_to"
-                tools:listitem="@layout/translate_chip" />
+                tools:listitem="@layout/item_translate_chip" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/show_more_content"

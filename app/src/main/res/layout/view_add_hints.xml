@@ -59,7 +59,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_hint_container"
-            tools:listitem="@layout/hint_chip" />
+            tools:listitem="@layout/item_hint_chip" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

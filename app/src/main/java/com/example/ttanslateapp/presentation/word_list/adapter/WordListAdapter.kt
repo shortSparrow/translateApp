@@ -4,10 +4,8 @@ import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.example.ttanslateapp.databinding.WordRvItemBinding
+import com.example.ttanslateapp.databinding.ItemWordRvBinding
 import com.example.ttanslateapp.domain.model.WordRV
-import com.example.ttanslateapp.presentation.MainActivity
-import kotlin.collections.set
 
 class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
     var onClickListener: OnClickListener? = null
@@ -18,7 +16,7 @@ class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterD
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordItemViewHolder {
-        return WordRvItemBinding
+        return ItemWordRvBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
             .run { WordItemViewHolder(this, player, playingList,expandedList) }
     }

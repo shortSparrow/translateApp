@@ -2,7 +2,7 @@ package com.example.ttanslateapp.presentation.modify_word.adapter.hints
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.ttanslateapp.databinding.HintChipBinding
+import com.example.ttanslateapp.databinding.ItemHintChipBinding
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 
@@ -11,7 +11,7 @@ private typealias ClickListener = ModifyWordAdapter.OnItemMultiClickListener<Hin
 class HintAdapter : ModifyWordAdapter<HintItem, HintItemViewHolder, ClickListener>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HintItemViewHolder {
-        return HintChipBinding
+        return ItemHintChipBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
             .run { HintItemViewHolder(this) }
     }

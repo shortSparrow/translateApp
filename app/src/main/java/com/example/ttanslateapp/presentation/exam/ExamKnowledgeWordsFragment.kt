@@ -17,10 +17,8 @@ import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
-import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
-import timber.log.Timber
 
 
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
@@ -179,7 +177,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private fun renderShowVariants(examWord: ExamWord) = with(binding) {
         for (i in (0 until examWord.answerVariants.size)) {
             val view = LayoutInflater.from(showVariantsContainer.context)
-                .inflate(R.layout.translate_chip, showVariantsContainer, false)
+                .inflate(R.layout.item_translate_chip, showVariantsContainer, false)
             val textItem = view.findViewById<TextView>(R.id.chip_item)
             textItem.text = examWord.answerVariants[i].value
 

@@ -25,7 +25,7 @@
 
             <include
                 android:id="@+id/input_translated_word"
-                layout="@layout/input_translated_word"
+                layout="@layout/view_input_translated_word"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
 
             <include
                 android:id="@+id/add_translate"
-                layout="@layout/add_translate"
+                layout="@layout/view_add_translate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gutter"
@@ -42,7 +42,7 @@
 
             <include
                 android:id="@+id/translate_word_description"
-                layout="@layout/word_description"
+                layout="@layout/view_word_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gutter"
@@ -109,8 +109,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/word_priority_container" />
 
             <include
+                tools:layout_height="200dp"
                 android:id="@+id/add_hints"
-                layout="@layout/add_hints"
+                layout="@layout/view_add_hints"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

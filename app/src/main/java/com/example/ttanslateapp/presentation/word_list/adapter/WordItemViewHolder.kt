@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.databinding.WordRvItemBinding
+import com.example.ttanslateapp.databinding.ItemWordRvBinding
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.getAudioPath
@@ -15,7 +15,7 @@ import timber.log.Timber
 import java.io.IOException
 
 class WordItemViewHolder(
-    val binding: WordRvItemBinding,
+    val binding: ItemWordRvBinding,
     private val player: MediaPlayer,
     private val playingList: MutableMap<Long, Boolean>,
     private val expandedList: HashMap<Long, Boolean>,
