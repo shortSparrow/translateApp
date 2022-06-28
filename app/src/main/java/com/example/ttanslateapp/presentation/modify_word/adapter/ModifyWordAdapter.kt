@@ -1,6 +1,7 @@
 package com.example.ttanslateapp.presentation.modify_word.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,7 +18,9 @@ abstract class ModifyWordAdapter<
     class Differ<T : Chip> : DiffUtil.ItemCallback<T>() {
         @SuppressLint("DiffUtilEquals")
         /** As long as subclasses of Chip are data classes, this suppress can be used  */
-        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean = oldItem == newItem
+        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+            return oldItem == newItem
+        }
         override fun areItemsTheSame(oldItem: T, newItem: T): Boolean = oldItem.id == newItem.id
     }
 

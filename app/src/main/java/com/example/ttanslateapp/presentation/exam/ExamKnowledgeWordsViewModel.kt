@@ -1,20 +1,23 @@
 package com.example.ttanslateapp.presentation.exam
 
+import android.app.Application
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
-import com.example.ttanslateapp.presentation.exam.AnswerResult.*
+import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeState
+import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 enum class AnswerResult {
@@ -24,95 +27,91 @@ enum class AnswerResult {
 class ExamKnowledgeWordsViewModel @Inject constructor(
     val getExamWordListUseCase: GetExamWordListUseCase,
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
-//    val modifyWordUseCase: ModifyWordUseCase
-
+    val modifyWordUseCase: ModifyWordUseCase,
+    val application: Application
 ) : ViewModel() {
-    private val _examWordList = MutableLiveData<List<ExamWord>>()
-    val examWordList: LiveData<List<ExamWord>> = _examWordList
 
-    private val _examWordListEmpty = MutableLiveData<Boolean>()
-    val examWordListEmpty: LiveData<Boolean> = _examWordListEmpty
+    private val _uiState = MutableLiveData<ExamKnowledgeUiState>()
+    val uiState: LiveData<ExamKnowledgeUiState> = _uiState
 
-    private val _currentWord = MutableLiveData<ExamWord>()
-    val currentWord: LiveData<ExamWord> = _currentWord
+    private var state = ExamKnowledgeState()
+    private fun getTimestamp(): Long = System.currentTimeMillis()
 
-    private val _answerResult = MutableLiveData(EMPTY)
-    val answerResult: LiveData<AnswerResult> = _answerResult
+    init {
+        generateWordsList()
+    }
 
-    private val _isExamEnd = MutableLiveData(false)
-    val isExamEnd: LiveData<Boolean> = _isExamEnd
+    private fun generateWordsList() {
+        state = state.copy(isLoading = true)
+        _uiState.value = ExamKnowledgeUiState.IsLoadingWords
 
-    private val _countShownHints = MutableLiveData(0)
-    val countShownHints: LiveData<Int> = _countShownHints
+        viewModelScope.launch {
+            // FIXME change mapIndexed on smt like find, etc
+            val list = getExamWordListUseCase().mapIndexed { index, examWord ->
+                if (index == 0) examWord.copy(
+                    status = ExamWordStatus.IN_PROCESS,
+                    isActive = true
+                ) else examWord
+            }
 
-    private val _allHintsShown = MutableLiveData(false)
-    val allHintsShown: LiveData<Boolean> = _allHintsShown
+            val firstWord = list[0]
+            state = state.copy(
+                examWordListEmpty = list.isEmpty(),
+                examWordList = list,
+                currentWord = if (list.isEmpty()) null else firstWord,
+                countShownHints = if (firstWord.hints.isEmpty()) 0 else 1,
+                isLoading = false
+            )
+            if (list.isEmpty()) {
+                _uiState.value = ExamKnowledgeUiState.LoadedEmptyList
+            } else {
+                _uiState.value = ExamKnowledgeUiState.LoadedWordsSuccess(
+                    examWordList = state.examWordList,
+                    currentWord = state.currentWord!!,
+                    countShownHints = state.countShownHints,
+                    activeWordPosition = state.activeWordPosition
+                )
+            }
 
-    private val _isShownHintsVisible = MutableLiveData(false)
-    val isShownHintsVisible: LiveData<Boolean> = _isShownHintsVisible
-
-    private val _isShownVariants = MutableLiveData(false)
-    val isShownVariants: LiveData<Boolean> = _isShownVariants
-
-    private val _isInoutWordInvalid = MutableLiveData(false)
-    val isInoutWordInvalid: LiveData<Boolean> = _isInoutWordInvalid
-
-    var activeWordPosition = 0
-
-
-//    init {
-//        viewModelScope.launch {
-//            // set Modify Word list (for dev - quickly fill database)
-//            for (word in generateModifyWordList()) {
-//                modifyWordUseCase(word)
-//            }
-//        }
-//    }
+        }
+    }
 
     fun toggleVisibleHint() {
-        if (_countShownHints.value == 0) {
-            _countShownHints.value = 1
-        }
-        _isShownHintsVisible.value = !toBooleanSafety(_isShownHintsVisible.value)
+        state = state.copy(isShownHintsVisible = !state.isShownHintsVisible)
+        val nextHintButtonVisibility =
+            if (state.allHintsShown || state.currentWord?.hints?.isEmpty() == true || state.countShownHints >= state.currentWord!!.hints.size) View.GONE else View.VISIBLE
+        _uiState.value = ExamKnowledgeUiState.ToggleIsVisibleHint(
+            state.isShownHintsVisible,
+            nextHintButtonVisibility = nextHintButtonVisibility
+        )
     }
 
     fun toggleVisibleVariants() {
-        _isShownVariants.value = !toBooleanSafety(_isShownVariants.value)
+        state = state.copy(isShownVariants = !state.isShownVariants)
+        _uiState.value = ExamKnowledgeUiState.ToggleIsVisibleVariants(state.isShownVariants)
+
     }
 
-    private fun toBooleanSafety(value: Boolean?): Boolean {
-        return value ?: false
+    fun handleExamCheckAnswer(examWordInputValue: String) {
+        checkAnswer(examWordInputValue)
     }
 
     fun showNextHint() {
-        val newCount = _countShownHints.value?.plus(1) ?: 0
+        var newCount = state.countShownHints.plus(1)
 
-        _currentWord.value?.let {
-            if (newCount == it.hints.size) {
-                _allHintsShown.value = true
-            }
+        state.currentWord?.let {
+            val allHintsShown = newCount == it.hints.size
 
             if (newCount > it.hints.size) {
-                return
+                newCount -= 1
             }
 
-            _countShownHints.value = newCount
-        }
-    }
-
-    fun generateWordsList() {
-        viewModelScope.launch {
-            val list = getExamWordListUseCase().mapIndexed { index, examWord ->
-                if (index == 0) examWord.copy(status = ExamWordStatus.IN_PROCESS) else examWord
-            }
-
-            if (list.isNotEmpty()) {
-                _examWordListEmpty.value = false
-                _examWordList.value = list
-                _currentWord.value = list[0]
-            } else {
-                _examWordListEmpty.value = true
-            }
+            state = state.copy(allHintsShown = allHintsShown, countShownHints = newCount)
+            _uiState.value = ExamKnowledgeUiState.ShowNextHint(
+                allHintsShown = allHintsShown,
+                countShownHints = newCount,
+                currentWord = state.currentWord!!
+            )
         }
     }
 
@@ -120,334 +119,198 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         return answer.trim().isNotEmpty()
     }
 
-    fun checkAnswer(answer: String, cb: () -> Unit) {
+    fun handleAnswerEditText(answer: String) {
+        Log.d("handleAnswerEditText", "${state.currentWord?.status}")
+        val userGaveAnswer = state.currentWord?.status != ExamWordStatus.IN_PROCESS
+        Log.d("handleAnswerEditText_userGaveAnswer", "${userGaveAnswer}")
+        _uiState.value =
+            ExamKnowledgeUiState.HandleAnswerInput(
+                value = answer,
+                userGaveAnswer = userGaveAnswer
+            )
+    }
+
+
+    fun toggleVisibilityHiddenDescription() {
+        val visibility =
+            if (state.hiddenTranslateDescriptionVisibility == View.VISIBLE) View.GONE else View.VISIBLE
+        state = state.copy(hiddenTranslateDescriptionVisibility = visibility)
+        _uiState.value =
+            ExamKnowledgeUiState.ToggleVisibilityHiddenDescription(visibility = visibility)
+    }
+
+    fun toggleExpandedAllTranslates() {
+        val currentWord = state.currentWord!!
+        val isExpanded = !currentWord.isTranslateExpanded
+        state = state.copy(currentWord = currentWord.copy(isTranslateExpanded = isExpanded))
+
+        val translates = state.currentWord?.translates ?: emptyList()
+        _uiState.value = ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded(
+            isExpanded = isExpanded,
+            translates = translates
+        )
+    }
+
+    fun addHiddenTranslate(value: String) {
+        val hiddenTranslate = TranslateWordItem(
+            id = UUID.randomUUID().toString(),
+            createdAt = getTimestamp(),
+            updatedAt = getTimestamp(),
+            value = value,
+            isHidden = true
+        )
+        state.currentWord?.let {
+            val translates = it.translates.plus(hiddenTranslate)
+
+            state = state.copy(currentWord = it.copy(translates = translates))
+            _uiState.value = ExamKnowledgeUiState.UpdateHiddenTranslates(
+                translates = state.currentWord?.translates ?: emptyList(),
+                clearInputValue = true
+            )
+            // TODO add to room
+//        viewModelScope.launch {
+//            modifyWordUseCase.updateTranslates(currentWord.translates)
+//        }
+        }
+    }
+
+    private fun checkAnswer(answer: String) {
         val answerQuery = answer.trim().lowercase()
         val isValid = validateAnswer(answerQuery)
         if (!isValid) {
-            _isInoutWordInvalid.value = true
             return
         }
 
-        val answerIsCorrect = _currentWord.value?.translates?.find { translate ->
+        val matchedAnswer = state.currentWord?.translates?.find { translate ->
             answerQuery == translate.value.lowercase().trim()
         }
+        val isAnswerCorrect = matchedAnswer != null
 
-        if (answerIsCorrect != null) {
-            _answerResult.value = SUCCESS
-        } else {
-            _answerResult.value = FAILED
-        }
-
-        updatePositionColors()
-        updatePriority()
-        if (_examWordList.value?.last()?.id == _currentWord.value?.id) {
-            _isExamEnd.value = true
-        }
-
-        // invoke callback if validate is success
-        cb()
-    }
-
-
-    private fun updatePositionColors() {
-        val newList = _examWordList.value?.mapIndexed { index, it ->
-
-            if (index == activeWordPosition) {
-                return@mapIndexed it.copy(status = getCorrectStatus())
-            }
-
-            return@mapIndexed it
-        }
-
-        newList?.let {
-            _examWordList.value = it
-        }
-    }
-
-    private fun updatePriority() {
-        val isAnswerCorrect = getIsAnswerCorrect()
-        val newList = _examWordList.value?.mapIndexed { index, it ->
-            var newPriority = if (isAnswerCorrect) it.priority - 1 else it.priority + 1
+        state.currentWord?.let { currentWord ->
+            var newPriority =
+                if (isAnswerCorrect) currentWord.priority.minus(1) else currentWord.priority.plus(1)
             if (newPriority < 0) newPriority = 0
+            val newStatus =
+                if (isAnswerCorrect) ExamWordStatus.SUCCESS else ExamWordStatus.FAIL
 
-            if (index == activeWordPosition) {
-                viewModelScope.launch {
-                    updateWordPriorityUseCase(priority = newPriority, id = it.id)
-                }
-                return@mapIndexed it.copy(priority = newPriority)
+            val updatedCurrentWord =
+                currentWord.copy(
+                    priority = newPriority,
+                    status = newStatus,
+                    isFreeze = true,
+                    givenAnswer = answer
+                )
+
+            viewModelScope.launch {
+                updateWordPriorityUseCase(priority = newPriority, id = currentWord.id)
             }
 
-            return@mapIndexed it
-        }
+            val updatedWordList = state.examWordList.map {
+                if (it.id == currentWord.id) return@map updatedCurrentWord
+                return@map it
+            }
 
-        newList?.let {
-            _examWordList.value = it
+            var isExamEnd = false
+            if (state.examWordList.last().id == currentWord.id) {
+                isExamEnd = true
+            }
+            state = state.copy(
+                examWordList = updatedWordList,
+                currentWord = updatedCurrentWord,
+                isExamEnd = isExamEnd // TODO maybe delete from state
+            )
+
+            _uiState.value = ExamKnowledgeUiState.CheckedAnswer(
+                status = state.currentWord!!.status,
+                examWordList = state.examWordList,
+                isExamEnd = isExamEnd,
+                givenAnswer = answer
+            )
         }
     }
 
-    fun goToNextQuestion() {
-        activeWordPosition++
-        if (activeWordPosition >= _examWordList.value!!.size) {
+
+    private fun updatePositionColors(): List<ExamWord> {
+        val newList = state.examWordList.mapIndexed { index, examWord ->
+            if (index == state.activeWordPosition) return@mapIndexed examWord.copy(
+                status = updatesStatusForSkippedQuestion(
+                    examWord
+                ),
+                isActive = true
+            )
+            return@mapIndexed examWord.copy(
+                status = updatesStatusForSkippedQuestion(examWord),
+                isActive = false
+            )
+        }
+        return newList
+    }
+
+    private fun updatesStatusForSkippedQuestion(word: ExamWord): ExamWordStatus {
+        if (word.isFreeze) return word.status // when user already answered the question
+        if (!word.isFreeze && state.examWordList.elementAt(state.activeWordPosition).id == word.id) return ExamWordStatus.IN_PROCESS // when word is currentWord (without answer yet)
+        return ExamWordStatus.UNPROCESSED // when user skipped word
+    }
+
+    fun toggleIsHiddenTranslate(item: TranslateWordItem) {
+
+        state.currentWord?.let {
+            if (!it.isFreeze) return // forbidden add/modify word translates if user don't answer yet
+            // FIXME doesn't work (not update style, areTheSame not invoke), why?
+//            it.translates.find { it.id == item.id }?.isHidden = !item.isHidden
+//            Log.d("newTranslateList", "${it.translates}")
+
+            val translates =
+                it.translates.map { if (it.id == item.id) return@map it.copy(isHidden = !it.isHidden) else return@map it }
+
+
+            state = state.copy(currentWord = it.copy(translates = translates))
+            _uiState.value =
+                ExamKnowledgeUiState.UpdateHiddenTranslates(translates = translates)
+        }
+    }
+
+    fun goPrev() {
+        if (state.activeWordPosition - 1 < 0) {
             return
         }
-        goNext()
+
+        val newActiveWordPosition = state.activeWordPosition - 1
+        handleNavigation(newActiveWordPosition)
     }
 
-    private fun getIsAnswerCorrect(): Boolean {
-        return _answerResult.value!! == SUCCESS
-    }
 
-    private fun getCorrectStatus(): ExamWordStatus {
-        return when (_answerResult.value!!) {
-            SUCCESS -> {
-                ExamWordStatus.SUCCESS
-            }
-            FAILED -> {
-                ExamWordStatus.FAIL
-            }
-            EMPTY -> {
-                ExamWordStatus.IN_PROCESS
-            }
+    fun goToNextQuestion() {
+        if (state.activeWordPosition + 1 >= state.examWordList.size) {
+            return
         }
+        val newActiveWordPosition = state.activeWordPosition + 1
+        handleNavigation(newActiveWordPosition)
     }
 
-    private fun goNext() {
-        resetWordSateToDefault()
-        updatePositionColors()
-        _currentWord.value = _examWordList.value!![activeWordPosition]
-    }
 
-    private fun resetWordSateToDefault() {
-        // close hints and variants when go to text word
-        _isShownHintsVisible.value = false
-        _allHintsShown.value = false
-        _isShownVariants.value = false
-        _answerResult.value = EMPTY
+    private fun handleNavigation(newActiveWordPosition: Int) {
+        state = state.copy(
+            activeWordPosition = newActiveWordPosition
+        )
+
+        val newList = updatePositionColors()
+        Log.d("newList", "${newList}")
+
+        state = state.copy(
+            examWordList = newList,
+            currentWord = newList[newActiveWordPosition],
+            isShownHintsVisible = false,
+            allHintsShown = false,
+            isShownVariants = false,
+            countShownHints = if (newList[newActiveWordPosition].hints.isEmpty()) 0 else 1
+        )
+
+        _uiState.value = ExamKnowledgeUiState.QuestionNavigation(
+            examWordList = state.examWordList,
+            currentWord = state.currentWord!!,
+            activeWordPosition = newActiveWordPosition,
+            countShownHints = state.countShownHints
+        )
     }
 }
-
-
-//fun generateModifyWordList(): List<ModifyWord> {
-//    return listOf(
-//        ModifyWord(
-//            priority = 5,
-//            value = "Apple",
-//            translates = listOf(
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "яблуко",
-//                    isHidden = false,
-//                ),
-//                TranslateWordItem(
-//                    id = "2",
-//                    createdAt = 2L,
-//                    updatedAt = 2L,
-//                    value = "яблучко",
-//                    isHidden = true,
-//                )
-//            ),
-//            hints = listOf(
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "an fruit"
-//                ),
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "green"
-//                ),
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "you can eat this"
-//                ),
-//            ),
-//            description = "",
-//            langFrom = "en",
-//            langTo = "ua",
-//            sound = null,
-//            transcription = "",
-//            createdAt = 1656003349041,
-//            updatedAt = 1656003449041,
-//        ),
-//
-//        ModifyWord(
-//            priority = 5,
-//            value = "Car",
-//            translates = listOf(
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "Машина"
-//                )
-//            ),
-//            hints = listOf(
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "може їздити"
-//                ),
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "має 4 колеса"
-//                ),
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "робить біп-біп"
-//                ),
-//            ),
-//            description = "",
-//            langFrom = "en",
-//            langTo = "ua",
-//            sound = null,
-//            transcription = "",
-//            createdAt = 1656003249041,
-//            updatedAt = 1656003249041,
-//        ),
-//        ModifyWord(
-//            priority = 5,
-//            value = "Frog",
-//            translates = listOf(
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "жаба"
-//                ),
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "жабеня"
-//                ),
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "жабка"
-//                )
-//            ),
-//            hints = listOf(
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "зелене"
-//                ),
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "квакає"
-//                ),
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "живе біля водойми"
-//                ),
-//            ),
-//            description = "звичайна жабка, що живе у пруді",
-//            langFrom = "en",
-//            langTo = "ua",
-//            sound = null,
-//            transcription = "",
-//            createdAt = 1656003649041,
-//            updatedAt = 1656003949041,
-//        ),
-//
-//
-//        ModifyWord(
-//            priority = 5,
-//            value = "Fish",
-//            translates = listOf(
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "риба"
-//                ),
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "рибка"
-//                )
-//            ),
-//            hints = listOf(
-//                HintItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "плаває"
-//                ),
-//            ),
-//            description = "",
-//            langFrom = "en",
-//            langTo = "ua",
-//            sound = null,
-//            transcription = "",
-//            createdAt = 1656003349041,
-//            updatedAt = 1656004449041,
-//        ),
-//
-//        ModifyWord(
-//            priority = 5,
-//            value = "Computer",
-//            translates = listOf(
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "комп'ютер"
-//                ),
-//            ),
-//            hints = listOf(),
-//            description = "",
-//            langFrom = "en",
-//            langTo = "ua",
-//            sound = null,
-//            transcription = "",
-//            createdAt = 1656003322041,
-//            updatedAt = 1656003749041,
-//        ),
-//
-//        ModifyWord(
-//            priority = 5,
-//            value = "ball",
-//            translates = listOf(
-//                TranslateWordItem(
-//                    id = "1",
-//                    createdAt = 1L,
-//                    updatedAt = 1L,
-//                    value = "м'яч"
-//                ),
-//            ),
-//            hints = listOf(),
-//            description = "",
-//            langFrom = "en",
-//            langTo = "ua",
-//            sound = null,
-//            transcription = "",
-//            createdAt = 1656003382041,
-//            updatedAt = 1656003721041,
-//        )
-//    )
-//}
-//
-//
-
-
-

@@ -29,4 +29,7 @@ interface TranslatedWordDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyWord(translatedWord: TranslatedWordDb): Long
+
+//    @Query("UPDATE $TRANSLATED_WORDS_TABLE_NAME SET translates= :translateWordList")
+//    suspend fun updateWordTranslates(translateWordList: String): Int
 }

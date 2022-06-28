@@ -32,6 +32,12 @@ class ExamAdapter :
                 wordPositionDots.visibility = View.VISIBLE
             }
 
+            if (item.isActive) {
+                stroke.visibility = View.VISIBLE
+            } else {
+                stroke.visibility = View.INVISIBLE
+            }
+
         }
     }
 

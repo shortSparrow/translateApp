@@ -4,6 +4,8 @@ import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordAudio
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.google.gson.Gson
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -14,6 +16,11 @@ class ModifyWordUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(word: ModifyWord) =
         repository.modifyWord(mapper.modifyWordToDbWord(word))
+
+//    suspend fun updateTranslates(translateList: List<TranslateWordItem>) {
+//        val gson = Gson()
+//        repository.updateWordTranslates(gson.toJson(translateList))
+//    }
 
     suspend fun modifyOnlySound(
         id: Long,

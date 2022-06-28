@@ -7,6 +7,7 @@ import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
+import com.example.ttanslateapp.presentation.exam.AnswerResult
 import javax.inject.Inject
 
 class WordMapper @Inject constructor() {

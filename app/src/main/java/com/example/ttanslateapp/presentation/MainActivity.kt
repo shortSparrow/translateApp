@@ -1,6 +1,7 @@
 package com.example.ttanslateapp.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
@@ -25,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(findViewById(R.id.topAppBar))
         topAppBarClickListener()
-
 //        // clear work manger by tag
 //        WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DailyWorker.TAG)
 

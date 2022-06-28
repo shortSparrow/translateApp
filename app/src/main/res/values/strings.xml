@@ -21,6 +21,17 @@
     <string name="modify_word_microphone">Record pronunciation</string>
     <string name="modify_word_add_new_word">Add new word</string>
 
+    <!-- Exam counter-->
+    <string name="exam_counter">%1$d from %2$d</string>
+    <string name="exam_show_hints">show hints</string>
+    <string name="exam_hide_hints">hide hints</string>
+    <string name="exam_show_variants">show variants</string>
+    <string name="exam_hide_variants">hide variants</string>
+    <string name="exam_your_answer">Your answer:</string>
+    <string name="exam_correct_answer">Great, your answer is correct :)</string>
+    <string name="exam_hidden_translate_description">If you think answer is correct you can add this word like "hidden translate". Hidden translate this is special translates which does not visible on main page list, but taken into account on exam.\n\nHidden translates has different background color. You can change hidden status by long tab on translate</string>
+    <string name="exam_show_current_translates">show current translates</string>
+    <string name="exam_hide_current_translates">hide current translates</string>
 
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>
@@ -39,11 +50,10 @@
     <string name="next">next</string>
     <string name="finish">finish</string>
     <string name="check_answer">check answer</string>
-    <string name="add_audio_scuccess">audio added successfully</string>
-    <string name="show_variants">show variants</string>
+    <string name="add_audio_success">audio added successfully</string>
     <string name="word_translate">word translate</string>
-    <string name="show_hints">show hints</string>
     <string name="play_sound">Play sound</string>
+    <string name="field_is_required">This field is required</string>
 
     <string-array name="translate_from_language">
         <item>UA</item>

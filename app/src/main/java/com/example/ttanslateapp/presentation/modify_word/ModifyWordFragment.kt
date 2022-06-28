@@ -25,7 +25,6 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.translate.Trans
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
-import timber.log.Timber
 
 
 enum class ModifyWordModes {
@@ -69,7 +68,10 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         // FIXME Livedata observe twice
-        launchRightMode()
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
+
         setObservers()
         setupClickListener()
         editTextScrollListener()
@@ -87,7 +89,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
     }
 
     private fun setupView() = with(binding) {
-
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
         addTranslate.translateInput.setOnTextChange { viewModel.resetTranslatesError() }
@@ -156,7 +157,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 if (fileName != null) {
                     Toast.makeText(
                         requireContext(),
-                        getString(R.string.add_audio_scuccess),
+                        getString(R.string.add_audio_success),
                         Toast.LENGTH_SHORT
                     )
                         .show()
@@ -274,7 +275,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 }
 
                 override fun onLongItemClick(it: View, item: TranslateWordItem) {
-                    Log.d("SSSSS", "LONG CLICK")
                     viewModel.toggleIsHiddenTranslate(item)
                 }
             }

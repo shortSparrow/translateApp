@@ -3,6 +3,7 @@ package com.example.ttanslateapp.presentation.modify_word.adapter.translate
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.provider.CalendarContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat

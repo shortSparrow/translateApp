@@ -6,6 +6,7 @@ import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamWord
+import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -48,7 +49,13 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return modifiedWordId.toInt() != WORD_IS_NOT_FOUND
     }
 
+//    override suspend fun updateWordTranslates(translateWordList: String): Boolean {
+//        val result = translatedWordDao.updateWordTranslates(translateWordList)
+//        return result != UPDATE_IS_FAILED
+//    }
+
     companion object {
         private const val WORD_IS_NOT_FOUND = -1
+        private const val UPDATE_IS_FAILED = -1
     }
 }

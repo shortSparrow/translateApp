@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <!--Observing not working-->
-        <variable
-            name="model"
-            type="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsViewModel" />
-    </data>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,7 +16,8 @@
             android:indeterminate="true"
             app:indicatorColor="@color/blue"
             tools:indeterminate="false"
-            tools:progress="50" />
+            tools:progress="50"
+            tools:visibility="gone" />
 
 
         <include
@@ -53,7 +47,7 @@
                 android:paddingBottom="@dimen/gutter">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/counter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_gutter"
@@ -75,7 +69,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
+                    app:layout_constraintTop_toBottomOf="@+id/counter"
                     tools:listitem="@layout/item_rv_exam_adapter" />
 
                 <TextView
@@ -115,23 +109,74 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <TextView
+                    android:id="@+id/your_answer_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_gutter"
+                    android:text="@string/exam_your_answer"
+                    android:textColor="@color/blue"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/exam_word_container"
+                    tools:visibility="visible" />
+
+
+                <ImageButton
+                    android:id="@+id/go_prev_question"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/gutter"
+                    android:background="@drawable/prev_next_exam_button"
+                    android:scaleType="center"
+                    android:src="@drawable/prev_arrow"
+                    app:layout_constraintBottom_toBottomOf="@+id/exam_check_answer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/exam_check_answer" />
+
                 <Button
                     android:id="@+id/exam_check_answer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/medium_gutter"
+                    android:layout_marginTop="@dimen/large_gutter"
                     android:text="@string/check_answer"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/exam_word_container" />
 
-                <TextView
+
+                <ImageButton
+                    android:id="@+id/go_next_question"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/gutter"
+                    android:background="@drawable/prev_next_exam_button"
+                    android:scaleType="center"
+                    android:src="@drawable/next_arrow"
+                    app:layout_constraintBottom_toBottomOf="@+id/exam_check_answer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/exam_check_answer" />
+
+
+                <include
+                    android:id="@+id/add_hidden_translates_container"
+                    layout="@layout/view_exam_add_hidden_translates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_gutter"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/exam_check_answer" />
+
+                <Button
                     android:id="@+id/show_variants_label"
-                    android:layout_width="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/gutter"
                     android:layout_marginTop="@dimen/medium_gutter"
-                    android:text="@string/show_variants"
+                    android:text="@string/exam_show_variants"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/exam_check_answer" />
 
@@ -147,13 +192,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/show_variants_label"
                     tools:layout_height="50dp" />
 
-                <TextView
+                <Button
                     android:id="@+id/show_hints_label"
-                    android:layout_width="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="@dimen/gutter"
-                    android:text="@string/show_hints"
+                    android:text="@string/exam_show_hints"
                     app:layout_constraintBottom_toBottomOf="@+id/show_variants_label"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/exam_check_answer" />
@@ -167,8 +213,7 @@
                     android:paddingEnd="60dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/show_variants_container"
-                    tools:layout_height="100dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/show_variants_container" />
 
                 <ImageButton
                     android:id="@+id/show_next_hint_button"
@@ -180,6 +225,7 @@
                     android:backgroundTint="@color/blue"
                     android:contentDescription="@string/next"
                     android:src="@drawable/add"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/show_hints_container"
                     app:layout_constraintEnd_toEndOf="@+id/show_hints_container" />
 
