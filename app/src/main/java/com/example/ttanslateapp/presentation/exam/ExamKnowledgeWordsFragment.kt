@@ -402,6 +402,9 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
         addHiddenTranslatesContainer.translateChipsRv.adapter = translatesAdapter
 
+        // FIXME animation only for stroke
+        // TODO maybe add navigation by tap in recyclerview item
+        wordPositionRv.itemAnimator = null;
 //        // disable scroll with touch
 //        val disabler: OnItemTouchListener = RecyclerViewDisabler()
 //        wordPositionRv.addOnItemTouchListener(disabler)
