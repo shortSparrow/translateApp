@@ -1,6 +1,7 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -152,7 +153,7 @@ class ModifyWordViewModel @Inject constructor(
         _uiState.value = ModifyWordUiState.IsWordLoading(true)
         val loadedWord = viewModelScope.async(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
-            Timber.d("getWordItemUseCase $word")
+            Log.d("getWordItemUseCase","getWordItemUseCase $word")
 
             state = state.copy(
                 wordValue = word.value,
@@ -164,7 +165,8 @@ class ModifyWordViewModel @Inject constructor(
                 soundFileName = word.sound?.fileName,
                 editableWordId = word.id,
                 langFrom = word.langFrom,
-                createdAt = word.createdAt
+                createdAt = word.createdAt,
+                priority = word.priority
             )
         }
 
