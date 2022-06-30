@@ -136,13 +136,12 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     goPrevQuestion.isClickable = false
                 }
                 is ExamKnowledgeUiState.HandleAnswerInput -> {
-                    examCheckAnswer.isEnabled = uiState.value.trim().isNotEmpty()
+                    examCheckAnswer.isEnabled = uiState.value.trim().isNotEmpty() // FIXME make it in view model or in the data class
                     if (uiState.userGaveAnswer) {
                         examCheckAnswer.isEnabled = false
                     } else {
                         examCheckAnswer.isEnabled = uiState.value.trim().isNotEmpty()
                     }
-
                 }
                 is ExamKnowledgeUiState.CheckedAnswer -> {
                     if (uiState.isExamEnd) {
@@ -276,6 +275,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
     }
 
+    // FIXME make it outside fragment
     private fun setClickableNavigationButtons(activeWordPosition: Int, listSize: Int) = with(binding) {
         if (activeWordPosition == 0 && activeWordPosition == listSize) { // list is empty
             goPrevQuestion.alpha = 0.5f
@@ -302,6 +302,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
     }
 
+    // FIXME make it outside fragment
     private fun setAnswerResult(isCorrect: Boolean, answer: String) = with(binding) {
         yourAnswerResult.visibility = View.VISIBLE
         yourAnswerResult.text = getString(R.string.exam_your_answer) + " " + answer
