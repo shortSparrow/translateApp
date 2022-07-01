@@ -2,8 +2,8 @@ package com.example.ttanslateapp.domain.model.modify_word_chip
 
 import javax.inject.Inject
 
-data class TranslateWordItem @Inject constructor(
-    override val id: String,
+data class Translate @Inject constructor(
+    override val id: Long,
     override val createdAt: Long,
     override val updatedAt: Long,
     override val value: String,

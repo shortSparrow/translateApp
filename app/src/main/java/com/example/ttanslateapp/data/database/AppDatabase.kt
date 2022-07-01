@@ -4,14 +4,19 @@ import android.app.Application
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.ttanslateapp.data.model.ExamAnswerVariantDb
-import com.example.ttanslateapp.data.model.TranslatedWordDb
+import com.example.ttanslateapp.data.model.*
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 
 
 @Database(
-    version = 2,
-    entities = [TranslatedWordDb::class, ExamAnswerVariantDb::class],
+    version = 3,
+    entities = [
+        TranslateDb::class,
+        HintDb::class,
+        WordInfoDb::class,
+
+        PotentialExamAnswerDb::class,
+    ],
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -29,6 +34,14 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE $TRANSLATED_WORDS_TABLE_NAME ADD COLUMN updated_at INTEGER NOT NULL DEFAULT ${System.currentTimeMillis()}")
             }
         }
+
+        private val migration_2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE 'word_translations' ('id' INTEGER, 'word_id' INTEGER, 'created_at' INTEGER, 'updated_at' INTEGER, 'value' STRING, 'is_hidden' BOOLEAN)")
+                database.execSQL("CREATE TABLE 'word_hints' ('id' INTEGER, 'word_id' INTEGER, 'created_at' INTEGER, 'updated_at' INTEGER, 'value' STRING, 'is_hidden' BOOLEAN)")
+            }
+        }
+
 
         fun getInstance(application: Application): AppDatabase {
             INSTANCE?.let {

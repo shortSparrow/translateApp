@@ -3,8 +3,7 @@ package com.example.ttanslateapp.presentation.exam.adapter
 import android.view.View
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
-import com.example.ttanslateapp.presentation.exam.AnswerResult
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 
 sealed interface ExamKnowledgeUiState {
     object IsLoadingWords : ExamKnowledgeUiState
@@ -48,11 +47,11 @@ sealed interface ExamKnowledgeUiState {
 
     data class ToggleCurrentWordTrasnalteExpanded(
         val isExpanded: Boolean,
-        val translates: List<TranslateWordItem>
+        val translates: List<Translate>
     ) : ExamKnowledgeUiState
 
     data class UpdateHiddenTranslates(
-        val translates: List<TranslateWordItem>,
+        val translates: List<Translate>,
         val clearInputValue: Boolean = false
     ) : ExamKnowledgeUiState
 }

@@ -9,13 +9,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeState
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -152,8 +151,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     fun addHiddenTranslate(value: String) {
-        val hiddenTranslate = TranslateWordItem(
-            id = UUID.randomUUID().toString(),
+        val hiddenTranslate = Translate(
+            id = UUID.randomUUID().toString().toLong(),
             createdAt = getTimestamp(),
             updatedAt = getTimestamp(),
             value = value,
@@ -252,7 +251,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         return ExamWordStatus.UNPROCESSED // when user skipped word
     }
 
-    fun toggleIsHiddenTranslate(item: TranslateWordItem) {
+    fun toggleIsHiddenTranslate(item: Translate) {
 
         state.currentWord?.let {
             if (!it.isFreeze) return // forbidden add/modify word translates if user don't answer yet

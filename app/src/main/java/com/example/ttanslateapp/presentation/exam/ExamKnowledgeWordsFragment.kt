@@ -17,7 +17,7 @@ import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentExamKnowledgeWordsBinding
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
@@ -410,12 +410,12 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 //        wordPositionRv.addOnItemTouchListener(disabler)
 
         translatesAdapter.clickListener =
-            object : ModifyWordAdapter.OnItemClickListener<TranslateWordItem> {
-                override fun onItemClick(it: View, item: TranslateWordItem) {
+            object : ModifyWordAdapter.OnItemClickListener<Translate> {
+                override fun onItemClick(it: View, item: Translate) {
 
                 }
 
-                override fun onLongItemClick(it: View, item: TranslateWordItem) {
+                override fun onLongItemClick(it: View, item: Translate) {
                     viewModel.toggleIsHiddenTranslate(item)
                 }
             }

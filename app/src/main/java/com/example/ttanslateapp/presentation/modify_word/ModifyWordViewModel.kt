@@ -10,15 +10,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
-import com.example.ttanslateapp.domain.use_case.ValidateResult
+import com.example.ttanslateapp.domain.model.ValidateResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class ModifyWordViewModel @Inject constructor(
@@ -69,7 +68,7 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    private fun validateTranslates(value: List<TranslateWordItem>): ValidateResult {
+    private fun validateTranslates(value: List<Translate>): ValidateResult {
         return if (value.isEmpty()) {
             ValidateResult(successful = false, errorMessage = "this field is required")
         } else {
@@ -100,6 +99,7 @@ class ModifyWordViewModel @Inject constructor(
         val hasError =
             listOf(wordValidation, translatesValidation, priorityValidation).any { !it.successful }
 
+        // FIXME replace to usecase
         if (hasError) {
             state = state.copy(
                 wordValueError = wordValidation.errorMessage,
@@ -134,7 +134,8 @@ class ModifyWordViewModel @Inject constructor(
 
         viewModelScope.launch {
             modifyWordUseCase(word).apply {
-                _uiState.value = ModifyWordUiState.ShowResultModify(this)
+                val isSuccess = this != -1L
+                _uiState.value = ModifyWordUiState.ShowResultModify(isSuccess)
             }
         }
     }
@@ -201,9 +202,9 @@ class ModifyWordViewModel @Inject constructor(
 
         val newTranslateItem =
             editableTranslate?.copy(value = translateValue, updatedAt = getTimestamp())
-                ?: TranslateWordItem(
+                ?: Translate(
                     value = translateValue,
-                    id = UUID.randomUUID().toString(),
+                    id = getTimestamp(),
                     createdAt = getTimestamp(),
                     updatedAt = getTimestamp(),
                     isHidden = false
@@ -236,7 +237,7 @@ class ModifyWordViewModel @Inject constructor(
             editableHint?.copy(value = hintValue, updatedAt = getTimestamp())
                 ?: HintItem(
                     value = hintValue,
-                    id = UUID.randomUUID().toString(),
+                    id = getTimestamp(),
                     createdAt = getTimestamp(),
                     updatedAt = getTimestamp()
                 )
@@ -258,14 +259,14 @@ class ModifyWordViewModel @Inject constructor(
         _uiState.postValue(ModifyWordUiState.CompleteModifyHint(newList))
     }
 
-    fun deleteTranslate(translateId: String) {
+    fun deleteTranslate(translateId: Long) {
         val updatedTranslates = state.translates.filter { it.id != translateId }
 
         state = state.copy(editableTranslate = null, translates = updatedTranslates)
         _uiState.value = ModifyWordUiState.DeleteTranslates(translates = updatedTranslates)
     }
 
-    fun deleteHint(hintId: String) {
+    fun deleteHint(hintId: Long) {
         val updatedHints = state.hints.filter { it.id != hintId }
 
         state = state.copy(editableHint = null, hints = updatedHints)
@@ -287,13 +288,13 @@ class ModifyWordViewModel @Inject constructor(
         _uiState.value = ModifyWordUiState.CompleteModifyTranslate(state.translates)
     }
 
-    fun setEditableTranslate(editableTranslateWordItem: TranslateWordItem) {
-        state = state.copy(editableTranslate = editableTranslateWordItem)
+    fun setEditableTranslate(editableTranslate: Translate) {
+        state = state.copy(editableTranslate = editableTranslate)
         _uiState.value =
-            ModifyWordUiState.StartModifyTranslate(value = editableTranslateWordItem.value)
+            ModifyWordUiState.StartModifyTranslate(value = editableTranslate.value)
     }
 
-    fun toggleIsHiddenTranslate(item: TranslateWordItem) {
+    fun toggleIsHiddenTranslate(item: Translate) {
         val newTranslateList = state.translates.map {
             if (it.id == item.id) return@map it.copy(isHidden = !item.isHidden)
             return@map it

@@ -2,7 +2,6 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.Manifest.permission
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
@@ -15,7 +14,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.core.RecordAudioBottomSheet
@@ -269,12 +268,12 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
 
     private fun setAdaptersClickListener() {
         translateAdapter.clickListener =
-            object : ModifyWordAdapter.OnItemClickListener<TranslateWordItem> {
-                override fun onItemClick(it: View, item: TranslateWordItem) {
+            object : ModifyWordAdapter.OnItemClickListener<Translate> {
+                override fun onItemClick(it: View, item: Translate) {
                     createTranslatePopupMenu(it, item)
                 }
 
-                override fun onLongItemClick(it: View, item: TranslateWordItem) {
+                override fun onLongItemClick(it: View, item: Translate) {
                     viewModel.toggleIsHiddenTranslate(item)
                 }
             }
@@ -331,7 +330,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         popupMenu.show()
     }
 
-    private fun createTranslatePopupMenu(v: View, translateChip: TranslateWordItem) {
+    private fun createTranslatePopupMenu(v: View, translateChip: Translate) {
         val popupMenu = PopupMenu(requireContext(), v)
         popupMenu.menuInflater.inflate(R.menu.trasnlate_item_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
