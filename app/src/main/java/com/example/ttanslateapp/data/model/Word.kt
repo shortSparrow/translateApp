@@ -41,8 +41,8 @@ data class WordInfoDb @Inject constructor(
     val value: String,
     val description: String,
     val sound: WordAudio?, // english sound
-    val langFrom: String,
-    val langTo: String,
+    @ColumnInfo(name = "lang_from") val langFrom: String,
+    @ColumnInfo(name = "lang_to") val langTo: String,
     val transcription: String,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
@@ -50,24 +50,22 @@ data class WordInfoDb @Inject constructor(
 
 
 @Entity(
-    tableName = TRANSLATED_WORDS_TRANSLATIONS, foreignKeys = arrayOf(
-        ForeignKey(
-            entity = WordInfoDb::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("word_id"),
-            onDelete = CASCADE,
-        ),
-    ),
-    indices = [Index("word_id")]
+    tableName = TRANSLATED_WORDS_TRANSLATIONS,
+    foreignKeys = [ForeignKey(
+        entity = WordInfoDb::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("word_id"),
+        onDelete = CASCADE,
+    )],
+//    indices = [Index("word_id")]
 )
 data class TranslateDb @Inject constructor(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = DEFAULT_ID,
-    @ColumnInfo(name = "word_id") val wordId: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = DEFAULT_ID,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
     val value: String,
-    @ColumnInfo(name = "is_hidden") val isHidden: Boolean
+    @ColumnInfo(name = "is_hidden") val isHidden: Boolean,
+    @ColumnInfo(name = "word_id") val wordId: Long,
 ) {
     companion object {
         const val DEFAULT_ID = 0L
@@ -75,15 +73,14 @@ data class TranslateDb @Inject constructor(
 }
 
 @Entity(
-    tableName = TRANSLATED_WORDS_HINTS, foreignKeys = arrayOf(
-        ForeignKey(
-            entity = WordInfoDb::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("word_id"),
-            onDelete = CASCADE,
-        ),
-    ),
-    indices = [Index("word_id")]
+    tableName = TRANSLATED_WORDS_HINTS,
+    foreignKeys = [ForeignKey(
+        entity = WordInfoDb::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("word_id"),
+        onDelete = CASCADE,
+    )],
+//    indices = [Index("word_id")]
 )
 data class HintDb @Inject constructor(
     @PrimaryKey(autoGenerate = true)
