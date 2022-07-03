@@ -2,7 +2,6 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.Manifest.permission
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
@@ -64,8 +63,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
-        binding.model = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.toolbar.setNavigationOnClickListener {
+            this.goBack()
+        }
 
         // FIXME Livedata observe twice
         if (savedInstanceState == null) {
@@ -77,7 +79,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         editTextScrollListener()
         setAdaptersClickListener()
         setupView()
-
     }
 
 

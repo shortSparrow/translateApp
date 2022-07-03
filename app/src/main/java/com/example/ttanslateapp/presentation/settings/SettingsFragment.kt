@@ -2,18 +2,21 @@ package com.example.ttanslateapp.presentation.settings
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentSettingsBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.util.getAppComponent
-import timber.log.Timber
+import com.google.android.material.appbar.MaterialToolbar
+
 
 val reminderFrequencyList = listOf("вимкнути", "раз на день", "раз на 3 дні", "раз на 6 днів")
 
@@ -27,6 +30,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     }
 
     private lateinit var timePickerDialog: TimePickerDialog
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

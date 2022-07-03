@@ -20,6 +20,7 @@
     <string name="modify_word_additional">Additional</string>
     <string name="modify_word_microphone">Record pronunciation</string>
     <string name="modify_word_add_new_word">Add new word</string>
+    <string name="modify_word_toolbar_title">Modify word</string>
 
     <!-- Exam counter-->
     <string name="exam_counter">%1$d from %2$d</string>
