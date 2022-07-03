@@ -18,10 +18,11 @@ class WordMapper @Inject constructor() {
     private fun translateDbToLocal(translate: TranslateDb): Translate =
         Translate(
             id = translate.id,
+            localId = translate.id,
             createdAt = translate.createdAt,
             updatedAt = translate.updatedAt,
             value = translate.value,
-            isHidden = translate.isHidden
+            isHidden = translate.isHidden,
         )
 
     fun translateLocalToDb(
@@ -29,6 +30,7 @@ class WordMapper @Inject constructor() {
         wordId: Long
     ): TranslateDb =
         TranslateDb(
+            id = translate.id,
             createdAt = translate.createdAt,
             updatedAt = translate.updatedAt,
             value = translate.value,
@@ -47,6 +49,7 @@ class WordMapper @Inject constructor() {
     fun hintDbToLocal(hint: HintDb): HintItem =
         HintItem(
             id = hint.id,
+            localId = hint.id,
             createdAt = hint.createdAt,
             updatedAt = hint.updatedAt,
             value = hint.value,

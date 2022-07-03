@@ -154,7 +154,7 @@ class ModifyWordViewModel @Inject constructor(
         _uiState.value = ModifyWordUiState.IsWordLoading(true)
         val loadedWord = viewModelScope.async(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
-            Log.d("getWordItemUseCase","getWordItemUseCase $word")
+            Log.d("getWordItemUseCase", "getWordItemUseCase $word")
 
             state = state.copy(
                 wordValue = word.value,
@@ -203,20 +203,21 @@ class ModifyWordViewModel @Inject constructor(
         val newTranslateItem =
             editableTranslate?.copy(value = translateValue, updatedAt = getTimestamp())
                 ?: Translate(
+                    localId = getTimestamp(),
                     value = translateValue,
-                    id = getTimestamp(),
                     createdAt = getTimestamp(),
                     updatedAt = getTimestamp(),
                     isHidden = false
                 )
 
-        val hintAlreadyExist = translateList.find { it.id == newTranslateItem.id }
+        val hintAlreadyExist =
+            translateList.find { it.localId == newTranslateItem.localId }
 
         val newList = if (hintAlreadyExist == null) {
             translateList.plus(newTranslateItem)
         } else {
             translateList.map {
-                if (it.id == newTranslateItem.id) {
+                if (it.localId == newTranslateItem.localId) {
                     return@map newTranslateItem
                 }
                 return@map it
@@ -236,19 +237,19 @@ class ModifyWordViewModel @Inject constructor(
         val newHintItem =
             editableHint?.copy(value = hintValue, updatedAt = getTimestamp())
                 ?: HintItem(
+                    localId = getTimestamp(),
                     value = hintValue,
-                    id = getTimestamp(),
                     createdAt = getTimestamp(),
-                    updatedAt = getTimestamp()
+                    updatedAt = getTimestamp(),
                 )
 
-        val hintAlreadyExist = hintList.find { it.id == newHintItem.id }
+        val hintAlreadyExist = hintList.find { it.localId == newHintItem.localId }
 
         val newList = if (hintAlreadyExist == null) {
             hintList.plus(newHintItem)
         } else {
             hintList.map {
-                if (it.id == newHintItem.id) {
+                if (it.localId == newHintItem.localId) {
                     return@map newHintItem
                 }
                 return@map it
@@ -259,15 +260,15 @@ class ModifyWordViewModel @Inject constructor(
         _uiState.postValue(ModifyWordUiState.CompleteModifyHint(newList))
     }
 
-    fun deleteTranslate(translateId: Long) {
-        val updatedTranslates = state.translates.filter { it.id != translateId }
+    fun deleteTranslate(translateLocalId: Long) {
+        val updatedTranslates = state.translates.filter { it.localId != translateLocalId }
 
         state = state.copy(editableTranslate = null, translates = updatedTranslates)
         _uiState.value = ModifyWordUiState.DeleteTranslates(translates = updatedTranslates)
     }
 
-    fun deleteHint(hintId: Long) {
-        val updatedHints = state.hints.filter { it.id != hintId }
+    fun deleteHint(hintLocalId: Long) {
+        val updatedHints = state.hints.filter { it.localId != hintLocalId }
 
         state = state.copy(editableHint = null, hints = updatedHints)
         _uiState.value = ModifyWordUiState.DeleteHints(hints = updatedHints)
@@ -296,7 +297,7 @@ class ModifyWordViewModel @Inject constructor(
 
     fun toggleIsHiddenTranslate(item: Translate) {
         val newTranslateList = state.translates.map {
-            if (it.id == item.id) return@map it.copy(isHidden = !item.isHidden)
+            if (it.localId == item.localId) return@map it.copy(isHidden = !item.isHidden)
             return@map it
         }
         state = state.copy(translates = newTranslateList)

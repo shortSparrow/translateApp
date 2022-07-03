@@ -4,6 +4,7 @@ import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordAudio
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -45,6 +46,16 @@ class ModifyWordUseCase @Inject constructor(
 //            hints = word.hints.map { mapper.hintLocalToDb(hint = it, wordId = word.id) }
 //        )
 
+
+    suspend fun modifyTranslates(
+        wordId: Long,
+        translates: List<Translate>
+    ) = repository.modifyWordTranslates(translates.map {
+        mapper.translateLocalToDb(
+            wordId = wordId,
+            translate = it
+        )
+    })
 
     suspend fun modifyOnlySound(
         id: Long,

@@ -285,7 +285,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 }
 
                 override fun onItemDeleteClick(item: HintItem) {
-                    viewModel.deleteHint(item.id)
+                    viewModel.deleteHint(item.localId)
                 }
 
                 override fun onLongItemClick(it: View, item: HintItem) {}
@@ -345,7 +345,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
                 }
 
                 R.id.menu_delete -> {
-                    viewModel.deleteTranslate(translateChip.id)
+                    viewModel.deleteTranslate(translateChip.localId)
                 }
             }
             false
