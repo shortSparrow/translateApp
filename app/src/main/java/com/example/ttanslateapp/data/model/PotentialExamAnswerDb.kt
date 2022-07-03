@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.ttanslateapp.util.EXAM_WORD_ANSWERS_TABLE_NAME
 
 @Entity(tableName = EXAM_WORD_ANSWERS_TABLE_NAME)
-data class ExamAnswerVariantDb(
+data class PotentialExamAnswerDb(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val value: String

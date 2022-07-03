@@ -3,8 +3,7 @@ package com.example.ttanslateapp.presentation.modify_word
 import android.view.View
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
-import java.util.*
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 
 sealed interface ModifyWordUiState {
     data class IsWordLoading(val isLoading: Boolean) : ModifyWordUiState
@@ -19,7 +18,7 @@ sealed interface ModifyWordUiState {
         val transcription: String,
         val priority: Int,
         val description: String,
-        val translates: List<TranslateWordItem>,
+        val translates: List<Translate>,
         val hints: List<HintItem>,
         val langFrom: String,
         val soundFileName: String?,
@@ -32,12 +31,12 @@ sealed interface ModifyWordUiState {
     data class ShowResultModify(val isSuccess: Boolean) : ModifyWordUiState
 
     data class StartModifyTranslate(val value: String) : ModifyWordUiState
-    data class CompleteModifyTranslate(val translates: List<TranslateWordItem>) : ModifyWordUiState
+    data class CompleteModifyTranslate(val translates: List<Translate>) : ModifyWordUiState
 
     data class StartModifyHint(val value: String) : ModifyWordUiState
     data class CompleteModifyHint(val hints: List<HintItem>) : ModifyWordUiState
 
-    data class DeleteTranslates(val translates: List<TranslateWordItem>) : ModifyWordUiState
+    data class DeleteTranslates(val translates: List<Translate>) : ModifyWordUiState
     data class DeleteHints(val hints: List<HintItem>) : ModifyWordUiState
 
     data class UpdateSoundFile(val name: String?) : ModifyWordUiState
@@ -49,10 +48,10 @@ data class ModifyWordState(
     val transcription: String = "",
     val description: String = "",
     val selectableLanguage: String = "ua",
-    val translates: List<TranslateWordItem> = emptyList(),
+    val translates: List<Translate> = emptyList(),
     val hints: List<HintItem> = emptyList(),
     val editableHint: HintItem? = null,
-    val editableTranslate: TranslateWordItem? = null,
+    val editableTranslate: Translate? = null,
     val langFrom: String = "cz",
     val soundFileName: String? = null,
     val priority: Int = ModifyWord.DEFAULT_PRIORITY,

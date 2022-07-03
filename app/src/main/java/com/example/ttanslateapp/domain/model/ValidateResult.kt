@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain.use_case
+package com.example.ttanslateapp.domain.model
 
 data class ValidateResult(
     val successful: Boolean = true,

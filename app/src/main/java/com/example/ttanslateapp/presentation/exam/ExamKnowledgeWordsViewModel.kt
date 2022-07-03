@@ -9,20 +9,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.TranslateWordItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeState
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
-enum class AnswerResult {
-    SUCCESS, FAILED, EMPTY
-}
 
 class ExamKnowledgeWordsViewModel @Inject constructor(
     val getExamWordListUseCase: GetExamWordListUseCase,
@@ -56,6 +51,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
 
             val firstWord = list.firstOrNull()
+            
             state = state.copy(
                 examWordListEmpty = list.isEmpty(),
                 examWordList = list,
@@ -153,25 +149,30 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     fun addHiddenTranslate(value: String) {
-        val hiddenTranslate = TranslateWordItem(
-            id = UUID.randomUUID().toString(),
+        val hiddenTranslate = Translate(
+            id = 0L,
+            localId = getTimestamp(),
             createdAt = getTimestamp(),
             updatedAt = getTimestamp(),
             value = value,
             isHidden = true
         )
         state.currentWord?.let {
-            val translates = it.translates.plus(hiddenTranslate)
 
-            state = state.copy(currentWord = it.copy(translates = translates))
-            _uiState.value = ExamKnowledgeUiState.UpdateHiddenTranslates(
-                translates = state.currentWord?.translates ?: emptyList(),
-                clearInputValue = true
-            )
-            // TODO add to room
-//        viewModelScope.launch {
-//            modifyWordUseCase.updateTranslates(currentWord.translates)
-//        }
+            viewModelScope.launch {
+                modifyWordUseCase.modifyTranslates(
+                    wordId = it.id,
+                    translates = listOf(hiddenTranslate)
+                ).apply {
+                    val translates = it.translates.plus(hiddenTranslate.copy(id = this.first()))
+
+                    state = state.copy(currentWord = it.copy(translates = translates))
+                    _uiState.value = ExamKnowledgeUiState.UpdateHiddenTranslates(
+                        translates = state.currentWord?.translates ?: emptyList(),
+                        clearInputValue = true
+                    )
+                }
+            }
         }
     }
 
@@ -230,7 +231,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-
     private fun updatePositionColors(): List<ExamWord> {
         val newList = state.examWordList.mapIndexed { index, examWord ->
             if (index == state.activeWordPosition) return@mapIndexed examWord.copy(
@@ -253,7 +253,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         return ExamWordStatus.UNPROCESSED // when user skipped word
     }
 
-    fun toggleIsHiddenTranslate(item: TranslateWordItem) {
+    fun toggleIsHiddenTranslate(item: Translate) {
 
         state.currentWord?.let {
             if (!it.isFreeze) return // forbidden add/modify word translates if user don't answer yet
@@ -261,13 +261,21 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 //            it.translates.find { it.id == item.id }?.isHidden = !item.isHidden
 //            Log.d("newTranslateList", "${it.translates}")
 
+            val updatedTranslate = item.copy(isHidden = !item.isHidden)
             val translates =
-                it.translates.map { if (it.id == item.id) return@map it.copy(isHidden = !it.isHidden) else return@map it }
+                it.translates.map { if (it.id == item.id) return@map updatedTranslate else return@map it }
 
 
             state = state.copy(currentWord = it.copy(translates = translates))
             _uiState.value =
                 ExamKnowledgeUiState.UpdateHiddenTranslates(translates = translates)
+
+            viewModelScope.launch {
+                modifyWordUseCase.modifyTranslates(
+                    wordId = it.id,
+                    translates = listOf(updatedTranslate)
+                )
+            }
         }
     }
 
