@@ -6,21 +6,13 @@
     app:startDestination="@id/wordListFragment">
 
     <fragment
-        android:label="WordListFragment"
         android:id="@+id/wordListFragment"
         android:name="com.example.ttanslateapp.presentation.word_list.WordListFragment"
+        android:label="WordListFragment"
         tools:layout="@layout/fragment_word_list">
         <action
             android:id="@+id/action_wordListFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment"
-            app:popUpTo="@id/wordListFragment" />
-        <action
-            android:id="@+id/action_wordListFragment_to_examKnowledgeWordsFragment"
-            app:destination="@id/examKnowledgeWordsFragment"
-            app:popUpTo="@id/wordListFragment" />
-        <action
-            android:id="@+id/action_wordListFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment"
             app:popUpTo="@id/wordListFragment" />
     </fragment>
     <fragment
@@ -33,14 +25,14 @@
             app:argType="com.example.ttanslateapp.presentation.modify_word.ModifyWordModes" />
         <argument
             android:name="wordId"
-            app:argType="long"
-            android:defaultValue="-1L" />
+            android:defaultValue="-1L"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/examKnowledgeWordsFragment"
-        tools:layout="@layout/fragment_exam_knowledge_words"
         android:name="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment"
-        android:label="ExamKnowledgeWordsFragment" >
+        android:label="ExamKnowledgeWordsFragment"
+        tools:layout="@layout/fragment_exam_knowledge_words">
         <action
             android:id="@+id/action_examKnowledgeWordsFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment" />

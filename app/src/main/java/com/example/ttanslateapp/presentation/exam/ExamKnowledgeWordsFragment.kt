@@ -41,12 +41,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private val examAdapter = ExamAdapter()
     private val translatesAdapter = TranslateAdapter()
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        val item = menu.findItem(R.id.exam)
-        item.isVisible = false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("AAAAAAA", "FFF")
@@ -55,7 +49,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
-
+        viewModel.generateWordsList()
         setupAdapter()
         observeLiveDate()
         clickListeners()
@@ -136,7 +130,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     goPrevQuestion.isClickable = false
                 }
                 is ExamKnowledgeUiState.HandleAnswerInput -> {
-                    examCheckAnswer.isEnabled = uiState.value.trim().isNotEmpty() // FIXME make it in view model or in the data class
+                    examCheckAnswer.isEnabled = uiState.value.trim()
+                        .isNotEmpty() // FIXME make it in view model or in the data class
                     if (uiState.userGaveAnswer) {
                         examCheckAnswer.isEnabled = false
                     } else {
@@ -276,31 +271,32 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     }
 
     // FIXME make it outside fragment
-    private fun setClickableNavigationButtons(activeWordPosition: Int, listSize: Int) = with(binding) {
-        if (activeWordPosition == 0 && activeWordPosition == listSize) { // list is empty
-            goPrevQuestion.alpha = 0.5f
-            goPrevQuestion.isClickable = false
-            goNextQuestion.alpha = 0.5f
-            goNextQuestion.isClickable = false
-            return
-        }
+    private fun setClickableNavigationButtons(activeWordPosition: Int, listSize: Int) =
+        with(binding) {
+            if (activeWordPosition == 0 && activeWordPosition == listSize) { // list is empty
+                goPrevQuestion.alpha = 0.5f
+                goPrevQuestion.isClickable = false
+                goNextQuestion.alpha = 0.5f
+                goNextQuestion.isClickable = false
+                return
+            }
 
-        if (activeWordPosition == 0) {
-            goPrevQuestion.alpha = 0.5f
-            goPrevQuestion.isClickable = false
-        } else { // more than 0
-            goPrevQuestion.alpha = 1f
-            goPrevQuestion.isClickable = true
-        }
+            if (activeWordPosition == 0) {
+                goPrevQuestion.alpha = 0.5f
+                goPrevQuestion.isClickable = false
+            } else { // more than 0
+                goPrevQuestion.alpha = 1f
+                goPrevQuestion.isClickable = true
+            }
 
-        if (activeWordPosition == listSize) {
-            goNextQuestion.alpha = 0.5f
-            goNextQuestion.isClickable = false
-        } else { // lest list size
-            goNextQuestion.alpha = 1f
-            goNextQuestion.isClickable = true
+            if (activeWordPosition == listSize) {
+                goNextQuestion.alpha = 0.5f
+                goNextQuestion.isClickable = false
+            } else { // lest list size
+                goNextQuestion.alpha = 1f
+                goNextQuestion.isClickable = true
+            }
         }
-    }
 
     // FIXME make it outside fragment
     private fun setAnswerResult(isCorrect: Boolean, answer: String) = with(binding) {
