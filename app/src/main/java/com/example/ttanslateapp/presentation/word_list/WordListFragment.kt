@@ -83,10 +83,10 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
                     }
 
                     if (uiState.dictionaryIsEmpty) {
-                        emptyListContainer.root.visibility = View.VISIBLE
+                        emptyListContainer.visibility = View.VISIBLE
                         wordListContainer.visibility = View.GONE
                     } else {
-                        emptyListContainer.root.visibility = View.GONE
+                        emptyListContainer.visibility = View.GONE
                         wordListContainer.visibility = View.VISIBLE
                     }
 
@@ -101,7 +101,7 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
     private fun clickListeners() = with(binding) {
         searchWord.setOnClickListener { searchWord.isIconified = false }
         addNewWord.setOnClickListener { launchAddWordScreen() }
-        emptyListContainer.addFirstWord.setOnClickListener { launchAddWordScreen() }
+        emptyListLayout.addFirstWord.setOnClickListener { launchAddWordScreen() }
 
         wordListAdapter.onClickListener = object : WordListAdapter.OnClickListener {
             override fun onRootClickListener(wordId: Long) {

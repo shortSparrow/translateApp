@@ -1,6 +1,6 @@
 <resources>
     <!--WordList fragment -->
-    <string name="word_list_empty_dictionary">You don\'t have any words</string>
+    <string name="word_list_empty_dictionary">You don\'t have any word</string>
     <string name="word_list_add_first_word">Add first word</string>
     <string name="word_list_nothing_found">Nothing found</string>
     <string name="word_list_empty_exam_list">You not have saved word in your dictionary, add a few for start exam</string>

@@ -3,10 +3,7 @@ package com.example.ttanslateapp.presentation.exam
 import android.app.Application
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
@@ -23,7 +20,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     val getExamWordListUseCase: GetExamWordListUseCase,
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     val modifyWordUseCase: ModifyWordUseCase,
-    val application: Application
+    val application: Application,
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ExamKnowledgeUiState>()
@@ -33,11 +30,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
     // trouble with reenter on screen
-//    init {
-//        generateWordsList()
-//    }
+    init {
+        generateWordsList()
+    }
 
-     fun generateWordsList() {
+    fun generateWordsList() {
         state = state.copy(isLoading = true)
         _uiState.value = ExamKnowledgeUiState.IsLoadingWords
 
@@ -51,7 +48,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
 
             val firstWord = list.firstOrNull()
-            
+
             state = state.copy(
                 examWordListEmpty = list.isEmpty(),
                 examWordList = list,

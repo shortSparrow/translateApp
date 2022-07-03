@@ -49,7 +49,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
-        viewModel.generateWordsList()
+
         setupAdapter()
         observeLiveDate()
         clickListeners()
@@ -75,7 +75,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         showNextHintButton.setOnClickListener {
             viewModel.showNextHint()
         }
-        emptyListContainer.addFirstWord.setOnClickListener {
+
+        emptyListLayout.addFirstWord.setOnClickListener {
             val action =
                 ExamKnowledgeWordsFragmentDirections.actionExamKnowledgeWordsFragmentToModifyWordFragment(
                     mode = ModifyWordModes.MODE_ADD
@@ -101,7 +102,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 }
                 is ExamKnowledgeUiState.LoadedEmptyList -> {
                     examContainer.visibility = View.GONE
-                    emptyListContainer.root.visibility = View.VISIBLE
+                    emptyListLayout.root.visibility = View.VISIBLE
                 }
                 is ExamKnowledgeUiState.LoadedWordsSuccess -> {
                     progressBar.visibility = View.GONE
