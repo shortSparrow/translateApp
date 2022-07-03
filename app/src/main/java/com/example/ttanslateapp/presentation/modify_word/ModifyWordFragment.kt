@@ -63,8 +63,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
-        binding.model = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.toolbar.setNavigationOnClickListener {
+            this.goBack()
+        }
 
         // FIXME Livedata observe twice
         if (savedInstanceState == null) {
@@ -76,7 +79,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>() {
         editTextScrollListener()
         setAdaptersClickListener()
         setupView()
-
     }
 
 

@@ -32,11 +32,12 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private var state = ExamKnowledgeState()
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
-    init {
-        generateWordsList()
-    }
+    // trouble with reenter on screen
+//    init {
+//        generateWordsList()
+//    }
 
-    private fun generateWordsList() {
+     fun generateWordsList() {
         state = state.copy(isLoading = true)
         _uiState.value = ExamKnowledgeUiState.IsLoadingWords
 
@@ -49,13 +50,13 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 ) else examWord
             }
 
-            val firstWord = list[0]
-            Log.d("SSSSSS", "${firstWord.translates}")
+            val firstWord = list.firstOrNull()
+            
             state = state.copy(
                 examWordListEmpty = list.isEmpty(),
                 examWordList = list,
                 currentWord = if (list.isEmpty()) null else firstWord,
-                countShownHints = if (firstWord.hints.isEmpty()) 0 else 1,
+                countShownHints = if (firstWord == null || firstWord.hints.isEmpty()) 0 else 1, // FIXME replace into currentWord
                 isLoading = false
             )
             if (list.isEmpty()) {
