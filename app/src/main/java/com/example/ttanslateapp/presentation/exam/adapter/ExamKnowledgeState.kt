@@ -9,10 +9,10 @@ sealed interface ExamKnowledgeUiState {
     object IsLoadingWords : ExamKnowledgeUiState
     object LoadedEmptyList : ExamKnowledgeUiState
 
+
     data class LoadedWordsSuccess(
         val examWordList: List<ExamWord>,
         val currentWord: ExamWord,
-        val countShownHints: Int,
         val activeWordPosition: Int
     ) : ExamKnowledgeUiState
 
@@ -22,6 +22,7 @@ sealed interface ExamKnowledgeUiState {
     data class CheckedAnswer(
         val status: ExamWordStatus = ExamWordStatus.UNPROCESSED,
         val examWordList: List<ExamWord>,
+        val currentWord: ExamWord,
         val isExamEnd: Boolean = false,
         val givenAnswer: String
     ) : ExamKnowledgeUiState
@@ -30,16 +31,14 @@ sealed interface ExamKnowledgeUiState {
         val examWordList: List<ExamWord>,
         val currentWord: ExamWord,
         val activeWordPosition: Int,
-        val countShownHints: Int
     ) : ExamKnowledgeUiState
 
-    data class ToggleIsVisibleVariants(val isVisible: Boolean) : ExamKnowledgeUiState
-    data class ToggleIsVisibleHint(val isVisible: Boolean, val nextHintButtonVisibility: Int) :
+    data class ToggleIsVariantsExpanded(val isExpanded: Boolean) : ExamKnowledgeUiState
+    data class ToggleExpandedHint(val isExpanded: Boolean, val nextHintButtonVisibility: Int) :
         ExamKnowledgeUiState
 
     data class ShowNextHint(
-        val allHintsShown: Boolean,
-        val countShownHints: Int,
+        val allHintsIsShown: Boolean,
         val currentWord: ExamWord
     ) : ExamKnowledgeUiState
 
@@ -62,11 +61,14 @@ data class ExamKnowledgeState(
     val examWordListEmpty: Boolean = false,
     val currentWord: ExamWord? = null,
     val isExamEnd: Boolean = false,
-    val countShownHints: Int = 0,
-    val allHintsShown: Boolean = false,
-    val isShownHintsVisible: Boolean = false,
-    val isShownVariants: Boolean = false,
-    val isInoutWordInvalid: Boolean = false,
+    val isInputWordInvalid: Boolean = false,
     val activeWordPosition: Int = 0,
     val hiddenTranslateDescriptionVisibility: Int = View.GONE,
+
+    //    val isVariantsExpanded: Boolean = false, // FIXME replace to current word
+//    val countOfVisibleHints: Int = 0, // FIXME replace to current word
+//    val allHintsIsShown: Boolean = false, // FIXME replace to current word
+//    val isHintsExpanded: Boolean = false, // FIXME replace to current word
 )
+
+

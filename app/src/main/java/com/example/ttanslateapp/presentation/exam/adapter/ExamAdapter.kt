@@ -14,6 +14,8 @@ import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 
 class ExamAdapter :
     ListAdapter<ExamWord, ExamAdapterViewHolder>(ExamWordAdapterDiffCallback()) {
+     var clickListener:OnItemClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExamAdapterViewHolder {
         return ItemRvExamAdapterBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -38,6 +40,9 @@ class ExamAdapter :
                 stroke.visibility = View.INVISIBLE
             }
 
+            holder.binding.root.setOnClickListener {
+                clickListener?.onItemClick(root, position)
+            }
         }
     }
 
@@ -56,5 +61,9 @@ class ExamAdapter :
                 context.resources.getColorStateList(R.color.grey)
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(view: View?, position: Int)
     }
 }

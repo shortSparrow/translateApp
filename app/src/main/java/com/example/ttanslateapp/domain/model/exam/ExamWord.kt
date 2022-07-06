@@ -16,5 +16,11 @@ data class ExamWord(
     val givenAnswer: String? = null,
     val isTranslateExpanded: Boolean = false,
     val isActive: Boolean = false,
+
+    val isVariantsExpanded: Boolean = false,
+
+    val isHintsExpanded: Boolean = false,
+    val allHintsIsShown: Boolean = false,
+    val countOfRenderHints: Int = 0,
 )
 

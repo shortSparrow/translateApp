@@ -3,7 +3,6 @@ package com.example.ttanslateapp.presentation.exam
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -41,11 +40,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private val examAdapter = ExamAdapter()
     private val translatesAdapter = TranslateAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("AAAAAAA", "FFF")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
@@ -70,7 +64,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             viewModel.toggleVisibleVariants()
         }
         showHintsLabel.setOnClickListener {
-            viewModel.toggleVisibleHint()
+            viewModel.toggleHintExpanded()
         }
         showNextHintButton.setOnClickListener {
             viewModel.showNextHint()
@@ -114,7 +108,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
                     setDefaultHintsVisibility(
                         currentWord = uiState.currentWord,
-                        countShownHints = uiState.countShownHints
+                        countOfRenderHints = uiState.currentWord.countOfRenderHints
                     )
                     setDefaultVariantsVisibility(currentWord = uiState.currentWord)
                     setClickableNavigationButtons(
@@ -164,8 +158,9 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         addHiddenTranslatesContainer.addHiddenTranslate.visibility = View.VISIBLE
                         addHiddenTranslatesContainer.hiddenTranslatesDescriptionLabel.visibility =
                             View.VISIBLE
+                        translatesAdapter.submitList(uiState.currentWord.translates)
                     }
-
+                    setExpandedTranslates(isExpanded = false)
                     setAnswerResult(isCorrect = isAnswerCorrect, answer = uiState.givenAnswer)
                     showVariantsContainer.allViews.forEach { it.isClickable = false }
                 }
@@ -192,13 +187,12 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         yourAnswerResult.visibility = View.GONE
                     }
 
+                    translatesAdapter.submitList(uiState.currentWord.translates)
+
                     if (uiState.currentWord.isFreeze) {
                         setVisibleHints(false)
                         setVisibleVariants(false)
-                        setExpandedTranslates(isExpanded = false)
-
                         addHiddenTranslatesContainer.root.visibility = View.VISIBLE
-                        translatesAdapter.submitList(uiState.currentWord.translates)
                         addHiddenTranslatesContainer.addHiddenTranslate.visibility = View.GONE
                         addHiddenTranslatesContainer.hiddenTranslatesDescriptionLabel.visibility =
                             View.GONE
@@ -207,12 +201,13 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     } else {
                         setDefaultVariantsVisibility(currentWord = uiState.currentWord)
                         setDefaultHintsVisibility(
-                            countShownHints = uiState.countShownHints,
+                            countOfRenderHints = uiState.currentWord.countOfRenderHints,
                             currentWord = uiState.currentWord
                         )
                         addHiddenTranslatesContainer.root.visibility = View.GONE
                     }
                     examAdapter.submitList(uiState.examWordList)
+                    setExpandedTranslates(isExpanded = false)
 
                     examWordName.text = uiState.currentWord.value
                     examWordInput.setText("")
@@ -224,8 +219,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         uiState.examWordList.size
                     )
                 }
-                is ExamKnowledgeUiState.ToggleIsVisibleVariants -> {
-                    if (uiState.isVisible) {
+                is ExamKnowledgeUiState.ToggleIsVariantsExpanded -> {
+                    if (uiState.isExpanded) {
                         showVariantsContainer.visibility = View.VISIBLE
                         showVariantsLabel.text = getString(R.string.exam_hide_variants)
                     } else {
@@ -233,8 +228,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         showVariantsLabel.text = getString(R.string.exam_show_variants)
                     }
                 }
-                is ExamKnowledgeUiState.ToggleIsVisibleHint -> {
-                    if (uiState.isVisible) {
+                is ExamKnowledgeUiState.ToggleExpandedHint -> {
+                    if (uiState.isExpanded) {
                         showHintsContainer.visibility = View.VISIBLE
                         showNextHintButton.visibility = uiState.nextHintButtonVisibility
                         showHintsLabel.text = getString(R.string.exam_hide_hints)
@@ -245,12 +240,12 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     }
                 }
                 is ExamKnowledgeUiState.ShowNextHint -> {
-                    if (uiState.allHintsShown) {
+                    if (uiState.allHintsIsShown) {
                         showNextHintButton.visibility = View.GONE
                     }
 
-                    if (uiState.countShownHints > 0) {
-                        renderHints(uiState.currentWord, uiState.countShownHints)
+                    if (uiState.currentWord.countOfRenderHints > 0) {
+                        renderHints(uiState.currentWord, uiState.currentWord.countOfRenderHints)
                     }
                 }
                 is ExamKnowledgeUiState.ToggleVisibilityHiddenDescription -> {
@@ -259,7 +254,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 }
                 is ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded -> {
                     setExpandedTranslates(uiState.isExpanded)
-                    translatesAdapter.submitList(uiState.translates)
+//                    translatesAdapter.submitList(uiState.translates)
                 }
                 is ExamKnowledgeUiState.UpdateHiddenTranslates -> {
                     translatesAdapter.submitList(uiState.translates)
@@ -320,7 +315,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         showVariantsLabel.text = getString(R.string.exam_show_variants)
     }
 
-    private fun setDefaultHintsVisibility(countShownHints: Int, currentWord: ExamWord) =
+    private fun setDefaultHintsVisibility(countOfRenderHints: Int, currentWord: ExamWord) =
         with(binding) {
             showHintsContainer.removeAllViews()
 
@@ -330,8 +325,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 showHintsLabel.visibility = View.VISIBLE
                 showHintsContainer.visibility = View.GONE
                 showNextHintButton.visibility = View.GONE
-                if (countShownHints > 0) {
-                    renderHints(currentWord, countShownHints)
+                if (countOfRenderHints > 0) {
+                    renderHints(currentWord, countOfRenderHints)
                 }
             }
 
@@ -352,7 +347,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     }
 
     private fun setExpandedTranslates(isExpanded: Boolean) = with(binding) {
-        val visibility = if (isExpanded) View.VISIBLE else View.GONE
+        val visibility = if (isExpanded) View.VISIBLE else View.INVISIBLE
         val text =
             if (isExpanded) getString(R.string.exam_hide_current_translates) else getString(R.string.exam_show_current_translates)
         addHiddenTranslatesContainer.translateChipsRv.visibility = visibility
@@ -399,13 +394,16 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             viewModel.handleExamCheckAnswer(examWordInput.text.toString())
         }
         addHiddenTranslatesContainer.translateChipsRv.adapter = translatesAdapter
+        addHiddenTranslatesContainer.translateChipsRv.itemAnimator = null
 
-        // FIXME animation only for stroke
-        // TODO maybe add navigation by tap in recyclerview item
+
         wordPositionRv.itemAnimator = null;
-//        // disable scroll with touch
-//        val disabler: OnItemTouchListener = RecyclerViewDisabler()
-//        wordPositionRv.addOnItemTouchListener(disabler)
+        examAdapter.clickListener = object: ExamAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                viewModel.goToWord(position)
+            }
+
+        }
 
         translatesAdapter.clickListener =
             object : ModifyWordAdapter.OnItemClickListener<Translate> {
@@ -417,16 +415,5 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     viewModel.toggleIsHiddenTranslate(item)
                 }
             }
-
     }
-
-}
-
-class RecyclerViewDisabler : OnItemTouchListener {
-    override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-        return true
-    }
-
-    override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-    override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 }

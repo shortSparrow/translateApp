@@ -39,7 +39,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _uiState.value = ExamKnowledgeUiState.IsLoadingWords
 
         viewModelScope.launch {
-            // FIXME change mapIndexed on smt like find, etc
             val list = getExamWordListUseCase().mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(
                     status = ExamWordStatus.IN_PROCESS,
@@ -48,12 +47,16 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
 
             val firstWord = list.firstOrNull()
+            firstWord?.let {
+                if (it.hints.isNotEmpty()) {
+                    it.countOfRenderHints.plus(1)
+                }
+            }
 
             state = state.copy(
                 examWordListEmpty = list.isEmpty(),
                 examWordList = list,
                 currentWord = if (list.isEmpty()) null else firstWord,
-                countShownHints = if (firstWord == null || firstWord.hints.isEmpty()) 0 else 1, // FIXME replace into currentWord
                 isLoading = false
             )
             if (list.isEmpty()) {
@@ -62,7 +65,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 _uiState.value = ExamKnowledgeUiState.LoadedWordsSuccess(
                     examWordList = state.examWordList,
                     currentWord = state.currentWord!!,
-                    countShownHints = state.countShownHints,
                     activeWordPosition = state.activeWordPosition
                 )
             }
@@ -70,20 +72,27 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-    fun toggleVisibleHint() {
-        state = state.copy(isShownHintsVisible = !state.isShownHintsVisible)
+
+    fun toggleHintExpanded() {
+        val currentWord =
+            state.currentWord!!.copy(isHintsExpanded = !state.currentWord!!.isHintsExpanded)
+        state = state.copy(currentWord = currentWord)
+
         val nextHintButtonVisibility =
-            if (state.allHintsShown || state.currentWord?.hints?.isEmpty() == true || state.countShownHints >= state.currentWord!!.hints.size) View.GONE else View.VISIBLE
-        _uiState.value = ExamKnowledgeUiState.ToggleIsVisibleHint(
-            state.isShownHintsVisible,
+            if (currentWord.allHintsIsShown || currentWord.hints.isEmpty() || currentWord.countOfRenderHints >= currentWord.hints.size) View.GONE else View.VISIBLE
+        _uiState.value = ExamKnowledgeUiState.ToggleExpandedHint(
+            isExpanded = currentWord.isHintsExpanded,
             nextHintButtonVisibility = nextHintButtonVisibility
         )
     }
 
     fun toggleVisibleVariants() {
-        state = state.copy(isShownVariants = !state.isShownVariants)
-        _uiState.value = ExamKnowledgeUiState.ToggleIsVisibleVariants(state.isShownVariants)
+        val currentWord =
+            state.currentWord!!.copy(isVariantsExpanded = !state.currentWord!!.isVariantsExpanded)
 
+        state = state.copy(currentWord = currentWord)
+        _uiState.value =
+            ExamKnowledgeUiState.ToggleIsVariantsExpanded(currentWord.isVariantsExpanded)
     }
 
     fun handleExamCheckAnswer(examWordInputValue: String) {
@@ -91,7 +100,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     fun showNextHint() {
-        var newCount = state.countShownHints.plus(1)
+        var newCount = state.currentWord!!.countOfRenderHints.plus(1)
 
         state.currentWord?.let {
             val allHintsShown = newCount == it.hints.size
@@ -100,23 +109,22 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 newCount -= 1
             }
 
-            state = state.copy(allHintsShown = allHintsShown, countShownHints = newCount)
+            state = state.copy(
+                currentWord = state.currentWord!!.copy(
+                    countOfRenderHints = newCount,
+                    allHintsIsShown = allHintsShown
+                )
+            )
             _uiState.value = ExamKnowledgeUiState.ShowNextHint(
-                allHintsShown = allHintsShown,
-                countShownHints = newCount,
+                allHintsIsShown = allHintsShown,
                 currentWord = state.currentWord!!
             )
         }
     }
 
-    private fun validateAnswer(answer: String): Boolean {
-        return answer.trim().isNotEmpty()
-    }
 
     fun handleAnswerEditText(answer: String) {
-        Log.d("handleAnswerEditText", "${state.currentWord?.status}")
         val userGaveAnswer = state.currentWord?.status != ExamWordStatus.IN_PROCESS
-        Log.d("handleAnswerEditText_userGaveAnswer", "${userGaveAnswer}")
         _uiState.value =
             ExamKnowledgeUiState.HandleAnswerInput(
                 value = answer,
@@ -154,16 +162,24 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             value = value,
             isHidden = true
         )
-        state.currentWord?.let {
 
+        state.currentWord?.let { currentWord ->
             viewModelScope.launch {
                 modifyWordUseCase.modifyTranslates(
-                    wordId = it.id,
+                    wordId = currentWord.id,
                     translates = listOf(hiddenTranslate)
                 ).apply {
-                    val translates = it.translates.plus(hiddenTranslate.copy(id = this.first()))
+                    val translates =
+                        currentWord.translates.plus(hiddenTranslate.copy(id = this.first()))
+                    val updatedList = state.examWordList.map {
+                        if (it.id == currentWord.id) return@map it.copy(translates = translates) else return@map it
+                    }
 
-                    state = state.copy(currentWord = it.copy(translates = translates))
+                    state = state.copy(
+                        currentWord = currentWord.copy(translates = translates),
+                        examWordList = updatedList
+                    )
+
                     _uiState.value = ExamKnowledgeUiState.UpdateHiddenTranslates(
                         translates = state.currentWord?.translates ?: emptyList(),
                         clearInputValue = true
@@ -173,9 +189,65 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
+    fun toggleIsHiddenTranslate(item: Translate) {
+        state.currentWord?.let { currentWord ->
+            if (!currentWord.isFreeze) return // forbidden add/modify word translates if user don't answer yet
+
+            val updatedTranslate = item.copy(isHidden = !item.isHidden)
+            val translates =
+                currentWord.translates.map { if (it.id == item.id) return@map updatedTranslate else return@map it }
+
+            val updatedList = state.examWordList.map {
+                if (it.id == currentWord.id) return@map it.copy(translates = translates) else return@map it
+            }
+
+            state = state.copy(
+                currentWord = currentWord.copy(translates = translates),
+                examWordList = updatedList
+            )
+            _uiState.value =
+                ExamKnowledgeUiState.UpdateHiddenTranslates(translates = translates)
+
+            viewModelScope.launch {
+                modifyWordUseCase.modifyTranslates(
+                    wordId = currentWord.id,
+                    translates = listOf(updatedTranslate)
+                )
+            }
+        }
+    }
+
+    fun goPrev() {
+        if (state.activeWordPosition - 1 < 0) {
+            return
+        }
+
+        val newActiveWordPosition = state.activeWordPosition - 1
+        handleNavigation(newActiveWordPosition)
+    }
+
+    fun goToWord(position: Int) {
+        handleNavigation(position)
+    }
+
+    fun goToNextQuestion() {
+        if (state.activeWordPosition + 1 >= state.examWordList.size) {
+            return
+        }
+        val newActiveWordPosition = state.activeWordPosition + 1
+        handleNavigation(newActiveWordPosition)
+    }
+
+
+    private fun validateAnswer(answer: String): Boolean {
+        return answer.trim().isNotEmpty()
+    }
+
     private fun checkAnswer(answer: String) {
         val answerQuery = answer.trim().lowercase()
         val isValid = validateAnswer(answerQuery)
+
+        // TODO add ui handle this
         if (!isValid) {
             return
         }
@@ -222,6 +294,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             _uiState.value = ExamKnowledgeUiState.CheckedAnswer(
                 status = state.currentWord!!.status,
                 examWordList = state.examWordList,
+                currentWord = updatedCurrentWord,
                 isExamEnd = isExamEnd,
                 givenAnswer = answer
             )
@@ -250,73 +323,31 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         return ExamWordStatus.UNPROCESSED // when user skipped word
     }
 
-    fun toggleIsHiddenTranslate(item: Translate) {
-
-        state.currentWord?.let {
-            if (!it.isFreeze) return // forbidden add/modify word translates if user don't answer yet
-            // FIXME doesn't work (not update style, areTheSame not invoke), why?
-//            it.translates.find { it.id == item.id }?.isHidden = !item.isHidden
-//            Log.d("newTranslateList", "${it.translates}")
-
-            val updatedTranslate = item.copy(isHidden = !item.isHidden)
-            val translates =
-                it.translates.map { if (it.id == item.id) return@map updatedTranslate else return@map it }
-
-
-            state = state.copy(currentWord = it.copy(translates = translates))
-            _uiState.value =
-                ExamKnowledgeUiState.UpdateHiddenTranslates(translates = translates)
-
-            viewModelScope.launch {
-                modifyWordUseCase.modifyTranslates(
-                    wordId = it.id,
-                    translates = listOf(updatedTranslate)
-                )
-            }
-        }
-    }
-
-    fun goPrev() {
-        if (state.activeWordPosition - 1 < 0) {
-            return
-        }
-
-        val newActiveWordPosition = state.activeWordPosition - 1
-        handleNavigation(newActiveWordPosition)
-    }
-
-
-    fun goToNextQuestion() {
-        if (state.activeWordPosition + 1 >= state.examWordList.size) {
-            return
-        }
-        val newActiveWordPosition = state.activeWordPosition + 1
-        handleNavigation(newActiveWordPosition)
-    }
-
 
     private fun handleNavigation(newActiveWordPosition: Int) {
-        state = state.copy(
-            activeWordPosition = newActiveWordPosition
+        val currentWord = state.currentWord!!.copy(
+            isHintsExpanded = false,
+            allHintsIsShown = false,
+            isVariantsExpanded = false,
+            countOfRenderHints = if (state.currentWord!!.hints.isEmpty()) 0 else 1
         )
+        state = state.copy(currentWord = currentWord, activeWordPosition = newActiveWordPosition)
+
 
         val newList = updatePositionColors()
         Log.d("newList", "${newList}")
 
         state = state.copy(
             examWordList = newList,
-            currentWord = newList[newActiveWordPosition],
-            isShownHintsVisible = false,
-            allHintsShown = false,
-            isShownVariants = false,
-            countShownHints = if (newList[newActiveWordPosition].hints.isEmpty()) 0 else 1
+            currentWord = newList[newActiveWordPosition].copy(countOfRenderHints = if (newList[newActiveWordPosition].hints.isEmpty()) 0 else 1),
         )
 
         _uiState.value = ExamKnowledgeUiState.QuestionNavigation(
             examWordList = state.examWordList,
             currentWord = state.currentWord!!,
             activeWordPosition = newActiveWordPosition,
-            countShownHints = state.countShownHints
-        )
+
+            )
     }
+
 }
