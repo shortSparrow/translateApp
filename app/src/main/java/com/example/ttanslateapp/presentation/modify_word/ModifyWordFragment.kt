@@ -176,6 +176,15 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     translateWordDescription.descriptionInput.setText(uiState.description)
                     wordPriorityValue.setText(uiState.priority.toString())
 
+                    if (uiState.editableTranslate != null) {
+                        addTranslate.cancelEditTranslate.visibility = View.VISIBLE
+                        addTranslate.button.text = "edit"
+                    }
+                    if (uiState.editableHint != null) {
+                        addHints.cancelEditHint.visibility = View.VISIBLE
+                        addHints.button.text = "edit"
+                    }
+
                     val langList = mutableMapOf<String, Int>()
                     val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
                     for (i in 0 until adapter.count) {

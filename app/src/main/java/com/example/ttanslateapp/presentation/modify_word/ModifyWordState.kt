@@ -10,10 +10,6 @@ sealed interface ModifyWordUiState {
         val isLoading: Boolean
     ) : ModifyWordUiState
 
-    data class IsWordLoadingSecond(
-        val isLoading: Boolean
-    ) : ModifyWordUiState
-
     data class EditFieldError(
         val wordValueError: String? = null,
         val translatesError: String? = null,
@@ -26,7 +22,9 @@ sealed interface ModifyWordUiState {
         val priority: Int,
         val description: String,
         val translates: List<Translate>,
+        val editableTranslate: Translate? = null,
         val hints: List<HintItem>,
+        val editableHint: HintItem? = null,
         val langFrom: String,
         val soundFileName: String?,
         val isAdditionalFieldVisible: Int,
