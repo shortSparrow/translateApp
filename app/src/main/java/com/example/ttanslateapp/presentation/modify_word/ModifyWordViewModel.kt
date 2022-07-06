@@ -1,22 +1,21 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.ModifyWord
+import com.example.ttanslateapp.domain.model.ValidateResult
 import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
-import com.example.ttanslateapp.domain.model.ValidateResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,42 +42,10 @@ class ModifyWordViewModel @Inject constructor(
 
     fun resetTranslatesError() {
         Timber.d("resetTranslatesError")
-
         _uiState.value = ModifyWordUiState.EditFieldError(
             translatesError = null,
             wordValueError = state.wordValueError
         )
-    }
-
-    private fun validateWordValue(value: String): ValidateResult {
-        return if (value.isBlank()) {
-            ValidateResult(successful = false, errorMessage = "this field is required")
-        } else {
-            ValidateResult(successful = true)
-        }
-    }
-
-    private fun validationPriority(value: String): ValidateResult {
-        return if (value.isBlank()) {
-            ValidateResult(successful = false, errorMessage = "this field is required")
-        } else if (!TextUtils.isDigitsOnly(value)) {
-            ValidateResult(successful = false, errorMessage = "must contain only digits")
-        } else {
-            ValidateResult(successful = true)
-        }
-    }
-
-    private fun validateTranslates(value: List<Translate>): ValidateResult {
-        return if (value.isEmpty()) {
-            ValidateResult(successful = false, errorMessage = "this field is required")
-        } else {
-            ValidateResult(successful = true)
-        }
-    }
-
-
-    override fun onCleared() {
-//        _state.value = _state.value?.copy(editableWordId = null)
     }
 
 //    fun setWordValue(value: String) = _state = _state.copy(wordValue = value)
@@ -141,6 +108,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     fun launchAddMode() = _uiState.postValue(state.toUiState())
+
     fun launchEditMode(wordId: Long) {
         val id = if (wordId == -1L) {
             error("wordId is null")
@@ -150,48 +118,8 @@ class ModifyWordViewModel @Inject constructor(
         getWordById(id)
     }
 
-    private fun getWordById(id: Long) {
-        _uiState.value = ModifyWordUiState.IsWordLoading(true)
-        val loadedWord = viewModelScope.async(Dispatchers.IO) {
-            val word = getWordItemUseCase(id)
-            Log.d("getWordItemUseCase", "getWordItemUseCase $word")
-
-            state = state.copy(
-                wordValue = word.value,
-                translates = word.translates,
-                transcription = word.transcription,
-                description = word.description,
-                selectableLanguage = word.langTo,
-                hints = word.hints,
-                soundFileName = word.sound?.fileName,
-                editableWordId = word.id,
-                langFrom = word.langFrom,
-                createdAt = word.createdAt,
-                priority = word.priority
-            )
-        }
-
-        viewModelScope.launch {
-            loadedWord.await()
-            _uiState.value = ModifyWordUiState.IsWordLoading(false)
-            _uiState.value = state.toUiState()
-        }
-    }
-
-    private fun ModifyWordState.toUiState(): ModifyWordUiState {
-        return ModifyWordUiState.PreScreen(
-            wordValue = wordValue,
-            wordValueError = wordValueError,
-            priority = priority,
-            transcription = transcription,
-            description = description,
-            translates = translates,
-            translatesError = translatesError,
-            hints = hints,
-            langFrom = langFrom,
-            soundFileName = soundFileName,
-            isAdditionalFieldVisible = isAdditionalFieldVisible,
-        )
+    fun restoreRightMode() {
+       _uiState.value = state.toUiState()
     }
 
     fun addTranslate(translateValue: String) {
@@ -321,5 +249,72 @@ class ModifyWordViewModel @Inject constructor(
                 modifyWordUseCase.modifyOnlySound(it, sound = sound)
             }
         }
+    }
+
+    private fun validateWordValue(value: String): ValidateResult {
+        return if (value.isBlank()) {
+            ValidateResult(successful = false, errorMessage = "this field is required")
+        } else {
+            ValidateResult(successful = true)
+        }
+    }
+
+    private fun validationPriority(value: String): ValidateResult {
+        return if (value.isBlank()) {
+            ValidateResult(successful = false, errorMessage = "this field is required")
+        } else if (!TextUtils.isDigitsOnly(value)) {
+            ValidateResult(successful = false, errorMessage = "must contain only digits")
+        } else {
+            ValidateResult(successful = true)
+        }
+    }
+
+    private fun validateTranslates(value: List<Translate>): ValidateResult {
+        return if (value.isEmpty()) {
+            ValidateResult(successful = false, errorMessage = "this field is required")
+        } else {
+            ValidateResult(successful = true)
+        }
+    }
+
+    private fun getWordById(id: Long) {
+        _uiState.value = ModifyWordUiState.IsWordLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            val word = getWordItemUseCase(id)
+            state = state.copy(
+                wordValue = word.value,
+                translates = word.translates,
+                transcription = word.transcription,
+                description = word.description,
+                selectableLanguage = word.langTo,
+                hints = word.hints,
+                soundFileName = word.sound?.fileName,
+                editableWordId = word.id,
+                langFrom = word.langFrom,
+                createdAt = word.createdAt,
+                priority = word.priority
+            )
+            // or you could avoid `withContext` and just use `uiState.postValue()`
+            withContext(Dispatchers.Main) {
+                _uiState.value = ModifyWordUiState.IsWordLoading(false)
+                _uiState.value = state.toUiState()
+            }
+        }
+    }
+
+    private fun ModifyWordState.toUiState(): ModifyWordUiState {
+        return ModifyWordUiState.PreScreen(
+            wordValue = wordValue,
+            wordValueError = wordValueError,
+            priority = priority,
+            transcription = transcription,
+            description = description,
+            translates = translates,
+            translatesError = translatesError,
+            hints = hints,
+            langFrom = langFrom,
+            soundFileName = soundFileName,
+            isAdditionalFieldVisible = isAdditionalFieldVisible,
+        )
     }
 }
