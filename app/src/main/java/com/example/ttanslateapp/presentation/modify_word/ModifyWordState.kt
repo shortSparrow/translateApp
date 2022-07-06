@@ -6,7 +6,14 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 
 sealed interface ModifyWordUiState {
-    data class IsWordLoading(val isLoading: Boolean) : ModifyWordUiState
+    data class IsWordLoading(
+        val isLoading: Boolean
+    ) : ModifyWordUiState
+
+    data class IsWordLoadingSecond(
+        val isLoading: Boolean
+    ) : ModifyWordUiState
+
     data class EditFieldError(
         val wordValueError: String? = null,
         val translatesError: String? = null,
@@ -55,15 +62,11 @@ data class ModifyWordState(
     val langFrom: String = "cz",
     val soundFileName: String? = null,
     val priority: Int = ModifyWord.DEFAULT_PRIORITY,
-
-
     val translatesError: String? = null,
     val wordValueError: String? = null,
     val priorityValidation: String? = null,
-
     val isAdditionalFieldVisible: Int = View.GONE,
     val savedWordResult: Boolean = false,
     val editableWordId: Long? = null,
-
-    val createdAt: Long? = null,
+    val createdAt: Long? = null
 )
