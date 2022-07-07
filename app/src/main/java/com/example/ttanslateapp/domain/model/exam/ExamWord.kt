@@ -14,13 +14,16 @@ data class ExamWord(
     val isFreeze: Boolean = false,
     val answerVariants: List<ExamAnswerVariant>,
     val givenAnswer: String? = null,
-    val isTranslateExpanded: Boolean = false,
     val isActive: Boolean = false,
+    val isTranslateExpanded: Boolean = false,
+    val isHiddenTranslateDescriptionExpanded: Boolean = false,
 
     val isVariantsExpanded: Boolean = false,
+    val selectedVariantValue: String? = null,
 
     val isHintsExpanded: Boolean = false,
     val allHintsIsShown: Boolean = false,
     val countOfRenderHints: Int = 0,
-)
+
+    )
 

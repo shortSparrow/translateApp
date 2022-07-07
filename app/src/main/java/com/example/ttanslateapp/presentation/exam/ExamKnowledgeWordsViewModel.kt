@@ -2,7 +2,6 @@ package com.example.ttanslateapp.presentation.exam
 
 import android.app.Application
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.*
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
@@ -33,6 +32,20 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     init {
         generateWordsList()
     }
+
+
+    fun restoreUI() {
+        _uiState.value = ExamKnowledgeUiState.RestoreUI(
+            isLoading = state.isLoading,
+            examWordList = state.examWordList,
+            examWordListEmpty = state.examWordListEmpty,
+            currentWord = state.currentWord,
+            isExamEnd = state.isExamEnd,
+            isInputWordInvalid = state.isInputWordInvalid,
+            activeWordPosition = state.activeWordPosition,
+        )
+    }
+
 
     fun generateWordsList() {
         state = state.copy(isLoading = true)
@@ -78,11 +91,13 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             state.currentWord!!.copy(isHintsExpanded = !state.currentWord!!.isHintsExpanded)
         state = state.copy(currentWord = currentWord)
 
-        val nextHintButtonVisibility =
-            if (currentWord.allHintsIsShown || currentWord.hints.isEmpty() || currentWord.countOfRenderHints >= currentWord.hints.size) View.GONE else View.VISIBLE
+        val allHintsIsShown =
+            currentWord.countOfRenderHints >= currentWord.hints.size
+        Log.d("countOfRenderHints_", "${currentWord.countOfRenderHints}")
+        Log.d("countOfRenderHints_hints", "${currentWord.hints.size}")
         _uiState.value = ExamKnowledgeUiState.ToggleExpandedHint(
             isExpanded = currentWord.isHintsExpanded,
-            nextHintButtonVisibility = nextHintButtonVisibility
+            allHintsIsShown = allHintsIsShown
         )
     }
 
@@ -94,6 +109,14 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _uiState.value =
             ExamKnowledgeUiState.ToggleIsVariantsExpanded(currentWord.isVariantsExpanded)
     }
+
+    fun setSelectVariant(selectedVariantValue: String) {
+        state =
+            state.copy(currentWord = state.currentWord!!.copy(selectedVariantValue = selectedVariantValue))
+        _uiState.value =
+            ExamKnowledgeUiState.SelectVariants(selectedVariantValue = selectedVariantValue)
+    }
+
 
     fun handleExamCheckAnswer(examWordInputValue: String) {
         checkAnswer(examWordInputValue)
@@ -125,20 +148,26 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     fun handleAnswerEditText(answer: String) {
         val userGaveAnswer = state.currentWord?.status != ExamWordStatus.IN_PROCESS
+        val selectedVariantValue =
+            if (state.currentWord?.selectedVariantValue == answer) state.currentWord?.selectedVariantValue else null
+
+        state =
+            state.copy(currentWord = state.currentWord?.copy(selectedVariantValue = selectedVariantValue))
         _uiState.value =
             ExamKnowledgeUiState.HandleAnswerInput(
-                value = answer,
-                userGaveAnswer = userGaveAnswer
+                value = answer.trim(),
+                userGaveAnswer = userGaveAnswer,
+                selectedVariantValue = selectedVariantValue
             )
     }
 
-
     fun toggleVisibilityHiddenDescription() {
-        val visibility =
-            if (state.hiddenTranslateDescriptionVisibility == View.VISIBLE) View.GONE else View.VISIBLE
-        state = state.copy(hiddenTranslateDescriptionVisibility = visibility)
+        val isExpanded =
+            !state.currentWord!!.isHiddenTranslateDescriptionExpanded
+        state =
+            state.copy(currentWord = state.currentWord!!.copy(isHiddenTranslateDescriptionExpanded = isExpanded))
         _uiState.value =
-            ExamKnowledgeUiState.ToggleVisibilityHiddenDescription(visibility = visibility)
+            ExamKnowledgeUiState.ToggleHiddenDescriptionExpanded(isExpanded = isExpanded)
     }
 
     fun toggleExpandedAllTranslates() {
@@ -288,7 +317,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             state = state.copy(
                 examWordList = updatedWordList,
                 currentWord = updatedCurrentWord,
-                isExamEnd = isExamEnd // TODO maybe delete from state
+                isExamEnd = isExamEnd, // TODO maybe delete from state
             )
 
             _uiState.value = ExamKnowledgeUiState.CheckedAnswer(
@@ -339,8 +368,15 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         state = state.copy(
             examWordList = newList,
-            currentWord = newList[newActiveWordPosition].copy(countOfRenderHints = if (newList[newActiveWordPosition].hints.isEmpty()) 0 else 1),
+            currentWord = newList[newActiveWordPosition].copy(
+                countOfRenderHints = if (newList[newActiveWordPosition].hints.isEmpty()) 0 else 1,
+                allHintsIsShown = newList[newActiveWordPosition].hints.size == 1,
+                selectedVariantValue = null,
+                isHiddenTranslateDescriptionExpanded = false
+            ),
         )
+        Log.d("allHintsIsShown_1", "${state.currentWord!!.hints.size}")
+        Log.d("allHintsIsShown", "${state.currentWord!!.allHintsIsShown}")
 
         _uiState.value = ExamKnowledgeUiState.QuestionNavigation(
             examWordList = state.examWordList,

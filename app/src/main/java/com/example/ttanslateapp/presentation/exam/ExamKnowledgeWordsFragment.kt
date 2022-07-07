@@ -3,15 +3,14 @@ package com.example.ttanslateapp.presentation.exam
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentExamKnowledgeWordsBinding
 import com.example.ttanslateapp.domain.model.exam.ExamWord
@@ -29,7 +28,6 @@ import com.example.ttanslateapp.util.setOnTextChange
 
 
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
-    private var selectableHint: TextView? = null
 
     override val bindingInflater: BindingInflater<FragmentExamKnowledgeWordsBinding>
         get() = FragmentExamKnowledgeWordsBinding::inflate
@@ -44,18 +42,22 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
+        if (savedInstanceState != null) {
+            viewModel.restoreUI()
+        }
         setupAdapter()
         observeLiveDate()
         clickListeners()
 
+
         binding.examWordInput.setOnTextChange {
-            viewModel.handleAnswerEditText(it.toString())
-            binding.examWordContainer.error = null
-            // clear variant backgroundTintList on user change input manually
-            if (it.toString() != selectableHint?.text.toString()) {
-                selectableHint?.backgroundTintList = null
+            if (binding.examWordInput.hasFocus()) {
+                viewModel.handleAnswerEditText(it.toString())
+//                viewModel.resetSelectVariant(it.toString())
             }
+            binding.examWordContainer.error = null
         }
+
 
     }
 
@@ -91,329 +93,401 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private fun observeLiveDate() = with(binding) {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
-                is ExamKnowledgeUiState.IsLoadingWords -> {
+                is ExamKnowledgeUiState.RestoreUI -> {
+                    if (uiState.isLoading) {
+                        progressBar.visibility = View.VISIBLE
+                        return@observe
+                    }
+
                     progressBar.visibility = View.GONE
-                }
-                is ExamKnowledgeUiState.LoadedEmptyList -> {
-                    examContainer.visibility = View.GONE
-                    emptyListLayout.root.visibility = View.VISIBLE
-                }
-                is ExamKnowledgeUiState.LoadedWordsSuccess -> {
-                    progressBar.visibility = View.GONE
+                    if (uiState.examWordList.isEmpty()) {
+                        loadedEmptyList()
+                        return@observe
+                    }
+
                     examContainer.visibility = View.VISIBLE
 
+                    uiState.currentWord?.let { currentWord ->
+                        // scroll to current position
+                        wordPositionRv.viewTreeObserver.addOnGlobalLayoutListener(object :
+                            OnGlobalLayoutListener {
+                            override fun onGlobalLayout() {
+                                val centerOfScreen: Int = wordPositionRv.width / 2 - 100
+                                (wordPositionRv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                                    uiState.activeWordPosition,
+                                    centerOfScreen
+                                )
+                                wordPositionRv.viewTreeObserver.removeOnGlobalLayoutListener(this);
+                            }
+                        }
+                    )
+
+                    if (examWordInput.text.toString().trim()
+                            .isNotEmpty() && !uiState.currentWord.isFreeze
+                    ) {
+                        examCheckAnswer.isEnabled = true
+                    }
+
                     examAdapter.submitList(uiState.examWordList)
                     examWordName.text = uiState.currentWord.value
-                    examWordInput.text = null
-
-                    setDefaultHintsVisibility(
-                        currentWord = uiState.currentWord,
-                        countOfRenderHints = uiState.currentWord.countOfRenderHints
-                    )
-                    setDefaultVariantsVisibility(currentWord = uiState.currentWord)
-                    setClickableNavigationButtons(
-                        activeWordPosition = uiState.activeWordPosition,
-                        listSize = uiState.examWordList.size - 1
-                    )
-
-                    counter.text = getString(
-                        R.string.exam_counter,
-                        uiState.activeWordPosition + 1,
-                        uiState.examWordList.size
-                    )
-                    goPrevQuestion.alpha = 0.5f
-                    goPrevQuestion.isClickable = false
-                }
-                is ExamKnowledgeUiState.HandleAnswerInput -> {
-                    examCheckAnswer.isEnabled = uiState.value.trim()
-                        .isNotEmpty() // FIXME make it in view model or in the data class
-                    if (uiState.userGaveAnswer) {
-                        examCheckAnswer.isEnabled = false
-                    } else {
-                        examCheckAnswer.isEnabled = uiState.value.trim().isNotEmpty()
-                    }
-                }
-                is ExamKnowledgeUiState.CheckedAnswer -> {
-                    if (uiState.isExamEnd) {
-                        examCheckAnswer.setOnClickListener {
-                            findNavController().popBackStack()
-                        }
-                    }
-                    examCheckAnswer.isEnabled = false
-
-                    examAdapter.submitList(uiState.examWordList)
-                    val isAnswerCorrect = uiState.status == ExamWordStatus.SUCCESS
-
-                    if (isAnswerCorrect) {
-                        selectableHint?.backgroundTintList =
-                            ContextCompat.getColorStateList(requireContext(), R.color.green)
-                    }
-
-                    if (!isAnswerCorrect) {
-                        selectableHint?.backgroundTintList =
-                            ContextCompat.getColorStateList(requireContext(), R.color.red)
-                        setVisibleHints(false)
-                        setVisibleVariants(false)
-                        addHiddenTranslatesContainer.root.visibility = View.VISIBLE
-                        addHiddenTranslatesContainer.addHiddenTranslate.visibility = View.VISIBLE
-                        addHiddenTranslatesContainer.hiddenTranslatesDescriptionLabel.visibility =
-                            View.VISIBLE
-                        translatesAdapter.submitList(uiState.currentWord.translates)
-                    }
-                    setExpandedTranslates(isExpanded = false)
-                    setAnswerResult(isCorrect = isAnswerCorrect, answer = uiState.givenAnswer)
-                    showVariantsContainer.allViews.forEach { it.isClickable = false }
-                }
-                is ExamKnowledgeUiState.QuestionNavigation -> {
-                    val centerOfScreen: Int = wordPositionRv.width / 2 - 100
-                    (wordPositionRv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                        uiState.activeWordPosition,
-                        centerOfScreen
-                    )
 
                     setClickableNavigationButtons(
                         activeWordPosition = uiState.activeWordPosition,
                         listSize = uiState.examWordList.size - 1
                     )
 
-                    // if answer was give show answer else hide
-                    if (uiState.currentWord.givenAnswer != null) {
-                        val isAnswerCorrect = uiState.currentWord.status == ExamWordStatus.SUCCESS
-                        setAnswerResult(
-                            isCorrect = isAnswerCorrect,
-                            answer = uiState.currentWord.givenAnswer
-                        )
-                    } else {
-                        yourAnswerResult.visibility = View.GONE
-                    }
+                    setHintsStyle(currentWord = uiState.currentWord)
+                    setTranslateStyles(currentWord = uiState.currentWord)
+                    setVariantsStyle(currentWord = uiState.currentWord)
+                    val isAnswerCorrect = uiState.currentWord.status == ExamWordStatus.SUCCESS
+                    setAnswerResult(
+                        isCorrect = isAnswerCorrect,
+                        answer = uiState.currentWord.givenAnswer
+                    )
 
                     translatesAdapter.submitList(uiState.currentWord.translates)
-
-                    if (uiState.currentWord.isFreeze) {
-                        setVisibleHints(false)
-                        setVisibleVariants(false)
-                        addHiddenTranslatesContainer.root.visibility = View.VISIBLE
-                        addHiddenTranslatesContainer.addHiddenTranslate.visibility = View.GONE
-                        addHiddenTranslatesContainer.hiddenTranslatesDescriptionLabel.visibility =
-                            View.GONE
-                        addHiddenTranslatesContainer.hiddenTranslatesDescription.visibility =
-                            View.GONE
-                    } else {
-                        setDefaultVariantsVisibility(currentWord = uiState.currentWord)
-                        setDefaultHintsVisibility(
-                            countOfRenderHints = uiState.currentWord.countOfRenderHints,
-                            currentWord = uiState.currentWord
-                        )
-                        addHiddenTranslatesContainer.root.visibility = View.GONE
-                    }
                     examAdapter.submitList(uiState.examWordList)
-                    setExpandedTranslates(isExpanded = false)
 
                     examWordName.text = uiState.currentWord.value
-                    examWordInput.setText("")
 
-                    examCheckAnswer.text = getString(R.string.check_answer)
                     counter.text = getString(
                         R.string.exam_counter,
                         uiState.activeWordPosition + 1,
                         uiState.examWordList.size
                     )
-                }
-                is ExamKnowledgeUiState.ToggleIsVariantsExpanded -> {
-                    if (uiState.isExpanded) {
-                        showVariantsContainer.visibility = View.VISIBLE
-                        showVariantsLabel.text = getString(R.string.exam_hide_variants)
-                    } else {
-                        showVariantsContainer.visibility = View.GONE
-                        showVariantsLabel.text = getString(R.string.exam_show_variants)
-                    }
-                }
-                is ExamKnowledgeUiState.ToggleExpandedHint -> {
-                    if (uiState.isExpanded) {
-                        showHintsContainer.visibility = View.VISIBLE
-                        showNextHintButton.visibility = uiState.nextHintButtonVisibility
-                        showHintsLabel.text = getString(R.string.exam_hide_hints)
-                    } else {
-                        showHintsContainer.visibility = View.GONE
-                        showNextHintButton.visibility = View.GONE
-                        showHintsLabel.text = getString(R.string.exam_show_hints)
-                    }
-                }
-                is ExamKnowledgeUiState.ShowNextHint -> {
-                    if (uiState.allHintsIsShown) {
-                        showNextHintButton.visibility = View.GONE
-                    }
-
-                    if (uiState.currentWord.countOfRenderHints > 0) {
-                        renderHints(uiState.currentWord, uiState.currentWord.countOfRenderHints)
-                    }
-                }
-                is ExamKnowledgeUiState.ToggleVisibilityHiddenDescription -> {
-                    addHiddenTranslatesContainer.hiddenTranslatesDescription.visibility =
-                        uiState.visibility
-                }
-                is ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded -> {
-                    setExpandedTranslates(uiState.isExpanded)
-//                    translatesAdapter.submitList(uiState.translates)
-                }
-                is ExamKnowledgeUiState.UpdateHiddenTranslates -> {
-                    translatesAdapter.submitList(uiState.translates)
-                    if (uiState.clearInputValue) {
-                        examWordInput.setText("")
-                    }
+                    setVariantsBackground(selectedVariantValue = uiState.currentWord.selectedVariantValue)
                 }
             }
+            is ExamKnowledgeUiState.IsLoadingWords -> {
+            progressBar.visibility = View.VISIBLE
+        }
+            is ExamKnowledgeUiState.LoadedEmptyList -> {
+            loadedEmptyList()
+        }
+            is ExamKnowledgeUiState.LoadedWordsSuccess -> {
+            progressBar.visibility = View.GONE
+            examContainer.visibility = View.VISIBLE
+
+            examAdapter.submitList(uiState.examWordList)
+            examWordName.text = uiState.currentWord.value
+            examWordInput.text = null
+
+            setVariantsStyle(currentWord = uiState.currentWord)
+            setHintsStyle(currentWord = uiState.currentWord)
+            setClickableNavigationButtons(
+                activeWordPosition = uiState.activeWordPosition,
+                listSize = uiState.examWordList.size - 1
+            )
+
+            counter.text = getString(
+                R.string.exam_counter,
+                uiState.activeWordPosition + 1,
+                uiState.examWordList.size
+            )
+            goPrevQuestion.alpha = 0.5f
+            goPrevQuestion.isClickable = false
+        }
+            is ExamKnowledgeUiState.HandleAnswerInput -> {
+            examCheckAnswer.isEnabled = uiState.value.trim()
+                .isNotEmpty() // FIXME make it in view model or in the data class
+            if (uiState.userGaveAnswer) {
+                examCheckAnswer.isEnabled = false
+            } else {
+                examCheckAnswer.isEnabled = uiState.value.trim().isNotEmpty()
+            }
+
+            setVariantsBackground(selectedVariantValue = uiState.selectedVariantValue)
+        }
+            is ExamKnowledgeUiState.CheckedAnswer -> {
+            if (uiState.isExamEnd) {
+                examCheckAnswer.setOnClickListener {
+                    findNavController().popBackStack()
+                }
+            }
+            examCheckAnswer.isEnabled = false
+
+            examAdapter.submitList(uiState.examWordList)
+            val isAnswerCorrect = uiState.status == ExamWordStatus.SUCCESS
+            setAnswerResult(isCorrect = isAnswerCorrect, answer = uiState.givenAnswer)
+
+            setVariantsStyle(currentWord = uiState.currentWord)
+            setHintsStyle(currentWord = uiState.currentWord)
+            setTranslateStyles(currentWord = uiState.currentWord)
+        }
+            is ExamKnowledgeUiState.QuestionNavigation -> {
+            val centerOfScreen: Int = wordPositionRv.width / 2 - 100
+            (wordPositionRv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                uiState.activeWordPosition,
+                centerOfScreen
+            )
+
+            setClickableNavigationButtons(
+                activeWordPosition = uiState.activeWordPosition,
+                listSize = uiState.examWordList.size - 1
+            )
+
+            // if answer was give show answer else hide
+            val isAnswerCorrect = uiState.currentWord.status == ExamWordStatus.SUCCESS
+            setAnswerResult(
+                isCorrect = isAnswerCorrect,
+                answer = uiState.currentWord.givenAnswer
+            )
+
+            setVariantsStyle(currentWord = uiState.currentWord)
+            setHintsStyle(currentWord = uiState.currentWord)
+            setTranslateStyles(currentWord = uiState.currentWord)
+
+            translatesAdapter.submitList(uiState.currentWord.translates)
+
+            examAdapter.submitList(uiState.examWordList)
+            examWordName.text = uiState.currentWord.value
+            examWordInput.setText("")
+
+            counter.text = getString(
+                R.string.exam_counter,
+                uiState.activeWordPosition + 1,
+                uiState.examWordList.size
+            )
+        }
+            is ExamKnowledgeUiState.ToggleIsVariantsExpanded -> {
+            setExpandedVariants(uiState.isExpanded)
+        }
+            is ExamKnowledgeUiState.ToggleExpandedHint -> {
+            setExpandedHints(uiState.isExpanded, allHintsIsShown = uiState.allHintsIsShown)
+        }
+            is ExamKnowledgeUiState.ShowNextHint -> {
+            if (uiState.allHintsIsShown) {
+                showNextHintButton.visibility = View.GONE
+            }
+
+            if (uiState.currentWord.countOfRenderHints > 0) {
+                renderHints(uiState.currentWord, uiState.currentWord.countOfRenderHints)
+            }
+        }
+            is ExamKnowledgeUiState.ToggleHiddenDescriptionExpanded -> {
+            setHiddenTranslateDescriptionVisible(true, isExpanded = uiState.isExpanded)
+        }
+            is ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded -> {
+            setExpandedTranslates(uiState.isExpanded)
+        }
+            is ExamKnowledgeUiState.UpdateHiddenTranslates -> {
+            translatesAdapter.submitList(uiState.translates)
+            if (uiState.clearInputValue) {
+                examWordInput.setText("")
+            }
+        }
+            is ExamKnowledgeUiState.SelectVariants -> {
+
+            setVariantsBackground(selectedVariantValue = uiState.selectedVariantValue)
+            examWordInput.requestFocus()
+            examWordInput.setText(uiState.selectedVariantValue)
+            examWordInput.setSelection(examWordInput.text.toString().length)
+        }
         }
     }
+}
 
-    // FIXME make it outside fragment
-    private fun setClickableNavigationButtons(activeWordPosition: Int, listSize: Int) =
-        with(binding) {
-            if (activeWordPosition == 0 && activeWordPosition == listSize) { // list is empty
-                goPrevQuestion.alpha = 0.5f
-                goPrevQuestion.isClickable = false
-                goNextQuestion.alpha = 0.5f
-                goNextQuestion.isClickable = false
-                return
-            }
-
-            if (activeWordPosition == 0) {
-                goPrevQuestion.alpha = 0.5f
-                goPrevQuestion.isClickable = false
-            } else { // more than 0
-                goPrevQuestion.alpha = 1f
-                goPrevQuestion.isClickable = true
-            }
-
-            if (activeWordPosition == listSize) {
-                goNextQuestion.alpha = 0.5f
-                goNextQuestion.isClickable = false
-            } else { // lest list size
-                goNextQuestion.alpha = 1f
-                goNextQuestion.isClickable = true
-            }
-        }
-
-    // FIXME make it outside fragment
-    private fun setAnswerResult(isCorrect: Boolean, answer: String) = with(binding) {
-        yourAnswerResult.visibility = View.VISIBLE
-        yourAnswerResult.text = getString(R.string.exam_your_answer) + " " + answer
-
-        val color = if (isCorrect) {
-            R.color.green
+private fun setVariantsBackground(selectedVariantValue: String?) = with(binding) {
+    // FIXME work twice (because on edit text exist listener)
+    showVariantsContainer.allViews.forEach { view ->
+        val textView = view.findViewById<TextView>(R.id.chip_item) ?: return@with
+        if (textView.text == selectedVariantValue && selectedVariantValue != null) {
+            textView.backgroundTintList =
+                ContextCompat.getColorStateList(requireContext(), R.color.blue)
         } else {
-            R.color.red
+            textView.backgroundTintList = null
         }
-        yourAnswerResult.setTextColor(ContextCompat.getColor(requireContext(), color));
+    }
+}
+
+
+private fun loadedEmptyList() = with(binding) {
+    examContainer.visibility = View.GONE
+    emptyListLayout.root.visibility = View.VISIBLE
+}
+
+// FIXME make it outside fragment
+private fun setClickableNavigationButtons(activeWordPosition: Int, listSize: Int) =
+    with(binding) {
+        if (activeWordPosition == 0 && activeWordPosition == listSize) { // list is empty
+            goPrevQuestion.alpha = 0.5f
+            goPrevQuestion.isClickable = false
+            goNextQuestion.alpha = 0.5f
+            goNextQuestion.isClickable = false
+            return
+        }
+
+        if (activeWordPosition == 0) {
+            goPrevQuestion.alpha = 0.5f
+            goPrevQuestion.isClickable = false
+        } else { // more than 0
+            goPrevQuestion.alpha = 1f
+            goPrevQuestion.isClickable = true
+        }
+
+        if (activeWordPosition == listSize) {
+            goNextQuestion.alpha = 0.5f
+            goNextQuestion.isClickable = false
+        } else { // lest list size
+            goNextQuestion.alpha = 1f
+            goNextQuestion.isClickable = true
+        }
     }
 
-    private fun setDefaultVariantsVisibility(currentWord: ExamWord) = with(binding) {
-        showVariantsContainer.visibility = View.GONE
-        showVariantsContainer.removeAllViews()
+// FIXME make it outside fragment
+private fun setAnswerResult(isCorrect: Boolean, answer: String?) = with(binding) {
+    if (answer == null) {
+        yourAnswerResult.visibility = View.GONE
+        return@with
+    }
+    yourAnswerResult.visibility = View.VISIBLE
+    yourAnswerResult.text = getString(R.string.exam_your_answer) + " " + answer
+
+    val color = if (isCorrect) {
+        R.color.green
+    } else {
+        R.color.red
+    }
+    yourAnswerResult.setTextColor(ContextCompat.getColor(requireContext(), color));
+}
+
+
+private fun setVariantsStyle(currentWord: ExamWord) = with(binding) {
+    showVariantsContainer.removeAllViews()
+
+    if (currentWord.givenAnswer == null) {
         renderShowVariants(currentWord)
         showVariantsLabel.visibility = View.VISIBLE
+    } else {
+        showVariantsLabel.visibility = View.GONE
+    }
+
+    setExpandedVariants(isExpanded = currentWord.isVariantsExpanded)
+}
+
+private fun setExpandedVariants(isExpanded: Boolean) = with(binding) {
+    if (isExpanded) {
+        showVariantsContainer.visibility = View.VISIBLE
+        showVariantsLabel.text = getString(R.string.exam_hide_variants)
+    } else {
+        showVariantsContainer.visibility = View.GONE
         showVariantsLabel.text = getString(R.string.exam_show_variants)
     }
+}
 
-    private fun setDefaultHintsVisibility(countOfRenderHints: Int, currentWord: ExamWord) =
-        with(binding) {
-            showHintsContainer.removeAllViews()
+private fun renderShowVariants(examWord: ExamWord) = with(binding) {
+    for (i in (0 until examWord.answerVariants.size)) {
+        val view = LayoutInflater.from(showVariantsContainer.context)
+            .inflate(R.layout.item_translate_chip, showVariantsContainer, false)
+        val textItem = view.findViewById<TextView>(R.id.chip_item)
+        textItem.text = examWord.answerVariants[i].value
 
-            if (currentWord.hints.isEmpty()) {
-                setVisibleHints(false)
-            } else {
-                showHintsLabel.visibility = View.VISIBLE
-                showHintsContainer.visibility = View.GONE
-                showNextHintButton.visibility = View.GONE
-                if (countOfRenderHints > 0) {
-                    renderHints(currentWord, countOfRenderHints)
-                }
-            }
-
-            showHintsLabel.text = getString(R.string.exam_show_hints)
+        textItem.setOnClickListener {
+            viewModel.setSelectVariant(selectedVariantValue = examWord.answerVariants[i].value)
         }
+        showVariantsContainer.addView(view)
+    }
+}
 
-    private fun setVisibleHints(isVisible: Boolean) = with(binding) {
+private fun setHintsStyle(currentWord: ExamWord) = with(binding) {
+    showHintsContainer.removeAllViews()
+
+    if (currentWord.hints.isEmpty() || currentWord.givenAnswer != null) {
+        setExpandedHints(false, false)
+        showHintsLabel.visibility = View.GONE
+        return@with
+    }
+
+    showHintsLabel.visibility = View.VISIBLE
+    setExpandedHints(currentWord.isHintsExpanded, allHintsIsShown = currentWord.allHintsIsShown)
+
+    if (currentWord.countOfRenderHints > 0) {
+        renderHints(currentWord, currentWord.countOfRenderHints)
+    }
+
+}
+
+private fun setExpandedHints(isExpanded: Boolean, allHintsIsShown: Boolean) = with(binding) {
+    val visibility = if (isExpanded) View.VISIBLE else View.GONE
+    showNextHintButton.visibility = if (allHintsIsShown) View.GONE else visibility
+    showHintsContainer.visibility = visibility
+    showHintsLabel.text =
+        if (isExpanded) getString(R.string.exam_hide_hints) else getString(R.string.exam_show_hints)
+}
+
+private fun renderHints(examWord: ExamWord, count: Int) = with(binding) {
+    showHintsContainer.removeAllViews()
+    for (i in (0 until count)) {
+        val view = LayoutInflater.from(showHintsContainer.context)
+            .inflate(R.layout.item_exam_word_hint, showHintsContainer, false)
+        view.findViewById<TextView>(R.id.hint_value).text = examWord.hints[i].value
+        showHintsContainer.addView(view)
+    }
+}
+
+private fun setTranslateStyles(currentWord: ExamWord) = with(binding) {
+    if (currentWord.status == ExamWordStatus.FAIL) {
+        addHiddenTranslatesContainer.addHiddenTranslate.visibility = View.VISIBLE
+        // TODO add isExpanded for description
+        setHiddenTranslateDescriptionVisible(
+            isVisible = true,
+            isExpanded = currentWord.isHiddenTranslateDescriptionExpanded
+        )
+    } else {
+        addHiddenTranslatesContainer.addHiddenTranslate.visibility = View.GONE
+        setHiddenTranslateDescriptionVisible(isVisible = false, isExpanded = false)
+    }
+
+    if (currentWord.givenAnswer != null) {
+        addHiddenTranslatesContainer.root.visibility = View.VISIBLE
+        setExpandedTranslates(isExpanded = currentWord.isTranslateExpanded)
+    } else {
+        addHiddenTranslatesContainer.root.visibility = View.GONE
+    }
+}
+
+private fun setExpandedTranslates(isExpanded: Boolean) = with(binding) {
+    val visibility = if (isExpanded) View.VISIBLE else View.INVISIBLE
+    val text =
+        if (isExpanded) getString(R.string.exam_hide_current_translates) else getString(R.string.exam_show_current_translates)
+    addHiddenTranslatesContainer.translateChipsRv.visibility = visibility
+    addHiddenTranslatesContainer.toggleExpandedCurrentTranslates.text = text
+}
+
+private fun setHiddenTranslateDescriptionVisible(isVisible: Boolean, isExpanded: Boolean) =
+    with(binding) {
         val visibility = if (isVisible) View.VISIBLE else View.GONE
-        showNextHintButton.visibility = visibility
-        showHintsContainer.visibility = visibility
-        showHintsLabel.visibility = visibility
-    }
-
-    private fun setVisibleVariants(isVisible: Boolean) = with(binding) {
-        val visibility = if (isVisible) View.VISIBLE else View.GONE
-        showVariantsContainer.visibility = visibility
-        showVariantsLabel.visibility = visibility
-    }
-
-    private fun setExpandedTranslates(isExpanded: Boolean) = with(binding) {
-        val visibility = if (isExpanded) View.VISIBLE else View.INVISIBLE
-        val text =
-            if (isExpanded) getString(R.string.exam_hide_current_translates) else getString(R.string.exam_show_current_translates)
-        addHiddenTranslatesContainer.translateChipsRv.visibility = visibility
-        addHiddenTranslatesContainer.toggleExpandedCurrentTranslates.text = text
+        addHiddenTranslatesContainer.hiddenTranslatesDescriptionLabel.visibility = visibility
+        addHiddenTranslatesContainer.hiddenTranslatesDescription.visibility =
+            if (isExpanded) visibility else View.GONE
     }
 
 
-    private fun renderHints(examWord: ExamWord, count: Int) = with(binding) {
-        showHintsContainer.removeAllViews()
-        for (i in (0 until count)) {
-            val view = LayoutInflater.from(showHintsContainer.context)
-                .inflate(R.layout.item_exam_word_hint, showHintsContainer, false)
-            view.findViewById<TextView>(R.id.hint_value).text = examWord.hints[i].value
-            showHintsContainer.addView(view)
+private fun setupAdapter() = with(binding) {
+    wordPositionRv.adapter = examAdapter
+    examCheckAnswer.setOnClickListener {
+        viewModel.handleExamCheckAnswer(examWordInput.text.toString())
+    }
+    addHiddenTranslatesContainer.translateChipsRv.adapter = translatesAdapter
+    addHiddenTranslatesContainer.translateChipsRv.itemAnimator = null
+
+
+    wordPositionRv.itemAnimator = null;
+    examAdapter.clickListener = object : ExamAdapter.OnItemClickListener {
+        override fun onItemClick(view: View?, position: Int) {
+            viewModel.goToWord(position)
         }
     }
 
-    private fun renderShowVariants(examWord: ExamWord) = with(binding) {
-        for (i in (0 until examWord.answerVariants.size)) {
-            val view = LayoutInflater.from(showVariantsContainer.context)
-                .inflate(R.layout.item_translate_chip, showVariantsContainer, false)
-            val textItem = view.findViewById<TextView>(R.id.chip_item)
-            textItem.text = examWord.answerVariants[i].value
+    translatesAdapter.clickListener =
+        object : ModifyWordAdapter.OnItemClickListener<Translate> {
+            override fun onItemClick(it: View, item: Translate) {
 
-            textItem.setOnClickListener {
-                showVariantsContainer.allViews.forEach {
-                    it.backgroundTintList = null
-                }
-
-                it.backgroundTintList =
-                    ContextCompat.getColorStateList(requireContext(), R.color.blue)
-
-                selectableHint = textItem
-                examWordInput.setText(textItem.text.toString().trim())
-                examWordInput.setSelection(examWordInput.text.toString().length)
-            }
-            showVariantsContainer.addView(view)
-        }
-    }
-
-    private fun setupAdapter() = with(binding) {
-        wordPositionRv.adapter = examAdapter
-        examCheckAnswer.setOnClickListener {
-            viewModel.handleExamCheckAnswer(examWordInput.text.toString())
-        }
-        addHiddenTranslatesContainer.translateChipsRv.adapter = translatesAdapter
-        addHiddenTranslatesContainer.translateChipsRv.itemAnimator = null
-
-
-        wordPositionRv.itemAnimator = null;
-        examAdapter.clickListener = object: ExamAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, position: Int) {
-                viewModel.goToWord(position)
             }
 
-        }
-
-        translatesAdapter.clickListener =
-            object : ModifyWordAdapter.OnItemClickListener<Translate> {
-                override fun onItemClick(it: View, item: Translate) {
-
-                }
-
-                override fun onLongItemClick(it: View, item: Translate) {
-                    viewModel.toggleIsHiddenTranslate(item)
-                }
+            override fun onLongItemClick(it: View, item: Translate) {
+                viewModel.toggleIsHiddenTranslate(item)
             }
-    }
+        }
+}
 }
