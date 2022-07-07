@@ -33,7 +33,7 @@ class ModifyWordViewModel @Inject constructor(
     fun getAudioFileName(): String? = state.soundFileName
 
     fun resetWordValueError() {
-        Timber.d("resetWordValueError")
+        state = state.copy(wordValueError = null)
         _uiState.value = ModifyWordUiState.EditFieldError(
             wordValueError = null,
             translatesError = state.translatesError
@@ -41,7 +41,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     fun resetTranslatesError() {
-        Timber.d("resetTranslatesError")
+        state = state.copy(translatesError = null)
         _uiState.value = ModifyWordUiState.EditFieldError(
             translatesError = null,
             wordValueError = state.wordValueError
@@ -119,7 +119,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     fun restoreRightMode() {
-       _uiState.value = state.toUiState()
+       _uiState.value = state.toUiState(screenIsRestored = true)
     }
 
     fun addTranslate(translateValue: String) {
@@ -302,7 +302,7 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    private fun ModifyWordState.toUiState(): ModifyWordUiState {
+    private fun ModifyWordState.toUiState(screenIsRestored: Boolean = false): ModifyWordUiState {
         return ModifyWordUiState.PreScreen(
             wordValue = wordValue,
             wordValueError = wordValueError,
@@ -317,6 +317,7 @@ class ModifyWordViewModel @Inject constructor(
             langFrom = langFrom,
             soundFileName = soundFileName,
             isAdditionalFieldVisible = isAdditionalFieldVisible,
+            screenIsRestored = screenIsRestored
         )
     }
 }

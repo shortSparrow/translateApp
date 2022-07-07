@@ -80,8 +80,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     private fun setupView() = with(binding) {
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
-        addTranslate.translateInput.setOnTextChange { viewModel.resetTranslatesError() }
-        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.resetWordValueError() }
+        addTranslate.translateInput.setOnTextChange {viewModel.resetTranslatesError() }
+        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.resetWordValueError()}
 
         // focus next input on click action key
         listOf(
@@ -98,7 +98,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                 }
             }
         }
-
 
         addHints.hintChipsRv.adapter = hintAdapter
         addHints.hintChipsRv.itemAnimator = null
@@ -170,11 +169,16 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     wordPriorityContainer.error = uiState.priorityValidation
                 }
                 is ModifyWordUiState.PreScreen -> {
-                    inputTranslatedWord.englishWordInput.setText(uiState.wordValue)
+                    // set value only if load screen firstly, ignore on rotate, system do it instead of us. And we don't have input value in state
+                    if (uiState.screenIsRestored == false) {
+                        inputTranslatedWord.englishWordInput.setText(uiState.wordValue)
+                        inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)
+                        translateWordDescription.descriptionInput.setText(uiState.description)
+                        wordPriorityValue.setText(uiState.priority.toString())
+                    }
+
                     inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
-                    inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)
-                    translateWordDescription.descriptionInput.setText(uiState.description)
-                    wordPriorityValue.setText(uiState.priority.toString())
+                    addTranslate.englishWordContainer.error = uiState.translatesError
 
                     if (uiState.editableTranslate != null) {
                         addTranslate.cancelEditTranslate.visibility = View.VISIBLE
@@ -202,7 +206,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     updateMicrophoneIcon(uiState.soundFileName)
 
                     addHints.root.visibility = uiState.isAdditionalFieldVisible
-
                     hintAdapter.submitList(uiState.hints)
                 }
                 is ModifyWordUiState.ShowAdditionalFields -> {

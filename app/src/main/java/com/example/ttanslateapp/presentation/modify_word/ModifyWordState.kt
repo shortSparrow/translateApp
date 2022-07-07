@@ -29,7 +29,8 @@ sealed interface ModifyWordUiState {
         val soundFileName: String?,
         val isAdditionalFieldVisible: Int,
         val wordValueError: String? = null,
-        val translatesError: String? = null
+        val translatesError: String? = null,
+        val screenIsRestored: Boolean? = false
     ) : ModifyWordUiState
 
     data class ShowAdditionalFields(val isVisible: Int) : ModifyWordUiState

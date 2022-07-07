@@ -71,9 +71,10 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
                 is WordListViewModelState.IsLoading -> {
-
+                    progressBar.visibility = View.VISIBLE
                 }
                 is WordListViewModelState.LoadSuccess -> {
+                    progressBar.visibility = View.GONE
                     if (uiState.wordList.isEmpty()) {
                         nothingFoundContainer.root.visibility = View.VISIBLE
                         wordListRv.visibility = View.GONE
@@ -91,7 +92,10 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
                     }
 
                     wordListAdapter.submitList(uiState.wordList) {
-                        binding.wordListRv.scrollToPosition(0)
+                        // scroll only if user fined word. Not affected if go back by navigation on this screen
+                        if (searchWord.hasFocus()) {
+                            binding.wordListRv.scrollToPosition(0)
+                        }
                     }
                 }
             }

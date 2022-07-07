@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.word_list
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,7 @@ class WordListViewModel @Inject constructor(
     var searchInputHasFocus = false
 
     init {
+        _uiState.value = WordListViewModelState.IsLoading(true)
         searchDebounced("")
     }
 
