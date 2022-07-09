@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment
 import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         examReminder.setInitialReminderIfNeeded()
     }
 
-    fun setupNavigation() {
+    private fun setupNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController

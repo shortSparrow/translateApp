@@ -30,7 +30,7 @@ class WordListViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var dictionaryIsEmpty = false
 
-    var searchInputHasFocus = false
+    var searchInputValue = ""
 
     init {
         _uiState.value = WordListViewModelState.IsLoading(true)
@@ -66,6 +66,7 @@ class WordListViewModel @Inject constructor(
     fun searchDebounced(searchText: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
+            Log.d("searchWordDDD", "1")
             searchWord(searchText)
         }
     }

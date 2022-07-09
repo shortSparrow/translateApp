@@ -12,7 +12,7 @@ import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import com.example.ttanslateapp.util.getAppComponent
-import timber.log.Timber
+
 
 class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
@@ -34,22 +34,15 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         clickListeners()
         observeData()
 
-        binding.searchWord.setOnQueryTextFocusChangeListener { v, hasFocus ->
-            viewModel.searchInputHasFocus = hasFocus
-        }
-
         binding.searchWord.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                Timber.d(query.toString())
-                return true
-            }
+            override fun onQueryTextSubmit(query: String?): Boolean = true
 
             override fun onQueryTextChange(query: String?): Boolean {
-                if (viewModel.searchInputHasFocus) {
+                if (viewModel.searchInputValue != query.toString()) {
+                    viewModel.searchInputValue = query.toString()
                     viewModel.searchDebounced(query.toString())
                 }
-
                 return true
             }
         })
@@ -81,9 +74,9 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
                     wordListAdapter.submitList(uiState.wordList) {
                         // scroll only if user fined word. Not affected if go back by navigation on this screen
-                        if (searchWord.hasFocus()) {
-                            binding.wordListRv.scrollToPosition(0)
-                        }
+//                        if (searchWord.hasFocus()) {
+                        binding.wordListRv.scrollToPosition(0)
+//                        }
                     }
                 }
             }
