@@ -57,7 +57,6 @@ data class WordInfoDb @Inject constructor(
         childColumns = arrayOf("word_id"),
         onDelete = CASCADE,
     )],
-//    indices = [Index("word_id")]
 )
 data class TranslateDb @Inject constructor(
     @PrimaryKey(autoGenerate = true) val id: Long = DEFAULT_ID,
@@ -80,7 +79,6 @@ data class TranslateDb @Inject constructor(
         childColumns = arrayOf("word_id"),
         onDelete = CASCADE,
     )],
-//    indices = [Index("word_id")]
 )
 data class HintDb @Inject constructor(
     @PrimaryKey(autoGenerate = true)

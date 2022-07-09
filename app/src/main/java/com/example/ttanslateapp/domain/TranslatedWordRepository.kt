@@ -9,7 +9,6 @@ import com.example.ttanslateapp.domain.model.exam.ExamWord
 import kotlinx.coroutines.flow.Flow
 
 interface TranslatedWordRepository {
-
     suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
     suspend fun getExamWordListSize():Int
 
@@ -19,15 +18,9 @@ interface TranslatedWordRepository {
 
     suspend fun deleteWord(id: Long): Boolean
 
-
     suspend fun updatePriorityById(priority: Int, id: Long): Boolean
     suspend fun modifyWordTranslates(translates: List<TranslateDb>): List<Long>
     suspend fun modifyWordHints(hints: List<HintDb>): List<Long>
     suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long
 
-//    suspend fun modifyWord(
-//        wordInfoDb: WordInfoDb,
-//        translates: List<TranslateDb>,
-//        hints: List<HintDb>,
-//    ): Long
 }

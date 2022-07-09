@@ -56,22 +56,6 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.modifyWordInfo(wordInfoDb)
     }
 
-//    override suspend fun modifyWord(
-//        word: ModifyWord
-//    ): Long {
-//        val wordId = translatedWordDao.modifyWord(
-//            wordInfoDb = mapper.modifyWordToWordFullDb(word),
-//            translates = word.translates.map {
-//                mapper.translateLocalToDb(
-//                    translate = it,
-//                    wordId = word.id
-//                )
-//            },
-//            hints = word.hints.map { mapper.hintLocalToDb(hint = it, wordId = word.id) }
-//        )
-//        return wordId
-//    }
-
 
     companion object {
         private const val WORD_IS_NOT_FOUND = -1
