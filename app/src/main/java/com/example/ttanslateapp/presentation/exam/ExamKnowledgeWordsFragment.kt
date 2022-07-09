@@ -1,7 +1,9 @@
 package com.example.ttanslateapp.presentation.exam
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.TextView
@@ -36,6 +38,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private val examAdapter = ExamAdapter()
     private val translatesAdapter = TranslateAdapter()
 
+    private val modeDialog by lazy { ExamModeDialog(context = requireContext(), viewModel = viewModel) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
@@ -46,6 +50,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         setupAdapter()
         observeLiveDate()
         clickListeners()
+        modeDialog.setupView()
 
         binding.examWordInput.setOnTextChange {
             viewModel.handleAnswerEditText(it.toString())
@@ -53,6 +58,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun clickListeners() = with(binding) {
         showVariantsLabel.setOnClickListener {
             viewModel.toggleVisibleVariants()
@@ -80,11 +86,26 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
         goNextQuestion.setOnClickListener { viewModel.goToNextQuestion() }
         goPrevQuestion.setOnClickListener { viewModel.goPrev() }
+
+        examModeButton.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> v.alpha = 0.5f
+                MotionEvent.ACTION_UP -> {
+                    v.alpha = 1f
+                    viewModel.toggleOpenModeDialog(true)
+                }
+            }
+            true
+        }
     }
 
     private fun observeLiveDate() = with(binding) {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
+                is ExamKnowledgeUiState.ToggleOpenModeDialog -> {
+                    modeDialog.setIsOpenModeDialog(uiState.isOpened)
+                }
+
                 is ExamKnowledgeUiState.RestoreUI -> {
                     if (uiState.isLoading) {
                         progressBar.visibility = View.VISIBLE
@@ -98,7 +119,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     }
 
                     examContainer.visibility = View.VISIBLE
-
+                    modeDialog.handleDialog(mode = uiState.mode)
+                    modeDialog.setIsOpenModeDialog(uiState.isModeDialogOpen)
                     uiState.currentWord?.let { currentWord ->
                         // scroll to current position
                         wordPositionRv.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -159,6 +181,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 is ExamKnowledgeUiState.LoadedWordsSuccess -> {
                     progressBar.visibility = View.GONE
                     examContainer.visibility = View.VISIBLE
+                    modeDialog.handleDialog(mode = uiState.mode)
 
                     examAdapter.submitList(uiState.examWordList)
                     examWordName.text = uiState.currentWord.value
@@ -292,10 +315,11 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
     }
 
-
     private fun loadedEmptyList() = with(binding) {
         examContainer.visibility = View.GONE
         emptyListLayout.root.visibility = View.VISIBLE
+        examModeButton.isEnabled = false
+        examModeButton.alpha = 0.5f
     }
 
     // FIXME make it outside fragment
@@ -342,7 +366,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
         yourAnswerResult.setTextColor(ContextCompat.getColor(requireContext(), color));
     }
-
 
     private fun setVariantsStyle(currentWord: ExamWord) = with(binding) {
         showVariantsContainer.removeAllViews()

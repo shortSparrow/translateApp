@@ -4,9 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <FrameLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/exam_counter_toolbar_title"
+            app:titleCentered="true">
+            <ImageView
+                android:id="@+id/exam_mode_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/exam_mode"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/gutter"
+                />
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress_bar"
@@ -29,6 +49,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
 
                 <include
                     android:id="@+id/empty_list_layout"
@@ -234,5 +255,5 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </RelativeLayout>
         </ScrollView>
-    </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

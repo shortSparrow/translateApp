@@ -10,8 +10,14 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :wordValue ORDER BY created_at DESC")
     fun searchWordList(wordValue: String): Flow<List<WordFullDb>>
 
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC LIMIT :count")
-    suspend fun getExamWordList(count: Int): List<WordFullDb>
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC LIMIT :count OFFSET :skip")
+    suspend fun getExamWordList(count: Int, skip: Int): List<WordFullDb>
+
+    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
+    suspend fun getExamWordListSize(): Int
+
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC")
+    suspend fun getExamWordList(): List<WordFullDb>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb

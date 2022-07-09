@@ -18,12 +18,15 @@ sealed interface ExamKnowledgeUiState {
         val isInputWordInvalid: Boolean = false,
         val activeWordPosition: Int = 0,
         val hiddenTranslateDescriptionVisibility: Int = View.GONE,
+        val mode: ExamMode,
+        val isModeDialogOpen: Boolean
     ) : ExamKnowledgeUiState
 
     data class LoadedWordsSuccess(
         val examWordList: List<ExamWord>,
         val currentWord: ExamWord,
-        val activeWordPosition: Int
+        val activeWordPosition: Int,
+        val mode: ExamMode
     ) : ExamKnowledgeUiState
 
     data class HandleAnswerInput(
@@ -71,6 +74,8 @@ sealed interface ExamKnowledgeUiState {
         val translates: List<Translate>,
         val clearInputValue: Boolean = false
     ) : ExamKnowledgeUiState
+
+    data class ToggleOpenModeDialog(val isOpened: Boolean) : ExamKnowledgeUiState
 }
 
 data class ExamKnowledgeState(
@@ -81,11 +86,11 @@ data class ExamKnowledgeState(
     val isExamEnd: Boolean = false,
     val isInputWordInvalid: Boolean = false,
     val activeWordPosition: Int = 0,
-
-    //    val isVariantsExpanded: Boolean = false, // FIXME replace to current word
-//    val countOfVisibleHints: Int = 0, // FIXME replace to current word
-//    val allHintsIsShown: Boolean = false, // FIXME replace to current word
-//    val isHintsExpanded: Boolean = false, // FIXME replace to current word
+    val mode: ExamMode = ExamMode.DAILY_MODE,
+    val isModeDialogOpen: Boolean = false
 )
 
+enum class ExamMode {
+    DAILY_MODE, INFINITY_MODE
+}
 

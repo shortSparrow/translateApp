@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface TranslatedWordRepository {
 
-    suspend fun getExamWordList(count: Int): List<ExamWord>
+    suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
+    suspend fun getExamWordListSize():Int
 
     suspend fun searchWordList(query: String): Flow<List<WordRV>>
 

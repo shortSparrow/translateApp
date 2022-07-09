@@ -1,9 +1,11 @@
 package com.example.ttanslateapp.domain.use_case
 
+import android.util.Log
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.ExamWordAnswerRepository
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
+import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import com.example.ttanslateapp.util.EXAM_WORD_ANSWER_LIST_SIZE
 import com.example.ttanslateapp.util.temporarryAnswerList
 import kotlinx.coroutines.async
@@ -18,14 +20,19 @@ class GetExamWordListUseCase @Inject constructor(
     private val examWordAnswerRepository: ExamWordAnswerRepository,
     val mapper: WordMapper,
 ) {
-    suspend operator fun invoke(count: Int = EXAM_WORD_LIST_COUNT) = coroutineScope {
+    suspend operator fun invoke(mode: ExamMode) = coroutineScope {
+        val count =
+            if (mode == ExamMode.INFINITY_MODE) repository.getExamWordListSize() else EXAM_WORD_LIST_COUNT
+        Log.d("GetExamWordListUseCase", "CALL")
+
         val answerList = getExamAnswerVariants(count)
-        repository.getExamWordList(count)
+        repository.getExamWordList(count = count, skip = 0)
             .mapIndexed { index, examWord ->
                 val from = index * EXAM_WORD_ANSWER_LIST_SIZE
                 val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
 
-                val randomWordTranslateIndex = Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
+                val randomWordTranslateIndex =
+                    Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
                 examWord.copy(
                     answerVariants = answerList.slice(from until to)
                         .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))

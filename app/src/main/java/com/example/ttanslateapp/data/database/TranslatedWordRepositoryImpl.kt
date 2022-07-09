@@ -17,8 +17,13 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     private val mapper: WordMapper
 ) : TranslatedWordRepository {
 
-    override suspend fun getExamWordList(count: Int): List<ExamWord> {
-        return translatedWordDao.getExamWordList(count).map { mapper.wordFullDbToExamWord(it) }
+    override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
+        return translatedWordDao.getExamWordList(count = count, skip = skip)
+            .map { mapper.wordFullDbToExamWord(it) }
+    }
+
+    override suspend fun getExamWordListSize(): Int {
+        return translatedWordDao.getExamWordListSize()
     }
 
     override suspend fun searchWordList(query: String): Flow<List<WordRV>> {

@@ -11,6 +11,7 @@ import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeState
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
+import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,11 +29,10 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private var state = ExamKnowledgeState()
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
-    // trouble with reenter on screen
+    // FIXME trouble with reenter on screen
     init {
         generateWordsList()
     }
-
 
     fun restoreUI() {
         _uiState.value = ExamKnowledgeUiState.RestoreUI(
@@ -43,16 +43,28 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             isExamEnd = state.isExamEnd,
             isInputWordInvalid = state.isInputWordInvalid,
             activeWordPosition = state.activeWordPosition,
+            mode = state.mode,
+            isModeDialogOpen = state.isModeDialogOpen
         )
     }
 
+    fun changeExamMode(mode: ExamMode) {
+        // reset state and set new mode
+        state = ExamKnowledgeState().copy(mode = mode)
+        generateWordsList()
+    }
+
+    fun toggleOpenModeDialog(isOpened: Boolean) {
+        state = state.copy(isModeDialogOpen = isOpened)
+        _uiState.value = ExamKnowledgeUiState.ToggleOpenModeDialog(isOpened = isOpened)
+    }
 
     fun generateWordsList() {
         state = state.copy(isLoading = true)
         _uiState.value = ExamKnowledgeUiState.IsLoadingWords
 
         viewModelScope.launch {
-            val list = getExamWordListUseCase().mapIndexed { index, examWord ->
+            val list = getExamWordListUseCase(mode=state.mode).mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(
                     status = ExamWordStatus.IN_PROCESS,
                     isActive = true
@@ -78,7 +90,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 _uiState.value = ExamKnowledgeUiState.LoadedWordsSuccess(
                     examWordList = state.examWordList,
                     currentWord = state.currentWord!!,
-                    activeWordPosition = state.activeWordPosition
+                    activeWordPosition = state.activeWordPosition,
+                    mode = state.mode
                 )
             }
 
