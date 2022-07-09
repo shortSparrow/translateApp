@@ -10,14 +10,11 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :wordValue ORDER BY created_at DESC")
     fun searchWordList(wordValue: String): Flow<List<WordFullDb>>
 
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC LIMIT :count OFFSET :skip")
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
     suspend fun getExamWordList(count: Int, skip: Int): List<WordFullDb>
 
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
     suspend fun getExamWordListSize(): Int
-
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC")
-    suspend fun getExamWordList(): List<WordFullDb>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb
@@ -26,8 +23,12 @@ interface TranslatedWordDao {
     suspend fun deleteWord(wordId: Long): Int
 
     // word parts
-    @Query("UPDATE $TRANSLATED_WORDS_TABLE_NAME SET priority=:priority WHERE id = :id")
-    suspend fun updatePriorityById(priority: Int, id: Long): Int
+    @Query("UPDATE $TRANSLATED_WORDS_TABLE_NAME SET priority=:priority, updated_at=:updated_time WHERE id = :id")
+    suspend fun updatePriorityById(
+        priority: Int,
+        id: Long,
+        updated_time: Long = System.currentTimeMillis()
+    ): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long
@@ -39,18 +40,5 @@ interface TranslatedWordDao {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyHints(hints: List<HintDb>): List<Long>
-
-
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun modifyWord(
-//        wordInfoDb: WordInfoDb,
-//        translates: List<TranslateDb>,
-//        hints: List<HintDb>,
-//    ): Long {
-//        val modifyWordInfoId = modifyWordInfo(wordInfoDb)
-//        val translatesResult = modifyTranslates(translates.map { it.copy(wordId = modifyWordInfoId) })
-//        val hintsResult = modifyHints(hints.map { it.copy(wordId = modifyWordInfoId) })
-//        return modifyWordInfoId
-//    }
 
 }
