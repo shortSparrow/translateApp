@@ -317,6 +317,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
     private fun loadedEmptyList() = with(binding) {
         examContainer.visibility = View.GONE
+        progressBar.visibility = View.GONE
         emptyListLayout.root.visibility = View.VISIBLE
         examModeButton.isEnabled = false
         examModeButton.alpha = 0.5f

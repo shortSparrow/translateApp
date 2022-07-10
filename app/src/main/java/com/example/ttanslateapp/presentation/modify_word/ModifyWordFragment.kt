@@ -222,7 +222,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                         wordPriorityValue.setText(uiState.priority.toString())
                     }
 
-                    Log.d("DDDD", "${uiState.isDeleteModalOpen}")
                     confirmDialog.setIsOpenModeDialog(uiState.isDeleteModalOpen)
 
                     inputTranslatedWord.englishWordContainer.error = uiState.wordValueError

@@ -10,7 +10,6 @@ import com.example.ttanslateapp.util.EXAM_WORD_ANSWER_LIST_SIZE
 import com.example.ttanslateapp.util.temporarryAnswerList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -23,7 +22,6 @@ class GetExamWordListUseCase @Inject constructor(
     suspend operator fun invoke(mode: ExamMode) = coroutineScope {
         val count =
             if (mode == ExamMode.INFINITY_MODE) repository.getExamWordListSize() else EXAM_WORD_LIST_COUNT
-        Log.d("GetExamWordListUseCase", "CALL")
 
         val answerList = getExamAnswerVariants(count)
         repository.getExamWordList(count = count, skip = 0)

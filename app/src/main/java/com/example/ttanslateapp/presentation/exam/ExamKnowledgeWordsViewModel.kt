@@ -106,8 +106,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         val allHintsIsShown =
             currentWord.countOfRenderHints >= currentWord.hints.size
-        Log.d("countOfRenderHints_", "${currentWord.countOfRenderHints}")
-        Log.d("countOfRenderHints_hints", "${currentWord.hints.size}")
         _uiState.value = ExamKnowledgeUiState.ToggleExpandedHint(
             isExpanded = currentWord.isHintsExpanded,
             allHintsIsShown = allHintsIsShown
@@ -375,9 +373,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         )
         state = state.copy(currentWord = currentWord, activeWordPosition = newActiveWordPosition)
 
-
         val newList = updatePositionColors()
-        Log.d("newList", "${newList}")
 
         state = state.copy(
             examWordList = newList,
@@ -388,8 +384,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 isHiddenTranslateDescriptionExpanded = false
             ),
         )
-        Log.d("allHintsIsShown_1", "${state.currentWord!!.hints.size}")
-        Log.d("allHintsIsShown", "${state.currentWord!!.allHintsIsShown}")
 
         _uiState.value = ExamKnowledgeUiState.QuestionNavigation(
             examWordList = state.examWordList,

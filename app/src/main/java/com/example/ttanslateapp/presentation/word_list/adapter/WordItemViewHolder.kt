@@ -11,7 +11,6 @@ import com.example.ttanslateapp.databinding.ItemWordRvBinding
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.getAudioPath
-import timber.log.Timber
 import java.io.IOException
 
 class WordItemViewHolder(
@@ -20,6 +19,7 @@ class WordItemViewHolder(
     private val playingList: MutableMap<Long, Boolean>,
     private val expandedList: HashMap<Long, Boolean>,
 ) : RecyclerView.ViewHolder(binding.root) {
+    val TAG = "WordItemViewHolder"
 
     private fun setBaseExpanded(word: WordRV) {
         if (word.description.isEmpty()) {
@@ -97,7 +97,7 @@ class WordItemViewHolder(
                 prepare()
                 start()
             } catch (e: IOException) {
-                Timber.e("prepare() failed $e")
+                Log.e(TAG, "prepare() failed $e")
             }
         }
         player.setOnCompletionListener {

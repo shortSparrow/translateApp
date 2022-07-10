@@ -66,7 +66,6 @@ class WordListViewModel @Inject constructor(
     fun searchDebounced(searchText: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            Log.d("searchWordDDD", "1")
             searchWord(searchText)
         }
     }
