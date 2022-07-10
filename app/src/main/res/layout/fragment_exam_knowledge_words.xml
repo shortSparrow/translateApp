@@ -16,7 +16,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/exam_counter_toolbar_title"
+            app:title=""
             app:titleCentered="true">
             <ImageView
                 android:id="@+id/exam_mode_button"
