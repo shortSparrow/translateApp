@@ -11,17 +11,18 @@ import com.example.ttanslateapp.domain.model.ValidateResult
 import com.example.ttanslateapp.domain.model.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class ModifyWordViewModel @Inject constructor(
     private val modifyWordUseCase: ModifyWordUseCase,
     private val getWordItemUseCase: GetWordItemUseCase,
+    private val deleteWordUseCase: DeleteWordUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ModifyWordUiState>()
@@ -48,8 +49,17 @@ class ModifyWordViewModel @Inject constructor(
         )
     }
 
-//    fun setWordValue(value: String) = _state = _state.copy(wordValue = value)
-//    fun setDescription(value: String) = _state = _state.copy(description = value)
+    fun deleteWord(wordId: Long?) {
+        if (wordId != null) {
+            state = state.copy(isDeleteModalOpen = false)
+            viewModelScope.launch { deleteWordUseCase(wordId) }
+        }
+    }
+
+    fun setIsOpenedDeleteModal(isOpened: Boolean) {
+        state = state.copy(isDeleteModalOpen = isOpened)
+        _uiState.value = ModifyWordUiState.ToggleOpenedDeleteModel(isOpened)
+    }
 
     fun saveWord(
         value: String = "",
@@ -119,7 +129,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     fun restoreRightMode() {
-       _uiState.value = state.toUiState(screenIsRestored = true)
+        _uiState.value = state.toUiState(screenIsRestored = true)
     }
 
     fun addTranslate(translateValue: String) {
@@ -317,7 +327,8 @@ class ModifyWordViewModel @Inject constructor(
             langFrom = langFrom,
             soundFileName = soundFileName,
             isAdditionalFieldVisible = isAdditionalFieldVisible,
-            screenIsRestored = screenIsRestored
+            screenIsRestored = screenIsRestored,
+            isDeleteModalOpen = isDeleteModalOpen,
         )
     }
 }

@@ -1,8 +1,11 @@
 package com.example.ttanslateapp.presentation.modify_word
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupMenu
@@ -15,6 +18,7 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
+import com.example.ttanslateapp.presentation.core.ConfirmDialog
 import com.example.ttanslateapp.presentation.core.RecordAudioBottomSheet
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
@@ -37,6 +41,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     private var audioResolver: AudioPermissionResolver by notNull()
     private val translateAdapter = TranslateAdapter()
     private val hintAdapter = HintAdapter()
+
+    private val confirmDialog by lazy { ConfirmDialog(context = requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +73,11 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     }
 
     override fun showMessage(text: String) {
-        Toast.makeText(context, "enable RECORD_AUDIO", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            context,
+            getString(R.string.modify_word_enable_audio_permission),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun launchRightMode() {
@@ -80,8 +90,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     private fun setupView() = with(binding) {
         addTranslate.translateChipsRv.adapter = translateAdapter
         addTranslate.translateChipsRv.itemAnimator = null
-        addTranslate.translateInput.setOnTextChange {viewModel.resetTranslatesError() }
-        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.resetWordValueError()}
+        addTranslate.translateInput.setOnTextChange { viewModel.resetTranslatesError() }
+        inputTranslatedWord.englishWordInput.setOnTextChange { viewModel.resetWordValueError() }
 
         // focus next input on click action key
         listOf(
@@ -106,6 +116,41 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             audioResolver.requestPermission(
                 requireContext()
             )
+        }
+
+        confirmDialog
+            .setTitle(getString(R.string.modify_word_confirm_delete_title))
+            .handleOkClick {
+                viewModel.deleteWord(wordId = args.wordId)
+                Toast.makeText(
+                    binding.root.context,
+                    getString(R.string.modify_word_success_delete_word),
+                    Toast.LENGTH_SHORT
+                ).show()
+                findNavController().popBackStack()
+            }
+            .handleOutsideClick { viewModel.setIsOpenedDeleteModal(false) }
+            .handleCancelClick { viewModel.setIsOpenedDeleteModal(false) }
+        setupDeleteButton()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupDeleteButton() = with(binding) {
+        if (args.mode == ModifyWordModes.MODE_EDIT) {
+            deleteWord.visibility = View.VISIBLE
+
+            deleteWord.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> v.alpha = 0.5f
+                    MotionEvent.ACTION_UP -> {
+                        v.alpha = 1f
+                        viewModel.setIsOpenedDeleteModal(true)
+                    }
+                }
+                true
+            }
+        } else {
+            deleteWord.visibility = View.GONE
         }
     }
 
@@ -177,6 +222,9 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                         wordPriorityValue.setText(uiState.priority.toString())
                     }
 
+                    Log.d("DDDD", "${uiState.isDeleteModalOpen}")
+                    confirmDialog.setIsOpenModeDialog(uiState.isDeleteModalOpen)
+
                     inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
                     addTranslate.englishWordContainer.error = uiState.translatesError
 
@@ -212,7 +260,8 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     addHints.root.visibility = uiState.isVisible
                 }
                 is ModifyWordUiState.ShowResultModify -> {
-                    val message = if (uiState.isSuccess) "Success" else "Fail"
+                    val message =
+                        if (uiState.isSuccess) "word safe successfully" else "Error happened"
                     Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }
@@ -246,6 +295,9 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                 }
                 is ModifyWordUiState.UpdateSoundFile -> {
                     updateMicrophoneIcon(uiState.name)
+                }
+                is ModifyWordUiState.ToggleOpenedDeleteModel -> {
+                    confirmDialog.setIsOpenModeDialog(uiState.isOpened)
                 }
             }
         }

@@ -30,7 +30,8 @@ sealed interface ModifyWordUiState {
         val isAdditionalFieldVisible: Int,
         val wordValueError: String? = null,
         val translatesError: String? = null,
-        val screenIsRestored: Boolean? = false
+        val screenIsRestored: Boolean? = false,
+        val isDeleteModalOpen: Boolean = false,
     ) : ModifyWordUiState
 
     data class ShowAdditionalFields(val isVisible: Int) : ModifyWordUiState
@@ -46,6 +47,7 @@ sealed interface ModifyWordUiState {
     data class DeleteHints(val hints: List<HintItem>) : ModifyWordUiState
 
     data class UpdateSoundFile(val name: String?) : ModifyWordUiState
+    data class ToggleOpenedDeleteModel(val isOpened: Boolean): ModifyWordUiState
 }
 
 
@@ -67,5 +69,6 @@ data class ModifyWordState(
     val isAdditionalFieldVisible: Int = View.GONE,
     val savedWordResult: Boolean = false,
     val editableWordId: Long? = null,
-    val createdAt: Long? = null
+    val createdAt: Long? = null,
+    val isDeleteModalOpen: Boolean = false,
 )
