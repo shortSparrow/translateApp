@@ -18,14 +18,23 @@
             app:layout_constraintTop_toTopOf="parent"
             app:title=""
             app:titleCentered="true">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="@string/exam_counter_toolbar_title_daily_mode"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/exam_mode_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/exam_mode"
                 android:layout_gravity="end"
                 android:layout_marginRight="@dimen/gutter"
-                />
+                android:background="@drawable/exam_mode" />
         </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -72,7 +81,7 @@
                         android:id="@+id/counter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_gutter"
+                        android:layout_marginTop="@dimen/gutter"
                         android:textAlignment="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

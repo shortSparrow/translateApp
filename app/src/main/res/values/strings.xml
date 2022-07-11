@@ -27,7 +27,8 @@
 
 
     <!-- Exam counter-->
-    <string name="exam_counter_toolbar_title">Exam</string>
+    <string name="exam_counter_toolbar_title_daily_mode">Daily exam</string>
+    <string name="exam_counter_toolbar_title_infinity_mode">Infinity exam</string>
     <string name="exam_counter">%1$d from %2$d</string>
     <string name="exam_show_hints">show hints</string>
     <string name="exam_hide_hints">hide hints</string>

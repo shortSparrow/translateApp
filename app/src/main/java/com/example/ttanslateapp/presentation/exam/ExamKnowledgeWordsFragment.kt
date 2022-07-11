@@ -134,8 +134,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     }
 
                     examContainer.visibility = View.VISIBLE
-                    modeDialog.handleDialog(mode = uiState.mode)
-                    examEndDialog.setMode(uiState.mode)
+                    handleMode(mode=uiState.mode)
                     modeDialog.setIsOpenModeDialog(uiState.isModeDialogOpen)
                     uiState.currentWord?.let { currentWord ->
                         // scroll to current position
@@ -189,8 +188,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 is ExamKnowledgeUiState.LoadedWordsSuccess -> {
                     progressBar.visibility = View.GONE
                     examContainer.visibility = View.VISIBLE
-                    modeDialog.handleDialog(mode = uiState.mode)
-                    examEndDialog.setMode(uiState.mode)
+                    handleMode(mode = uiState.mode)
 
                     examAdapter.submitList(uiState.examWordList)
                     examWordName.text = uiState.currentWord.value
@@ -305,6 +303,15 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     examWordInput.setSelection(examWordInput.text.toString().length)
                 }
             }
+        }
+    }
+
+    private fun handleMode(mode: ExamMode) = with(binding){
+        modeDialog.handleDialog(mode = mode)
+        examEndDialog.setMode(mode)
+        toolbarTitle.text = when(mode) {
+            ExamMode.DAILY_MODE -> getString(R.string.exam_counter_toolbar_title_daily_mode)
+            ExamMode.INFINITY_MODE -> getString(R.string.exam_counter_toolbar_title_infinity_mode)
         }
     }
 
