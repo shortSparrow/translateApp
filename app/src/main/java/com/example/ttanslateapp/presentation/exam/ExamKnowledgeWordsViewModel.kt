@@ -13,6 +13,7 @@ import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeState
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
 import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -64,7 +65,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _uiState.value = ExamKnowledgeUiState.IsLoadingWords
 
         viewModelScope.launch {
-            val list = getExamWordListUseCase(mode=state.mode).mapIndexed { index, examWord ->
+            val list = getExamWordListUseCase(mode = state.mode).mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(
                     status = ExamWordStatus.IN_PROCESS,
                     isActive = true
@@ -194,6 +195,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     fun addHiddenTranslate(value: String) {
+        if (value.isEmpty()) return
+
         val hiddenTranslate = Translate(
             id = 0L,
             localId = getTimestamp(),
@@ -321,14 +324,12 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 return@map it
             }
 
-            var isExamEnd = false
-            if (state.examWordList.last().id == currentWord.id) {
-                isExamEnd = true
-            }
+            val isExamEnd = updatedWordList.none { !it.isFreeze }
+
             state = state.copy(
                 examWordList = updatedWordList,
                 currentWord = updatedCurrentWord,
-                isExamEnd = isExamEnd, // TODO maybe delete from state
+                isExamEnd = isExamEnd,
             )
 
             _uiState.value = ExamKnowledgeUiState.CheckedAnswer(

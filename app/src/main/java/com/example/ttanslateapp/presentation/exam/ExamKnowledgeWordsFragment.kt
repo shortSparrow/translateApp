@@ -20,6 +20,7 @@ import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
 import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
+import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
@@ -38,7 +39,18 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private val examAdapter = ExamAdapter()
     private val translatesAdapter = TranslateAdapter()
 
-    private val modeDialog by lazy { ExamModeDialog(context = requireContext(), viewModel = viewModel) }
+    private val modeDialog by lazy {
+        ExamModeDialog(
+            context = requireContext(),
+            viewModel = viewModel
+        )
+    }
+
+    private val examEndDialog by lazy {
+        ExamEndDialog(
+            context = requireContext(),
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,7 +62,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         setupAdapter()
         observeLiveDate()
         clickListeners()
-        modeDialog.setupView()
 
         binding.examWordInput.setOnTextChange {
             viewModel.handleAnswerEditText(it.toString())
@@ -97,6 +108,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             }
             true
         }
+
+        examEndDialog.handleCloseClick {
+            findNavController().popBackStack()
+        }
     }
 
     private fun observeLiveDate() = with(binding) {
@@ -120,6 +135,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
                     examContainer.visibility = View.VISIBLE
                     modeDialog.handleDialog(mode = uiState.mode)
+                    examEndDialog.setMode(uiState.mode)
                     modeDialog.setIsOpenModeDialog(uiState.isModeDialogOpen)
                     uiState.currentWord?.let { currentWord ->
                         // scroll to current position
@@ -145,18 +161,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         examAdapter.submitList(uiState.examWordList)
                         examWordName.text = uiState.currentWord.value
 
-                        setClickableNavigationButtons(
-                            activeWordPosition = uiState.activeWordPosition,
-                            listSize = uiState.examWordList.size - 1
-                        )
-
-                        setHintsStyle(currentWord = uiState.currentWord)
-                        setTranslateStyles(currentWord = uiState.currentWord)
-                        setVariantsStyle(currentWord = uiState.currentWord)
-                        val isAnswerCorrect = uiState.currentWord.status == ExamWordStatus.SUCCESS
-                        setAnswerResult(
-                            isCorrect = isAnswerCorrect,
-                            answer = uiState.currentWord.givenAnswer
+                        setupBaseStyle(
+                            currentWord = uiState.currentWord,
+                            examWordListSize = uiState.examWordList.size,
+                            activeWordPosition = uiState.activeWordPosition
                         )
 
                         translatesAdapter.submitList(uiState.currentWord.translates)
@@ -182,16 +190,16 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     progressBar.visibility = View.GONE
                     examContainer.visibility = View.VISIBLE
                     modeDialog.handleDialog(mode = uiState.mode)
+                    examEndDialog.setMode(uiState.mode)
 
                     examAdapter.submitList(uiState.examWordList)
                     examWordName.text = uiState.currentWord.value
                     examWordInput.text = null
 
-                    setVariantsStyle(currentWord = uiState.currentWord)
-                    setHintsStyle(currentWord = uiState.currentWord)
-                    setClickableNavigationButtons(
-                        activeWordPosition = uiState.activeWordPosition,
-                        listSize = uiState.examWordList.size - 1
+                    setupBaseStyle(
+                        currentWord = uiState.currentWord,
+                        examWordListSize = uiState.examWordList.size,
+                        activeWordPosition = uiState.activeWordPosition
                     )
 
                     counter.text = getString(
@@ -215,9 +223,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 }
                 is ExamKnowledgeUiState.CheckedAnswer -> {
                     if (uiState.isExamEnd) {
-                        examCheckAnswer.setOnClickListener {
-                            findNavController().popBackStack()
-                        }
+                        examEndDialog.setIsOpenModeDialog(true)
                     }
                     examCheckAnswer.isEnabled = false
 
@@ -225,6 +231,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     val isAnswerCorrect = uiState.status == ExamWordStatus.SUCCESS
                     setAnswerResult(isCorrect = isAnswerCorrect, answer = uiState.givenAnswer)
 
+                    translatesAdapter.submitList(uiState.currentWord.translates)
                     setVariantsStyle(currentWord = uiState.currentWord)
                     setHintsStyle(currentWord = uiState.currentWord)
                     setTranslateStyles(currentWord = uiState.currentWord)
@@ -292,7 +299,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     }
                 }
                 is ExamKnowledgeUiState.SelectVariants -> {
-
                     setVariantsBackground(selectedVariantValue = uiState.selectedVariantValue)
                     examWordInput.requestFocus()
                     examWordInput.setText(uiState.selectedVariantValue)
@@ -300,6 +306,25 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 }
             }
         }
+    }
+
+    private fun setupBaseStyle(
+        currentWord: ExamWord,
+        examWordListSize: Int,
+        activeWordPosition: Int
+    ) {
+        setClickableNavigationButtons(
+            activeWordPosition = activeWordPosition,
+            listSize = examWordListSize - 1
+        )
+        setHintsStyle(currentWord = currentWord)
+        setTranslateStyles(currentWord = currentWord)
+        setVariantsStyle(currentWord = currentWord)
+        val isAnswerCorrect = currentWord.status == ExamWordStatus.SUCCESS
+        setAnswerResult(
+            isCorrect = isAnswerCorrect,
+            answer = currentWord.givenAnswer
+        )
     }
 
     private fun setVariantsBackground(selectedVariantValue: String?) = with(binding) {

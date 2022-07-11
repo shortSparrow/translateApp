@@ -13,6 +13,9 @@ class ExamModeDialog(context: Context, val viewModel: ExamKnowledgeWordsViewMode
     private lateinit var dialogView: View
     private lateinit var dialogBuilder: AlertDialog
 
+    init {
+        setupView()
+    }
 
      fun setupView() {
         dialogBuilder = AlertDialog.Builder(context, R.style.ExamDialog)

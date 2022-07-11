@@ -38,6 +38,10 @@
     <string name="exam_hidden_translate_description">If you think answer is correct you can add this word like "hidden translate". Hidden translate this is special translates which does not visible on main page list, but taken into account on exam.\n\nHidden translates has different background color. You can change hidden status by long tab on translate</string>
     <string name="exam_show_current_translates">show current translates</string>
     <string name="exam_hide_current_translates">hide current translates</string>
+    <string name="exam_complete_daily_exam">Congratulations, you complete daily exam</string>
+    <string name="exam_complete_infinity_exam">Congratulations, you complete infinity exam</string>
+
+
 
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>
