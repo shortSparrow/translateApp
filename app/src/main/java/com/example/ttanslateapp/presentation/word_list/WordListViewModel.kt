@@ -8,9 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
+import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
+import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -20,12 +23,17 @@ sealed interface WordListViewModelState {
         WordListViewModelState
 }
 
+data class WordListState(
+    val wordList: List<WordRV> = emptyList()
+)
+
 class WordListViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
-    private val deleteWordUseCase: DeleteWordUseCase
 ) : ViewModel() {
     private val _uiState = MutableLiveData<WordListViewModelState>()
     val uiState: LiveData<WordListViewModelState> = _uiState
+
+    private var state = WordListState()
 
     private var searchJob: Job? = null
     private var dictionaryIsEmpty = false
@@ -35,12 +43,6 @@ class WordListViewModel @Inject constructor(
     init {
         _uiState.value = WordListViewModelState.IsLoading(true)
         searchDebounced("")
-    }
-
-    fun deleteWordById(wordId: Long) {
-        viewModelScope.launch {
-            deleteWordUseCase(wordId)
-        }
     }
 
     private suspend fun searchWord(searchValue: String) {
@@ -55,7 +57,7 @@ class WordListViewModel @Inject constructor(
                 if (searchValue.isEmpty()) {
                     dictionaryIsEmpty = it.isEmpty()
                 }
-
+                state = state.copy(wordList = list)
                 _uiState.value = WordListViewModelState.LoadSuccess(
                     wordList = list,
                     dictionaryIsEmpty = dictionaryIsEmpty

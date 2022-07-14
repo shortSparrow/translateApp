@@ -14,4 +14,8 @@ interface ExamWordAnswerDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyWordAnswer(examAnswerVariant: PotentialExamAnswerDb): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun setWordAnswerList(list: List<PotentialExamAnswerDb>)
+
 }

@@ -1,8 +1,10 @@
 package com.example.ttanslateapp.presentation.exam
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
@@ -21,7 +23,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     val getExamWordListUseCase: GetExamWordListUseCase,
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     val modifyWordUseCase: ModifyWordUseCase,
-    val application: Application,
+    val repository: TranslatedWordRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ExamKnowledgeUiState>()
@@ -32,6 +34,50 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     // FIXME trouble with reenter on screen
     init {
+
+//        viewModelScope.async {
+//            var wordCount = 1
+//            while (wordCount < 100_000) {
+//                val word = ModifyWord(
+//                    value = wordCount.toString(),
+//                    translates = listOf(
+//                        Translate(
+//                            localId = 1,
+//                            updatedAt = getTimestamp(),
+//                            createdAt = getTimestamp(),
+//                            value = "translate_$wordCount",
+//                            isHidden = false,
+//                        )
+//                    ),
+//                    description = "",
+//                    sound = null,
+//                    langFrom = "EN",
+//                    langTo = "UA",
+//                    hints = listOf(
+//                        HintItem(
+//                            localId = 1,
+//                            updatedAt = getTimestamp(),
+//                            createdAt = getTimestamp(),
+//                            value = "translate_$wordCount",
+//                        )
+//                    ),
+//                    createdAt = getTimestamp(),
+//                    updatedAt = getTimestamp(),
+//                    transcription = ""
+//                )
+//                val d = viewModelScope.async {
+//                    modifyWordUseCase(word = word)
+//                }
+//                d.await()
+//                delay(1)
+//                wordCount++
+//                Timber.d("${wordCount}")
+//
+//            }
+//        }
+
+        state = state.copy(isLoading = true)
+        _uiState.value = ExamKnowledgeUiState.IsLoadingWords
         generateWordsList()
     }
 
@@ -51,6 +97,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     fun changeExamMode(mode: ExamMode) {
         // reset state and set new mode
+        getExamWordListUseCase.resetExamWordListCurrentPage()
         state = ExamKnowledgeState().copy(mode = mode)
         generateWordsList()
     }
@@ -60,12 +107,26 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _uiState.value = ExamKnowledgeUiState.ToggleOpenModeDialog(isOpened = isOpened)
     }
 
-    fun generateWordsList() {
-        state = state.copy(isLoading = true)
-        _uiState.value = ExamKnowledgeUiState.IsLoadingWords
+    fun loadNewPage(position: Int) {
+        if (state.mode == ExamMode.DAILY_MODE || state.examWordList.size - position > 5) return
 
         viewModelScope.launch {
-            val list = getExamWordListUseCase(mode = state.mode).mapIndexed { index, examWord ->
+            val list = getExamWordListUseCase.loadNextPage() ?: return@launch
+
+            state = state.copy(
+                examWordList = state.examWordList.plus(list),
+            )
+            _uiState.value = ExamKnowledgeUiState.LoadedNewPage(
+                examWordList = state.examWordList,
+                activeWordPosition = state.activeWordPosition
+            )
+        }
+    }
+
+    fun generateWordsList() {
+
+        viewModelScope.launch {
+            val list = getExamWordListUseCase().mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(
                     status = ExamWordStatus.IN_PROCESS,
                     isActive = true

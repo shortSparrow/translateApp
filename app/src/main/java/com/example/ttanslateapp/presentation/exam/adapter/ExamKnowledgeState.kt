@@ -9,6 +9,9 @@ sealed interface ExamKnowledgeUiState {
     object IsLoadingWords : ExamKnowledgeUiState
     object LoadedEmptyList : ExamKnowledgeUiState
 
+    data class LoadedNewPage(var examWordList: List<ExamWord>, val activeWordPosition: Int) :
+        ExamKnowledgeUiState
+
     data class RestoreUI(
         val isLoading: Boolean,
         var examWordList: List<ExamWord> = emptyList(),

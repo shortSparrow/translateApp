@@ -9,6 +9,7 @@ import com.example.ttanslateapp.domain.model.WordRV
 
 class WordListAdapter : ListAdapter<WordRV, WordItemViewHolder>(WordListAdapterDiffCallback()) {
     var onClickListener: OnClickListener? = null
+
     private val player = MediaPlayer()
     private val playingList = mutableMapOf<Long, Boolean>()
 

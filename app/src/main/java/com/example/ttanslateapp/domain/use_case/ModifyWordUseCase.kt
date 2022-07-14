@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ModifyWordUseCase @Inject constructor(
     private val repository: TranslatedWordRepository,
-    private val mapper: WordMapper
+    private val mapper: WordMapper,
 ) {
     suspend operator fun invoke(word: ModifyWord): Long = coroutineScope {
         val wordId = repository.modifyWordInfo(wordInfoDb = mapper.modifyWordToWordInfoDb(word))
@@ -34,17 +34,6 @@ class ModifyWordUseCase @Inject constructor(
 
         return@coroutineScope wordId
     }
-    // FIXME delete wordId here, because we don't have one yet
-//        repository.modifyWord(
-//            wordInfoDb = mapper.modifyWordToWordFullDb(word),
-//            translates = word.translates.map {
-//                mapper.translateLocalToDb(
-//                    translate = it,
-//                    wordId = word.id
-//                )
-//            },
-//            hints = word.hints.map { mapper.hintLocalToDb(hint = it, wordId = word.id) }
-//        )
 
 
     suspend fun modifyTranslates(

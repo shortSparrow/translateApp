@@ -1,15 +1,14 @@
 package com.example.ttanslateapp.domain.use_case
 
-import android.util.Log
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.ExamWordAnswerRepository
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
+import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.util.EXAM_WORD_ANSWER_LIST_SIZE
 import com.example.ttanslateapp.util.temporarryAnswerList
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -19,12 +18,31 @@ class GetExamWordListUseCase @Inject constructor(
     private val examWordAnswerRepository: ExamWordAnswerRepository,
     val mapper: WordMapper,
 ) {
-    suspend operator fun invoke(mode: ExamMode) = coroutineScope {
-        val count =
-            if (mode == ExamMode.INFINITY_MODE) repository.getExamWordListSize() else EXAM_WORD_LIST_COUNT
+    private var getExamWordListCurrentPage: Int = 0
+    private var isLoadingNextPage: Boolean = false
 
-        val answerList = getExamAnswerVariants(count)
-        repository.getExamWordList(count = count, skip = 0)
+    fun resetExamWordListCurrentPage() {
+        getExamWordListCurrentPage = 0
+    }
+
+
+    suspend fun loadNextPage(): List<ExamWord>? {
+//        repository.getWord()
+        if (isLoadingNextPage) return null
+        return invoke()
+    }
+
+    suspend operator fun invoke() = coroutineScope {
+        isLoadingNextPage = true
+        val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
+        getExamWordListCurrentPage += 1
+
+        val answerList = getExamAnswerVariants(EXAM_WORD_LIST_COUNT)
+
+        repository.getExamWordList(
+            count = EXAM_WORD_LIST_COUNT,
+            skip = skip
+        )
             .mapIndexed { index, examWord ->
                 val from = index * EXAM_WORD_ANSWER_LIST_SIZE
                 val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
@@ -32,29 +50,38 @@ class GetExamWordListUseCase @Inject constructor(
                 val randomWordTranslateIndex =
                     Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
                 examWord.copy(
-                    answerVariants = answerList.slice(from until to)
+                    answerVariants = answerList.slice(from until to)// FIXME ME FROM TO
                         .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
                         .shuffled()
                 )
             }
+            .apply { isLoadingNextPage = false }
     }
 
+    // get 60 random Answer Variants
     private suspend fun getExamAnswerVariants(examWordListCount: Int) = coroutineScope {
         val limit = examWordListCount * EXAM_WORD_ANSWER_LIST_SIZE
         val list = examWordAnswerRepository.getWordAnswerList(limit)
 
         if (list.isEmpty()) {
-            for (wordItem in temporarryAnswerList) {
-                val word = ExamAnswerVariant(
-                    value = wordItem,
-                )
-                val dbWord = mapper.examAnswerToExamAnswerDb(word)
-                examWordAnswerRepository.modifyWordAnswer(dbWord)
-            }
+            fillAnswerVariantsDb()
             examWordAnswerRepository.getWordAnswerList(limit)
         } else {
             list
         }
+    }
+
+    private suspend fun fillAnswerVariantsDb() {
+        val newList = mutableListOf<ExamAnswerVariant>()
+        for (wordItem in temporarryAnswerList) {
+            newList.add(
+                ExamAnswerVariant(
+                    value = wordItem,
+                )
+            )
+        }
+
+        examWordAnswerRepository.setWordAnswerList(newList)
     }
 
     companion object {

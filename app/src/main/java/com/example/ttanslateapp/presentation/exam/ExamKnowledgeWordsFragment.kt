@@ -26,6 +26,7 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapt
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
+import timber.log.Timber
 
 
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
@@ -36,6 +37,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private val viewModel by viewModels {
         get(ExamKnowledgeWordsViewModel::class.java)
     }
+
     private val examAdapter = ExamAdapter()
     private val translatesAdapter = TranslateAdapter()
 
@@ -59,6 +61,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         if (savedInstanceState != null) {
             viewModel.restoreUI()
         }
+
         setupAdapter()
         observeLiveDate()
         clickListeners()
@@ -120,7 +123,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 is ExamKnowledgeUiState.ToggleOpenModeDialog -> {
                     modeDialog.setIsOpenModeDialog(uiState.isOpened)
                 }
-
                 is ExamKnowledgeUiState.RestoreUI -> {
                     if (uiState.isLoading) {
                         progressBar.visibility = View.VISIBLE
@@ -134,22 +136,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     }
 
                     examContainer.visibility = View.VISIBLE
-                    handleMode(mode=uiState.mode)
+                    handleMode(mode = uiState.mode)
                     modeDialog.setIsOpenModeDialog(uiState.isModeDialogOpen)
                     uiState.currentWord?.let { currentWord ->
-                        // scroll to current position
-                        wordPositionRv.viewTreeObserver.addOnGlobalLayoutListener(object :
-                            OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                val centerOfScreen: Int = wordPositionRv.width / 2 - 100
-                                (wordPositionRv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                                    uiState.activeWordPosition,
-                                    centerOfScreen
-                                )
-                                wordPositionRv.viewTreeObserver.removeOnGlobalLayoutListener(this);
-                            }
-                        }
-                        )
+                        scrollExamWordListToCurrentPosition(uiState.activeWordPosition)
 
                         if (examWordInput.text.toString().trim()
                                 .isNotEmpty() && !uiState.currentWord.isFreeze
@@ -157,7 +147,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                             examCheckAnswer.isEnabled = true
                         }
 
-                        examAdapter.submitList(uiState.examWordList)
                         examWordName.text = uiState.currentWord.value
 
                         setupBaseStyle(
@@ -191,6 +180,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     handleMode(mode = uiState.mode)
 
                     examAdapter.submitList(uiState.examWordList)
+
                     examWordName.text = uiState.currentWord.value
                     examWordInput.text = null
 
@@ -235,12 +225,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     setTranslateStyles(currentWord = uiState.currentWord)
                 }
                 is ExamKnowledgeUiState.QuestionNavigation -> {
-                    val centerOfScreen: Int = wordPositionRv.width / 2 - 100
-                    (wordPositionRv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                        uiState.activeWordPosition,
-                        centerOfScreen
-                    )
-
+                    scrollExamWordListToCurrentPosition(uiState.activeWordPosition)
                     setClickableNavigationButtons(
                         activeWordPosition = uiState.activeWordPosition,
                         listSize = uiState.examWordList.size - 1
@@ -302,17 +287,42 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     examWordInput.setText(uiState.selectedVariantValue)
                     examWordInput.setSelection(examWordInput.text.toString().length)
                 }
+                is ExamKnowledgeUiState.LoadedNewPage -> {
+                    examAdapter.submitList(uiState.examWordList)
+                    counter.text = getString(
+                        R.string.exam_counter,
+                        uiState.activeWordPosition + 1,
+                        uiState.examWordList.size
+                    )
+                }
             }
         }
     }
 
-    private fun handleMode(mode: ExamMode) = with(binding){
+    private fun scrollExamWordListToCurrentPosition(activeWordPosition: Int) = with(binding) {
+        wordPositionRv.viewTreeObserver.addOnGlobalLayoutListener(object :
+            OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val centerOfScreen: Int = wordPositionRv.width / 2 - 100
+                (wordPositionRv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                    activeWordPosition,
+                    centerOfScreen
+                )
+                wordPositionRv.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        }
+        )
+    }
+
+    private fun handleMode(mode: ExamMode) = with(binding) {
         modeDialog.handleDialog(mode = mode)
         examEndDialog.setMode(mode)
-        toolbarTitle.text = when(mode) {
+        toolbarTitle.text = when (mode) {
             ExamMode.DAILY_MODE -> getString(R.string.exam_counter_toolbar_title_daily_mode)
             ExamMode.INFINITY_MODE -> getString(R.string.exam_counter_toolbar_title_infinity_mode)
         }
+        scrollExamWordListToCurrentPosition(0)
+        examAdapter.mode = mode
     }
 
     private fun setupBaseStyle(
@@ -397,7 +407,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         } else {
             R.color.red
         }
-        yourAnswerResult.setTextColor(ContextCompat.getColor(requireContext(), color));
+        yourAnswerResult.setTextColor(ContextCompat.getColor(requireContext(), color))
     }
 
     private fun setVariantsStyle(currentWord: ExamWord) = with(binding) {
@@ -516,11 +526,18 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         addHiddenTranslatesContainer.translateChipsRv.adapter = translatesAdapter
         addHiddenTranslatesContainer.translateChipsRv.itemAnimator = null
 
-        wordPositionRv.itemAnimator = null;
+        wordPositionRv.itemAnimator = null
         examAdapter.clickListener = object : ExamAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 viewModel.goToWord(position)
             }
+        }
+
+        examAdapter.handleLoadNewWords = object : ExamAdapter.HandleLoadNewWords {
+            override fun onLoadNewWords(position: Int) {
+                viewModel.loadNewPage(position)
+            }
+
         }
 
         translatesAdapter.clickListener =
