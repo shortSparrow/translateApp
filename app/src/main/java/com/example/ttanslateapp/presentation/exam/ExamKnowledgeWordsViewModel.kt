@@ -123,8 +123,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-    fun generateWordsList() {
-
+    private fun generateWordsList() {
         viewModelScope.launch {
             val list = getExamWordListUseCase().mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(
@@ -133,11 +132,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 ) else examWord
             }
 
-            val firstWord = list.firstOrNull()
-            firstWord?.let {
-                if (it.hints.isNotEmpty()) {
-                    it.countOfRenderHints.plus(1)
+            val firstWord = list.firstOrNull()?.run {
+                if (this.hints.isNotEmpty()) {
+                    return@run this.copy(countOfRenderHints = 1)
                 }
+                return@run this
             }
 
             state = state.copy(
