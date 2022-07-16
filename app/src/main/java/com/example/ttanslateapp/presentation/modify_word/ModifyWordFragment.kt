@@ -83,7 +83,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     private fun launchRightMode() {
         when (args.mode) {
             ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
-            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode()
+            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(args.wordValue)
         }
     }
 

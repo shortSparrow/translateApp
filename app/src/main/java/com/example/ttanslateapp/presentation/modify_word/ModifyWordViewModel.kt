@@ -117,7 +117,11 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    fun launchAddMode() = _uiState.postValue(state.toUiState())
+    // wordValue which selected and passed into app as intent
+    fun launchAddMode(wordValue:String)  {
+        state = state.copy(wordValue = wordValue)
+        _uiState.postValue(state.toUiState())
+    }
 
     fun launchEditMode(wordId: Long) {
         val id = if (wordId == -1L) {
