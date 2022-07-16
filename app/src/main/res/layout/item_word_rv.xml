@@ -136,7 +136,7 @@
                 android:id="@+id/play_sound"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/volume_up_inactive"
+                android:background="@drawable/volume_up_available"
                 android:paddingHorizontal="@dimen/small_gutter"
                 android:paddingBottom="@dimen/small_gutter"
                 app:layout_constraintEnd_toEndOf="parent"
