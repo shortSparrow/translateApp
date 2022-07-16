@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.domain
 
+import com.example.ttanslateapp.data.in_memory_storage.InMemoryStorage
 import com.example.ttanslateapp.data.model.HintDb
 import com.example.ttanslateapp.data.model.TranslateDb
 import com.example.ttanslateapp.data.model.WordInfoDb
@@ -8,7 +9,7 @@ import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import kotlinx.coroutines.flow.Flow
 
-interface TranslatedWordRepository {
+interface TranslatedWordRepository: InMemoryStorage {
     suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
     suspend fun getExamWordListSize():Int
 

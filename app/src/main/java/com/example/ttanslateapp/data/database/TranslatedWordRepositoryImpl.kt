@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.data.database
 
+import com.example.ttanslateapp.data.in_memory_storage.InMemoryStorage
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.data.model.HintDb
 import com.example.ttanslateapp.data.model.TranslateDb
@@ -12,10 +13,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+
+// InMemoryStorage by inMemoryStorage need for avoid override here InMemoryStorage methods.
+// We copy them from inMemoryStorage implementation (Local Cache)
 class TranslatedWordRepositoryImpl @Inject constructor(
     private val translatedWordDao: TranslatedWordDao,
     private val mapper: WordMapper,
-) : TranslatedWordRepository {
+    private val inMemoryStorage: InMemoryStorage,
+) : TranslatedWordRepository, InMemoryStorage by inMemoryStorage {
 
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
         return translatedWordDao.getExamWordList(count = count, skip = skip)
@@ -60,6 +65,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     override suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long {
         return translatedWordDao.modifyWordInfo(wordInfoDb)
     }
+
 
     companion object {
         private const val WORD_IS_NOT_FOUND = -1
