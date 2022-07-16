@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class TranslatedWordRepositoryImpl @Inject constructor(
     private val translatedWordDao: TranslatedWordDao,
-    private val mapper: WordMapper
+    private val mapper: WordMapper,
 ) : TranslatedWordRepository {
 
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
@@ -26,10 +26,15 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.getExamWordListSize()
     }
 
-    override suspend fun searchWordList(query: String): Flow<List<WordRV>> {
-        return translatedWordDao.searchWordList("%$query%").map { list ->
-            mapper.wordListDbToWordList(list)
-        }
+    override suspend fun searchWordList(query: String, count: Int): Flow<List<WordRV>> {
+        return translatedWordDao.searchWordList(query = "%$query%", count = count)
+            .map { list ->
+                mapper.wordListDbToWordList(list)
+            }
+    }
+
+    override suspend fun searchWordListCount(query: String): Int {
+        return translatedWordDao.searchWordListCount(query = "%$query%")
     }
 
     override suspend fun getWordById(id: Long): ModifyWord {
@@ -55,7 +60,6 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     override suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long {
         return translatedWordDao.modifyWordInfo(wordInfoDb)
     }
-
 
     companion object {
         private const val WORD_IS_NOT_FOUND = -1

@@ -12,7 +12,8 @@ interface TranslatedWordRepository {
     suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
     suspend fun getExamWordListSize():Int
 
-    suspend fun searchWordList(query: String): Flow<List<WordRV>>
+    suspend fun searchWordList(query: String, count: Int): Flow<List<WordRV>>
+    suspend fun searchWordListCount(query: String): Int // TODO maybe make it flow
 
     suspend fun getWordById(id: Long): ModifyWord
 
