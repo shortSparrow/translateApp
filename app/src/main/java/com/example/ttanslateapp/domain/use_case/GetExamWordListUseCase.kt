@@ -7,7 +7,10 @@ import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.util.EXAM_WORD_ANSWER_LIST_SIZE
 import com.example.ttanslateapp.util.temporarryAnswerList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
@@ -20,23 +23,34 @@ class GetExamWordListUseCase @Inject constructor(
 ) {
     private var getExamWordListCurrentPage: Int = 0
     private var isLoadingNextPage: Boolean = false
+    private var totalCount: Int = 0
+
+    fun getTotalCountExamList() = totalCount
+
 
     fun resetExamWordListCurrentPage() {
         getExamWordListCurrentPage = 0
     }
 
-
     suspend fun loadNextPage(): List<ExamWord>? {
-//        repository.getWord()
         if (isLoadingNextPage) return null
         return invoke()
     }
 
-    suspend operator fun invoke() = coroutineScope {
+    private fun loadTotalCount() {
+        CoroutineScope(Dispatchers.IO).launch {
+            totalCount = repository.getExamWordListSize()
+        }
+    }
+
+    suspend operator fun invoke(isInitialLoad: Boolean = false) = coroutineScope {
         isLoadingNextPage = true
         val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
         getExamWordListCurrentPage += 1
 
+        if (isInitialLoad) {
+            loadTotalCount()
+        }
         val answerList = getExamAnswerVariants(EXAM_WORD_LIST_COUNT)
 
         repository.getExamWordList(

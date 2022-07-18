@@ -2,18 +2,25 @@ package com.example.ttanslateapp.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment
 import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 
@@ -34,18 +41,17 @@ class MainActivity : AppCompatActivity() {
         // get text from selected items
         val text = intent
             .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
-        if(text != null) {
+        if (text != null) {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             val navController = navHostFragment.navController
 
             navController.navigate(
                 WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
-                    mode = ModifyWordModes.MODE_ADD, wordValue = text.toString())
+                    mode = ModifyWordModes.MODE_ADD, wordValue = text.toString()
+                )
             )
         }
-
-        Timber.d("TEXT IS: ${text}")
     }
 
     private fun setupNavigation() {
@@ -64,58 +70,53 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        bottomBar.setupWithNavController(navController)
-//        // we can use bottomBar.setupWithNavController(navController) for base behavior but I want to reset the viewmodel state when user go out from exam tab
-//        bottomBar
-//            .setOnItemSelectedListener { menuItem ->
-//                // clear state only fro exam tab
-//                val isRestoreState =
-//                    menuItem.itemId != R.id.examKnowledgeWordsFragment || navController.currentDestination?.id == R.id.examKnowledgeWordsFragment
-//
-//                val builder =
-//                    NavOptions.Builder().setLaunchSingleTop(true).setRestoreState(isRestoreState)
-//
-//                if (menuItem.order and Menu.CATEGORY_SECONDARY == 0) {
-//                    builder.setPopUpTo(
-//                        navController.graph.findStartDestination().id,
-//                        inclusive = false,
-//                        saveState = true
-//                    )
-//                }
-//                val options = builder.build()
-//
-//                val weakReference = WeakReference(bottomBar)
-//                navController.addOnDestinationChangedListener(
-//                    object : NavController.OnDestinationChangedListener {
-//                        override fun onDestinationChanged(
-//                            controller: NavController,
-//                            destination: NavDestination,
-//                            arguments: Bundle?
-//                        ) {
-//                            navHostFragment.childFragmentManager.fragments.firstOrNull()
-//                                ?.let { it as? ExamKnowledgeWordsFragment }?.run {
-//                                    lolKek()
-//                                }
-//
-//                            val view = weakReference.get()
-//                            if (view == null) {
-//                                navController.removeOnDestinationChangedListener(this)
-//                                return
-//                            }
-//                            view.menu.forEach { item ->
-//                                if (destination.id == item.itemId) {
-//                                    item.isChecked = true
-//                                }
-//                            }
-//                        }
-//                    })
-//                return@setOnItemSelectedListener try {
-//                    navController.navigate(menuItem.itemId, null, options)
-//                    navController.currentDestination?.id == menuItem.itemId
-//                } catch (e: IllegalArgumentException) {
-//                    false
-//                }
-//            }
+
+//         we can use bottomBar.setupWithNavController(navController) for base behavior but I want to reset the viewmodel state when user go out from exam tab
+        bottomBar
+            .setOnItemSelectedListener { menuItem ->
+                // clear state only fro exam tab
+                val isRestoreState =
+                    menuItem.itemId != R.id.examKnowledgeWordsFragment || navController.currentDestination?.id == R.id.examKnowledgeWordsFragment
+
+                val builder =
+                    NavOptions.Builder().setLaunchSingleTop(true).setRestoreState(isRestoreState)
+
+                if (menuItem.order and Menu.CATEGORY_SECONDARY == 0) {
+                    builder.setPopUpTo(
+                        navController.graph.findStartDestination().id,
+                        inclusive = false,
+                        saveState = true
+                    )
+                }
+                val options = builder.build()
+
+                val weakReference = WeakReference(bottomBar)
+                navController.addOnDestinationChangedListener(
+                    object : NavController.OnDestinationChangedListener {
+                        override fun onDestinationChanged(
+                            controller: NavController,
+                            destination: NavDestination,
+                            arguments: Bundle?
+                        ) {
+                            val view = weakReference.get()
+                            if (view == null) {
+                                navController.removeOnDestinationChangedListener(this)
+                                return
+                            }
+                            view.menu.forEach { item ->
+                                if (destination.id == item.itemId) {
+                                    item.isChecked = true
+                                }
+                            }
+                        }
+                    })
+                return@setOnItemSelectedListener try {
+                    navController.navigate(menuItem.itemId, null, options)
+                    navController.currentDestination?.id == menuItem.itemId
+                } catch (e: IllegalArgumentException) {
+                    false
+                }
+            }
     }
 
     private fun showBottomNav() {

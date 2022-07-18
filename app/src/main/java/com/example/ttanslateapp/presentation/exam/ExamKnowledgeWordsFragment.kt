@@ -535,9 +535,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
         examAdapter.handleLoadNewWords = object : ExamAdapter.HandleLoadNewWords {
             override fun onLoadNewWords(position: Int) {
-                viewModel.loadNewPage(position)
+                viewModel.loadNewPage(position) {
+                    examAdapter.totalCount = viewModel.getTotalCountExamList()
+                }
             }
-
         }
 
         translatesAdapter.clickListener =

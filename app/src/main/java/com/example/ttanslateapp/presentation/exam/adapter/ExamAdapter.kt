@@ -11,7 +11,6 @@ import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ItemRvExamAdapterBinding
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsViewModel
 
 
 class ExamAdapter :
@@ -19,6 +18,8 @@ class ExamAdapter :
     var clickListener: OnItemClickListener? = null
     var handleLoadNewWords: HandleLoadNewWords? = null
     var mode: ExamMode = ExamMode.DAILY_MODE
+    var totalCount: Int = 0 // all word list
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExamAdapterViewHolder {
         return ItemRvExamAdapterBinding
@@ -35,11 +36,15 @@ class ExamAdapter :
             wordPosition.text = position.plus(1).toString()
             wordPosition.backgroundTintList = setBG(item.status, wordPosition.context)
 
-            // TODO if mode is infinity always show dots until we reach the last item
-            if (position == currentList.size - 1 && mode == ExamMode.DAILY_MODE) {
-                wordPositionDots.visibility = View.GONE
-            } else {
-                wordPositionDots.visibility = View.VISIBLE
+            wordPositionDots.visibility = when(mode) {
+                ExamMode.DAILY_MODE -> {
+                    if (position == currentList.size - 1) View.GONE else View.VISIBLE
+                }
+                ExamMode.INFINITY_MODE -> {
+                    // when scroll very fast in infinity scroll position == currentList.size - 1 could not have time to process,
+                    // and .... disappeared between previous loading last item and first next. For avoid this we make if with total count
+                    if (position == totalCount - 1) View.GONE else View.VISIBLE
+                }
             }
 
             if (item.isActive) {
