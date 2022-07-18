@@ -9,12 +9,11 @@ import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import kotlinx.coroutines.flow.Flow
 
-interface TranslatedWordRepository: InMemoryStorage {
+interface TranslatedWordRepository : InMemoryStorage {
     suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
-    suspend fun getExamWordListSize():Int
+    suspend fun getExamWordListSize(): Int
 
-    suspend fun searchWordList(query: String, count: Int): Flow<List<WordRV>>
-    suspend fun searchWordListCount(query: String): Int // TODO maybe make it flow
+    suspend fun searchWordList(query: String): Flow<List<WordRV>>
 
     suspend fun getWordById(id: Long): ModifyWord
 

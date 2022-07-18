@@ -6,28 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
-import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase.Companion.WORD_LIST_PAGE_SIZE
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
 sealed interface WordListViewModelState {
-    data class IsLoading(val isLoading: Boolean) : WordListViewModelState
-    data class LoadSuccess(val wordList: List<WordRV>, val dictionaryIsEmpty: Boolean) :
-        WordListViewModelState
-
-    data class LoadedNewPage(val wordList: List<WordRV>) : WordListViewModelState
-
-    data class RestoreUI(val wordList: List<WordRV>, val dictionaryIsEmpty: Boolean) :
+    object IsLoading : WordListViewModelState
+    data class LoadSuccess(
+        val wordList: List<WordRV>,
+        val dictionaryIsEmpty: Boolean,
+        val isRestoreUi: Boolean = false
+    ) :
         WordListViewModelState
 }
 
 data class WordListState(
     val wordList: List<WordRV> = emptyList(),
-    val isVisited: Boolean = false
+    val isLoading: Boolean = true,
 )
 
 class WordListViewModel @Inject constructor(
@@ -44,40 +42,26 @@ class WordListViewModel @Inject constructor(
     var searchInputValue = ""
 
     init {
-        _uiState.value = WordListViewModelState.IsLoading(true)
+        _uiState.value = WordListViewModelState.IsLoading
         searchDebounced("")
     }
 
     // if we visited screen in the past in our session restore ui, if it is the first time - ignore
     fun restoreUI() {
-        if (!state.isVisited) return
-
-        _uiState.value = WordListViewModelState.RestoreUI(
-            wordList = state.wordList,
-            dictionaryIsEmpty = dictionaryIsEmpty
-        )
-    }
-
-    //  searchJob?.cancel() help avoid multiple flow update. We save only last request
-    fun loadNewPage(position: Int) {
-        if (state.wordList.size - position > 5) return
-
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            getSearchedWordListUseCase.loadNextPage(searchInputValue)?.collectLatest {
-                state = state.copy(
-                    wordList = it
-                )
-
-                _uiState.value = WordListViewModelState.LoadedNewPage(
-                    wordList = state.wordList,
-                )
-            }
+        if (state.isLoading) {
+            _uiState.value = WordListViewModelState.IsLoading
+        } else {
+            _uiState.value = WordListViewModelState.LoadSuccess(
+                wordList = state.wordList,
+                dictionaryIsEmpty = dictionaryIsEmpty,
+                isRestoreUi = true
+            )
         }
+
     }
 
     private suspend fun searchWord(searchValue: String) {
-        getSearchedWordListUseCase.loadData(searchValue)
+        getSearchedWordListUseCase(searchValue)
             .collectLatest {
                 val list = it
                     .map { it.copy(translates = it.translates.filter { it.isHidden == false }) }
@@ -88,21 +72,15 @@ class WordListViewModel @Inject constructor(
                 if (searchValue.isEmpty()) {
                     dictionaryIsEmpty = it.isEmpty()
                 }
-                state = state.copy(wordList = list, isVisited = true)
+                state = state.copy(wordList = list, isLoading = false)
                 _uiState.value = WordListViewModelState.LoadSuccess(
                     wordList = list,
                     dictionaryIsEmpty = dictionaryIsEmpty
                 )
-
             }
     }
 
     fun searchDebounced(searchText: String) {
-        getSearchedWordListUseCase.resetExamWordListCurrentPage()
-        state = state.copy(
-            wordList = emptyList()
-        )
-
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             searchWord(searchText)

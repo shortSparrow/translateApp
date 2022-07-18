@@ -31,15 +31,11 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.getExamWordListSize()
     }
 
-    override suspend fun searchWordList(query: String, count: Int): Flow<List<WordRV>> {
-        return translatedWordDao.searchWordList(query = "%$query%", count = count)
+    override suspend fun searchWordList(query: String): Flow<List<WordRV>> {
+        return translatedWordDao.searchWordList(query = "%$query%")
             .map { list ->
                 mapper.wordListDbToWordList(list)
             }
-    }
-
-    override suspend fun searchWordListCount(query: String): Int {
-        return translatedWordDao.searchWordListCount(query = "%$query%")
     }
 
     override suspend fun getWordById(id: Long): ModifyWord {
