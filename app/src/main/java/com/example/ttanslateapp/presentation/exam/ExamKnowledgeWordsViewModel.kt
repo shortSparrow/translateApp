@@ -82,10 +82,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         generateWordsList()
     }
 
-    fun resetState() {
-        state = ExamKnowledgeState()
-        generateWordsList()
-    }
 
     fun getTotalCountExamList() = getExamWordListUseCase.getTotalCountExamList()
 
@@ -99,7 +95,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             isInputWordInvalid = state.isInputWordInvalid,
             activeWordPosition = state.activeWordPosition,
             mode = state.mode,
-            isModeDialogOpen = state.isModeDialogOpen
+            isModeDialogOpen = state.isModeDialogOpen,
+            isExamEndDialogOpen = state.isExamEndDialogOpen,
         )
     }
 
@@ -115,7 +112,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         _uiState.value = ExamKnowledgeUiState.ToggleOpenModeDialog(isOpened = isOpened)
     }
 
-    fun loadNewPage(position: Int, cb: ()-> Unit ) {
+    fun closeIsEndModal() {
+        state = state.copy(isExamEndDialogOpen = false)
+    }
+
+    fun loadNewPage(position: Int, cb: () -> Unit) {
         if (state.mode == ExamMode.DAILY_MODE || state.examWordList.size - position > 5) return
         cb()
         viewModelScope.launch {

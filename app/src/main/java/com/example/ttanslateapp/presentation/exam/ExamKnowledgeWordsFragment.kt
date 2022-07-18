@@ -113,7 +113,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         }
 
         examEndDialog.handleCloseClick {
-            findNavController().popBackStack()
+            viewModel.closeIsEndModal()
+            examEndDialog.setIsOpenModeDialog(false)
         }
     }
 
@@ -137,6 +138,9 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
                     examContainer.visibility = View.VISIBLE
                     handleMode(mode = uiState.mode)
+                    if (uiState.isExamEnd) {
+                        examEndDialog.setIsOpenModeDialog(true)
+                    }
                     modeDialog.setIsOpenModeDialog(uiState.isModeDialogOpen)
                     uiState.currentWord?.let { currentWord ->
                         scrollExamWordListToCurrentPosition(uiState.activeWordPosition)

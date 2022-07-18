@@ -5,10 +5,8 @@ import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.widget.Button
-import android.widget.RadioGroup
 import android.widget.TextView
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.presentation.core.ConfirmDialog
 import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import com.example.ttanslateapp.presentation.exam.adapter.ExamMode.*
 
@@ -43,11 +41,11 @@ class ExamEndDialog(context: Context) :
 
     private fun updateView() {
         val title = when (mode) {
-            DAILY_MODE -> context.getString(R.string.exam_complete_daily_exam)
+            DAILY_MODE -> context.getString(R.string.exam_alert_complete_daily_exam_description)
             INFINITY_MODE -> context.getString(R.string.exam_complete_infinity_exam)
             null -> ""
         }
-        dialogView.findViewById<TextView>(R.id.title).text = title
+        dialogView.findViewById<TextView>(R.id.description).text = title
     }
 
     fun handleCloseClick(cb: () -> Unit): ExamEndDialog {

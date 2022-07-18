@@ -22,7 +22,8 @@ sealed interface ExamKnowledgeUiState {
         val activeWordPosition: Int = 0,
         val hiddenTranslateDescriptionVisibility: Int = View.GONE,
         val mode: ExamMode,
-        val isModeDialogOpen: Boolean
+        val isModeDialogOpen: Boolean,
+        val isExamEndDialogOpen: Boolean
     ) : ExamKnowledgeUiState
 
     data class LoadedWordsSuccess(
@@ -90,7 +91,8 @@ data class ExamKnowledgeState(
     val isInputWordInvalid: Boolean = false,
     val activeWordPosition: Int = 0,
     val mode: ExamMode = ExamMode.DAILY_MODE,
-    val isModeDialogOpen: Boolean = false
+    val isModeDialogOpen: Boolean = false,
+    val isExamEndDialogOpen: Boolean = false,
 )
 
 enum class ExamMode {
