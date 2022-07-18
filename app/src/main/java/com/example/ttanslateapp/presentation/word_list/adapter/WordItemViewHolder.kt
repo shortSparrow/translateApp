@@ -34,10 +34,10 @@ class WordItemViewHolder(
     private fun setExpandedStyle(isExpanded: Boolean) = with(binding) {
         if (isExpanded) {
             showMoreContent.visibility = View.VISIBLE
-            showMore.text = "Sow less"
+            showMore.text = binding.root.context.getString(R.string.show_less)
         } else {
             showMoreContent.visibility = View.GONE
-            showMore.text = "Sow more"
+            showMore.text = binding.root.context.getString(R.string.show_more)
         }
     }
 

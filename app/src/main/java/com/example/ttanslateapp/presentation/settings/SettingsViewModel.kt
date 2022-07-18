@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,40 +12,38 @@ import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.exam.ReminderTime
 import com.example.ttanslateapp.util.*
 import com.google.gson.Gson
-import java.lang.String
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.round
 
 sealed interface SettingsUiState {
-    data class SetReminderFrequency(val frequency: kotlin.String) : SettingsUiState
+    data class SetReminderFrequency(val frequency: String) : SettingsUiState
     data class UpdateTime(
-        val timeHours: kotlin.String,
-        val timeMinutes: kotlin.String,
+        val timeHours: String,
+        val timeMinutes: String,
     ) : SettingsUiState
 
     data class SetInitial(
-        val frequency: kotlin.String,
-        val timeHours: kotlin.String,
-        val timeMinutes: kotlin.String,
+        val frequency: String,
+        val timeHours: String,
+        val timeMinutes: String,
         val isSettingsTheSame: Boolean = true
     ) : SettingsUiState
 
     data class IsSuccessUpdateSettings(val isSuccess: Boolean) : SettingsUiState
     data class SettingsHasBeenChanged(val isSame: Boolean) : SettingsUiState
 
-    data class TimeBeforePush(val time: kotlin.String) : SettingsUiState
+    data class TimeBeforePush(val time: String) : SettingsUiState
 }
 
 data class SettingsState(
-    val frequencyValue: kotlin.String = "",
-    val timeHours: kotlin.String = "",
-    val timeMinutes: kotlin.String = "",
+    val frequencyValue: String = "",
+    val timeHours: String = "",
+    val timeMinutes: String = "",
 )
 
 class SettingsViewModel @Inject constructor(
-    private val application: Application,
+    application: Application,
     private val examReminder: ExamReminder
 ) : ViewModel() {
     private val _uiState = MutableLiveData<SettingsUiState>()
@@ -112,10 +109,13 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun updateTime(minutes: Int, hours: Int) {
-        state = state.copy(timeHours = hours.toString(), timeMinutes = minutes.toString())
+        val convertedMinutes = convertTime(minutes)
+        val convertedHours = convertTime(hours)
+
+        state = state.copy(timeHours = convertedHours, timeMinutes = convertedMinutes)
         _uiState.value = SettingsUiState.UpdateTime(
-            timeHours = convertTime(hours),
-            timeMinutes = convertTime(minutes)
+            timeHours = convertedHours,
+            timeMinutes = convertedMinutes
         )
         checkIsChangedExist()
     }
@@ -125,7 +125,7 @@ class SettingsViewModel @Inject constructor(
         _uiState.value = SettingsUiState.SettingsHasBeenChanged(isSame)
     }
 
-    private fun convertTime(value: Int): kotlin.String {
+    private fun convertTime(value: Int): String {
         return if (value < 10) "0$value" else value.toString()
     }
 
@@ -149,7 +149,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     @SuppressLint("DefaultLocale")
-    private fun convertTimeToHMS(millis: Long): kotlin.String {
+    private fun convertTimeToHMS(millis: Long): String {
         return String.format(
             "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
             TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(

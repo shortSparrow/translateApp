@@ -47,6 +47,9 @@
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>
     <string name="left_before_next_reminder">Left before next reminder:</string>
+    <string name="settings_update_word_success">You successfully update settings</string>
+    <string name="settings_update_word_failed">Error happened</string>
+
 
     <!--Validation -->
     <string name="validation_required_field">This field is required</string>
@@ -67,6 +70,8 @@
     <string name="word_translate">word translate</string>
     <string name="play_sound">Play sound</string>
     <string name="field_is_required">This field is required</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
 
     <string-array name="translate_from_language">
         <item>UA</item>

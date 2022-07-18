@@ -55,7 +55,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     timePicker.text = "${uiState.timeHours}:${uiState.timeMinutes}"
                 }
                 is SettingsUiState.IsSuccessUpdateSettings -> {
-                    val message = if (uiState.isSuccess) "You successfully update settings" else "Error happened"
+                    val message =
+                        if (uiState.isSuccess) getString(R.string.settings_update_word_success) else getString(
+                            R.string.settings_update_word_failed
+                        )
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }
