@@ -76,10 +76,13 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
                     }
 
                     wordListAdapter.submitList(uiState.wordList) {
-                        if (!uiState.isRestoreUi && viewModel.searchInputValue.isEmpty()) {
+                        Timber.tag("XXXX").d("uiState.shouldScrollToStart: " + uiState.shouldScrollToStart)
+
+                        if (uiState.shouldScrollToStart) {
                             binding.wordListRv.scrollToPosition(0)
                         }
                     }
+                    viewModel.previousSize = uiState.wordList.size
                 }
             }
         }

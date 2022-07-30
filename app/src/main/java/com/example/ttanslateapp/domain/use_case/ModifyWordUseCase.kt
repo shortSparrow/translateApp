@@ -14,25 +14,8 @@ class ModifyWordUseCase @Inject constructor(
     private val mapper: WordMapper,
 ) {
     suspend operator fun invoke(word: ModifyWord): Long = coroutineScope {
-        val wordId = repository.modifyWordInfo(wordInfoDb = mapper.modifyWordToWordInfoDb(word))
-        val translates = repository.modifyWordTranslates(
-            translates = word.translates.map {
-                mapper.translateLocalToDb(
-                    translate = it,
-                    wordId = wordId
-                )
-            }
-        )
-        val hints = repository.modifyWordHints(
-            hints = word.hints.map {
-                mapper.hintLocalToDb(
-                    hint = it,
-                    wordId = wordId
-                )
-            }
-        )
 
-        return@coroutineScope wordId
+        return@coroutineScope repository.modifyWord(word = word, mapper = mapper)
     }
 
 

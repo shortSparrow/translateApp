@@ -1,7 +1,11 @@
 package com.example.ttanslateapp.data.database
 
 import androidx.room.*
+import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.data.model.*
+import com.example.ttanslateapp.domain.model.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 import kotlinx.coroutines.flow.Flow
 
@@ -30,14 +34,37 @@ interface TranslatedWordDao {
         updated_time: Long = System.currentTimeMillis()
     ): Int
 
+    @Transaction
+    suspend fun modifyWord(
+        word: ModifyWord,
+        mapper: WordMapper,
+    ):Long {
+        val wordId = modifyWordInfo(mapper.modifyWordToWordInfoDb(word))
+
+        val translateList = word.translates.map {
+                mapper.translateLocalToDb(
+                    translate = it,
+                    wordId = wordId
+                )
+            }
+
+        val hintList =  word.hints.map {
+                mapper.hintLocalToDb(
+                    hint = it,
+                    wordId = wordId
+                )
+            }
+        modifyTranslates(translateList)
+        modifyHints(hintList)
+        return wordId
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyTranslates(translates: List<TranslateDb>): List<Long>
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyHints(hints: List<HintDb>): List<Long>
 

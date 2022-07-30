@@ -9,6 +9,8 @@ import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamWord
+import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -60,6 +62,10 @@ class TranslatedWordRepositoryImpl @Inject constructor(
 
     override suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long {
         return translatedWordDao.modifyWordInfo(wordInfoDb)
+    }
+
+    override suspend fun modifyWord( word: ModifyWord, mapper: WordMapper,): Long {
+        return translatedWordDao.modifyWord(word, mapper)
     }
 
 
