@@ -82,7 +82,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         generateWordsList()
     }
 
-
     fun getTotalCountExamList() = getExamWordListUseCase.getTotalCountExamList()
 
     fun restoreUI() {
@@ -168,7 +167,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-
     fun toggleHintExpanded() {
         val currentWord =
             state.currentWord!!.copy(isHintsExpanded = !state.currentWord!!.isHintsExpanded)
@@ -198,7 +196,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             ExamKnowledgeUiState.SelectVariants(selectedVariantValue = selectedVariantValue)
     }
 
-
     fun handleExamCheckAnswer(examWordInputValue: String) {
         checkAnswer(examWordInputValue)
     }
@@ -225,7 +222,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             )
         }
     }
-
 
     fun handleAnswerEditText(answer: String) {
         val userGaveAnswer = state.currentWord?.status != ExamWordStatus.IN_PROCESS
@@ -277,25 +273,46 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         state.currentWord?.let { currentWord ->
             viewModelScope.launch {
-                modifyWordUseCase.modifyTranslates(
+                // add translate and return priority to old value, and mark answer as success
+                modifyWordUseCase.modifyTranslateWithUpdatePriority(
                     wordId = currentWord.id,
-                    translates = listOf(hiddenTranslate)
+                    translates = listOf(hiddenTranslate),
+                    priority = currentWord.priority.minus(1),
                 ).apply {
                     val translates =
                         currentWord.translates.plus(hiddenTranslate.copy(id = this.first()))
+
+                    val updatedCurrentWord =
+                        (if (state.currentWord?.id == currentWord.id) currentWord else state.examWordList.find { it.id == currentWord.id })!!.copy(
+                            translates = translates,
+                            priority = state.currentWord!!.priority.minus(1),
+                            status = ExamWordStatus.SUCCESS
+                        )
+
                     val updatedList = state.examWordList.map {
-                        if (it.id == currentWord.id) return@map it.copy(translates = translates) else return@map it
+                        if (it.id == currentWord.id) return@map updatedCurrentWord else return@map it
                     }
 
                     state = state.copy(
-                        currentWord = currentWord.copy(translates = translates),
+                        currentWord = currentWord.copy(
+                            translates = translates,
+                            priority = state.currentWord!!.priority.minus(1),
+                            status = ExamWordStatus.SUCCESS
+                        ),
                         examWordList = updatedList
                     )
 
-                    _uiState.value = ExamKnowledgeUiState.UpdateHiddenTranslates(
-                        translates = state.currentWord?.translates ?: emptyList(),
-                        clearInputValue = true
+                    _uiState.value = ExamKnowledgeUiState.CheckedAnswer(
+                        status = state.currentWord!!.status,
+                        examWordList = state.examWordList,
+                        currentWord = updatedCurrentWord,
+                        isExamEnd = state.isExamEnd,
+                        givenAnswer = state.currentWord?.givenAnswer ?: "",
                     )
+//                    _uiState.value = ExamKnowledgeUiState.UpdateHiddenTranslates(
+//                        translates = state.currentWord?.translates ?: emptyList(),
+//                        clearInputValue = true
+//                    )
                 }
             }
         }

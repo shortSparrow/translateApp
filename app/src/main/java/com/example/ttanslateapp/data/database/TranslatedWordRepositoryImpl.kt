@@ -52,6 +52,18 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.updatePriorityById(priority, id) != WORD_IS_NOT_FOUND
     }
 
+    override suspend fun addHiddenTranslateWithUpdatePriority(
+        translates: List<TranslateDb>,
+        priority: Int,
+        wordId: Long
+    ): List<Long> {
+        return translatedWordDao.addHiddenTranslateWithUpdatePriority(
+            translates = translates,
+            priority = priority,
+            wordId = wordId
+        )
+    }
+
     override suspend fun modifyWordTranslates(translates: List<TranslateDb>): List<Long> {
         return translatedWordDao.modifyTranslates(translates)
     }
@@ -64,7 +76,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.modifyWordInfo(wordInfoDb)
     }
 
-    override suspend fun modifyWord( word: ModifyWord, mapper: WordMapper,): Long {
+    override suspend fun modifyWord(word: ModifyWord, mapper: WordMapper): Long {
         return translatedWordDao.modifyWord(word, mapper)
     }
 

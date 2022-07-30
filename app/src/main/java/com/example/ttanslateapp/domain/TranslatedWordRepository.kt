@@ -21,6 +21,11 @@ interface TranslatedWordRepository : InMemoryStorage {
     suspend fun deleteWord(id: Long): Boolean
 
     suspend fun updatePriorityById(priority: Int, id: Long): Boolean
+    suspend fun addHiddenTranslateWithUpdatePriority(
+        translates: List<TranslateDb>,
+        priority: Int,
+        wordId: Long
+    ): List<Long>
     suspend fun modifyWord(word: ModifyWord, mapper: WordMapper): Long
     suspend fun modifyWordTranslates(translates: List<TranslateDb>): List<Long>
     suspend fun modifyWordHints(hints: List<HintDb>): List<Long>

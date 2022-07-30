@@ -38,22 +38,22 @@ interface TranslatedWordDao {
     suspend fun modifyWord(
         word: ModifyWord,
         mapper: WordMapper,
-    ):Long {
+    ): Long {
         val wordId = modifyWordInfo(mapper.modifyWordToWordInfoDb(word))
 
         val translateList = word.translates.map {
-                mapper.translateLocalToDb(
-                    translate = it,
-                    wordId = wordId
-                )
-            }
+            mapper.translateLocalToDb(
+                translate = it,
+                wordId = wordId
+            )
+        }
 
-        val hintList =  word.hints.map {
-                mapper.hintLocalToDb(
-                    hint = it,
-                    wordId = wordId
-                )
-            }
+        val hintList = word.hints.map {
+            mapper.hintLocalToDb(
+                hint = it,
+                wordId = wordId
+            )
+        }
         modifyTranslates(translateList)
         modifyHints(hintList)
         return wordId
@@ -64,6 +64,15 @@ interface TranslatedWordDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyTranslates(translates: List<TranslateDb>): List<Long>
+
+    suspend fun addHiddenTranslateWithUpdatePriority(
+        translates: List<TranslateDb>,
+        priority: Int,
+        wordId: Long
+    ): List<Long> {
+        updatePriorityById(id = wordId, priority = priority)
+        return modifyTranslates(translates)
+    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun modifyHints(hints: List<HintDb>): List<Long>

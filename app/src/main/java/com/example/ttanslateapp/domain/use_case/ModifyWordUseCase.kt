@@ -14,7 +14,6 @@ class ModifyWordUseCase @Inject constructor(
     private val mapper: WordMapper,
 ) {
     suspend operator fun invoke(word: ModifyWord): Long = coroutineScope {
-
         return@coroutineScope repository.modifyWord(word = word, mapper = mapper)
     }
 
@@ -28,6 +27,20 @@ class ModifyWordUseCase @Inject constructor(
             translate = it
         )
     })
+
+    suspend fun modifyTranslateWithUpdatePriority(
+        wordId: Long,
+        translates: List<Translate>, priority: Int
+    ) = repository.addHiddenTranslateWithUpdatePriority(
+        translates = translates.map {
+            mapper.translateLocalToDb(
+                wordId = wordId,
+                translate = it
+            )
+        },
+        wordId = wordId,
+        priority = priority
+    )
 
     suspend fun modifyOnlySound(
         id: Long,
