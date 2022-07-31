@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.presentation.exam.adapter
+package com.example.ttanslateapp.presentation.exam
 
 import android.view.View
 import com.example.ttanslateapp.domain.model.exam.ExamWord
@@ -6,7 +6,6 @@ import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 
 sealed interface ExamKnowledgeUiState {
-    object IsLoadingWords : ExamKnowledgeUiState
     object LoadedEmptyList : ExamKnowledgeUiState
 
     data class LoadedNewPage(var examWordList: List<ExamWord>, val activeWordPosition: Int) :

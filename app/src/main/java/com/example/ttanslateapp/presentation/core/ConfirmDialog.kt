@@ -3,13 +3,10 @@ package com.example.ttanslateapp.presentation.core
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.view.View
 import android.widget.Button
-import android.widget.RadioGroup
 import android.widget.TextView
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 
 class ConfirmDialog(
     context: Context,

@@ -70,53 +70,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-//         we can use bottomBar.setupWithNavController(navController) for base behavior but I want to reset the viewmodel state when user go out from exam tab
-        bottomBar
-            .setOnItemSelectedListener { menuItem ->
-                // clear state only fro exam tab
-                val isRestoreState =
-                    menuItem.itemId != R.id.examKnowledgeWordsFragment || navController.currentDestination?.id == R.id.examKnowledgeWordsFragment
-
-                val builder =
-                    NavOptions.Builder().setLaunchSingleTop(true).setRestoreState(isRestoreState)
-
-                if (menuItem.order and Menu.CATEGORY_SECONDARY == 0) {
-                    builder.setPopUpTo(
-                        navController.graph.findStartDestination().id,
-                        inclusive = false,
-                        saveState = true
-                    )
-                }
-                val options = builder.build()
-
-                val weakReference = WeakReference(bottomBar)
-                navController.addOnDestinationChangedListener(
-                    object : NavController.OnDestinationChangedListener {
-                        override fun onDestinationChanged(
-                            controller: NavController,
-                            destination: NavDestination,
-                            arguments: Bundle?
-                        ) {
-                            val view = weakReference.get()
-                            if (view == null) {
-                                navController.removeOnDestinationChangedListener(this)
-                                return
-                            }
-                            view.menu.forEach { item ->
-                                if (destination.id == item.itemId) {
-                                    item.isChecked = true
-                                }
-                            }
-                        }
-                    })
-                return@setOnItemSelectedListener try {
-                    navController.navigate(menuItem.itemId, null, options)
-                    navController.currentDestination?.id == menuItem.itemId
-                } catch (e: IllegalArgumentException) {
-                    false
-                }
-            }
+        bottomBar.setupWithNavController(navController)
     }
 
     private fun showBottomNav() {

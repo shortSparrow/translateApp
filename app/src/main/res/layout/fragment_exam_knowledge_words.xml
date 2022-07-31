@@ -37,18 +37,6 @@
                 android:background="@drawable/exam_mode" />
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            app:indicatorColor="@color/blue"
-            tools:indeterminate="false"
-            tools:progress="50"
-            tools:visibility="gone" />
-
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,7 +46,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
 
                 <include
                     android:id="@+id/empty_list_layout"

@@ -7,8 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode.*
+import com.example.ttanslateapp.presentation.exam.ExamMode.*
 
 class ExamEndDialog(context: Context) :
     Dialog(context) {

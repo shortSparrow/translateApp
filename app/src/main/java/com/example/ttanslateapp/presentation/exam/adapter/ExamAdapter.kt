@@ -11,6 +11,7 @@ import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ItemRvExamAdapterBinding
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
+import com.example.ttanslateapp.presentation.exam.ExamMode
 
 
 class ExamAdapter :

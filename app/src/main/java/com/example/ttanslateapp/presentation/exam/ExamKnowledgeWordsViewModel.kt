@@ -5,19 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.TranslatedWordRepository
-import com.example.ttanslateapp.domain.model.ModifyWord
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
-import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeState
-import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,9 +28,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private var state = ExamKnowledgeState()
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
-    // FIXME trouble with reenter on screen
-    init {
 
+    init {
 //        viewModelScope.async {
 //            var wordCount = 1
 //            while (wordCount < 10_000) {
@@ -77,13 +69,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 //            }
 //        }
 
-        state = state.copy(isLoading = true)
-        _uiState.value = ExamKnowledgeUiState.IsLoadingWords
-        generateWordsList()
     }
 
-    fun getTotalCountExamList() = getExamWordListUseCase.getTotalCountExamList()
-
+    // after we add orientation|screenLayout to configChanges is no needed
     fun restoreUI() {
         _uiState.value = ExamKnowledgeUiState.RestoreUI(
             isLoading = state.isLoading,
@@ -97,6 +85,13 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             isModeDialogOpen = state.isModeDialogOpen,
             isExamEndDialogOpen = state.isExamEndDialogOpen,
         )
+    }
+
+    fun getTotalCountExamList() = getExamWordListUseCase.getTotalCountExamList()
+
+    fun resetState() {
+        state = ExamKnowledgeState()
+        getExamWordListUseCase.resetExamWordListCurrentPage()
     }
 
     fun changeExamMode(mode: ExamMode) {
@@ -131,7 +126,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-    private fun generateWordsList() {
+    fun generateWordsList() {
+        state = state.copy(isLoading = true)
         viewModelScope.launch {
             val list = getExamWordListUseCase(isInitialLoad = true).mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(

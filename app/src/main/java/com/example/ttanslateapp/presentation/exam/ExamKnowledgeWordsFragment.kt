@@ -19,8 +19,6 @@ import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
-import com.example.ttanslateapp.presentation.exam.adapter.ExamKnowledgeUiState
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
@@ -54,13 +52,19 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         )
     }
 
+    override fun onDestroyView() {
+        Timber.d("onDestroyView")
+        viewModel.resetState()
+        super.onDestroyView()
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
-        if (savedInstanceState != null) {
-            viewModel.restoreUI()
-        }
+        // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
+        viewModel.generateWordsList()
 
         setupAdapter()
         observeLiveDate()
@@ -71,6 +75,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             binding.examWordContainer.error = null
         }
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun clickListeners() = with(binding) {
@@ -126,11 +131,9 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 }
                 is ExamKnowledgeUiState.RestoreUI -> {
                     if (uiState.isLoading) {
-                        progressBar.visibility = View.VISIBLE
                         return@observe
                     }
 
-                    progressBar.visibility = View.GONE
                     if (uiState.examWordList.isEmpty()) {
                         loadedEmptyList()
                         return@observe
@@ -172,14 +175,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                         setVariantsBackground(selectedVariantValue = uiState.currentWord.selectedVariantValue)
                     }
                 }
-                is ExamKnowledgeUiState.IsLoadingWords -> {
-                    progressBar.visibility = View.VISIBLE
-                }
                 is ExamKnowledgeUiState.LoadedEmptyList -> {
                     loadedEmptyList()
                 }
                 is ExamKnowledgeUiState.LoadedWordsSuccess -> {
-                    progressBar.visibility = View.GONE
                     examContainer.visibility = View.VISIBLE
                     handleMode(mode = uiState.mode)
 
@@ -363,7 +362,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
     private fun loadedEmptyList() = with(binding) {
         examContainer.visibility = View.GONE
-        progressBar.visibility = View.GONE
         emptyListLayout.root.visibility = View.VISIBLE
         examModeButton.isEnabled = false
         examModeButton.alpha = 0.5f

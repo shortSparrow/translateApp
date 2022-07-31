@@ -6,7 +6,6 @@ import android.content.Context
 import android.view.View
 import android.widget.RadioGroup
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.presentation.exam.adapter.ExamMode
 
 class ExamModeDialog(context: Context, val viewModel: ExamKnowledgeWordsViewModel) :
     Dialog(context) {
@@ -17,7 +16,7 @@ class ExamModeDialog(context: Context, val viewModel: ExamKnowledgeWordsViewMode
         setupView()
     }
 
-     fun setupView() {
+     private fun setupView() {
         dialogBuilder = AlertDialog.Builder(context, R.style.ExamDialog)
             .create()
         dialogView = layoutInflater.inflate(R.layout.dialog_exam_mode, null)
