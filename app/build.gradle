@@ -9,15 +9,31 @@ plugins {
 android {
     compileSdk 32
 
+    signingConfigs {
+        debug {
+            storeFile file('/Users/Oleksandr_Volkov4/AndroidStudioProjects/translateApp/debug-keystore.jks')
+            storePassword DEBUG_STORE_PASSWORD
+            keyAlias DEBUG_KEY_ALIAS
+            keyPassword DEBUG_KEY_PASSWORD
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.ttanslateapp"
         minSdk 24
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
+        }
     }
 
     compileOptions {
@@ -30,7 +46,6 @@ android {
     buildFeatures {
         dataBinding true
     }
-    namespace 'com.example.ttanslateapp'
 }
 
 dependencies {
