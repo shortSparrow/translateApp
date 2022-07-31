@@ -2,6 +2,7 @@ package com.example.ttanslateapp.presentation.core
 
 import android.app.Application
 import android.content.Context
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
@@ -21,6 +22,9 @@ class RecordAudioViewModel(private val applicationContext: Application) :
     private var modifiedFileName: String? = null
     private var word: String? = null
     private val TAG = "RecordAudioViewModel"
+
+    private val audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
     val fileName by lazy { modifiedFileName ?: generateFileName() }
     private val audioPath by lazy { getAudioPath(applicationContext, fileName) }
@@ -136,9 +140,20 @@ class RecordAudioViewModel(private val applicationContext: Application) :
     }
 
     fun startPlaying() {
+        audioManager.setStreamVolume(
+            AudioManager.STREAM_MUSIC,
+            audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+            0
+        );
+
         _isPlaying.value = true
         _player?.start()
         _player?.setOnCompletionListener {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                oldVolume,
+                0
+            );
             it.seekTo(0)
             _isPlaying.value = false
         }

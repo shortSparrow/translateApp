@@ -1,5 +1,8 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
+import android.app.Application
+import android.content.Context
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.view.View
 import android.widget.ImageButton
@@ -13,12 +16,16 @@ import com.example.ttanslateapp.util.getAudioPath
 import timber.log.Timber
 import java.io.IOException
 
+
 class WordItemViewHolder(
     val binding: ItemWordRvBinding,
     private val player: MediaPlayer,
     private val playingList: MutableMap<Long, Boolean>,
     private val expandedList: HashMap<Long, Boolean>,
+    private val application: Application,
 ) : RecyclerView.ViewHolder(binding.root) {
+    private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
     private fun setBaseExpanded(word: WordRV) {
         if (word.description.isEmpty()) {
@@ -80,13 +87,17 @@ class WordItemViewHolder(
         playSound.setOnClickListener {
             if (!player.isPlaying && word.sound?.fileName != null) {
                 playingList[word.id] = playingList[word.id]?.let { !it } ?: true
-
                 playAudio(playSound, word)
             }
         }
     }
 
     private fun playAudio(playSound: ImageButton, word: WordRV) {
+        audioManager.setStreamVolume(
+            AudioManager.STREAM_MUSIC,
+            audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+            0
+        );
         setVolumeImage(playSound, word)
 
         player.apply {
@@ -102,6 +113,11 @@ class WordItemViewHolder(
         player.setOnCompletionListener {
             playingList[word.id] = false
             setVolumeImage(playSound, word)
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                oldVolume,
+                0
+            );
         }
     }
 

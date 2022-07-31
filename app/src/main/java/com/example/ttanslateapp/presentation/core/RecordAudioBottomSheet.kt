@@ -2,7 +2,6 @@ package com.example.ttanslateapp.presentation.core
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -18,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class RecordAudioBottomSheet : BottomSheetDialogFragment() {
     private var _binding: ViewRecordAudioBinding? = null
     private val binding get() = _binding!!
+
 
     var callbackListener: CallbackListener? = null
 

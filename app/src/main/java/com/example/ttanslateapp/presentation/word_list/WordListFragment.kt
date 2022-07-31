@@ -11,6 +11,7 @@ import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import com.example.ttanslateapp.util.getAppComponent
 import timber.log.Timber
+import javax.inject.Inject
 
 
 class WordListFragment : BaseFragment<FragmentWordListBinding>() {
@@ -22,7 +23,8 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         get(WordListViewModel::class.java)
     }
 
-    private val wordListAdapter = WordListAdapter()
+    @Inject
+    lateinit var  wordListAdapter: WordListAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,8 +78,6 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
                     }
 
                     wordListAdapter.submitList(uiState.wordList) {
-                        Timber.tag("XXXX").d("uiState.shouldScrollToStart: " + uiState.shouldScrollToStart)
-
                         if (uiState.shouldScrollToStart) {
                             binding.wordListRv.scrollToPosition(0)
                         }

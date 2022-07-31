@@ -48,6 +48,7 @@ class AudioPermissionResolver(
             val showRationaleRecord =
                 listener.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
             if (!showRationaleRecord) {
+                // TODO show alert with navigation to settings
                 listener.showMessage("enable RECORD_AUDIO")
             }
         }

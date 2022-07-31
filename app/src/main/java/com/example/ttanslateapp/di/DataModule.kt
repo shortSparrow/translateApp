@@ -6,6 +6,7 @@ import com.example.ttanslateapp.data.in_memory_storage.InMemoryStorage
 import com.example.ttanslateapp.data.in_memory_storage.LocalCache
 import com.example.ttanslateapp.domain.ExamWordAnswerRepository
 import com.example.ttanslateapp.domain.TranslatedWordRepository
+import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -36,5 +37,11 @@ interface DataModule {
 
         @Provides
         fun providesInMemoryStorage(): InMemoryStorage = LocalCache()
+
+        @Provides
+        @ApplicationScope
+        fun providesWordListAdapter(context: Application): WordListAdapter {
+            return WordListAdapter(context)
+        }
     }
 }
