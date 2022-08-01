@@ -15,6 +15,7 @@ interface TranslatedWordRepository : InMemoryStorage {
     suspend fun getExamWordListSize(): Int
 
     suspend fun searchWordList(query: String): Flow<List<WordRV>>
+    suspend fun searchWordListSize(): Flow<Int>
 
     suspend fun getWordById(id: Long): ModifyWord
 

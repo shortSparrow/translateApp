@@ -17,7 +17,6 @@ class ModifyWordUseCase @Inject constructor(
         return@coroutineScope repository.modifyWord(word = word, mapper = mapper)
     }
 
-
     suspend fun modifyTranslates(
         wordId: Long,
         translates: List<Translate>

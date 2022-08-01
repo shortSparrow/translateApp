@@ -32,6 +32,8 @@ class GetExamWordListUseCase @Inject constructor(
         getExamWordListCurrentPage = 0
     }
 
+    suspend fun searchWordListSize() = coroutineScope { repository.searchWordListSize() }
+
     suspend fun loadNextPage(): List<ExamWord>? {
         if (isLoadingNextPage) return null
         return invoke()

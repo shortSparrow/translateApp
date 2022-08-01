@@ -1,7 +1,5 @@
 package com.example.ttanslateapp.util
 
-import com.example.ttanslateapp.util.PushFrequency.Companion.DEFAULT_HOURS
-import com.example.ttanslateapp.util.PushFrequency.Companion.DEFAULT_MINUTES
 import java.util.*
 
 class PushFrequency {
@@ -29,10 +27,8 @@ fun getExamReminderDelayFromNow(
     dueDate.set(Calendar.SECOND, 0)
     dueDate.set(Calendar.MILLISECOND, 0)
 
-    dueDate.add(Calendar.MILLISECOND, frequencyDelay)
-
     if (dueDate.before(currentDate)) {
-        dueDate.add(Calendar.HOUR_OF_DAY, 24)
+        dueDate.add(Calendar.MILLISECOND, frequencyDelay)
     }
 
     return dueDate.timeInMillis

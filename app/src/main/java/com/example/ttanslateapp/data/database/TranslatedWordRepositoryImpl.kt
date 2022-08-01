@@ -40,6 +40,10 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun searchWordListSize(): Flow<Int> {
+        return translatedWordDao.searchWordListSize()
+    }
+
     override suspend fun getWordById(id: Long): ModifyWord {
         return mapper.wordFullDbToModifyWord(translatedWordDao.getWordById(id))
     }

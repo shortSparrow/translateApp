@@ -8,10 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.exam.ReminderTime
 import com.example.ttanslateapp.util.*
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -50,6 +54,7 @@ class SettingsViewModel @Inject constructor(
     val uiState: LiveData<SettingsUiState> = _uiState
     var state = SettingsState()
     private var initialValues = SettingsState()
+    var timer: CountDownTimer? = null
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(
@@ -95,8 +100,14 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun getTimeReminder(): ReminderTime {
-        val examReminderTime = sharedPref.getString(EXAM_REMINDER_TIME, "")
         val gson = Gson()
+        val defaultValue = gson.toJson(
+            ReminderTime(
+                minutes = PushFrequency.DEFAULT_MINUTES,
+                hours = PushFrequency.DEFAULT_HOURS
+            )
+        )
+        val examReminderTime = sharedPref.getString(EXAM_REMINDER_TIME, defaultValue).toString()
 
         return gson.fromJson(examReminderTime, ReminderTime::class.java)
     }
@@ -130,22 +141,39 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun showTimeBeforePush() {
+        timer?.cancel()
         val getNotificationPref =
             sharedPref.getLong(LEFT_BEFORE_NOTIFICATION, -1L)
-        if (getNotificationPref == -1L) return
+        if (getNotificationPref == -1L) {
+            return
+        }
+
         val millis = getNotificationPref - Calendar.getInstance().timeInMillis
 
-        val timer = object : CountDownTimer(millis, 1000) {
+        timer = object : CountDownTimer(millis, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val hms = convertTimeToHMS(millisUntilFinished)
                 _uiState.value = SettingsUiState.TimeBeforePush(time = hms)
             }
 
             override fun onFinish() {
-
+                // repeat timer
+                listenReminderRepeat()
             }
         }
-        timer.start()
+        timer?.start()
+    }
+
+    fun listenReminderRepeat() = viewModelScope.launch {
+        var listen = true
+        while (listen) {
+            val isReady = sharedPref.getLong(LEFT_BEFORE_NOTIFICATION, -1L)
+            if (isReady !== -1L) {
+                listen = false
+            }
+            delay(500)
+        }
+        showTimeBeforePush()
     }
 
     @SuppressLint("DefaultLocale")

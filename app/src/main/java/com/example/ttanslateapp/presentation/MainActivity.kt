@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -13,6 +14,7 @@ import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -30,7 +32,10 @@ class MainActivity : AppCompatActivity() {
 
         (application as TranslateApp).component.inject(this)
         setupNavigation()
-        examReminder.setInitialReminderIfNeeded()
+
+        lifecycleScope.launch {
+            examReminder.setInitialReminderIfNeeded()
+        }
 
         // get text from selected items
         val text = intent
