@@ -2,6 +2,7 @@ package com.example.ttanslateapp.presentation
 
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.ttanslateapp.BuildConfig
 import com.example.ttanslateapp.di.DaggerApplicationComponent
 import timber.log.Timber
@@ -11,6 +12,7 @@ class TranslateApp : Application() {
 
     init {
         instance = this
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     override fun onCreate() {

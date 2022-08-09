@@ -1,11 +1,16 @@
 package com.example.ttanslateapp.presentation.exam
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
@@ -24,6 +29,7 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapt
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 
 
@@ -35,6 +41,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     private val viewModel by viewModels {
         get(ExamKnowledgeWordsViewModel::class.java)
     }
+    private var bottomBar: BottomNavigationView? = null
 
     private val examAdapter = ExamAdapter()
     private val translatesAdapter = TranslateAdapter()
@@ -63,9 +70,9 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
-        // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
+//        // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
         viewModel.generateWordsList()
-
+        bottomBar = requireActivity().findViewById(R.id.bottom_app_bar)
         setupAdapter()
         observeLiveDate()
         clickListeners()
@@ -73,6 +80,42 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         binding.examWordInput.setOnTextChange {
             viewModel.handleAnswerEditText(it.toString())
             binding.examWordContainer.error = null
+        }
+        scrollOnOpenKeyboard()
+    }
+
+    fun isKeyboardOpen(myView: View): Boolean {
+        val r = Rect()
+        myView.getWindowVisibleDisplayFrame(r)
+        val screenHeight: Int = myView.rootView.height
+        val keypadHeight = screenHeight - r.bottom
+
+        return keypadHeight > screenHeight * 0.15
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun scrollOnOpenKeyboard() = with(binding) {
+        examWordInput.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_UP -> {
+                    val imm =
+                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                    imm!!.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
+
+                    root.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            container.scrollTo(0, 300)
+                            examWordInput.requestFocus()
+
+                            root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        }
+                    })
+
+                    return@setOnTouchListener true
+                }
+                else -> return@setOnTouchListener true
+            }
         }
     }
 

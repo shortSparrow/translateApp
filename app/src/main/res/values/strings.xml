@@ -1,16 +1,16 @@
 <resources>
     <!--WordList fragment -->
-    <string name="word_list_empty_dictionary">You don\'t have any word</string>
+    <string name="word_list_empty_dictionary">You don\'t have any words</string>
     <string name="word_list_add_first_word">Add first word</string>
     <string name="word_list_nothing_found">Nothing found</string>
-    <string name="word_list_empty_exam_list">You not have saved word in your dictionary, add a few for start exam</string>
+    <string name="word_list_empty_exam_list">You don\'t have saved words in your dictionary, add a few to start exam</string>
 
     <!--Modify word fragment -->
     <string name="modify_word_select_translated_language">Select translated language</string>
     <string name="modify_word_english_word_hint">English word</string>
     <string name="modify_word_input_translate">Input translate</string>
-    <string name="modify_word_description">description:</string>
-    <string name="modify_word_transcription">word transcription</string>
+    <string name="modify_word_description">Description</string>
+    <string name="modify_word_transcription">Word transcription</string>
     <string name="modify_word_input_hint">Input hint</string>
     <string name="modify_word_cancel_edit">Cancel edit</string>
     <string name="modify_word_show_more">Розкрити</string>
@@ -49,7 +49,7 @@
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>
     <string name="left_before_next_reminder">Left before next reminder:</string>
-    <string name="settings_update_word_success">You successfully update settings</string>
+    <string name="settings_update_word_success">You successfully updated settings</string>
     <string name="settings_update_word_failed">Error happened</string>
 
 

@@ -7,12 +7,15 @@ import android.media.MediaPlayer
 import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.marginBottom
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ItemWordRvBinding
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.getAudioPath
+import com.example.ttanslateapp.util.px
 import timber.log.Timber
 import java.io.IOException
 
@@ -42,9 +45,13 @@ class WordItemViewHolder(
         if (isExpanded) {
             showMoreContent.visibility = View.VISIBLE
             showMore.text = binding.root.context.getString(R.string.show_less)
+            translateList.updatePadding(bottom = 0)
         } else {
             showMoreContent.visibility = View.GONE
             showMore.text = binding.root.context.getString(R.string.show_more)
+            translateList.updatePadding(
+                bottom = application.resources.getDimension(R.dimen.gutter).toInt()
+            )
         }
     }
 
