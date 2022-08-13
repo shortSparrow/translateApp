@@ -56,6 +56,11 @@
     <!--Validation -->
     <string name="validation_required_field">This field is required</string>
 
+
+    <!-- Reminder -->
+    <string name="reminder_push_exam_title">Time to repeat the words</string>
+    <string name="reminder_push_exam_description">Take the exam, to check how well you learned the words</string>
+
     <!--Common -->
     <string name="app_name">Translate App</string>
     <string name="save">Save</string>

@@ -84,15 +84,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         scrollOnOpenKeyboard()
     }
 
-    fun isKeyboardOpen(myView: View): Boolean {
-        val r = Rect()
-        myView.getWindowVisibleDisplayFrame(r)
-        val screenHeight: Int = myView.rootView.height
-        val keypadHeight = screenHeight - r.bottom
-
-        return keypadHeight > screenHeight * 0.15
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun scrollOnOpenKeyboard() = with(binding) {
         examWordInput.setOnTouchListener { v, event ->

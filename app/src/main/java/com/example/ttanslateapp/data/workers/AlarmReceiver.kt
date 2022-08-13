@@ -10,6 +10,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavDeepLinkBuilder
 import com.example.ttanslateapp.R
@@ -44,9 +45,12 @@ class AlarmReceiver : BroadcastReceiver() {
                 .createPendingIntent()
 
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle("Час повторити слова")
-                .setContentText("Пройдіть тест, щоб перевірити на скільки добре ви вивчили слова")
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle(context.getString(R.string.reminder_push_exam_title))
+                .setContentText(context.getString(R.string.reminder_push_exam_description))
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(context.getString(R.string.reminder_push_exam_description)))
+                .setSmallIcon(R.drawable.ic_notification_round)
+                .setColor(context.getColor(R.color.light_blue))
                 .setAutoCancel(true)
                 .setSound(soundUri)
                 .setVibrate(longArrayOf(0, 500, 100))
