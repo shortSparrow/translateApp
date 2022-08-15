@@ -69,6 +69,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // setup navigation from push notification
+        val navGraph = navController.navInflater.inflate(R.navigation.app_navigation)
+        val destination = intent
+            .getIntExtra("destination", R.id.wordListFragment)
+
+        navGraph.setStartDestination(destination)
+        navController.graph = navGraph
         bottomBar.setupWithNavController(navController)
     }
 

@@ -2,6 +2,7 @@ package com.example.ttanslateapp.data.workers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,9 +11,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.navigation.NavDeepLinkBuilder
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.presentation.MainActivity
 import com.example.ttanslateapp.presentation.TranslateApp
@@ -38,11 +37,13 @@ class AlarmReceiver : BroadcastReceiver() {
             ) as NotificationManager
             createNotificationChannel(notificationManager)
 
-            val openExamFragmentIntent = NavDeepLinkBuilder(context)
-                .setComponentName(MainActivity::class.java)
-                .setGraph(R.navigation.app_navigation)
-                .setDestination(R.id.examKnowledgeWordsFragment)
-                .createPendingIntent()
+
+            val notificationIntent = Intent(context, MainActivity::class.java)
+            notificationIntent.putExtra("destination", R.id.examKnowledgeWordsFragment)
+            val pendingIntent = PendingIntent.getActivity(
+                context, 0,
+                notificationIntent, 0
+            )
 
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.reminder_push_exam_title))
@@ -54,7 +55,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setAutoCancel(true)
                 .setSound(soundUri)
                 .setVibrate(longArrayOf(0, 500, 100))
-                .setContentIntent(openExamFragmentIntent)
+                .setContentIntent(pendingIntent)
                 .build()
 
             notificationManager.notify(NOTIFICATION_ID, notification)
