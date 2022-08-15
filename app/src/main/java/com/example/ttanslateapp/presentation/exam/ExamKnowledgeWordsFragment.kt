@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -27,7 +25,9 @@ import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
+import com.example.ttanslateapp.util.dp
 import com.example.ttanslateapp.util.getAppComponent
+import com.example.ttanslateapp.util.px
 import com.example.ttanslateapp.util.setOnTextChange
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
@@ -70,7 +70,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         super.onViewCreated(view, savedInstanceState)
         getAppComponent().inject(this)
 
-//        // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
+        // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
         viewModel.generateWordsList()
         bottomBar = requireActivity().findViewById(R.id.bottom_app_bar)
         setupAdapter()
@@ -96,7 +96,12 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     root.viewTreeObserver.addOnGlobalLayoutListener(object :
                         OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
-                            container.scrollTo(0, 300)
+                            val r = Rect()
+                            binding.root.getWindowVisibleDisplayFrame(r)
+                            val viewableHeight = r.bottom - r.top
+
+                            val bottomBarHeight = bottomBar?.height ?: 0
+                            container.scrollTo(0, binding.examCheckAnswer.bottom - viewableHeight + bottomBarHeight + 20)
                             examWordInput.requestFocus()
 
                             root.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -283,6 +288,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
                     examAdapter.submitList(uiState.examWordList)
                     examWordName.text = uiState.currentWord.value
+                    examWordInput.clearFocus()
                     examWordInput.setText("")
 
                     counter.text = getString(
@@ -558,7 +564,11 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
     private fun setupAdapter() = with(binding) {
         wordPositionRv.adapter = examAdapter
-        examCheckAnswer.setOnClickListener { viewModel.handleExamCheckAnswer(examWordInput.text.toString()) }
+        examCheckAnswer.setOnClickListener {
+            viewModel.handleExamCheckAnswer(
+                examWordInput.text.toString().trim()
+            )
+        }
         addHiddenTranslatesContainer.translateChipsRv.adapter = translatesAdapter
         addHiddenTranslatesContainer.translateChipsRv.itemAnimator = null
 

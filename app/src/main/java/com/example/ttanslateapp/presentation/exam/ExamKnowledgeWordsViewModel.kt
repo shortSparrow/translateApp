@@ -369,7 +369,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     private fun checkAnswer(answer: String) {
-        val answerQuery = answer.trim().lowercase()
+        val answerQuery = answer.lowercase()
         val isValid = validateAnswer(answerQuery)
 
         // TODO add ui handle this
