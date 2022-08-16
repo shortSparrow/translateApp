@@ -10,6 +10,10 @@
             android:icon="@drawable/exam"
             android:title="Exam" />
         <item
+            android:id="@+id/listFragment"
+            android:icon="@mipmap/ic_launcher"
+            android:title="Lists" />
+        <item
             android:id="@+id/settingsFragment"
             android:icon="@drawable/settings"
             android:title="Settings" />

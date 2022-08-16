@@ -46,4 +46,11 @@
         android:name="com.example.ttanslateapp.presentation.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.ttanslateapp.presentation.lists.ListFragment"
+        android:label="fragment_list"
+        tools:layout="@layout/fragment_list" />
+
+
 </navigation>

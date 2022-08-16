@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.wordListFragment -> showBottomNav()
                 R.id.examKnowledgeWordsFragment -> showBottomNav()
                 R.id.settingsFragment -> showBottomNav()
+                R.id.listFragment -> showBottomNav()
                 else -> hideBottomNav()
             }
         }
