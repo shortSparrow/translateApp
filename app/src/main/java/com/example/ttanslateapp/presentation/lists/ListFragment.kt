@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentListBinding
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
@@ -23,8 +24,14 @@ class ListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.greeting.setContent {
+            val viewModel = viewModel<ListsViewModel>()
+            val state = viewModel.state
+
             AppCompatTheme {
-                Greeting()
+                Greeting(
+                    state = state,
+                    onAction = viewModel::onAction
+                )
             }
         }
     }
