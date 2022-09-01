@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        (application as TranslateApp).component.inject(this)
         setupNavigation()
 
         lifecycleScope.launch {

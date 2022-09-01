@@ -11,6 +11,7 @@ import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -35,6 +36,7 @@ data class WordListState(
     val isLoading: Boolean = true,
 )
 
+@HiltViewModel
 class WordListViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
     private val deleteWordUseCase: DeleteWordUseCase,

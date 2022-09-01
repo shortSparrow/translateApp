@@ -13,6 +13,7 @@ import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.exam.ReminderTime
 import com.example.ttanslateapp.util.*
 import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -46,6 +47,7 @@ data class SettingsState(
     val timeMinutes: String = "",
 )
 
+@HiltViewModel
 class SettingsViewModel @Inject constructor(
     application: Application,
     private val examReminder: ExamReminder

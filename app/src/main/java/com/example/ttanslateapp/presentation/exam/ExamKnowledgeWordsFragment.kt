@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ttanslateapp.R
@@ -25,22 +26,18 @@ import com.example.ttanslateapp.presentation.exam.adapter.ExamAdapter
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
-import com.example.ttanslateapp.util.dp
-import com.example.ttanslateapp.util.getAppComponent
-import com.example.ttanslateapp.util.px
 import com.example.ttanslateapp.util.setOnTextChange
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
 
     override val bindingInflater: BindingInflater<FragmentExamKnowledgeWordsBinding>
         get() = FragmentExamKnowledgeWordsBinding::inflate
 
-    private val viewModel by viewModels {
-        get(ExamKnowledgeWordsViewModel::class.java)
-    }
+    private val viewModel by viewModels<ExamKnowledgeWordsViewModel>()
     private var bottomBar: BottomNavigationView? = null
 
     private val examAdapter = ExamAdapter()
@@ -68,7 +65,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAppComponent().inject(this)
 
         // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
         viewModel.generateWordsList()

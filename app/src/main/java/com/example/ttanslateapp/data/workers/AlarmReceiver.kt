@@ -24,10 +24,6 @@ class AlarmReceiver : BroadcastReceiver() {
     lateinit var examReminder: ExamReminder
     private val soundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-    init {
-        (TranslateApp.applicationContext() as TranslateApp).component.inject(this)
-    }
-
 
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {

@@ -5,7 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.example.ttanslateapp.di.ApplicationComponent
+
 import com.example.ttanslateapp.presentation.TranslateApp
 import com.google.android.material.textfield.TextInputEditText
 
@@ -15,9 +15,6 @@ import com.google.android.material.textfield.TextInputEditText
  * expected.
  */
 fun <T> lazySimple(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
-
-fun Fragment.getAppComponent(): ApplicationComponent =
-    (requireActivity().application as TranslateApp).component
 
 internal inline fun TextInputEditText.setOnTextChange(crossinline block: (p0: CharSequence?) -> Unit) =
     addTextChangedListener(object : TextWatcher {

@@ -3,25 +3,28 @@ package com.example.ttanslateapp.presentation.word_list
 import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.databinding.FragmentWordListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
+import com.example.ttanslateapp.presentation.core.RecordAudioViewModel
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
-import com.example.ttanslateapp.util.getAppComponent
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
     override val bindingInflater: BindingInflater<FragmentWordListBinding>
         get() = FragmentWordListBinding::inflate
 
-    private val viewModel by viewModels {
-        get(WordListViewModel::class.java)
-    }
+    private val viewModel: WordListViewModel by viewModels()
+
 
     @Inject
     lateinit var  wordListAdapter: WordListAdapter
@@ -29,7 +32,6 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAppComponent().inject(this)
 
 //        But we want restore ui on rotate and go over from fragment
         viewModel.restoreUI()

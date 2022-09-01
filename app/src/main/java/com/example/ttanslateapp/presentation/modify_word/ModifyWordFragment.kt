@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
@@ -24,19 +25,20 @@ import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapt
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
-import com.example.ttanslateapp.util.getAppComponent
 import com.example.ttanslateapp.util.setOnTextChange
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates.notNull
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
 
+@AndroidEntryPoint
 class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     AudioPermissionResolver.ResultListener {
     override val bindingInflater: BindingInflater<FragmentModifyWordBinding>
         get() = FragmentModifyWordBinding::inflate
 
     private val args by navArgs<ModifyWordFragmentArgs>()
-    private val viewModel by viewModels { get(ModifyWordViewModel::class.java) }
+    private val viewModel by viewModels<ModifyWordViewModel>()
 
     private var audioResolver: AudioPermissionResolver by notNull()
     private val translateAdapter = TranslateAdapter()
@@ -46,7 +48,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getAppComponent().inject(this)
         audioResolver = AudioPermissionResolver(requireActivity().activityResultRegistry, this)
         lifecycle.addObserver(audioResolver)
 

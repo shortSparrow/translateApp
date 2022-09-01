@@ -2,37 +2,32 @@ package com.example.ttanslateapp.presentation.settings
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentSettingsBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
-import com.example.ttanslateapp.util.getAppComponent
-import com.google.android.material.appbar.MaterialToolbar
+import dagger.hilt.android.AndroidEntryPoint
 
 val reminderFrequencyList = listOf("вимкнути", "раз на день", "раз на 3 дні", "раз на 6 днів")
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     override val bindingInflater: BindingInflater<FragmentSettingsBinding>
         get() = FragmentSettingsBinding::inflate
 
-    private val viewModel by viewModels {
-        get(SettingsViewModel::class.java)
-    }
+    private val viewModel by viewModels<SettingsViewModel>()
 
     private lateinit var timePickerDialog: TimePickerDialog
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAppComponent().inject(this)
 
         viewModel.setupData(savedInstanceState == null)
         setupView()
