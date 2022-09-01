@@ -6,6 +6,7 @@ import com.example.ttanslateapp.domain.model.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
+import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import javax.inject.Inject
@@ -114,5 +115,16 @@ class WordMapper @Inject constructor() {
     fun examAnswerDbToExamAnswer(examAnswer: PotentialExamAnswerDb) = ExamAnswerVariant(
         id = examAnswer.id,
         value = examAnswer.value,
+    )
+
+    fun listDbToLocal(listDb:List<ListItemDb>):List<ListItem> = listDb.map { listItemDbToLocal(it) }
+
+    fun listItemDbToLocal(listItemDb: ListItemDb): ListItem = ListItem(
+        id = listItemDb.id,
+        title = listItemDb.title,
+        count = listItemDb.count,
+        createdAt = listItemDb.createdAt,
+        updatedAt = listItemDb.updatedAt,
+        isSelected = false,
     )
 }

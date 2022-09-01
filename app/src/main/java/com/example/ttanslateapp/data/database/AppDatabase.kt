@@ -8,10 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.ttanslateapp.data.database.migration.migrateFrom1To2
 import com.example.ttanslateapp.data.database.migration.migrateFrom2To3
-import com.example.ttanslateapp.data.model.HintDb
-import com.example.ttanslateapp.data.model.PotentialExamAnswerDb
-import com.example.ttanslateapp.data.model.TranslateDb
-import com.example.ttanslateapp.data.model.WordInfoDb
+import com.example.ttanslateapp.data.model.*
 
 @Database(
     version = 3,
@@ -20,12 +17,14 @@ import com.example.ttanslateapp.data.model.WordInfoDb
         TranslateDb::class,
         HintDb::class,
         PotentialExamAnswerDb::class,
+        ListItemDb::class
     ],
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun translatedWordDao(): TranslatedWordDao
     abstract fun examWordAnswerDao(): ExamWordAnswerDao
+    abstract fun listsDao(): ListsDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null

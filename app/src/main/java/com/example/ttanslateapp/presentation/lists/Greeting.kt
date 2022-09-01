@@ -160,15 +160,18 @@ fun ComposablePreview() {
             list = listOf(
                 ListItem(
                     title = "Sport",
-                    count = 0
+                    count = 0,
+                    id = 1L,
                 ),
                 ListItem(
                     title = "Politics",
-                    count = 10
+                    count = 10,
+                    id = 2L,
                 ),
                 ListItem(
                     title = "LolKek",
                     count = 4,
+                    id = 3L,
                     isSelected = true
                 ),
             )
