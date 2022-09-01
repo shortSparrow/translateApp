@@ -127,4 +127,12 @@ class WordMapper @Inject constructor() {
         updatedAt = listItemDb.updatedAt,
         isSelected = false,
     )
+
+    fun listItemLocalToDb(listItem: ListItem):ListItemDb = ListItemDb(
+        id = listItem.id,
+        title = listItem.title,
+        count = listItem.count,
+        createdAt = listItem.createdAt,
+        updatedAt = listItem.updatedAt,
+    )
 }

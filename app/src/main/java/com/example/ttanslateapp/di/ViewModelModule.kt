@@ -7,9 +7,12 @@ import com.example.ttanslateapp.presentation.settings.SettingsViewModel
 import com.example.ttanslateapp.presentation.word_list.WordListViewModel
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoMap
 
 @Module
+@InstallIn(SingletonComponent::class)
 interface ViewModelModule {
     @IntoMap
     @ViewModelKey(ModifyWordViewModel::class)

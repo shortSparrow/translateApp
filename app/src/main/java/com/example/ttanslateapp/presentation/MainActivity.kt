@@ -14,10 +14,12 @@ import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
 import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var examReminder: ExamReminder

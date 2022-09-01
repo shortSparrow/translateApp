@@ -10,27 +10,31 @@ import com.example.ttanslateapp.presentation.word_list.adapter.WordListAdapter
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 interface DataModule {
 
-    @ApplicationScope
+    @Singleton
     @Binds
     fun bindTranslatedWordRepository(impl: TranslatedWordRepositoryImpl): TranslatedWordRepository
 
-    @ApplicationScope
+    @Singleton
     @Binds
     fun bindExamWordAnswerRepository(impl: ExamWordAnswerRepositoryImpl): ExamWordAnswerRepository
 
     companion object {
         @Provides
-        @ApplicationScope
+        @Singleton
         fun providesTranslatedWordDao(context: Application): TranslatedWordDao {
             return AppDatabase.getInstance(context).translatedWordDao()
         }
 
         @Provides
-        @ApplicationScope
+        @Singleton
         fun providesExamWordAnswerDao(context: Application): ExamWordAnswerDao {
             return AppDatabase.getInstance(context).examWordAnswerDao()
         }
@@ -39,7 +43,7 @@ interface DataModule {
         fun providesInMemoryStorage(): InMemoryStorage = LocalCache()
 
         @Provides
-        @ApplicationScope
+        @Singleton
         fun providesWordListAdapter(context: Application): WordListAdapter {
             return WordListAdapter(context)
         }

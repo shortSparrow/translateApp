@@ -9,8 +9,9 @@ import com.example.ttanslateapp.presentation.settings.SettingsFragment
 import com.example.ttanslateapp.presentation.word_list.WordListFragment
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
-@ApplicationScope
+@Singleton
 @Component(modules = [DataModule::class, ViewModelModule::class])
 interface ApplicationComponent {
 

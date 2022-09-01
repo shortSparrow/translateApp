@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.ttanslateapp.data.model.ListItemDb
-import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_LISTS
 import kotlinx.coroutines.flow.Flow
 

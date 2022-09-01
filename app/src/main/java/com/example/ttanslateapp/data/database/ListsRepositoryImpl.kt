@@ -11,12 +11,15 @@ class ListsRepositoryImpl @Inject constructor(
     private val listsDao: ListsDao,
     private val mapper: WordMapper,
 ) : ListsRepository {
-    override fun getAllLists(): Flow<List<ListItem>> {
-        return listsDao.getAllLists().map { list -> mapper.listDbToLocal(list) }
+    override suspend fun getAllLists(): Flow<List<ListItem>> {
+        return listsDao.getAllLists().map { list ->
+            mapper.listDbToLocal(list)
+        }
     }
 
     override suspend fun addNewList(newList: ListItem): Boolean {
-        TODO("Not yet implemented")
+        val id = listsDao.addNewList(mapper.listItemLocalToDb(newList))
+        return id != UNDEFINED_ID
     }
 
     override suspend fun renameList(title: String, id: Long): Boolean {
@@ -25,5 +28,9 @@ class ListsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteList(id: Long): Boolean {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        const val UNDEFINED_ID = 0L
     }
 }
