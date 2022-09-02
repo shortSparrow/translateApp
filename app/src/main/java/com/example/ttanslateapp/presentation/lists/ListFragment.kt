@@ -1,18 +1,13 @@
 package com.example.ttanslateapp.presentation.lists
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.compose.ui.platform.ComposeView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentListBinding
-import com.example.ttanslateapp.databinding.FragmentWordListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
+import com.example.ttanslateapp.presentation.lists.ListsScreen
+import com.example.ttanslateapp.presentation.lists.ListsViewModel
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,7 +26,7 @@ class ListFragment :
             val state = viewModel.state
 
             AppCompatTheme {
-                Greeting(
+                ListsScreen(
                     state = state,
                     onAction = viewModel::onAction
                 )

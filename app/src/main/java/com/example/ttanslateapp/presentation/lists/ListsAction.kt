@@ -1,9 +1,10 @@
 package com.example.ttanslateapp.presentation.lists
 
-import com.example.ttanslateapp.domain.model.lists.ListItem
-
 sealed class ListsAction {
     object GetAllLists : ListsAction()
     object OpenAddAllListsPopup : ListsAction()
-    data class AddNewList(val newItem: ListItem) : ListsAction()
+    object DeletedSelectedLists : ListsAction()
+    data class OpenModal(val type: ModalType) : ListsAction()
+    data class SelectList(val listId: Long) : ListsAction()
+    data class AddNewList(val title: String) : ListsAction()
 }

@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.data.database
 
+import android.util.Log
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.domain.use_case.lists.ListsRepository
@@ -26,8 +27,8 @@ class ListsRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteList(id: Long): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun deleteList(idList: List<Long>) {
+        listsDao.deleteList(idList)
     }
 
     companion object {

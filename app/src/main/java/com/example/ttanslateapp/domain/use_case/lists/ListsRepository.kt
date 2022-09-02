@@ -7,5 +7,5 @@ interface ListsRepository {
     suspend fun getAllLists(): Flow<List<ListItem>>
     suspend fun addNewList(newList: ListItem): Boolean
     suspend fun renameList(title: String, id: Long): Boolean
-    suspend fun deleteList(id: Long): Boolean
+    suspend fun deleteList(idList: List<Long>)
 }
