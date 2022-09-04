@@ -2,9 +2,9 @@ package com.example.ttanslateapp.domain.use_case
 
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.TranslatedWordRepository
-import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.WordAudio
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word.WordAudio
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject

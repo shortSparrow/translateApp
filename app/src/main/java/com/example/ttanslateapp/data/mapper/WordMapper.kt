@@ -1,14 +1,15 @@
 package com.example.ttanslateapp.data.mapper
 
 import com.example.ttanslateapp.data.model.*
-import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamAnswerVariant
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.lists.ListItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
 
 class WordMapper @Inject constructor() {
@@ -81,6 +82,7 @@ class WordMapper @Inject constructor() {
         transcription = wordDb.wordInfo.transcription,
         createdAt = wordDb.wordInfo.createdAt,
         updatedAt = wordDb.wordInfo.updatedAt,
+        wordListId = wordDb.wordInfo.wordListId,
     )
 
     fun modifyWordToWordInfoDb(modifyWord: ModifyWord) = WordInfoDb(
@@ -94,6 +96,7 @@ class WordMapper @Inject constructor() {
         transcription = modifyWord.transcription,
         createdAt = modifyWord.createdAt,
         updatedAt = modifyWord.updatedAt,
+        wordListId = modifyWord.wordListId
     )
 
     fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord = ExamWord(
@@ -117,7 +120,19 @@ class WordMapper @Inject constructor() {
         value = examAnswer.value,
     )
 
-    fun listDbToLocal(listDb:List<ListItemDb>):List<ListItem> = listDb.map { listItemDbToLocal(it) }
+    fun listDbToLocal(listDb: List<ListItemDb>): List<ListItem> =
+        listDb.map { listItemDbToLocal(it) }
+
+    fun listDbToModifyWordListItem(listDb: List<ListItemDb>): List<ModifyWordListItem> =
+        listDb.map { listItemDbToModifyWordListItem(it) }
+
+    fun listItemDbToModifyWordListItem(listItemDb: ListItemDb): ModifyWordListItem =
+        ModifyWordListItem(
+            id = listItemDb.id,
+            title = listItemDb.title,
+            count = listItemDb.count,
+            isSelected = false
+        )
 
     fun listItemDbToLocal(listItemDb: ListItemDb): ListItem = ListItem(
         id = listItemDb.id,
@@ -128,11 +143,12 @@ class WordMapper @Inject constructor() {
         isSelected = false,
     )
 
-    fun listItemLocalToDb(listItem: ListItem):ListItemDb = ListItemDb(
+    fun listItemLocalToDb(listItem: ListItem): ListItemDb = ListItemDb(
         id = listItem.id,
         title = listItem.title,
         count = listItem.count,
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
+
     )
 }

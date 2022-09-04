@@ -2,21 +2,18 @@ package com.example.ttanslateapp.presentation.word_list
 
 import android.app.Application
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 

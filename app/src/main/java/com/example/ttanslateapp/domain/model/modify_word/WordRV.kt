@@ -1,6 +1,6 @@
-package com.example.ttanslateapp.domain.model
+package com.example.ttanslateapp.domain.model.modify_word
 
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
 
 data class WordRV @Inject constructor(

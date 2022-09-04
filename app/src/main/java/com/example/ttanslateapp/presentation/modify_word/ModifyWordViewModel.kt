@@ -2,38 +2,64 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.text.TextUtils
 import android.view.View
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.ValidateResult
-import com.example.ttanslateapp.domain.model.WordAudio
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word.ValidateResult
+import com.example.ttanslateapp.domain.model.modify_word.WordAudio
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
 import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
 import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
+import com.example.ttanslateapp.domain.use_case.lists.AddNewListUseCase
+import com.example.ttanslateapp.domain.use_case.lists.GetListsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @HiltViewModel
 class ModifyWordViewModel @Inject constructor(
     private val modifyWordUseCase: ModifyWordUseCase,
     private val getWordItemUseCase: GetWordItemUseCase,
-    private val deleteWordUseCase: DeleteWordUseCase
+    private val deleteWordUseCase: DeleteWordUseCase,
+    private val getListsUseCase: GetListsUseCase,
+    private val addNewListUseCase: AddNewListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ModifyWordUiState>()
     val uiState: LiveData<ModifyWordUiState> = _uiState
 
+    var composeState by mutableStateOf(ComposeState())
     private var state = ModifyWordState()
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
     fun getAudioFileName(): String? = state.soundFileName
+
+    init {
+        viewModelScope.launch {
+            getListsUseCase.getAllListsForModifyWord().collectLatest {
+                composeState = composeState.copy(
+                    wordLists = it.map {
+                        if (it.id == composeState.wordListInfo?.id) {
+                            it.copy(isSelected = true)
+                        } else it
+                    })
+            }
+        }
+    }
+
+    fun addNewList(title:String) {
+        viewModelScope.launch {
+            addNewListUseCase.addNewList(title)
+        }
+    }
 
     fun resetWordValueError() {
         state = state.copy(wordValueError = null)
@@ -109,6 +135,7 @@ class ModifyWordViewModel @Inject constructor(
             transcription = transcription,
             createdAt = state.createdAt ?: getTimestamp(),
             updatedAt = getTimestamp(),
+            wordListId = composeState.wordListInfo?.id,
         )
 
         viewModelScope.launch {
@@ -120,9 +147,19 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     // wordValue which selected and passed into app as intent
-    fun launchAddMode(wordValue:String)  {
+    fun launchAddMode(wordValue: String) {
         state = state.copy(wordValue = wordValue)
         _uiState.postValue(state.toUiState())
+    }
+
+    fun onSelectList(listId: Long) {
+        val newList = composeState.wordLists.map {
+            if (it.id == listId) it.copy(isSelected = true) else it.copy(isSelected = false)
+        }
+        composeState = composeState.copy(
+            wordLists = newList,
+            wordListInfo = newList.find { it.id == listId }
+        )
     }
 
     fun launchEditMode(wordId: Long) {
@@ -296,6 +333,7 @@ class ModifyWordViewModel @Inject constructor(
     private fun getWordById(id: Long) {
         _uiState.value = ModifyWordUiState.IsWordLoading(true)
         viewModelScope.launch(Dispatchers.IO) {
+
             val word = getWordItemUseCase(id)
             state = state.copy(
                 wordValue = word.value,
@@ -308,8 +346,16 @@ class ModifyWordViewModel @Inject constructor(
                 editableWordId = word.id,
                 langFrom = word.langFrom,
                 createdAt = word.createdAt,
-                priority = word.priority
+                priority = word.priority,
             )
+
+            val res = word.wordListId?.let {
+                getListsUseCase.getListById(10L)
+            }
+            composeState = composeState.copy(
+                wordListInfo = res
+            )
+
             // or you could avoid `withContext` and just use `uiState.postValue()`
             withContext(Dispatchers.Main) {
                 _uiState.value = ModifyWordUiState.IsWordLoading(false)

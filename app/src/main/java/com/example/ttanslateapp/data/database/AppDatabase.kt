@@ -11,7 +11,7 @@ import com.example.ttanslateapp.data.database.migration.migrateFrom2To3
 import com.example.ttanslateapp.data.model.*
 
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         WordInfoDb::class,
         TranslateDb::class,

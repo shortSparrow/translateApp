@@ -5,8 +5,8 @@ import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.data.model.HintDb
 import com.example.ttanslateapp.data.model.TranslateDb
 import com.example.ttanslateapp.data.model.WordInfoDb
-import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import kotlinx.coroutines.flow.Flow
 

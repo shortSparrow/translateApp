@@ -1,7 +1,7 @@
 package com.example.ttanslateapp.presentation.modify_word.adapter.hints
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
 
 @Deprecated("Probably redundant after Differ was added")
 class HintAdapterDiffCallback : DiffUtil.ItemCallback<HintItem>() {

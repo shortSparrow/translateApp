@@ -2,7 +2,7 @@ package com.example.ttanslateapp.data.model
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import com.example.ttanslateapp.domain.model.WordAudio
+import com.example.ttanslateapp.domain.model.modify_word.WordAudio
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_HINTS
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_TRANSLATIONS
@@ -46,6 +46,8 @@ data class WordInfoDb @Inject constructor(
     val transcription: String,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
+
+    @ColumnInfo(name = "word_list_id") val wordListId: Long?,
 )
 
 

@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain.model.modify_word_chip
+package com.example.ttanslateapp.domain.model.modify_word.modify_word_chip
 
 interface Chip {
     val id: Long

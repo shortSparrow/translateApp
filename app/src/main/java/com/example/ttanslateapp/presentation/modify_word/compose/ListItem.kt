@@ -1,9 +1,6 @@
-package com.example.ttanslateapp.presentation.lists.components
+package com.example.ttanslateapp.presentation.modify_word.compose
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,68 +21,57 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.lists.ListItem
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
 import com.example.ttanslateapp.presentation.lists.ListsAction
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ListItem(item: ListItem, onAction: (ListsAction) -> Unit, atLeastOneListSelected: Boolean) {
+fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMark: Boolean) {
+
     val borderColor =
-        if (item.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
+        if (wordListInfo.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
 
     ConstraintLayout(
-        Modifier
-            .padding(bottom = 20.dp)
     ) {
         val (dd, mark) = createRefs()
-        Surface(
+        val modifier = if (withMark) Modifier
+            .constrainAs(dd) {
+                start.linkTo(parent.start, margin = 40.dp)
+                end.linkTo(parent.end, margin = 40.dp)
+                width = Dimension.matchParent
+            }
+        else
             Modifier
-                .constrainAs(dd) {
-                    start.linkTo(parent.start, margin = 40.dp)
-                    end.linkTo(parent.end, margin = 40.dp)
-                    width = Dimension.matchParent
-                },
+
+        Surface(
+            modifier = modifier,
             shape = RoundedCornerShape(10.dp)
         ) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .combinedClickable(
-                        onLongClick = {
-                            onAction(ListsAction.SelectList(item.id))
-                        },
-                        onClick = {
-                            if (atLeastOneListSelected) {
-                                onAction(ListsAction.SelectList(item.id))
-                            }
-                        },
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(
-                            bounded = false,
-                            color = colorResource(id = if (item.isSelected) R.color.blue_2 else R.color.green)
-                        ),
-                    )
+                    .clickable { onItemsPress() }
                     .border(
                         width = 2.dp,
-                        color = borderColor,
+                        color = if (withMark) borderColor else colorResource(id = R.color.blue_2),
                         shape = RoundedCornerShape(10.dp)
                     )
                     .padding(vertical = 16.dp, horizontal = 25.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = item.title,
+                    text = wordListInfo.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
                 Text(
-                    text = item.count.toString(),
+                    text = wordListInfo.count.toString(),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
             }
         }
 
-        if (item.isSelected) {
+        if (wordListInfo.isSelected && withMark) {
             Image(
                 painter = painterResource(
                     id = R.drawable.check_mark,
@@ -110,12 +96,12 @@ fun ListItem(item: ListItem, onAction: (ListsAction) -> Unit, atLeastOneListSele
 @Composable
 fun ComposableListItemPreview() {
     ListItem(
-        item = ListItem(
-            id = 0L,
-            title = "Sport",
-            isSelected = true
+        wordListInfo = ModifyWordListItem(
+            title = "My List",
+            count = 10,
+            id = 1L
         ),
-        onAction = {},
-        atLeastOneListSelected = false,
+        onItemsPress = {},
+        withMark = false,
     )
 }

@@ -1,7 +1,7 @@
-package com.example.ttanslateapp.domain.model
+package com.example.ttanslateapp.domain.model.modify_word
 
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
 
 data class ModifyWord @Inject constructor(
@@ -17,6 +17,7 @@ data class ModifyWord @Inject constructor(
     val transcription: String,
     val createdAt: Long,
     val updatedAt: Long,
+    val wordListId: Long? = null,
 ) {
     companion object {
         const val UNDEFINED_ID = 0L

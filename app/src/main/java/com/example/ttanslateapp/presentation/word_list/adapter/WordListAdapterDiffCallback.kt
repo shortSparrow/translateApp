@@ -1,7 +1,7 @@
 package com.example.ttanslateapp.presentation.word_list.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 
 class WordListAdapterDiffCallback : DiffUtil.ItemCallback<WordRV>() {
     override fun areItemsTheSame(oldItem: WordRV, newItem: WordRV): Boolean {

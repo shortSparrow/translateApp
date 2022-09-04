@@ -6,7 +6,7 @@ import com.example.ttanslateapp.data.model.HintDb
 import com.example.ttanslateapp.data.model.TranslateDb
 import com.example.ttanslateapp.data.model.WordFullDb
 import com.example.ttanslateapp.data.model.WordInfoDb
-import com.example.ttanslateapp.domain.model.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 import kotlinx.coroutines.flow.Flow
 

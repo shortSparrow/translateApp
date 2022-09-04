@@ -6,11 +6,9 @@ import com.example.ttanslateapp.data.model.HintDb
 import com.example.ttanslateapp.data.model.TranslateDb
 import com.example.ttanslateapp.data.model.WordInfoDb
 import com.example.ttanslateapp.domain.TranslatedWordRepository
-import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import com.example.ttanslateapp.domain.model.exam.ExamWord
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

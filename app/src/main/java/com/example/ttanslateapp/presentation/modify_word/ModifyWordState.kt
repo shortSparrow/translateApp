@@ -1,9 +1,11 @@
 package com.example.ttanslateapp.presentation.modify_word
 
 import android.view.View
-import com.example.ttanslateapp.domain.model.ModifyWord
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWord
+import com.example.ttanslateapp.domain.model.lists.ListItem
+import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 
 sealed interface ModifyWordUiState {
     data class IsWordLoading(
@@ -47,7 +49,7 @@ sealed interface ModifyWordUiState {
     data class DeleteHints(val hints: List<HintItem>) : ModifyWordUiState
 
     data class UpdateSoundFile(val name: String?) : ModifyWordUiState
-    data class ToggleOpenedDeleteModel(val isOpened: Boolean): ModifyWordUiState
+    data class ToggleOpenedDeleteModel(val isOpened: Boolean) : ModifyWordUiState
 }
 
 
@@ -71,4 +73,9 @@ data class ModifyWordState(
     val editableWordId: Long? = null,
     val createdAt: Long? = null,
     val isDeleteModalOpen: Boolean = false,
+)
+
+data class ComposeState(
+    val wordListInfo: ModifyWordListItem? = null,
+    val wordLists: List<ModifyWordListItem> = emptyList(),
 )

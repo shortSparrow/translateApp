@@ -2,7 +2,6 @@ package com.example.ttanslateapp.presentation.modify_word
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -11,12 +10,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentModifyWordBinding
-import com.example.ttanslateapp.domain.model.modify_word_chip.HintItem
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
 import com.example.ttanslateapp.presentation.core.ConfirmDialog
@@ -24,9 +24,12 @@ import com.example.ttanslateapp.presentation.core.RecordAudioBottomSheet
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.hints.HintAdapter
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
+import com.example.ttanslateapp.presentation.modify_word.compose.AddToList
 import com.example.ttanslateapp.util.ScrollEditTextInsideScrollView
 import com.example.ttanslateapp.util.setOnTextChange
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import kotlin.properties.Delegates.notNull
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
@@ -61,6 +64,16 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.addToList.setContent {
+            val viewModel = hiltViewModel<ModifyWordViewModel>()
+            val state = viewModel.composeState
+//            Timber.d("wordListInfo: ${viewModel.composeState.wordListInfo}")
+
+            AppCompatTheme {
+                AddToList(state = state, onSelectList = { id: Long -> viewModel.onSelectList(id) })
+            }
+        }
 
         setupView()
         setupObservers()

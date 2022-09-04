@@ -7,11 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.domain.use_case.lists.AddNewListUseCase
 import com.example.ttanslateapp.domain.use_case.lists.DeleteListsUseCase
-import com.example.ttanslateapp.domain.use_case.lists.GetAllListsUseCase
+import com.example.ttanslateapp.domain.use_case.lists.GetListsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -26,7 +25,7 @@ data class ModalListState(
 
 @HiltViewModel
 class ListsViewModel @Inject constructor(
-    private val getAllListsUseCase: GetAllListsUseCase,
+    private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
     private val deleteListsUseCase: DeleteListsUseCase
 ) : ViewModel() {
@@ -35,7 +34,7 @@ class ListsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllListsUseCase.getAllLists().collectLatest { list ->
+            getListsUseCase.getAllLists().collectLatest { list ->
                 state =
                     state.copy(list = list.map {
                         it.copy(
@@ -60,12 +59,6 @@ class ListsViewModel @Inject constructor(
                     addNewListUseCase.addNewList(action.title)
                 }
                 closeModalList()
-            }
-            ListsAction.OpenAddAllListsPopup -> {
-                // delete
-            }
-            ListsAction.GetAllLists -> {
-
             }
             is ListsAction.SelectList -> {
                 val newList = state.list.map { item ->

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ItemTranslateChipBinding
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 import com.example.ttanslateapp.presentation.modify_word.adapter.ModifyWordAdapter
 
 private typealias ClickListener = ModifyWordAdapter.OnItemClickListener<Translate>

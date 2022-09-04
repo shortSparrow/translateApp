@@ -3,7 +3,7 @@ package com.example.ttanslateapp.presentation.exam
 import android.view.View
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 
 sealed interface ExamKnowledgeUiState {
     object LoadedEmptyList : ExamKnowledgeUiState

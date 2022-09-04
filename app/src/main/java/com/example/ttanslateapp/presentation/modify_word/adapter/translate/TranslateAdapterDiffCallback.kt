@@ -1,7 +1,7 @@
 package com.example.ttanslateapp.presentation.modify_word.adapter.translate
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.ttanslateapp.domain.model.modify_word_chip.Translate
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
 
 @Deprecated("Probably redundant after Differ was added")
 class TranslateAdapterDiffCallback : DiffUtil.ItemCallback<Translate>() {

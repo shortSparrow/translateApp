@@ -1,12 +1,11 @@
 package com.example.ttanslateapp.presentation.modify_word.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ttanslateapp.domain.model.modify_word_chip.Chip
+import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Chip
 
 abstract class ModifyWordAdapter<
         T : Chip,

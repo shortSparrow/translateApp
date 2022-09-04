@@ -7,15 +7,13 @@ import android.media.MediaPlayer
 import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.marginBottom
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.ItemWordRvBinding
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import com.example.ttanslateapp.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.example.ttanslateapp.util.getAudioPath
-import com.example.ttanslateapp.util.px
 import timber.log.Timber
 import java.io.IOException
 

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.ttanslateapp.databinding.ItemWordRvBinding
-import com.example.ttanslateapp.domain.model.WordRV
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import javax.inject.Inject
 
 class WordListAdapter @Inject constructor(private val application: Application) :
