@@ -1,4 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- cd - content description  -->
+
+
     <!--WordList fragment -->
     <string name="word_list_empty_dictionary">You don\'t have any words</string>
     <string name="word_list_add_first_word">Add first word</string>
@@ -24,6 +28,14 @@
     <string name="modify_word_toolbar_title">Modify word</string>
     <string name="modify_word_confirm_delete_title">Are you sure you want to delete this word?</string>
     <string name="modify_word_enable_audio_permission">Your audio permission is disabled, please, go to settings and enable one</string>
+    <string name="modify_word_cd_selected_mark">selected mark</string>
+    <string name="modify_word_select_lists_dialog_title">Select List</string>
+    <string name="modify_word_select_lists_dialog_description">"There isn't lists. Press Add New List for adding one"</string>
+    <string name="modify_word_select_lists_dialog_add_list">Add New List</string>
+    <string name="modify_word_select_list">Selected List</string>
+    <string name="modify_word_add_to_list">Add To List</string>
+    <string name="modify_word_dialog_add_new_list_placeholder">Name of the list</string>
+    <string name="modify_word_dialog_add_new_list_title">Add  new List</string>
 
 
     <!-- Exam counter-->
@@ -45,12 +57,23 @@
     <string name="exam_complete_infinity_exam">Congratulations, you complete infinity exam</string>
 
 
-
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Reminder word exam:</string>
     <string name="left_before_next_reminder">Left before next reminder:</string>
     <string name="settings_update_word_success">You successfully updated settings</string>
     <string name="settings_update_word_failed">Error happened</string>
+
+    <!-- Lists Screen  -->
+    <string name="lists_screen_add_new_list_label">Name of new list</string>
+    <string name="lists_screen_title">Lists</string>
+    <string name="lists_screen_cd_deleted_selected_lists">delete selected lists</string>
+    <string name="lists_screen_cd_mark">selected mark</string>
+
+    <!--  Full Lists Screen  -->
+    <string name="full_lists_cd_word_description">description</string>
+    <string name="full_lists_cd_play_sound">Play Sound</string>
+    <string name="full_lists_cd_delete_selected_words">delete selected words</string>
+    <string name="full_lists_title">Full Lists</string>
 
 
     <!--Validation -->
@@ -80,6 +103,8 @@
     <string name="field_is_required">This field is required</string>
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
+    <string name="cd_go_back">Go Back</string>
+    <string name="cd_close_dialog">Close dialog</string>
 
     <string-array name="translate_from_language">
         <item>UA</item>

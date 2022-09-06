@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain.use_case
+package com.example.ttanslateapp.domain.use_case.modify_word
 
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.TranslatedWordRepository

@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.modify_word.WordRV
-import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
-import com.example.ttanslateapp.domain.use_case.GetSearchedWordListUseCase
+import com.example.ttanslateapp.domain.use_case.modify_word.DeleteWordUseCase
+import com.example.ttanslateapp.domain.use_case.word_list.GetSearchedWordListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest

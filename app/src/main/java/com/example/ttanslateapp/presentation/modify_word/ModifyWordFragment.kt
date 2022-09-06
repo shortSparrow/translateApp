@@ -68,10 +68,12 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
         binding.addToList.setContent {
             val viewModel = hiltViewModel<ModifyWordViewModel>()
             val state = viewModel.composeState
-//            Timber.d("wordListInfo: ${viewModel.composeState.wordListInfo}")
 
             AppCompatTheme {
-                AddToList(state = state, onSelectList = { id: Long -> viewModel.onSelectList(id) })
+                AddToList(
+                    state = state,
+                    addNewList = { title: String -> viewModel.addNewList(title) },
+                    onSelectList = { id: Long -> viewModel.onSelectList(id) })
             }
         }
 

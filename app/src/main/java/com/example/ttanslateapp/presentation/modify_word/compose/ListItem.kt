@@ -1,17 +1,17 @@
 package com.example.ttanslateapp.presentation.modify_word.compose
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,9 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.ttanslateapp.R
-import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
-import com.example.ttanslateapp.presentation.lists.ListsAction
 
 @Composable
 fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMark: Boolean) {
@@ -77,7 +75,7 @@ fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMar
                     id = R.drawable.check_mark,
 
                     ),
-                contentDescription = "selected mark",
+                contentDescription = stringResource(id = R.string.modify_word_cd_selected_mark),
                 Modifier
                     .constrainAs(mark) {
                         start.linkTo(dd.end)

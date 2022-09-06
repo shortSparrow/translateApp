@@ -120,21 +120,21 @@ class WordMapper @Inject constructor() {
         value = examAnswer.value,
     )
 
-    fun listDbToLocal(listDb: List<ListItemDb>): List<ListItem> =
-        listDb.map { listItemDbToLocal(it) }
+    fun fullListToLocal(listDb: List<FullListItem>): List<ListItem> =
+        listDb.map { fullListItemToLocal(it) }
 
-    fun listDbToModifyWordListItem(listDb: List<ListItemDb>): List<ModifyWordListItem> =
-        listDb.map { listItemDbToModifyWordListItem(it) }
+    fun fullListToModifyWordListItem(fullListItem: List<FullListItem>): List<ModifyWordListItem> =
+        fullListItem.map { fullListItemToModifyWordListItem(it) }
 
-    fun listItemDbToModifyWordListItem(listItemDb: ListItemDb): ModifyWordListItem =
+    fun fullListItemToModifyWordListItem(fullListItem: FullListItem): ModifyWordListItem =
         ModifyWordListItem(
-            id = listItemDb.id,
-            title = listItemDb.title,
-            count = listItemDb.count,
+            id = fullListItem.id,
+            title = fullListItem.title,
+            count = fullListItem.count,
             isSelected = false
         )
 
-    fun listItemDbToLocal(listItemDb: ListItemDb): ListItem = ListItem(
+    fun fullListItemToLocal(listItemDb: FullListItem): ListItem = ListItem(
         id = listItemDb.id,
         title = listItemDb.title,
         count = listItemDb.count,
@@ -146,7 +146,6 @@ class WordMapper @Inject constructor() {
     fun listItemLocalToDb(listItem: ListItem): ListItemDb = ListItemDb(
         id = listItem.id,
         title = listItem.title,
-        count = listItem.count,
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
 

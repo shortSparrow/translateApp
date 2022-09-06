@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -78,7 +79,7 @@ fun Cross(onClose: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(R.drawable.close),
-            "close popup",
+            stringResource(id = R.string.cd_close_dialog),
             tint = Color.White,
             modifier = Modifier
                 .width(14.dp)

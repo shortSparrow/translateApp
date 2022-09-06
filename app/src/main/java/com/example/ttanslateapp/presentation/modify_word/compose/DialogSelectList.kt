@@ -8,20 +8,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
 import com.example.ttanslateapp.presentation.core.compose.dialog.MyDialog
-import com.example.ttanslateapp.presentation.lists.ModalListState
-import com.example.ttanslateapp.presentation.lists.ModalType
-import com.example.ttanslateapp.presentation.lists.components.DialogAddNewList
 
 @Composable
 fun DialogSelectList(
@@ -30,16 +28,14 @@ fun DialogSelectList(
     onItemsPress: (id: Long) -> Unit,
     onAddNewItemPress: () -> Unit,
 ) {
-
-
     MyDialog(
-        title = "Select list",
+        title = stringResource(id = R.string.modify_word_select_lists_dialog_title),
         onDismissRequest = { onDismissRequest() },
         content = {
             if (list.isEmpty()) {
                 Column(Modifier.fillMaxWidth()) {
                     Text(
-                        text = "There isn't lists. Press Add New List for adding one",
+                        text = stringResource(id = R.string.modify_word_select_lists_dialog_description),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -52,7 +48,7 @@ fun DialogSelectList(
                         },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        Text(text = "Add New List")
+                        Text(text = stringResource(id = R.string.modify_word_select_lists_dialog_add_list))
                     }
                 }
             } else {
@@ -82,24 +78,28 @@ fun ComposablePreviewDialogSelectList() {
         onItemsPress = {},
         onAddNewItemPress = {}
     )
+}
 
-//    DialogSelectList(
-//        list = listOf(
-//            ModifyWordListItem(
-//                title = "My List",
-//                count = 10,
-//                id = 1L,
-//                isSelected = false
-//            ),
-//            ModifyWordListItem(
-//                title = "Sport",
-//                count = 5,
-//                id = 2L,
-//                isSelected = true
-//            )
-//        ),
-//        onDismissRequest = {},
-//        onItemsPress = {}
-//    onAddNewItemPress = {}
-//    )
+@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Composable
+fun ComposablePreviewDialogSelectList2() {
+    DialogSelectList(
+        list = listOf(
+            ModifyWordListItem(
+                title = "My List",
+                count = 10,
+                id = 1L,
+                isSelected = false
+            ),
+            ModifyWordListItem(
+                title = "Sport",
+                count = 5,
+                id = 2L,
+                isSelected = true
+            )
+        ),
+        onDismissRequest = {},
+        onItemsPress = {},
+        onAddNewItemPress = {}
+    )
 }

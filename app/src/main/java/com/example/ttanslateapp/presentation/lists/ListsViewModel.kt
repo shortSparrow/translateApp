@@ -1,13 +1,19 @@
 package com.example.ttanslateapp.presentation.lists
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.use_case.lists.AddNewListUseCase
 import com.example.ttanslateapp.domain.use_case.lists.DeleteListsUseCase
 import com.example.ttanslateapp.domain.use_case.lists.GetListsUseCase
+import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
+import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,7 +33,7 @@ data class ModalListState(
 class ListsViewModel @Inject constructor(
     private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
-    private val deleteListsUseCase: DeleteListsUseCase
+    private val deleteListsUseCase: DeleteListsUseCase,
 ) : ViewModel() {
     var state by mutableStateOf(ListsState())
         private set
@@ -46,7 +52,7 @@ class ListsViewModel @Inject constructor(
         }
     }
 
-    fun closeModalList() {
+    private fun closeModalList() {
         state = state.copy(
             modalList = ModalListState(isOpen = false)
         )
@@ -83,6 +89,14 @@ class ListsViewModel @Inject constructor(
                         title = "Add New List"
                     )
                 )
+            }
+            is ListsAction.OnListItemPress -> {
+                action.navController.navigate(
+                    ListFragmentDirections.actionListFragmentToListFull(listId = action.listId)
+                )
+            }
+            ListsAction.CloseModal -> {
+                closeModalList()
             }
         }
     }

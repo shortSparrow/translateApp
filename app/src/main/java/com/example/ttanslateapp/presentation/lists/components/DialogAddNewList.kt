@@ -7,33 +7,34 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ttanslateapp.R
 import com.example.ttanslateapp.presentation.core.compose.dialog.MyDialog
-import com.example.ttanslateapp.presentation.lists.ListsViewModel
+import com.example.ttanslateapp.presentation.lists.ListsAction
 import com.example.ttanslateapp.presentation.lists.ModalListState
 import com.example.ttanslateapp.presentation.lists.ModalType
 
 @Composable
 fun DialogAddNewList(
     saveNewList: (title: String) -> Unit,
-    modalListState: ModalListState
+    modalListState: ModalListState,
+    onAction: (ListsAction) -> Unit,
 ) {
-    val viewModel = hiltViewModel<ListsViewModel>()
 
     var newListName by remember {
         mutableStateOf(modalListState.initialValue)
     }
 
-    MyDialog(onDismissRequest = { viewModel.closeModalList() }, content = {
+    MyDialog(onDismissRequest = { onAction(ListsAction.CloseModal) }, content = {
         TextField(
             value = newListName,
             onValueChange = {
                 newListName = it
             },
-            label = { Text("Label") }
+            label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) }
         )
         Button(
             onClick = { saveNewList(newListName) },
@@ -41,7 +42,7 @@ fun DialogAddNewList(
                 .padding(top = 20.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            Text(text = "Save")
+            Text(text = stringResource(id = R.string.save))
         }
     }, title = modalListState.title)
 
@@ -51,6 +52,7 @@ fun DialogAddNewList(
 @Composable
 fun ComposablePreview2() {
     DialogAddNewList(
+        onAction = {},
         saveNewList = {},
         modalListState = ModalListState(
             isOpen = true,

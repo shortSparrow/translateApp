@@ -1,5 +1,6 @@
 package com.example.ttanslateapp.presentation.lists
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.presentation.lists.components.DialogAddNewList
@@ -26,7 +28,8 @@ import timber.log.Timber
 @Composable
 fun ListsScreen(
     state: ListsState,
-    onAction: (ListsAction) -> Unit
+    onAction: (ListsAction) -> Unit,
+    getNavController: () -> NavController
 ) {
     val atLeastOneListSelected = state.list.find { it.isSelected } != null
 
@@ -41,7 +44,8 @@ fun ListsScreen(
     if (state.modalList.isOpen) {
         DialogAddNewList(
             saveNewList = ::saveNewList,
-            modalListState = state.modalList
+            modalListState = state.modalList,
+            onAction = onAction
         )
     }
 
@@ -55,7 +59,19 @@ fun ListsScreen(
             )
             LazyColumn(Modifier.padding(top = 20.dp)) {
                 items(items = state.list) { item ->
-                    ListItem(item = item, onAction = onAction, atLeastOneListSelected=atLeastOneListSelected)
+                    ListItem(
+                        item = item,
+                        onAction = onAction,
+                        onItemClick = { listId: Long ->
+                            onAction(
+                                ListsAction.OnListItemPress(
+                                    listId,
+                                    getNavController()
+                                )
+                            )
+                        },
+                        atLeastOneListSelected = atLeastOneListSelected
+                    )
                 }
             }
         }
@@ -112,6 +128,7 @@ fun ComposablePreview() {
                 ),
             )
         ),
-        onAction = {}
+        onAction = {},
+        getNavController = { NavController(null as Context) }
     )
 }

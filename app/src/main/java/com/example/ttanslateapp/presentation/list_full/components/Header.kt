@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.presentation.lists.components
+package com.example.ttanslateapp.presentation.list_full.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,10 @@ import androidx.compose.ui.unit.dp
 import com.example.ttanslateapp.R
 
 @Composable
-fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
+fun Header(
+    isVisibleRemoveFromList: Boolean,
+    onRemoveFromListPress: () -> Unit
+) {
     Column {
         TopAppBar(
             backgroundColor = Color.Transparent,
@@ -28,6 +31,23 @@ fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
             Box(
                 Modifier.fillMaxWidth(),
             ) {
+
+                Box(
+                    modifier = Modifier
+                        .width(30.dp)
+                ) {
+                    if (isVisibleRemoveFromList) {
+                        Icon(
+                            painter = painterResource(R.drawable.back),
+                            stringResource(id = R.string.cd_go_back),
+                            tint = colorResource(R.color.grey),
+                            modifier = Modifier
+                                .width(30.dp)
+                                .fillMaxHeight()
+                                .clickable { onRemoveFromListPress() }
+                        )
+                    }
+                }
 
                 Box(
                     contentAlignment = Alignment.Center,
@@ -40,7 +60,7 @@ fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
                             Text(
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
-                                text = stringResource(id = R.string.lists_screen_title)
+                                text = stringResource(id = R.string.full_lists_title)
                             )
                         }
                     }
@@ -51,15 +71,15 @@ fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
                         .width(30.dp)
                         .align(Alignment.CenterEnd),
                 ) {
-                    if (isVisibleDeleteButton) {
+                    if (isVisibleRemoveFromList) {
                         Icon(
                             painter = painterResource(R.drawable.delete_active),
-                            stringResource(id = R.string.lists_screen_cd_deleted_selected_lists),
+                            stringResource(id = R.string.full_lists_cd_delete_selected_words),
                             tint = colorResource(R.color.red),
                             modifier = Modifier
                                 .width(30.dp)
                                 .fillMaxHeight()
-                                .clickable { onDeletePress() }
+                                .clickable { onRemoveFromListPress() }
                         )
                     }
                 }
@@ -71,6 +91,6 @@ fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
-fun ComposablePreviewHeader() {
-    Header(isVisibleDeleteButton = true, onDeletePress = {})
+fun PreviewHeader() {
+    Header(isVisibleRemoveFromList = true, onRemoveFromListPress = {})
 }

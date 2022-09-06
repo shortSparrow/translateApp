@@ -14,14 +14,15 @@ import com.example.ttanslateapp.domain.model.modify_word.ValidateResult
 import com.example.ttanslateapp.domain.model.modify_word.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.HintItem
 import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
-import com.example.ttanslateapp.domain.use_case.DeleteWordUseCase
-import com.example.ttanslateapp.domain.use_case.GetWordItemUseCase
-import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
+import com.example.ttanslateapp.domain.use_case.modify_word.DeleteWordUseCase
+import com.example.ttanslateapp.domain.use_case.modify_word.GetWordItemUseCase
+import com.example.ttanslateapp.domain.use_case.modify_word.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.lists.AddNewListUseCase
 import com.example.ttanslateapp.domain.use_case.lists.GetListsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -350,7 +351,7 @@ class ModifyWordViewModel @Inject constructor(
             )
 
             val res = word.wordListId?.let {
-                getListsUseCase.getListById(10L)
+                getListsUseCase.getListById(word.wordListId)
             }
             composeState = composeState.copy(
                 wordListInfo = res

@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain.use_case
+package com.example.ttanslateapp.domain.use_case.exam
 
 import com.example.ttanslateapp.data.mapper.WordMapper
 import com.example.ttanslateapp.domain.ExamWordAnswerRepository
@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.random.nextInt

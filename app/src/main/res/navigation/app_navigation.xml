@@ -50,7 +50,20 @@
         android:id="@+id/listFragment"
         android:name="com.example.ttanslateapp.presentation.lists.ListFragment"
         android:label="fragment_list"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_listFragment_to_listFull"
+            app:destination="@id/listFullFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFullFragment"
+        android:name="com.example.ttanslateapp.presentation.list_full.ListFullFragment"
+        android:label="ListFullFragment" >
+        <argument
+            android:name="listId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
 
 
 </navigation>

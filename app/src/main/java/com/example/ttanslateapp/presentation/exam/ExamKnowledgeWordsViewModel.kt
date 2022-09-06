@@ -8,9 +8,9 @@ import com.example.ttanslateapp.domain.TranslatedWordRepository
 import com.example.ttanslateapp.domain.model.exam.ExamWord
 import com.example.ttanslateapp.domain.model.exam.ExamWordStatus
 import com.example.ttanslateapp.domain.model.modify_word.modify_word_chip.Translate
-import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
-import com.example.ttanslateapp.domain.use_case.ModifyWordUseCase
-import com.example.ttanslateapp.domain.use_case.UpdateWordPriorityUseCase
+import com.example.ttanslateapp.domain.use_case.exam.GetExamWordListUseCase
+import com.example.ttanslateapp.domain.use_case.modify_word.ModifyWordUseCase
+import com.example.ttanslateapp.domain.use_case.exam.UpdateWordPriorityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

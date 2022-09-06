@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ttanslateapp.data.workers.AlarmReceiver
-import com.example.ttanslateapp.domain.use_case.GetExamWordListUseCase
+import com.example.ttanslateapp.domain.use_case.exam.GetExamWordListUseCase
 import com.example.ttanslateapp.util.*
 import com.google.gson.Gson
 import kotlinx.coroutines.coroutineScope

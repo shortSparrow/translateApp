@@ -1,8 +1,10 @@
 package com.example.ttanslateapp.data.database
 
 import com.example.ttanslateapp.data.mapper.WordMapper
+import com.example.ttanslateapp.data.model.WordFullDb
 import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
+import com.example.ttanslateapp.domain.model.modify_word.WordRV
 import com.example.ttanslateapp.domain.use_case.lists.ListsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -13,9 +15,17 @@ class ListsRepositoryImpl @Inject constructor(
     private val listsDao: ListsDao,
     private val mapper: WordMapper,
 ) : ListsRepository {
+    override suspend fun searchWordListByListId(
+        query: String,
+        listId: Long
+    ): Flow<List<WordRV>> {
+        return listsDao.searchWordListByListId(query = "%${query}%", listId = listId)
+            .map { mapper.wordListDbToWordList(it) }
+    }
+
     override suspend fun getAllLists(): Flow<List<ListItem>> {
         return listsDao.getAllLists().map { list ->
-            mapper.listDbToLocal(list)
+            mapper.fullListToLocal(list)
         }
     }
 
@@ -24,14 +34,14 @@ class ListsRepositoryImpl @Inject constructor(
         return if (res == null) {
             null
         } else {
-            mapper.listItemDbToModifyWordListItem(res)
+            mapper.fullListItemToModifyWordListItem(res)
         }
     }
 
     override suspend fun getAllListsForModifyWord(): Flow<List<ModifyWordListItem>> {
         return listsDao.getAllLists().map { list ->
             Timber.d("list ${list}")
-            mapper.listDbToModifyWordListItem(list)
+            mapper.fullListToModifyWordListItem(list)
         }
     }
 

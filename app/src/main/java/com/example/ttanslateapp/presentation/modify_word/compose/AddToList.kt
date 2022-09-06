@@ -10,21 +10,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.modify_word.ModifyWordListItem
 import com.example.ttanslateapp.presentation.core.compose.dialog.MyDialog
 import com.example.ttanslateapp.presentation.modify_word.ComposeState
-import com.example.ttanslateapp.presentation.modify_word.ModifyWordViewModel
 
 @Composable
-fun AddToList(state: ComposeState, onSelectList: (id: Long) -> Unit) {
-    val viewModel = hiltViewModel<ModifyWordViewModel>()
-
+fun AddToList(
+    state: ComposeState,
+    addNewList: (title: String) -> Unit,
+    onSelectList: (id: Long) -> Unit
+) {
     var isOpenSelectModal by remember {
         mutableStateOf(false)
     }
@@ -53,20 +54,20 @@ fun AddToList(state: ComposeState, onSelectList: (id: Long) -> Unit) {
                 onValueChange = {
                     newListName = it
                 },
-                label = { Text("Label") }
+                label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) }
             )
             Button(
                 onClick = {
-                    viewModel.addNewList(newListName)
+                    addNewList(newListName)
                     isOpenAddNewListModal = false
                 },
                 Modifier
                     .padding(top = 20.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
-                Text(text = "Save")
+                Text(text = stringResource(id = R.string.save))
             }
-        }, title = "Add New List SS")
+        }, title = stringResource(id = R.string.modify_word_dialog_add_new_list_title))
     }
 
     if (isOpenSelectModal) {
@@ -80,14 +81,14 @@ fun AddToList(state: ComposeState, onSelectList: (id: Long) -> Unit) {
 
     if (state.wordListInfo == null) {
         Text(
-            text = "Add To List",
+            text = stringResource(id = R.string.modify_word_add_to_list),
             color = colorResource(id = R.color.blue_3),
             fontSize = 14.sp,
             modifier = Modifier.clickable { openModal() })
     } else {
         Column() {
             Text(
-                text = "Selected List",
+                text = stringResource(id = R.string.modify_word_select_list),
                 color = colorResource(id = R.color.blue_3),
                 fontSize = 14.sp
             )
@@ -114,6 +115,7 @@ fun ComposablePreviewAddToList() {
             ),
             wordLists = emptyList()
         ),
+        addNewList = {},
         onSelectList = {}
     )
 }

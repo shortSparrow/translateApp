@@ -1,4 +1,4 @@
-package com.example.ttanslateapp.domain.use_case
+package com.example.ttanslateapp.domain.use_case.word_list
 
 import com.example.ttanslateapp.domain.TranslatedWordRepository
 import javax.inject.Inject

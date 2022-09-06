@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +29,12 @@ import com.example.ttanslateapp.presentation.lists.ListsAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ListItem(item: ListItem, onAction: (ListsAction) -> Unit, atLeastOneListSelected: Boolean) {
+fun ListItem(
+    item: ListItem,
+    onAction: (ListsAction) -> Unit,
+    onItemClick: (listId: Long) -> Unit,
+    atLeastOneListSelected: Boolean
+) {
     val borderColor =
         if (item.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
 
@@ -56,6 +62,8 @@ fun ListItem(item: ListItem, onAction: (ListsAction) -> Unit, atLeastOneListSele
                         onClick = {
                             if (atLeastOneListSelected) {
                                 onAction(ListsAction.SelectList(item.id))
+                            } else {
+                                onItemClick(item.id)
                             }
                         },
                         interactionSource = remember { MutableInteractionSource() },
@@ -91,7 +99,7 @@ fun ListItem(item: ListItem, onAction: (ListsAction) -> Unit, atLeastOneListSele
                     id = R.drawable.check_mark,
 
                     ),
-                contentDescription = "selected mark",
+                contentDescription = stringResource(id = R.string.lists_screen_cd_mark),
                 Modifier
                     .constrainAs(mark) {
                         start.linkTo(dd.end)
@@ -115,6 +123,7 @@ fun ComposableListItemPreview() {
             title = "Sport",
             isSelected = true
         ),
+        onItemClick = {},
         onAction = {},
         atLeastOneListSelected = false,
     )
