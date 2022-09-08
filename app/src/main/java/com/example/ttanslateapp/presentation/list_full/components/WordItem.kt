@@ -53,8 +53,8 @@ fun WordItem(
     Column() {
         Card(
             modifier = Modifier
-                .padding(18.dp) // TODO remove
-                .clickable { },
+                .padding(8.dp) // TODO remove
+                .clickable { onAction(ListFullAction.PressOnWord(wordId = word.id)) },
             elevation = 3.dp,
 
             ) {
@@ -98,7 +98,6 @@ fun WordItem(
                                         .fillMaxSize()
                                         .padding(top = dimensionResource(id = R.dimen.small_gutter))
                                         .clickable {
-
                                             onAction(
                                                 ListFullAction.PlayAudio(
                                                     onStartListener = { isAudioPlay = true },

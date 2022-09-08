@@ -3,6 +3,8 @@ package com.example.ttanslateapp.presentation.list_full
 import android.os.Bundle
 import android.view.View
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ttanslateapp.databinding.FragmentListBinding
 import com.example.ttanslateapp.databinding.FragmentListFullBinding
@@ -26,8 +28,13 @@ class ListFullFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.listFull.setContent {
             val viewModel = hiltViewModel<ListsFullViewModel>()
+            if (!viewModel.initialMount) {
+                viewModel.setNavController(findNavController())
+                viewModel.onAction(ListFullAction.InitialLoadData(args.listId))
+                viewModel.initialMount = true
+            }
+
             val state = viewModel.state
-            viewModel.onAction(ListFullAction.InitialLoadData(args.listId))
 
             AppCompatTheme {
                 ListFullScreen(state = state, onAction = viewModel::onAction)

@@ -16,11 +16,12 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.presentation.list_full.ListFullAction
 
 @Composable
 fun Header(
     isVisibleRemoveFromList: Boolean,
-    onRemoveFromListPress: () -> Unit
+    onAction: (ListFullAction) -> Unit
 ) {
     Column {
         TopAppBar(
@@ -36,17 +37,15 @@ fun Header(
                     modifier = Modifier
                         .width(30.dp)
                 ) {
-                    if (isVisibleRemoveFromList) {
-                        Icon(
-                            painter = painterResource(R.drawable.back),
-                            stringResource(id = R.string.cd_go_back),
-                            tint = colorResource(R.color.grey),
-                            modifier = Modifier
-                                .width(30.dp)
-                                .fillMaxHeight()
-                                .clickable { onRemoveFromListPress() }
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(R.drawable.back),
+                        stringResource(id = R.string.cd_go_back),
+                        tint = colorResource(R.color.grey),
+                        modifier = Modifier
+                            .width(30.dp)
+                            .fillMaxHeight()
+                            .clickable { onAction(ListFullAction.GoBack) }
+                    )
                 }
 
                 Box(
@@ -79,7 +78,9 @@ fun Header(
                             modifier = Modifier
                                 .width(30.dp)
                                 .fillMaxHeight()
-                                .clickable { onRemoveFromListPress() }
+                                .clickable {
+                                    //TODO
+                                }
                         )
                     }
                 }
@@ -92,5 +93,5 @@ fun Header(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewHeader() {
-    Header(isVisibleRemoveFromList = true, onRemoveFromListPress = {})
+    Header(isVisibleRemoveFromList = true, onAction = {})
 }

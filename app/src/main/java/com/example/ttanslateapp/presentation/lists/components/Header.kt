@@ -2,11 +2,13 @@ package com.example.ttanslateapp.presentation.lists.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -16,9 +18,17 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ttanslateapp.R
+import com.example.ttanslateapp.domain.model.lists.ListItem
+import com.example.ttanslateapp.presentation.lists.ListsAction
+import com.example.ttanslateapp.presentation.lists.ModalType
 
 @Composable
-fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
+fun Header(
+    selectedLists: List<ListItem>?,
+    onAction: (ListsAction) -> Unit,
+) {
+    val isVisibleDeleteButton = selectedLists != null
+
     Column {
         TopAppBar(
             backgroundColor = Color.Transparent,
@@ -48,19 +58,67 @@ fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
 
                 Box(
                     Modifier
-                        .width(30.dp)
                         .align(Alignment.CenterEnd),
                 ) {
-                    if (isVisibleDeleteButton) {
-                        Icon(
-                            painter = painterResource(R.drawable.delete_active),
-                            stringResource(id = R.string.lists_screen_cd_deleted_selected_lists),
-                            tint = colorResource(R.color.red),
-                            modifier = Modifier
-                                .width(30.dp)
-                                .fillMaxHeight()
-                                .clickable { onDeletePress() }
-                        )
+                    Row {
+                        if (selectedLists?.size == 1) {
+                            Surface(
+                                Modifier
+                                    .width(45.dp)
+                                    .height(45.dp)
+                                    .align(Alignment.CenterVertically),
+                                shape = CircleShape,
+                                color = Color.Transparent
+                            ) {
+                                Box(
+                                    Modifier
+                                        .clickable {
+                                            onAction(
+                                                ListsAction.OpenModalRenameList(
+                                                    currentName=selectedLists[0].title,
+                                                    listId=selectedLists[0].id
+                                                )
+                                            )
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.edit),
+                                        stringResource(id = R.string.lists_screen_cd_rename_selected_list),
+                                        tint = colorResource(R.color.grey),
+                                        modifier = Modifier
+                                            .width(25.dp)
+                                            .height(25.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                        if (isVisibleDeleteButton) {
+                            Surface(
+                                Modifier
+                                    .width(45.dp)
+                                    .height(45.dp)
+                                    .align(Alignment.CenterVertically),
+                                shape = CircleShape,
+                                color = Color.Transparent
+                            ) {
+                                Box(
+                                    Modifier
+                                        .clickable { onAction(ListsAction.DeletedSelectedLists) },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.delete_active),
+                                        stringResource(id = R.string.lists_screen_cd_deleted_selected_lists),
+                                        tint = colorResource(R.color.red),
+                                        modifier = Modifier
+                                            .width(30.dp)
+                                            .height(30.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -72,5 +130,7 @@ fun Header(isVisibleDeleteButton: Boolean, onDeletePress: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun ComposablePreviewHeader() {
-    Header(isVisibleDeleteButton = true, onDeletePress = {})
+    Header(
+        selectedLists = listOf(ListItem(id = 0L, count = 1, title = "sport", isSelected = true)),
+        onAction = {})
 }

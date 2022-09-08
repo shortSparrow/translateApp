@@ -148,9 +148,22 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     // wordValue which selected and passed into app as intent
-    fun launchAddMode(wordValue: String) {
+    fun launchAddMode(wordValue: String, listId: Long) {
         state = state.copy(wordValue = wordValue)
         _uiState.postValue(state.toUiState())
+        if (listId != -1L) {
+            prefillListIdFromArgs(listId)
+        }
+    }
+
+
+    private fun prefillListIdFromArgs(listId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val res =  getListsUseCase.getListById(listId)
+            composeState = composeState.copy(
+                wordListInfo = res
+            )
+        }
     }
 
     fun onSelectList(listId: Long) {

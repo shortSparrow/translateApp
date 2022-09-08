@@ -19,13 +19,20 @@ import com.example.ttanslateapp.presentation.lists.ModalType
 
 @Composable
 fun DialogAddNewList(
-    saveNewList: (title: String) -> Unit,
     modalListState: ModalListState,
     onAction: (ListsAction) -> Unit,
 ) {
 
     var newListName by remember {
         mutableStateOf(modalListState.initialValue)
+    }
+
+    fun handleOnClick() {
+        when (modalListState.type) {
+            ModalType.NEW -> onAction(ListsAction.AddNewList(newListName))
+            ModalType.RENAME -> onAction(ListsAction.RenameList(newListName))
+            else -> {}
+        }
     }
 
     MyDialog(onDismissRequest = { onAction(ListsAction.CloseModal) }, content = {
@@ -37,7 +44,7 @@ fun DialogAddNewList(
             label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) }
         )
         Button(
-            onClick = { saveNewList(newListName) },
+            onClick = { handleOnClick() },
             Modifier
                 .padding(top = 20.dp)
                 .align(Alignment.CenterHorizontally)
@@ -53,7 +60,6 @@ fun DialogAddNewList(
 fun ComposablePreview2() {
     DialogAddNewList(
         onAction = {},
-        saveNewList = {},
         modalListState = ModalListState(
             isOpen = true,
             type = ModalType.NEW,

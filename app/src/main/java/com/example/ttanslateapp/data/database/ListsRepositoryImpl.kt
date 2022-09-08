@@ -40,7 +40,6 @@ class ListsRepositoryImpl @Inject constructor(
 
     override suspend fun getAllListsForModifyWord(): Flow<List<ModifyWordListItem>> {
         return listsDao.getAllLists().map { list ->
-            Timber.d("list ${list}")
             mapper.fullListToModifyWordListItem(list)
         }
     }
@@ -51,7 +50,8 @@ class ListsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun renameList(title: String, id: Long): Boolean {
-        TODO("Not yet implemented")
+        val id = listsDao.renameList(title = title, id = id).toLong()
+        return id != UNDEFINED_ID
     }
 
     override suspend fun deleteList(idList: List<Long>) {
