@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.presentation.exam.ExamReminder
 import com.example.ttanslateapp.presentation.modify_word.ModifyWordModes
@@ -16,6 +16,7 @@ import com.example.ttanslateapp.presentation.word_list.WordListFragmentDirection
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -61,7 +63,38 @@ class MainActivity : AppCompatActivity() {
 
         bottomBar = findViewById(R.id.bottom_app_bar)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+        val navigationList = mutableMapOf(
+            "Home" to listOf("WordListFragment", "ModifyWordFragment"),
+            "Exam" to listOf("ExamKnowledgeWordsFragment"),
+            "Lists" to listOf("ListFragment", "ListFullFragment"),
+            "Settings" to listOf("SettingsFragment"),
+        )
+
+        bottomBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.wordListFragment -> {
+                    navController.navigate(R.id.wordListFragment)
+                    true
+                }
+                R.id.examKnowledgeWordsFragment -> {
+                    navController.navigate(R.id.examKnowledgeWordsFragment)
+                    true
+                }
+                R.id.listFragment -> {
+                    navController.navigate(R.id.listFragment)
+                    true
+                }
+                R.id.settingsFragment -> {
+                    navController.navigate(R.id.settingsFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            Timber.d("destination: ${destination.id} ${destination.label}")
+
             when (destination.id) {
                 R.id.wordListFragment -> showBottomNav()
                 R.id.examKnowledgeWordsFragment -> showBottomNav()
@@ -69,16 +102,33 @@ class MainActivity : AppCompatActivity() {
                 R.id.listFragment -> showBottomNav()
                 else -> hideBottomNav()
             }
+
+            bottomBar.menu.forEach { item ->
+                Timber.d("TITLE: ${item.title} ${navigationList[item.title]} ${destination.label}")
+                if (navigationList[item.title]?.any { it == destination.label } == true) {
+                    item.isChecked = true
+                }
+            }
         }
 
-        // setup navigation from push notification
-        val navGraph = navController.navInflater.inflate(R.navigation.app_navigation)
-        val destination = intent
-            .getIntExtra("destination", R.id.wordListFragment)
+        bottomBar.setOnItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.wordListFragment -> {
+                    true
+                }
+                R.id.examKnowledgeWordsFragment -> {
+                    true
+                }
+                R.id.listFragment -> {
+                    true
+                }
+                R.id.settingsFragment -> {
+                    true
+                }
+                else -> false
+            }
+        }
 
-        navGraph.setStartDestination(destination)
-        navController.graph = navGraph
-        bottomBar.setupWithNavController(navController)
     }
 
     private fun showBottomNav() {
