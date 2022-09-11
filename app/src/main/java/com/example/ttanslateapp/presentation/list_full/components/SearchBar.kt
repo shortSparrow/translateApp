@@ -35,7 +35,6 @@ fun SearchBar(
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(1.dp, Color.Gray),
         ) {
-
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = text,

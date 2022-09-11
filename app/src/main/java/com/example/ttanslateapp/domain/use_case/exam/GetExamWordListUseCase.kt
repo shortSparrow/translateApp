@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -33,43 +34,57 @@ class GetExamWordListUseCase @Inject constructor(
 
     suspend fun searchWordListSize() = coroutineScope { repository.searchWordListSize() }
 
-    suspend fun loadNextPage(): List<ExamWord>? {
+    suspend fun loadNextPage(listId: Long?): List<ExamWord>? {
         if (isLoadingNextPage) return null
-        return invoke()
+        return invoke(listId = listId)
     }
 
-    private fun loadTotalCount() {
+    private fun loadTotalCount(listId: Long?) {
         CoroutineScope(Dispatchers.IO).launch {
-            totalCount = repository.getExamWordListSize()
+            totalCount = if (listId == null) {
+                repository.getExamWordListSize()
+            } else {
+                repository.getExamWordListSizeForOneList(listId)
+            }
+
         }
     }
 
-    suspend operator fun invoke(isInitialLoad: Boolean = false) = coroutineScope {
+    suspend operator fun invoke(isInitialLoad: Boolean = false, listId: Long?) = coroutineScope {
         isLoadingNextPage = true
         val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
         getExamWordListCurrentPage += 1
 
         if (isInitialLoad) {
-            loadTotalCount()
+            loadTotalCount(listId)
         }
         val answerList = getExamAnswerVariants(EXAM_WORD_LIST_COUNT)
 
-        repository.getExamWordList(
-            count = EXAM_WORD_LIST_COUNT,
-            skip = skip
-        )
-            .mapIndexed { index, examWord ->
-                val from = index * EXAM_WORD_ANSWER_LIST_SIZE
-                val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
+        val request = if (listId != null) {
+            repository.getExamWordListFromOneList(
+                count = EXAM_WORD_LIST_COUNT,
+                skip = skip,
+                listId = listId
+            )
+        } else {
+            repository.getExamWordList(
+                count = EXAM_WORD_LIST_COUNT,
+                skip = skip,
+            )
+        }
 
-                val randomWordTranslateIndex =
-                    Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
-                examWord.copy(
-                    answerVariants = answerList.slice(from until to)// FIXME ME FROM TO
-                        .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
-                        .shuffled()
-                )
-            }
+        request.mapIndexed { index, examWord ->
+            val from = index * EXAM_WORD_ANSWER_LIST_SIZE
+            val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
+
+            val randomWordTranslateIndex =
+                Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
+            examWord.copy(
+                answerVariants = answerList.slice(from until to)// FIXME ME FROM TO
+                    .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
+                    .shuffled()
+            )
+        }
             .apply { isLoadingNextPage = false }
     }
 

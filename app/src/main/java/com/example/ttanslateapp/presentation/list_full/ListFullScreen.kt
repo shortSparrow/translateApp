@@ -7,14 +7,13 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,7 +43,6 @@ fun ListFullScreen(
 //        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 //    }
 
-
     Scaffold(
         floatingActionButton = {
             if (state.wordList.isNotEmpty() && state.loadingStatusWordList == LoadingState.SUCCESS) {
@@ -56,10 +54,7 @@ fun ListFullScreen(
         }
     ) {
         Column() {
-            Header(
-                isVisibleRemoveFromList = false,
-                onAction = onAction
-            )
+            Header(onAction = onAction)
 
             if (state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
                 Column(

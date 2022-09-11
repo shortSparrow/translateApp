@@ -36,6 +36,7 @@
             android:defaultValue="-1L"
             app:argType="long" />
     </fragment>
+
     <fragment
         android:id="@+id/examKnowledgeWordsFragment"
         android:name="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment"
@@ -44,25 +45,33 @@
         <action
             android:id="@+id/action_examKnowledgeWordsFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment" />
+        <argument
+            android:name="listId"
+            android:defaultValue="-1L"
+            app:argType="long" />
     </fragment>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.ttanslateapp.presentation.settings.SettingsFragment"
-        android:label="fragment_settings"
+        android:label="FragmentSettings"
         tools:layout="@layout/fragment_settings" />
+
     <fragment
         android:id="@+id/listFragment"
         android:name="com.example.ttanslateapp.presentation.lists.ListFragment"
-        android:label="fragment_list"
+        android:label="FragmentList"
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_listFull"
             app:destination="@id/listFullFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/listFullFragment"
         android:name="com.example.ttanslateapp.presentation.list_full.ListFullFragment"
-        android:label="ListFullFragment">
+        android:label="ListFullFragment"
+        tools:layout="@layout/fragment_list_full">
         <argument
             android:name="listId"
             android:defaultValue="-1L"
@@ -70,7 +79,9 @@
         <action
             android:id="@+id/action_listFullFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment" />
+        <action
+            android:id="@+id/action_listFullFragment_to_examKnowledgeWordsFragment"
+            app:destination="@id/examKnowledgeWordsFragment" />
     </fragment>
-
 
 </navigation>

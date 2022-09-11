@@ -92,6 +92,7 @@ data class ExamKnowledgeState(
     val mode: ExamMode = ExamMode.DAILY_MODE,
     val isModeDialogOpen: Boolean = false,
     val isExamEndDialogOpen: Boolean = false,
+    val listId: Long? = null, // when show words only from this list
 )
 
 enum class ExamMode {

@@ -122,7 +122,13 @@ class ListsFullViewModel @Inject constructor(
             is ListFullAction.SearchWord -> {
                 searchDebounced(action.query)
             }
-            ListFullAction.TakeExam -> TODO()
+            ListFullAction.TakeExam -> {
+                navController?.navigate(
+                    ListFullFragmentDirections.actionListFullFragmentToExamKnowledgeWordsFragment(
+                        listId = state.listId
+                    )
+                )
+            }
             is ListFullAction.PressOnWord -> {
                 navController?.navigate(
                     ListFullFragmentDirections.actionListFullFragmentToModifyWordFragment(

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.databinding.FragmentExamKnowledgeWordsBinding
@@ -37,6 +38,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     override val bindingInflater: BindingInflater<FragmentExamKnowledgeWordsBinding>
         get() = FragmentExamKnowledgeWordsBinding::inflate
 
+    private val args by navArgs<ExamKnowledgeWordsFragmentArgs>()
     private val viewModel by viewModels<ExamKnowledgeWordsViewModel>()
     private var bottomBar: BottomNavigationView? = null
 
@@ -66,8 +68,8 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // generateWordsList on every enter on screen. On rotation noc invoked. Because we change configChanges in Manifest
-        viewModel.generateWordsList()
+        // generateWordsList on every enter on screen. On rotation not invoked. Because we change configChanges in Manifest
+        viewModel.generateWordsList(listId = if (args.listId == -1L) null else args.listId)
         bottomBar = requireActivity().findViewById(R.id.bottom_app_bar)
         setupAdapter()
         observeLiveDate()
@@ -97,7 +99,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                             val viewableHeight = r.bottom - r.top
 
                             val bottomBarHeight = bottomBar?.height ?: 0
-                            container.scrollTo(0, binding.examCheckAnswer.bottom - viewableHeight + bottomBarHeight + 20)
+                            container.scrollTo(
+                                0,
+                                binding.examCheckAnswer.bottom - viewableHeight + bottomBarHeight + 20
+                            )
                             examWordInput.requestFocus()
 
                             root.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -489,7 +494,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         showHintsContainer.removeAllViews()
 
         if (currentWord.hints.isEmpty() || currentWord.givenAnswer != null) {
-            setExpandedHints(false, false)
+            setExpandedHints(isExpanded = false, allHintsIsShown = false)
             showHintsLabel.visibility = View.GONE
             return@with
         }

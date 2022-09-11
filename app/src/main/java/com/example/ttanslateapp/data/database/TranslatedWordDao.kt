@@ -14,14 +14,22 @@ import kotlinx.coroutines.flow.Flow
 interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :query ORDER BY created_at DESC")
     fun searchWordList(query: String): Flow<List<WordFullDb>>
+
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
     fun searchWordListSize(): Flow<Int>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
     suspend fun getExamWordList(count: Int, skip: Int): List<WordFullDb>
 
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id=:listId ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
+    suspend fun getExamWordListFromOneList(count: Int, skip: Int, listId: Long): List<WordFullDb>
+
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
     suspend fun getExamWordListSize(): Int
+
+    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME  WHERE word_list_id=:listId")
+    suspend fun getExamWordListSizeForOneList(listId: Long): Int
+
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb

@@ -27,8 +27,25 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             .map { mapper.wordFullDbToExamWord(it) }
     }
 
+    override suspend fun getExamWordListFromOneList(
+        count: Int,
+        skip: Int,
+        listId: Long
+    ): List<ExamWord> {
+        return translatedWordDao.getExamWordListFromOneList(
+            count = count,
+            skip = skip,
+            listId = listId
+        )
+            .map { mapper.wordFullDbToExamWord(it) }
+    }
+
     override suspend fun getExamWordListSize(): Int {
         return translatedWordDao.getExamWordListSize()
+    }
+
+    override suspend fun getExamWordListSizeForOneList(listId: Long): Int {
+        return translatedWordDao.getExamWordListSizeForOneList(listId = listId)
     }
 
     override suspend fun searchWordList(query: String): Flow<List<WordRV>> {

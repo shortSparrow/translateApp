@@ -2,6 +2,7 @@ package com.example.ttanslateapp.presentation.list_full.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -20,7 +21,6 @@ import com.example.ttanslateapp.presentation.list_full.ListFullAction
 
 @Composable
 fun Header(
-    isVisibleRemoveFromList: Boolean,
     onAction: (ListFullAction) -> Unit
 ) {
     Column {
@@ -33,20 +33,29 @@ fun Header(
                 Modifier.fillMaxWidth(),
             ) {
 
-                Box(
-                    modifier = Modifier
-                        .width(30.dp)
+                Surface(
+                    Modifier
+                        .width(45.dp)
+                        .height(45.dp)
+                        .align(Alignment.CenterStart),
+                    shape = CircleShape,
+                    color = Color.Transparent
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.back),
-                        stringResource(id = R.string.cd_go_back),
-                        tint = colorResource(R.color.grey),
-                        modifier = Modifier
-                            .width(30.dp)
-                            .fillMaxHeight()
-                            .clickable { onAction(ListFullAction.GoBack) }
-                    )
+                    Box(
+                        Modifier.clickable { onAction(ListFullAction.GoBack) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.back),
+                            stringResource(id = R.string.cd_go_back),
+                            tint = colorResource(R.color.grey),
+                            modifier = Modifier
+                                .width(30.dp)
+                                .height(30.dp)
+                        )
+                    }
                 }
+
 
                 Box(
                     contentAlignment = Alignment.Center,
@@ -65,25 +74,31 @@ fun Header(
                     }
                 }
 
-                Box(
+                // TODO make exam logic
+                Surface(
                     Modifier
-                        .width(30.dp)
+                        .width(45.dp)
+                        .height(45.dp)
                         .align(Alignment.CenterEnd),
+                    shape = CircleShape,
+                    color = Color.Transparent
                 ) {
-                    if (isVisibleRemoveFromList) {
+                    Box(
+                        Modifier.clickable {onAction(ListFullAction.TakeExam)},
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.delete_active),
-                            stringResource(id = R.string.full_lists_cd_delete_selected_words),
-                            tint = colorResource(R.color.red),
+                            painter = painterResource(R.drawable.exam),
+                            stringResource(id = R.string.lists_screen_cd_rename_selected_list),
+                            tint = colorResource(R.color.grey),
                             modifier = Modifier
-                                .width(30.dp)
-                                .fillMaxHeight()
-                                .clickable {
-                                    //TODO
-                                }
+                                .width(25.dp)
+                                .height(25.dp)
                         )
                     }
                 }
+
+
             }
         }
     }
@@ -93,5 +108,5 @@ fun Header(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewHeader() {
-    Header(isVisibleRemoveFromList = true, onAction = {})
+    Header(onAction = {})
 }

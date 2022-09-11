@@ -13,6 +13,7 @@ import com.example.ttanslateapp.domain.use_case.modify_word.ModifyWordUseCase
 import com.example.ttanslateapp.domain.use_case.exam.UpdateWordPriorityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -99,8 +100,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     fun changeExamMode(mode: ExamMode) {
         // reset state and set new mode
         getExamWordListUseCase.resetExamWordListCurrentPage()
-        state = ExamKnowledgeState().copy(mode = mode)
-        generateWordsList()
+        state = ExamKnowledgeState().copy(mode = mode, listId = state.listId)
+        generateWordsList(state.listId)
     }
 
     fun toggleOpenModeDialog(isOpened: Boolean) {
@@ -116,7 +117,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         if (state.mode == ExamMode.DAILY_MODE || state.examWordList.size - position > 5) return
         cb()
         viewModelScope.launch {
-            val list = getExamWordListUseCase.loadNextPage() ?: return@launch
+            val list = getExamWordListUseCase.loadNextPage(state.listId) ?: return@launch
 
             state = state.copy(
                 examWordList = state.examWordList.plus(list),
@@ -128,10 +129,13 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-    fun generateWordsList() {
-        state = state.copy(isLoading = true)
+    fun generateWordsList(listId: Long?) {
+        state = state.copy(isLoading = true, listId = listId)
         viewModelScope.launch {
-            val list = getExamWordListUseCase(isInitialLoad = true).mapIndexed { index, examWord ->
+            val list = getExamWordListUseCase(
+                isInitialLoad = true,
+                listId = listId
+            ).mapIndexed { index, examWord ->
                 if (index == 0) examWord.copy(
                     status = ExamWordStatus.IN_PROCESS,
                     isActive = true

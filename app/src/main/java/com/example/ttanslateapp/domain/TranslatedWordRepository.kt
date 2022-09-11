@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface TranslatedWordRepository : InMemoryStorage {
     suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
+    suspend fun getExamWordListFromOneList(count: Int, skip: Int, listId: Long): List<ExamWord>
     suspend fun getExamWordListSize(): Int
+    suspend fun getExamWordListSizeForOneList(listId: Long):Int
 
     suspend fun searchWordList(query: String): Flow<List<WordRV>>
     suspend fun searchWordListSize(): Flow<Int>
