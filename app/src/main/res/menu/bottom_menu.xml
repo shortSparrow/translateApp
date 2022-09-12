@@ -11,7 +11,7 @@
             android:title="Exam" />
         <item
             android:id="@+id/listFragment"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/list"
             android:title="Lists" />
         <item
             android:id="@+id/settingsFragment"
