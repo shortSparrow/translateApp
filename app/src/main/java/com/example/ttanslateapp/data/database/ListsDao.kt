@@ -8,7 +8,6 @@ import com.example.ttanslateapp.data.model.FullListItem
 import com.example.ttanslateapp.data.model.ListItemDb
 import com.example.ttanslateapp.data.model.WordFullDb
 import com.example.ttanslateapp.util.TRANSLATED_WORDS_LISTS
-import com.example.ttanslateapp.util.TRANSLATED_WORDS_TABLE_NAME
 import kotlinx.coroutines.flow.Flow
 
 @Dao

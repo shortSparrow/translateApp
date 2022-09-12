@@ -9,7 +9,6 @@ import com.example.ttanslateapp.util.TRANSLATED_WORDS_LISTS
 data class ListItemDb(
     @PrimaryKey(autoGenerate = true) val id: Long = DEFAULT_ID,
     val title: String,
-//    val count: Int = 0,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
 ) {

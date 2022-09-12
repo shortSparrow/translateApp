@@ -8,6 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.ttanslateapp.data.database.migration.migrateFrom1To2
 import com.example.ttanslateapp.data.database.migration.migrateFrom2To3
+import com.example.ttanslateapp.data.database.migration.migrateFrom3To4
 import com.example.ttanslateapp.data.model.*
 
 @Database(
@@ -44,6 +45,13 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
 
+        private val migration_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                migrateFrom3To4(database)
+            }
+        }
+
+
         fun getInstance(application: Application): AppDatabase {
             INSTANCE?.let {
                 return it
@@ -59,7 +67,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     DB_NAME
                 ).fallbackToDestructiveMigration()
-                    .addMigrations(migration_1_2, migration_2_3)
+                    .addMigrations(migration_1_2, migration_2_3, migration_3_4)
                     .build()
 
                 INSTANCE = db
