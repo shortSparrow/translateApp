@@ -54,13 +54,13 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.ttanslateapp.presentation.settings.SettingsFragment"
-        android:label="FragmentSettings"
+        android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/listFragment"
         android:name="com.example.ttanslateapp.presentation.lists.ListFragment"
-        android:label="FragmentList"
+        android:label="ListFragment"
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_listFull"
