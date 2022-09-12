@@ -1,7 +1,9 @@
 package com.example.ttanslateapp.presentation.lists
 
 import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +11,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -20,12 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.lists.ListItem
+import com.example.ttanslateapp.presentation.core.compose.dialog.ConfirmDialog
 import com.example.ttanslateapp.presentation.core.compose.floating.AddButton
 import com.example.ttanslateapp.presentation.list_full.LoadingState
 import com.example.ttanslateapp.presentation.lists.components.DialogAddNewList
 import com.example.ttanslateapp.presentation.lists.components.Header
 import com.example.ttanslateapp.presentation.lists.components.ListItem
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListsScreen(
     state: ListsState,
@@ -41,6 +46,13 @@ fun ListsScreen(
             modalListState = state.modalList,
             onAction = onAction
         )
+    }
+
+    if (state.isOpenDeleteListModal) {
+        ConfirmDialog(
+            question = stringResource(id = R.string.lists_screen_confirm_delete_list),
+            onAcceptClick = { onAction(ListsAction.ConfirmDeleteSelectedLists) },
+            onDeclineClick = { onAction(ListsAction.DeclineDeleteSelectedLists) })
     }
 
     Scaffold(
@@ -91,21 +103,25 @@ fun ListsScreen(
             }
 
             if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {
-                LazyColumn(Modifier.padding(top = 20.dp)) {
-                    items(items = state.list) { item ->
-                        ListItem(
-                            item = item,
-                            onAction = onAction,
-                            onItemClick = { listId: Long ->
-                                onAction(
-                                    ListsAction.OnListItemPress(
-                                        listId,
-                                        getNavController()
+                CompositionLocalProvider(
+                    LocalOverscrollConfiguration provides null
+                ) {
+                    LazyColumn(contentPadding = PaddingValues(top = 20.dp, bottom = 60.dp)) {
+                        items(items = state.list) { item ->
+                            ListItem(
+                                item = item,
+                                onAction = onAction,
+                                onItemClick = { listId: Long ->
+                                    onAction(
+                                        ListsAction.OnListItemPress(
+                                            listId,
+                                            getNavController()
+                                        )
                                     )
-                                )
-                            },
-                            atLeastOneListSelected = atLeastOneListSelected
-                        )
+                                },
+                                atLeastOneListSelected = atLeastOneListSelected
+                            )
+                        }
                     }
                 }
             }

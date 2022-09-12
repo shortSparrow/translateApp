@@ -48,7 +48,10 @@ fun AddToList(
 
 
     if (isOpenAddNewListModal) {
-        MyDialog(onDismissRequest = { isOpenAddNewListModal = false }, content = {
+        MyDialog(onDismissRequest = {
+            isOpenAddNewListModal = false
+            newListName = ""
+        }, content = {
             TextField(
                 value = newListName,
                 onValueChange = {
@@ -60,6 +63,7 @@ fun AddToList(
                 onClick = {
                     addNewList(newListName)
                     isOpenAddNewListModal = false
+                    newListName = ""
                 },
                 Modifier
                     .padding(top = 20.dp)

@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.lists.ListItem
 import com.example.ttanslateapp.presentation.lists.ListsAction
-import com.example.ttanslateapp.presentation.lists.ModalType
 
 @Composable
 fun Header(
@@ -87,8 +85,8 @@ fun Header(
                                         stringResource(id = R.string.lists_screen_cd_rename_selected_list),
                                         tint = colorResource(R.color.grey),
                                         modifier = Modifier
-                                            .width(25.dp)
-                                            .height(25.dp)
+                                            .width(20.dp)
+                                            .height(20.dp)
                                     )
                                 }
                             }
@@ -105,7 +103,7 @@ fun Header(
                             ) {
                                 Box(
                                     Modifier
-                                        .clickable { onAction(ListsAction.DeletedSelectedLists) },
+                                        .clickable { onAction(ListsAction.DeleteSelectedLists) },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
@@ -113,8 +111,8 @@ fun Header(
                                         stringResource(id = R.string.lists_screen_cd_deleted_selected_lists),
                                         tint = colorResource(R.color.red),
                                         modifier = Modifier
-                                            .width(30.dp)
-                                            .height(30.dp)
+                                            .width(25.dp)
+                                            .height(25.dp)
                                     )
                                 }
                             }

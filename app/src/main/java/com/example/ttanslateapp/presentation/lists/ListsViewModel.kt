@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ttanslateapp.R
@@ -64,6 +63,10 @@ class ListsViewModel @Inject constructor(
         )
     }
 
+    private fun isOpenConfirmDeleteListDialog(value: Boolean) {
+        state = state.copy(isOpenDeleteListModal = value)
+    }
+
     fun onAction(action: ListsAction) {
         when (action) {
             is ListsAction.AddNewList -> {
@@ -81,11 +84,18 @@ class ListsViewModel @Inject constructor(
                 }
                 state = state.copy(list = newList)
             }
-            ListsAction.DeletedSelectedLists -> {
+            ListsAction.DeleteSelectedLists -> {
+                isOpenConfirmDeleteListDialog(true)
+            }
+            ListsAction.ConfirmDeleteSelectedLists -> {
                 val deletedListsId = state.list.filter { it.isSelected }.map { it.id }
                 viewModelScope.launch {
                     deleteListsUseCase.deleteLists(deletedListsId)
                 }
+                isOpenConfirmDeleteListDialog(false)
+            }
+            ListsAction.DeclineDeleteSelectedLists -> {
+                isOpenConfirmDeleteListDialog(false)
             }
             is ListsAction.OnListItemPress -> {
                 action.navController.navigate(
@@ -127,6 +137,7 @@ class ListsViewModel @Inject constructor(
                 }
                 closeModalList()
             }
+
         }
     }
 }

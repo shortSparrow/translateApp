@@ -3,7 +3,9 @@ package com.example.ttanslateapp.presentation.lists
 import androidx.navigation.NavController
 
 sealed class ListsAction {
-    object DeletedSelectedLists : ListsAction()
+    object DeleteSelectedLists : ListsAction()
+    object ConfirmDeleteSelectedLists : ListsAction()
+    object DeclineDeleteSelectedLists : ListsAction()
     object CloseModal : ListsAction()
     object OpenModalNewList : ListsAction()
     data class OpenModalRenameList( val currentName: String, val listId: Long) : ListsAction()
