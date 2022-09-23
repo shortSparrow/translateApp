@@ -8,8 +8,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.ttanslateapp.databinding.FragmentListBinding
 import com.example.ttanslateapp.presentation.core.BaseFragment
 import com.example.ttanslateapp.presentation.core.BindingInflater
-import com.example.ttanslateapp.presentation.lists.ListsScreen
-import com.example.ttanslateapp.presentation.lists.ListsViewModel
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import dagger.hilt.android.AndroidEntryPoint
 

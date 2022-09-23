@@ -7,6 +7,7 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -14,12 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.modify_word.WordAudio
 import com.example.ttanslateapp.domain.model.modify_word.WordRV
@@ -70,11 +74,16 @@ fun ListFullScreen(
                     )
                     Text(
                         text = stringResource(id = R.string.full_lists_list_is_empty),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.large_gutter))
+                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.grey_2)
                     )
 
-                    OutlinedButton(onClick = { onAction(ListFullAction.AddNewWord) }) {
-                        Text(text = stringResource(id = R.string.full_lists_add_new_word))
+                    Button(onClick = { onAction(ListFullAction.AddNewWord) }) {
+                        Text(
+                            text = stringResource(id = R.string.full_lists_add_new_word).uppercase(),
+                            color = Color.White
+                        )
                     }
                 }
             }

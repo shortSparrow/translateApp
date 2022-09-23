@@ -43,11 +43,11 @@ fun DialogSelectList(
                             .padding(bottom = 20.dp),
                         fontSize = 17.sp
                     )
-                    Button(
+                    OutlinedButton(
                         onClick = onAddNewItemPress,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        Text(text = stringResource(id = R.string.modify_word_select_lists_dialog_add_list))
+                        Text(text = stringResource(id = R.string.modify_word_select_lists_dialog_add_list).uppercase())
                     }
                 }
             } else {

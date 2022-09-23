@@ -2,14 +2,15 @@ package com.example.ttanslateapp.presentation.modify_word.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,7 +60,7 @@ fun AddToList(
                 },
                 label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) }
             )
-            Button(
+            OutlinedButton(
                 onClick = {
                     addNewList(newListName)
                     isOpenAddNewListModal = false
@@ -69,7 +70,7 @@ fun AddToList(
                     .padding(top = 20.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
-                Text(text = stringResource(id = R.string.save))
+                Text(text = stringResource(id = R.string.save).uppercase())
             }
         }, title = stringResource(id = R.string.modify_word_dialog_add_new_list_title))
     }
@@ -84,11 +85,28 @@ fun AddToList(
     }
 
     if (state.wordListInfo == null) {
-        Text(
-            text = stringResource(id = R.string.modify_word_add_to_list),
-            color = colorResource(id = R.color.blue_3),
-            fontSize = 14.sp,
-            modifier = Modifier.clickable { openModal() })
+//        Text(
+//            text = stringResource(id = R.string.modify_word_add_to_list),
+//            color = colorResource(id = R.color.blue_3),
+//            fontSize = 14.sp,
+//            modifier = Modifier.clickable { openModal() })
+
+        Column() {
+            OutlinedButton(onClick = { openModal() }) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = stringResource(id = R.string.modify_word_add_to_list).uppercase(),
+//                    color = Color.White,
+//                    fontSize = 20.sp,
+                    )
+                    Icon(
+                        modifier = Modifier.padding(start = 10.dp),
+                        painter = painterResource(id = R.drawable.add),
+                        contentDescription = "add"
+                    )
+                }
+            }
+        }
     } else {
         Column() {
             Text(
@@ -107,16 +125,29 @@ fun AddToList(
 }
 
 
+//@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+//@Composable
+//fun ComposablePreviewAddToList() {
+//    AddToList(
+//        state = ComposeState(
+//            wordListInfo = ModifyWordListItem(
+//                title = "My List",
+//                count = 10,
+//                id = 1L
+//            ),
+//            wordLists = emptyList()
+//        ),
+//        addNewList = {},
+//        onSelectList = {}
+//    )
+//}
+
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
-fun ComposablePreviewAddToList() {
+fun ComposablePreviewAddToList2() {
     AddToList(
         state = ComposeState(
-            wordListInfo = ModifyWordListItem(
-                title = "My List",
-                count = 10,
-                id = 1L
-            ),
+            wordListInfo = null,
             wordLists = emptyList()
         ),
         addNewList = {},

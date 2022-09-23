@@ -7,19 +7,21 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ttanslateapp.R
 import com.example.ttanslateapp.domain.model.lists.ListItem
@@ -70,10 +72,6 @@ fun ListsScreen(
                 .fillMaxHeight()
                 .padding(contentPadding)
         ) {
-            Header(
-                selectedLists = selectedLists,
-                onAction = onAction
-            )
 
             if (state.isLoadingList == LoadingState.PENDING) {
 //                Text(text = "LOADING...")
@@ -93,16 +91,26 @@ fun ListsScreen(
                     )
                     Text(
                         text = stringResource(id = R.string.nothing_found),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.large_gutter))
+                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.grey_2)
                     )
 
-                    OutlinedButton(onClick = { onAction(ListsAction.OpenModalNewList) }) {
-                        Text(text = stringResource(id = R.string.lists_screen_add_new_list))
+                    Button(onClick = { onAction(ListsAction.OpenModalNewList) }) {
+                        Text(
+                            text = stringResource(id = R.string.lists_screen_add_new_list).uppercase(),
+                            color = Color.White
+                        )
                     }
                 }
             }
 
             if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {
+                Header(
+                    selectedLists = selectedLists,
+                    onAction = onAction
+                )
+
                 CompositionLocalProvider(
                     LocalOverscrollConfiguration provides null
                 ) {

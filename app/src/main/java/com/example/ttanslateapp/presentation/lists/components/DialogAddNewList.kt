@@ -2,11 +2,13 @@ package com.example.ttanslateapp.presentation.lists.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,13 +45,13 @@ fun DialogAddNewList(
             },
             label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) }
         )
-        Button(
+        OutlinedButton(
             onClick = { handleOnClick() },
             Modifier
                 .padding(top = 20.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            Text(text = stringResource(id = R.string.save))
+            Text(text = stringResource(id = R.string.save).uppercase())
         }
     }, title = modalListState.title)
 
