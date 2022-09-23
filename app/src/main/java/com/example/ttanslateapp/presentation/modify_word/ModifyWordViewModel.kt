@@ -168,11 +168,14 @@ class ModifyWordViewModel @Inject constructor(
 
     fun onSelectList(listId: Long) {
         val newList = composeState.wordLists.map {
-            if (it.id == listId) it.copy(isSelected = true) else it.copy(isSelected = false)
+            if (it.id == listId) it.copy(isSelected = !it.isSelected) else it.copy(isSelected = false)
         }
+
+        val pressableList = newList.find { it.id == listId }.takeIf { it?.isSelected == true }
+
         composeState = composeState.copy(
             wordLists = newList,
-            wordListInfo = newList.find { it.id == listId }
+            wordListInfo = pressableList
         )
     }
 

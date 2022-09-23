@@ -9,6 +9,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -36,32 +37,37 @@ fun MyDialog(
         onDismissRequest = { onDismissRequest() },
     ) {
         Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(15.dp))
-                .background(Color.White)
-                .fillMaxWidth()
-                .padding(15.dp),
+            Modifier.fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .padding(bottom = 30.dp),
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color.White)
+                    .fillMaxWidth()
+                    .padding(15.dp),
+            ) {
 
-                ) {
-                Text(
-                    text = title,
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .weight(1f),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Cross(onClose = { onDismissRequest() })
-            }
+                        .fillMaxWidth(1f)
+                        .padding(bottom = 30.dp)
+                ) {
+                    Text(
+                        text = title,
+                        modifier = Modifier
+                            .weight(1f),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    Cross(onClose = { onDismissRequest() })
+                }
 
-            content()
+                content()
+            }
         }
     }
 }
