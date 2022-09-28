@@ -5,7 +5,6 @@ on:
     branches:
       - pre-prod
       - main
-      - prepare-publish
 
 jobs:
   signed:
@@ -63,7 +62,7 @@ jobs:
   un_signed:
     name: build unsigned APK
     runs-on: ubuntu-latest
-    if: github.ref_name == 'prepare-publish'
+    if: github.ref_name == 'pre-prod'
     steps:
       - uses: actions/checkout@v1
 

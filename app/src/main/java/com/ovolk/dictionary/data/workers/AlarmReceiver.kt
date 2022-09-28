@@ -23,7 +23,6 @@ class AlarmReceiver : BroadcastReceiver() {
     lateinit var examReminder: ExamReminder
     private val soundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
             val notificationManager = getSystemService(
@@ -43,8 +42,10 @@ class AlarmReceiver : BroadcastReceiver() {
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.reminder_push_exam_title))
                 .setContentText(context.getString(R.string.reminder_push_exam_description))
-                .setStyle(NotificationCompat.BigTextStyle()
-                    .bigText(context.getString(R.string.reminder_push_exam_description)))
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .bigText(context.getString(R.string.reminder_push_exam_description))
+                )
                 .setSmallIcon(R.drawable.ic_notification_round)
                 .setColor(context.getColor(R.color.light_blue))
                 .setAutoCancel(true)
@@ -71,7 +72,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build()
 
-            notificationChanel.setSound(soundUri,audioAttributes)
+            notificationChanel.setSound(soundUri, audioAttributes)
             notificationManager.createNotificationChannel(notificationChanel)
         }
     }
