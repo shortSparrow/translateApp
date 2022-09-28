@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.presentation.modify_word.adapter.translate
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -23,7 +24,7 @@ class TranslateAdapter :
     private fun applyHiddenStyle(isHidden: Boolean, binding: ItemTranslateChipBinding) {
         val context = binding.root.context
 
-        binding.chipItem.backgroundTintList = ColorStateList.valueOf(R.color.blue)
+        binding.chipItem.backgroundTintList = ColorStateList.valueOf(Color.parseColor(R.color.blue.toString()))
         if (isHidden) {
             binding.chipItem.backgroundTintList =
                 ContextCompat.getColorStateList(context, R.color.light_grey)

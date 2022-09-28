@@ -1,0 +1,95 @@
+name: Android Build
+
+on:
+  push:
+    branches:
+      - pre-prod
+      - main
+      - prepare-publish
+jobs:
+  signed:
+    name: build signed APK
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - run: sudo apt-get -y update
+        shell: bash
+
+      - run: sudo apt-get -y install openjdk-11-jdk
+        shell: bash
+
+      - name: Run test
+        run: ./gradlew test
+
+      - name: Run lint
+        run: ./gradlew lint
+
+      - shell: bash
+        run: echo "${{ secrets.KEYSTORE }}" | base64 -d > $GITHUB_WORKSPACE/upload-keystore.jks
+
+      - name: Build Signed APK
+        run: |
+          echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/upload-keystore.jks" > release.properties
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> release.properties
+          echo "STORE_PASSWORD=${{secrets.STORE_PASSWORD}}" >> release.properties
+          echo "ALIAS=${{ secrets.ALIAS }}" >> release.properties
+
+      #      - name: build release
+      #        run: ./gradlew app:bundleRelease
+      - name: build release
+        run: ./gradlew assembleRelease
+
+      - name: remove keystore.jks
+        shell: bash
+        run: rm $GITHUB_WORKSPACE/upload-keystore.jks
+
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_PROD }}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: testers
+          file: app/build/outputs/apk/release/app-release.apk
+
+
+  un_signed:
+    name: build unsigned APK
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'pre-prod'
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - run: sudo apt-get -y update
+        shell: bash
+
+      - run: sudo apt-get -y install openjdk-11-jdk
+        shell: bash
+
+      - name: Run test
+        run: ./gradlew test
+
+      - name: Run lint
+        run: ./gradlew lint
+
+      - name: build release
+        run: ./gradlew assembleQa
+
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_QA }}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: testers
+          file: app/build/outputs/apk/qarelease/app-qarelease.apk

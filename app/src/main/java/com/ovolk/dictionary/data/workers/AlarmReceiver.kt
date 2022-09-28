@@ -77,8 +77,8 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        const val CHANNEL_ID = "test_channel_id"
-        private const val CHANNEL_NAME = "channel_name"
+        const val CHANNEL_ID = "exam_reminder_id"
+        private const val CHANNEL_NAME = "Exam reminder"
         private const val NOTIFICATION_ID = 100
 
 

@@ -7,15 +7,15 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
-Properties p = new Properties ()
-p.load ( new FileInputStream ( rootProject.file ( './release.properties' ) ) )
+Properties p = new Properties()
+p.load(new FileInputStream(rootProject.file('./release.properties')))
 
 android {
     compileSdk 32
 
     signingConfigs {
         release {
-            storeFile file(p.getProperty("STORE_FILE_PATH_RELEASE", "."))
+            storeFile file(p.getProperty("KEYSTORE_PATH", "."))
             storePassword p.getProperty("STORE_PASSWORD", ".")
             keyAlias p.getProperty("ALIAS", ".")
             keyPassword p.getProperty("KEY_PASSWORD", ".")
