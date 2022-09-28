@@ -7,9 +7,67 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:104633498136:android:7df4391cf248dc91c1e16d",
+        "mobilesdk_app_id": "1:104633498136:android:099db5db333b7c04c1e16d",
         "android_client_info": {
-          "package_name": "com.example.ttanslateapp"
+          "package_name": "com.ovolk.dictionary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104633498136-0bdchhd8hcm49050g55jo80h1p8sp5q5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvjN9p5JiOf_DzOiHU8MO6efOWnbT3Dzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104633498136-0bdchhd8hcm49050g55jo80h1p8sp5q5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104633498136:android:3b04e84340869657c1e16d",
+        "android_client_info": {
+          "package_name": "com.ovolk.dictionary.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104633498136-0bdchhd8hcm49050g55jo80h1p8sp5q5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvjN9p5JiOf_DzOiHU8MO6efOWnbT3Dzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104633498136-0bdchhd8hcm49050g55jo80h1p8sp5q5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104633498136:android:972bf077cc714443c1e16d",
+        "android_client_info": {
+          "package_name": "com.ovolk.dictionary.qa"
         }
       },
       "oauth_client": [
