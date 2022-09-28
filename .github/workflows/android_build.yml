@@ -6,6 +6,7 @@ on:
       - pre-prod
       - main
       - prepare-publish
+
 jobs:
   signed:
     name: build signed APK
