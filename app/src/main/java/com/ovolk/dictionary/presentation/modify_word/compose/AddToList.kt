@@ -46,30 +46,34 @@ fun AddToList(
 
 
     if (isOpenAddNewListModal) {
-        MyDialog(onDismissRequest = {
-            isOpenAddNewListModal = false
-            newListName = ""
-        }, content = {
-            TextField(
-                value = newListName,
-                onValueChange = {
-                    newListName = it
-                },
-                label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) }
-            )
-            OutlinedButton(
-                onClick = {
-                    addNewList(newListName)
-                    isOpenAddNewListModal = false
-                    newListName = ""
-                },
-                Modifier
-                    .padding(top = 20.dp)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = stringResource(id = R.string.save).uppercase())
-            }
-        }, title = stringResource(id = R.string.modify_word_dialog_add_new_list_title))
+        MyDialog(
+            onDismissRequest = {
+                isOpenAddNewListModal = false
+                newListName = ""
+            },
+            content = {
+                TextField(
+                    value = newListName,
+                    onValueChange = {
+                        newListName = it
+                    },
+                    label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) }
+                )
+                OutlinedButton(
+                    onClick = {
+                        addNewList(newListName)
+                        isOpenAddNewListModal = false
+                        newListName = ""
+                    },
+                    Modifier
+                        .padding(top = 20.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(text = stringResource(id = R.string.save).uppercase())
+                }
+            },
+            title = stringResource(id = R.string.modify_word_dialog_add_new_list_title)
+        )
     }
 
     if (isOpenSelectModal) {
@@ -82,20 +86,11 @@ fun AddToList(
     }
 
     if (state.wordListInfo == null) {
-//        Text(
-//            text = stringResource(id = R.string.modify_word_add_to_list),
-//            color = colorResource(id = R.color.blue_3),
-//            fontSize = 14.sp,
-//            modifier = Modifier.clickable { openModal() })
 
         Column() {
             OutlinedButton(onClick = { openModal() }) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(id = R.string.modify_word_add_to_list).uppercase(),
-//                    color = Color.White,
-//                    fontSize = 20.sp,
-                    )
+                    Text(text = stringResource(id = R.string.modify_word_add_to_list).uppercase())
                     Icon(
                         modifier = Modifier.padding(start = 10.dp),
                         painter = painterResource(id = R.drawable.add),

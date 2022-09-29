@@ -24,7 +24,7 @@ class TranslateAdapter :
     private fun applyHiddenStyle(isHidden: Boolean, binding: ItemTranslateChipBinding) {
         val context = binding.root.context
 
-        binding.chipItem.backgroundTintList = ColorStateList.valueOf(Color.parseColor(R.color.blue.toString()))
+        binding.chipItem.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(R.color.blue))
         if (isHidden) {
             binding.chipItem.backgroundTintList =
                 ContextCompat.getColorStateList(context, R.color.light_grey)

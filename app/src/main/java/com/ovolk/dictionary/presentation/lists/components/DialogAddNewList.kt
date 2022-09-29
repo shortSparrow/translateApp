@@ -35,23 +35,27 @@ fun DialogAddNewList(
         }
     }
 
-    MyDialog(onDismissRequest = { onAction(ListsAction.CloseModal) }, content = {
-        TextField(
-            value = newListName,
-            onValueChange = {
-                newListName = it
-            },
-            label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) }
-        )
-        OutlinedButton(
-            onClick = { handleOnClick() },
-            Modifier
-                .padding(top = 20.dp)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = stringResource(id = R.string.save).uppercase())
-        }
-    }, title = modalListState.title)
+    MyDialog(
+        onDismissRequest = { onAction(ListsAction.CloseModal) },
+        content = {
+            TextField(
+                value = newListName,
+                onValueChange = {
+                    newListName = it
+                },
+                label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) }
+            )
+            OutlinedButton(
+                onClick = { handleOnClick() },
+                Modifier
+                    .padding(top = 20.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = stringResource(id = R.string.save).uppercase())
+            }
+        },
+        title = modalListState.title
+    )
 
 }
 
