@@ -37,37 +37,30 @@ fun MyDialog(
         onDismissRequest = { onDismissRequest() },
     ) {
         Column(
-            Modifier.fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .clip(RoundedCornerShape(15.dp))
+                .background(Color.White)
+                .fillMaxWidth()
+                .padding(15.dp),
         ) {
-            Column(
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(Color.White)
-                    .fillMaxWidth()
-                    .padding(15.dp),
+                    .fillMaxWidth(1f)
+                    .padding(bottom = 30.dp)
             ) {
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                Text(
+                    text = title,
                     modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .padding(bottom = 30.dp)
-                ) {
-                    Text(
-                        text = title,
-                        modifier = Modifier
-                            .weight(1f),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                    Cross(onClose = { onDismissRequest() })
-                }
-
-                content()
+                        .weight(1f),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                Cross(onClose = { onDismissRequest() })
             }
+
+            content()
         }
     }
 }
