@@ -58,7 +58,6 @@ jobs:
           groups: testers
           file: app/build/outputs/apk/release/app-release.apk
 
-
   un_signed:
     name: build unsigned APK
     runs-on: ubuntu-latest
@@ -79,15 +78,9 @@ jobs:
 
       - name: Run test
         run: ./gradlew test
-<<<<<<< HEAD
-      #
+
       #      - name: Run lint
       #        run: ./gradlew lint
-=======
-#
-#      - name: Run lint
-#        run: ./gradlew lint
->>>>>>> dev
 
       - name: build release
         run: ./gradlew assembleQa
