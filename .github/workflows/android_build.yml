@@ -27,9 +27,9 @@ jobs:
 
       - name: Run test
         run: ./gradlew test
-
-      - name: Run lint
-        run: ./gradlew lint
+      #
+      #      - name: Run lint
+      #        run: ./gradlew lint
 
       - shell: bash
         run: echo "${{ secrets.KEYSTORE }}" | base64 -d > $GITHUB_WORKSPACE/upload-keystore.jks
@@ -79,9 +79,9 @@ jobs:
 
       - name: Run test
         run: ./gradlew test
-
-      - name: Run lint
-        run: ./gradlew lint
+      #
+      #      - name: Run lint
+      #        run: ./gradlew lint
 
       - name: build release
         run: ./gradlew assembleQa
