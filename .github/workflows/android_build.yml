@@ -27,15 +27,9 @@ jobs:
 
       - name: Run test
         run: ./gradlew test
-<<<<<<< HEAD
       #
       #      - name: Run lint
       #        run: ./gradlew lint
-=======
-#
-#      - name: Run lint
-#        run: ./gradlew lint
->>>>>>> dev
 
       - shell: bash
         run: echo "${{ secrets.KEYSTORE }}" | base64 -d > $GITHUB_WORKSPACE/upload-keystore.jks
