@@ -1,9 +1,8 @@
 package com.ovolk.dictionary.presentation.list_full
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,7 +56,7 @@ fun ListFullScreen(
             }
         }
     ) {
-        Column() {
+        Column {
             Header(onAction = onAction)
 
             if (state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
@@ -88,28 +88,35 @@ fun ListFullScreen(
             }
 
             if (state.loadingStatusWordList == LoadingState.SUCCESS) {
-
-
                 Box(Modifier.padding(horizontal = 20.dp)) {
                     SearchBar(onAction = onAction)
                 }
 
                 if (state.wordList.isEmpty() && !state.noAnyWords) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    CompositionLocalProvider(
+                        LocalOverscrollConfiguration provides null
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.nothing_found),
-                            contentDescription = "Nothing found",
-                            modifier = Modifier
-                                .width(250.dp)
-                                .padding(bottom = dimensionResource(id = R.dimen.large_gutter))
-                        )
-                        Text(text = "Nothing found")
+                        LazyColumn(
+                            contentPadding = PaddingValues(
+                               vertical = dimensionResource(id = R.dimen.large_gutter)
+                            ),
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            item {
+                                Image(
+                                    painter = painterResource(id = R.drawable.nothing_found),
+                                    contentDescription = stringResource(id = R.string.nothing_found),
+                                    modifier = Modifier
+                                        .size(250.dp)
+                                        .padding(bottom =  dimensionResource(id = R.dimen.medium_gutter))
+                                )
+                                Text(text = stringResource(id = R.string.nothing_found), fontSize = 20.sp)
+                            }
+                        }
                     }
+
                 }
                 if (state.wordList.isNotEmpty()) {
                     CompositionLocalProvider(

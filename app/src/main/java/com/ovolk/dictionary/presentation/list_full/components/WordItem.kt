@@ -53,7 +53,7 @@ fun WordItem(
     Column() {
         Card(
             modifier = Modifier
-                .padding(8.dp) // TODO remove
+                .padding(16.dp)
                 .clickable { onAction(ListFullAction.PressOnWord(wordId = word.id)) },
             elevation = 3.dp,
 
