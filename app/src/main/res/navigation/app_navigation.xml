@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/wordListFragment"
-        android:name="com.example.ttanslateapp.presentation.word_list.WordListFragment"
+        android:name="com.ovolk.dictionary.presentation.word_list.WordListFragment"
         android:label="WordListFragment"
         tools:layout="@layout/fragment_word_list">
         <action
@@ -17,12 +17,12 @@
     </fragment>
     <fragment
         android:id="@+id/modifyWordFragment"
-        android:name="com.example.ttanslateapp.presentation.modify_word.ModifyWordFragment"
+        android:name="com.ovolk.dictionary.presentation.modify_word.ModifyWordFragment"
         android:label="ModifyWordFragment"
         tools:layout="@layout/fragment_modify_word">
         <argument
             android:name="mode"
-            app:argType="com.example.ttanslateapp.presentation.modify_word.ModifyWordModes" />
+            app:argType="com.ovolk.dictionary.presentation.modify_word.ModifyWordModes" />
         <argument
             android:name="wordId"
             android:defaultValue="-1L"
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/examKnowledgeWordsFragment"
-        android:name="com.example.ttanslateapp.presentation.exam.ExamKnowledgeWordsFragment"
+        android:name="com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsFragment"
         android:label="ExamKnowledgeWordsFragment"
         tools:layout="@layout/fragment_exam_knowledge_words">
         <action
@@ -53,13 +53,13 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.ttanslateapp.presentation.settings.SettingsFragment"
+        android:name="com.ovolk.dictionary.presentation.settings.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.example.ttanslateapp.presentation.lists.ListFragment"
+        android:name="com.ovolk.dictionary.presentation.lists.ListFragment"
         android:label="ListFragment"
         tools:layout="@layout/fragment_list">
         <action
@@ -69,7 +69,7 @@
 
     <fragment
         android:id="@+id/listFullFragment"
-        android:name="com.example.ttanslateapp.presentation.list_full.ListFullFragment"
+        android:name="com.ovolk.dictionary.presentation.list_full.ListFullFragment"
         android:label="ListFullFragment"
         tools:layout="@layout/fragment_list_full">
         <argument
