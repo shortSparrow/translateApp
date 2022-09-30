@@ -76,12 +76,16 @@
             android:name="listId"
             android:defaultValue="-1L"
             app:argType="long" />
+
         <action
             android:id="@+id/action_listFullFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment" />
         <action
             android:id="@+id/action_listFullFragment_to_examKnowledgeWordsFragment"
             app:destination="@id/examKnowledgeWordsFragment" />
+        <argument
+            android:name="listName"
+            app:argType="string" />
     </fragment>
 
 </navigation>

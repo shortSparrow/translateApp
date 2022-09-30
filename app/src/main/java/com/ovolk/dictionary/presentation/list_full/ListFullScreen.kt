@@ -57,33 +57,37 @@ fun ListFullScreen(
         }
     ) {
         Column {
-            Header(onAction = onAction)
+            Header(onAction = onAction, listName=state.listName)
 
             if (state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
-                Column(
-                    Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        vertical = dimensionResource(id = R.dimen.large_gutter)
+                    ),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.empty_list),
-                        contentDescription = stringResource(id = R.string.full_lists_cd_list_is_empty),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                    )
-                    Text(
-                        text = stringResource(id = R.string.full_lists_list_is_empty),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                        fontSize = 20.sp,
-                        color = colorResource(id = R.color.grey_2)
-                    )
+                   item {
+                       Image(
+                           painter = painterResource(id = R.drawable.empty_list),
+                           contentDescription = stringResource(id = R.string.full_lists_cd_list_is_empty),
+                           modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
+                       )
+                       Text(
+                           text = stringResource(id = R.string.full_lists_list_is_empty),
+                           modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
+                           fontSize = 20.sp,
+                           color = colorResource(id = R.color.grey_2)
+                       )
 
-                    Button(onClick = { onAction(ListFullAction.AddNewWord) }) {
-                        Text(
-                            text = stringResource(id = R.string.full_lists_add_new_word).uppercase(),
-                            color = Color.White
-                        )
-                    }
+                       Button(onClick = { onAction(ListFullAction.AddNewWord) }) {
+                           Text(
+                               text = stringResource(id = R.string.full_lists_add_new_word).uppercase(),
+                               color = Color.White
+                           )
+                       }
+                   }
                 }
             }
 

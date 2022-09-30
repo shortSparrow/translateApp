@@ -2,10 +2,8 @@ package com.ovolk.dictionary.presentation.list_full
 
 import android.app.Application
 import android.content.Context
-import android.content.ContextWrapper
 import android.media.AudioManager
 import android.media.MediaPlayer
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,20 +22,6 @@ import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
-
-inline fun <reified Activity : ComponentActivity> Context.getActivity(): Activity? {
-    return when (this) {
-        is Activity -> this
-        else -> {
-            var context = this
-            while (context is ContextWrapper) {
-                context = context.baseContext
-                if (context is Activity) return context
-            }
-            null
-        }
-    }
-}
 
 @HiltViewModel
 class ListsFullViewModel @Inject constructor(
@@ -143,7 +127,11 @@ class ListsFullViewModel @Inject constructor(
             }
             is ListFullAction.InitialLoadData -> {
                 state =
-                    state.copy(listId = action.listId, loadingStatusWordList = LoadingState.PENDING)
+                    state.copy(
+                        listId = action.listId,
+                        listName = action.listName,
+                        loadingStatusWordList = LoadingState.PENDING
+                    )
                 searchDebounced("")
             }
             is ListFullAction.PlayAudio -> {

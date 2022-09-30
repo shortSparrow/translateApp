@@ -99,7 +99,7 @@ class ListsViewModel @Inject constructor(
             }
             is ListsAction.OnListItemPress -> {
                 action.navController.navigate(
-                    ListFragmentDirections.actionListFragmentToListFull(listId = action.listId)
+                    ListFragmentDirections.actionListFragmentToListFull(listId = action.listId, listName = action.listName)
                 )
             }
             ListsAction.CloseModal -> {

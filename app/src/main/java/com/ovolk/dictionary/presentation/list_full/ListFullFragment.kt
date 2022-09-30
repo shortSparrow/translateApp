@@ -25,7 +25,7 @@ class ListFullFragment :
             val viewModel = hiltViewModel<ListsFullViewModel>()
             if (!viewModel.initialMount) {
                 viewModel.setNavController(findNavController())
-                viewModel.onAction(ListFullAction.InitialLoadData(args.listId))
+                viewModel.onAction(ListFullAction.InitialLoadData(args.listId, args.listName))
                 viewModel.initialMount = true
             }
 

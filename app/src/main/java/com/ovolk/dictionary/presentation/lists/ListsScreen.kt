@@ -1,9 +1,7 @@
 package com.ovolk.dictionary.presentation.lists
 
 import android.content.Context
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -66,7 +64,7 @@ fun ListsScreen(
     ) { contentPadding ->
         Column(
             Modifier
-                .fillMaxHeight()
+                .fillMaxSize()
                 .padding(contentPadding)
         ) {
 
@@ -75,29 +73,33 @@ fun ListsScreen(
             }
 
             if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty()) {
-                Column(
-                    Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        vertical = dimensionResource(id = R.dimen.large_gutter)
+                    ),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.empty_list),
-                        contentDescription = stringResource(id = R.string.cd_nothing_found),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                    )
-                    Text(
-                        text = stringResource(id = R.string.nothing_found),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                        fontSize = 20.sp,
-                        color = colorResource(id = R.color.grey_2)
-                    )
-
-                    Button(onClick = { onAction(ListsAction.OpenModalNewList) }) {
-                        Text(
-                            text = stringResource(id = R.string.lists_screen_add_new_list).uppercase(),
-                            color = Color.White
+                    item {
+                        Image(
+                            painter = painterResource(id = R.drawable.empty_list),
+                            contentDescription = stringResource(id = R.string.cd_nothing_found),
+                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
                         )
+                        Text(
+                            text = stringResource(id = R.string.nothing_found),
+                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
+                            fontSize = 20.sp,
+                            color = colorResource(id = R.color.grey_2)
+                        )
+
+                        Button(onClick = { onAction(ListsAction.OpenModalNewList) }) {
+                            Text(
+                                text = stringResource(id = R.string.lists_screen_add_new_list).uppercase(),
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }
@@ -111,15 +113,16 @@ fun ListsScreen(
                 CompositionLocalProvider(
                     LocalOverscrollConfiguration provides null
                 ) {
-                    LazyColumn(contentPadding = PaddingValues(top = 20.dp, bottom = 60.dp)) {
+                    LazyColumn(contentPadding = PaddingValues(top = dimensionResource(id = R.dimen.gutter), bottom = 60.dp)) {
                         items(items = state.list) { item ->
                             com.ovolk.dictionary.presentation.lists.components.ListItem(
                                 item = item,
                                 onAction = onAction,
-                                onItemClick = { listId: Long ->
+                                onItemClick = { listId: Long, listName: String ->
                                     onAction(
                                         ListsAction.OnListItemPress(
                                             listId,
+                                            listName,
                                             getNavController()
                                         )
                                     )

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -21,13 +22,18 @@ import com.ovolk.dictionary.presentation.list_full.ListFullAction
 
 @Composable
 fun Header(
-    onAction: (ListFullAction) -> Unit
+    onAction: (ListFullAction) -> Unit,
+    listName: String
 ) {
     Column {
         TopAppBar(
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
-            modifier = Modifier.align(Alignment.Start)
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(
+                    bottom = dimensionResource(id = R.dimen.gutter)
+                )
         ) {
             Box(
                 Modifier.fillMaxWidth(),
@@ -68,7 +74,8 @@ fun Header(
                             Text(
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
-                                text = stringResource(id = R.string.full_lists_title)
+//                                text = stringResource(id = R.string.full_lists_title)
+                                text = listName
                             )
                         }
                     }
@@ -84,7 +91,7 @@ fun Header(
                     color = Color.Transparent
                 ) {
                     Box(
-                        Modifier.clickable {onAction(ListFullAction.TakeExam)},
+                        Modifier.clickable { onAction(ListFullAction.TakeExam) },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -108,5 +115,5 @@ fun Header(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewHeader() {
-    Header(onAction = {})
+    Header(onAction = {}, listName = "My favorite list")
 }

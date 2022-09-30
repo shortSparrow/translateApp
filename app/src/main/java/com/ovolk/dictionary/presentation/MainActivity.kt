@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            Timber.d("destination: ${destination.id} ${destination.label}")
+//            Timber.d("destination: ${destination.id} ${destination.label}")
 
             when (destination.id) {
                 R.id.wordListFragment -> showBottomNav()
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             bottomBar.menu.forEach { item ->
-                Timber.d("TITLE: ${item.title} ${navigationList[item.title]} ${destination.label}")
+//                Timber.d("TITLE: ${item.title} ${navigationList[item.title]} ${destination.label}")
                 if (navigationList[item.title]?.any { it == destination.label } == true) {
                     item.isChecked = true
                 }
