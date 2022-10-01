@@ -46,6 +46,11 @@
             android:id="@+id/action_examKnowledgeWordsFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment" />
         <argument
+            android:name="listName"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true"/>
+        <argument
             android:name="listId"
             android:defaultValue="-1L"
             app:argType="long" />

@@ -105,7 +105,8 @@ class ListsFullViewModel @Inject constructor(
             ListFullAction.TakeExam -> {
                 navController?.navigate(
                     ListFullFragmentDirections.actionListFullFragmentToExamKnowledgeWordsFragment(
-                        listId = state.listId
+                        listId = state.listId,
+                        listName = state.listName
                     )
                 )
             }

@@ -62,7 +62,6 @@ fun Header(
                     }
                 }
 
-
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
@@ -74,14 +73,12 @@ fun Header(
                             Text(
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
-//                                text = stringResource(id = R.string.full_lists_title)
                                 text = listName
                             )
                         }
                     }
                 }
 
-                // TODO make exam logic
                 Surface(
                     Modifier
                         .width(45.dp)

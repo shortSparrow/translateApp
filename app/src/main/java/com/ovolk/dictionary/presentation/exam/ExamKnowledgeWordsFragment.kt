@@ -69,7 +69,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
         super.onViewCreated(view, savedInstanceState)
 
         // generateWordsList on every enter on screen. On rotation not invoked. Because we change configChanges in Manifest
-        viewModel.generateWordsList(listId = if (args.listId == -1L) null else args.listId)
+        viewModel.generateWordsList(listId = if (args.listId == -1L) null else args.listId, listName = args.listName)
         bottomBar = requireActivity().findViewById(R.id.bottom_app_bar)
         setupAdapter()
         observeLiveDate()
@@ -240,6 +240,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                     )
                     goPrevQuestion.alpha = 0.5f
                     goPrevQuestion.isClickable = false
+                    toolbarDescription.text = uiState.listName
                 }
                 is ExamKnowledgeUiState.HandleAnswerInput -> {
                     examCheckAnswer.isEnabled = uiState.value.trim()

@@ -55,6 +55,7 @@
     <string name="exam_alert_complete_daily_exam_tile">The end</string>
     <string name="exam_alert_complete_daily_exam_description">Congratulations, you complete daily exam</string>
     <string name="exam_complete_infinity_exam">Congratulations, you complete infinity exam</string>
+    <string name="exam_list_name">(%s)</string>
 
 
     <!-- Settings fragment -->

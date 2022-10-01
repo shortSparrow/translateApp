@@ -35,15 +35,32 @@
                     app:title=""
                     app:titleCentered="true">
 
-
-                    <TextView
-                        android:id="@+id/toolbar_title"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        tools:text="@string/exam_counter_toolbar_title_daily_mode" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/toolbar_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="@string/exam_counter_toolbar_title_daily_mode" />
+
+                        <TextView
+                            android:id="@+id/toolbar_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            tools:text="(list name)"
+                            android:textAlignment="center"
+                            android:textSize="15sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/exam_mode_button"
@@ -53,6 +70,7 @@
                         android:layout_marginRight="@dimen/gutter"
                         android:background="@drawable/exam_mode" />
                 </com.google.android.material.appbar.MaterialToolbar>
+
 
                 <TextView
                     android:id="@+id/counter"

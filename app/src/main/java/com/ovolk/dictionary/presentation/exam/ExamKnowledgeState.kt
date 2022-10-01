@@ -29,7 +29,8 @@ sealed interface ExamKnowledgeUiState {
         val examWordList: List<ExamWord>,
         val currentWord: ExamWord,
         val activeWordPosition: Int,
-        val mode: ExamMode
+        val mode: ExamMode,
+        val listName: String
     ) : ExamKnowledgeUiState
 
     data class HandleAnswerInput(
@@ -93,6 +94,7 @@ data class ExamKnowledgeState(
     val isModeDialogOpen: Boolean = false,
     val isExamEndDialogOpen: Boolean = false,
     val listId: Long? = null, // when show words only from this list
+    val listName: String? = null
 )
 
 enum class ExamMode {
