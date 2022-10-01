@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.lists.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
@@ -43,7 +44,9 @@ fun DialogAddNewList(
                 onValueChange = {
                     newListName = it
                 },
-                label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) }
+                label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
             )
             OutlinedButton(
                 onClick = { handleOnClick() },

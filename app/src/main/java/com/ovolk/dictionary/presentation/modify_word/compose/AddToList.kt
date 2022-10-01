@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
 
@@ -57,7 +58,8 @@ fun AddToList(
                     onValueChange = {
                         newListName = it
                     },
-                    label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) }
+                    label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 OutlinedButton(
                     onClick = {
@@ -117,22 +119,22 @@ fun AddToList(
 }
 
 
-//@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
-//@Composable
-//fun ComposablePreviewAddToList() {
-//    AddToList(
-//        state = ComposeState(
-//            wordListInfo = ModifyWordListItem(
-//                title = "My List",
-//                count = 10,
-//                id = 1L
-//            ),
-//            wordLists = emptyList()
-//        ),
-//        addNewList = {},
-//        onSelectList = {}
-//    )
-//}
+@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Composable
+fun ComposablePreviewAddToList() {
+    AddToList(
+        state = ComposeState(
+            wordListInfo = ModifyWordListItem(
+                title = "My List",
+                count = 10,
+                id = 1L
+            ),
+            wordLists = emptyList()
+        ),
+        addNewList = {},
+        onSelectList = {}
+    )
+}
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
