@@ -61,7 +61,7 @@ jobs:
   un_signed:
     name: build unsigned APK
     runs-on: ubuntu-latest
-    if: github.ref_name == 'test-2'
+    if: github.ref_name == 'qa'
     steps:
       - uses: actions/checkout@v1
 
