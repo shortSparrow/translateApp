@@ -5,7 +5,7 @@ on:
     branches:
       - pre-prod
       - main
-      - test
+      - test-2
 
 jobs:
   signed:
