@@ -3,7 +3,7 @@ name: Android Build
 on:
   push:
     branches:
-      - pre-prod
+      - qa
       - main
       - test-2
 
@@ -97,3 +97,4 @@ jobs:
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: testers
           file: app/build/outputs/apk/qarelease/app-qarelease.apk
+          releaseNotes: ${{ github.event.head_commit.message }}
