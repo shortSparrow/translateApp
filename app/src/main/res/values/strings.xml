@@ -63,6 +63,7 @@
     <string name="left_before_next_reminder">Left before next reminder:</string>
     <string name="settings_update_word_success">You successfully updated settings</string>
     <string name="settings_update_word_failed">Error happened</string>
+    <string name="settings_time_push_notification">Select time push notification:"</string>
 
     <!-- Lists Screen  -->
     <string name="lists_screen_add_new_list_label">Name of new list</string>

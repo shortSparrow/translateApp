@@ -9,6 +9,7 @@ import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.util.*
 import com.google.gson.Gson
+import com.ovolk.dictionary.presentation.settings.SettingsUiState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -40,15 +41,24 @@ class ExamReminder @Inject constructor(
         val gson = Gson()
         val timeGson = gson.toJson(time)
 
-        Timber.d("DELAY: ${delay}")
-        sharedPref.edit().apply {
-            putInt(EXAM_REMINDER_FREQUENCY, frequency)
-            putLong(LEFT_BEFORE_NOTIFICATION, delay)
-            putString(EXAM_REMINDER_TIME, timeGson)
-            commit()
-        }
 
-        setReminder(delay)
+        if (frequency == PushFrequency.NONE) {
+            resetReminder().apply {
+                sharedPref.edit().apply {
+                    putString(EXAM_REMINDER_TIME, timeGson)
+                    apply()
+                }
+            }
+        } else {
+            sharedPref.edit().apply {
+                putInt(EXAM_REMINDER_FREQUENCY, frequency)
+                putLong(LEFT_BEFORE_NOTIFICATION, delay)
+                putString(EXAM_REMINDER_TIME, timeGson)
+                apply()
+            }
+
+            setReminder(delay)
+        }
     }
 
     private fun setReminder(delay: Long) {
@@ -62,9 +72,10 @@ class ExamReminder @Inject constructor(
     }
 
 
-    fun resetReminder() {
+    private fun resetReminder() {
         sharedPref.edit().apply {
             remove(LEFT_BEFORE_NOTIFICATION)
+            putInt(EXAM_REMINDER_FREQUENCY, PushFrequency.NONE)
             commit()
         }
 
@@ -98,7 +109,7 @@ class ExamReminder @Inject constructor(
 
         sharedPref.edit().apply {
             putLong(LEFT_BEFORE_NOTIFICATION, delay)
-            commit()
+            apply()
         }
 
         setReminder(delay)

@@ -204,12 +204,6 @@ class SettingsViewModel @Inject constructor(
             else -> PushFrequency.ONCE_AT_DAY
         }
 
-        if (reminderFrequency == PushFrequency.NONE) {
-            examReminder.resetReminder()
-            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
-            return
-        }
-
         try {
             examReminder.updateReminder(
                 frequency = reminderFrequency,

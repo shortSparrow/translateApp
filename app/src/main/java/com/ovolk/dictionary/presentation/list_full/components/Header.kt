@@ -32,7 +32,8 @@ fun Header(
             modifier = Modifier
                 .align(Alignment.Start)
                 .padding(
-                    bottom = dimensionResource(id = R.dimen.gutter)
+                    bottom = dimensionResource(id = R.dimen.gutter),
+                    start = 1.5.dp
                 )
         ) {
             Box(
@@ -56,8 +57,8 @@ fun Header(
                             stringResource(id = R.string.cd_go_back),
                             tint = colorResource(R.color.grey),
                             modifier = Modifier
-                                .width(25.dp)
-                                .height(25.dp)
+                                .width(24.dp)
+                                .height(24.dp)
                         )
                     }
                 }
@@ -96,8 +97,8 @@ fun Header(
                             stringResource(id = R.string.lists_screen_cd_rename_selected_list),
                             tint = colorResource(R.color.grey),
                             modifier = Modifier
-                                .width(25.dp)
-                                .height(25.dp)
+                                .width(24.dp)
+                                .height(24.dp)
                         )
                     }
                 }

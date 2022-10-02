@@ -14,7 +14,7 @@ import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
 import dagger.hilt.android.AndroidEntryPoint
 
-val reminderFrequencyList = listOf("вимкнути", "раз на день", "раз на 3 дні", "раз на 6 днів")
+val reminderFrequencyList = listOf("disable", "once a day", "once every 3 days", "once every 6 days")
 
 @AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {

@@ -8,6 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.exam.ExamReminder
@@ -39,20 +40,30 @@ class MainActivity : AppCompatActivity() {
             examReminder.setInitialReminderIfNeeded()
         }
 
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
         // get text from selected items
         val text = intent
             .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
         if (text != null) {
-            val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            val navController = navHostFragment.navController
-
             navController.navigate(
                 WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
                     mode = ModifyWordModes.MODE_ADD, wordValue = text.toString()
                 )
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NavDeepLinkBuilder(this)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(R.navigation.app_navigation)
+            .setDestination(R.id.wordListFragment)
+            .createPendingIntent()
+
     }
 
 
