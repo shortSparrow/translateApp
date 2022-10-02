@@ -12,12 +12,15 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.NavDeepLinkBuilder
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.MainActivity
 import com.ovolk.dictionary.presentation.exam.ExamReminder
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var examReminder: ExamReminder
@@ -32,12 +35,24 @@ class AlarmReceiver : BroadcastReceiver() {
             createNotificationChannel(notificationManager)
 
 
-            val notificationIntent = Intent(context, MainActivity::class.java)
-            notificationIntent.putExtra("destination", R.id.examKnowledgeWordsFragment)
-            val pendingIntent = PendingIntent.getActivity(
-                context, 0,
-                notificationIntent, 0
-            )
+//            val notificationIntent = Intent(context, MainActivity::class.java)
+//            notificationIntent.putExtra("destination", R.id.examKnowledgeWordsFragment)
+//            val pendingIntent = PendingIntent.getActivity(
+//                context, 0,
+//                notificationIntent, 0
+//            )
+
+//            val pendingIntent = NavDeepLinkBuilder(context)
+//                .setGraph(R.navigation.app_navigation)
+//                .setDestination(R.id.examKnowledgeWordsFragment)
+//                .createPendingIntent()
+
+
+            val pendingIntent = NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.app_navigation)
+                .setDestination(R.id.examKnowledgeWordsFragment)
+                .createPendingIntent()
 
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.reminder_push_exam_title))
