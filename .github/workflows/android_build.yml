@@ -5,6 +5,7 @@ on:
     branches:
       - pre-prod
       - main
+      - test
 
 jobs:
   signed:
@@ -61,7 +62,7 @@ jobs:
   un_signed:
     name: build unsigned APK
     runs-on: ubuntu-latest
-    if: github.ref_name == 'pre-prod'
+    if: github.ref_name == 'test'
     steps:
       - uses: actions/checkout@v1
 
@@ -75,6 +76,10 @@ jobs:
 
       - run: sudo apt-get -y install openjdk-11-jdk
         shell: bash
+
+      - name: Setup verions code
+        run: |
+          echo "VERSION_CODE=${{ github.run_number }}" > release.properties
 
       - name: Run test
         run: ./gradlew test
