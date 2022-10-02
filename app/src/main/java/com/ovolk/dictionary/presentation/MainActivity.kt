@@ -95,13 +95,13 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
 //            Timber.d("destination: ${destination.id} ${destination.label}")
 
-            when (destination.id) {
-                R.id.wordListFragment -> showBottomNav()
-                R.id.examKnowledgeWordsFragment -> showBottomNav()
-                R.id.settingsFragment -> showBottomNav()
-                R.id.listFragment -> showBottomNav()
-                else -> hideBottomNav()
-            }
+//            when (destination.id) {
+//                R.id.wordListFragment -> showBottomNav()
+//                R.id.examKnowledgeWordsFragment -> showBottomNav()
+//                R.id.settingsFragment -> showBottomNav()
+//                R.id.listFragment -> showBottomNav()
+//                else -> hideBottomNav()
+//            }
 
             bottomBar.menu.forEach { item ->
 //                Timber.d("TITLE: ${item.title} ${navigationList[item.title]} ${destination.label}")
