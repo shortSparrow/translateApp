@@ -34,20 +34,6 @@ class AlarmReceiver : BroadcastReceiver() {
             ) as NotificationManager
             createNotificationChannel(notificationManager)
 
-
-//            val notificationIntent = Intent(context, MainActivity::class.java)
-//            notificationIntent.putExtra("destination", R.id.examKnowledgeWordsFragment)
-//            val pendingIntent = PendingIntent.getActivity(
-//                context, 0,
-//                notificationIntent, 0
-//            )
-
-//            val pendingIntent = NavDeepLinkBuilder(context)
-//                .setGraph(R.navigation.app_navigation)
-//                .setDestination(R.id.examKnowledgeWordsFragment)
-//                .createPendingIntent()
-
-
             val pendingIntent = NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.app_navigation)
