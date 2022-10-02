@@ -20,14 +20,21 @@ android {
             keyAlias p.getProperty("ALIAS", ".")
             keyPassword p.getProperty("KEY_PASSWORD", ".")
         }
+
+        debug {
+            storeFile file("../debug-keystore.jks")
+            storePassword "android"
+            keyAlias "debug"
+            keyPassword "android"
+        }
     }
 
     defaultConfig {
         applicationId "com.ovolk.dictionary"
         minSdk 24
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode p["VERSION_CODE"]?.toInteger() ?: 1
+        versionName "0.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
     }
@@ -35,6 +42,7 @@ android {
     buildTypes {
         // locally
         debug {
+            signingConfig signingConfigs.debug
             debuggable true
             applicationIdSuffix = ".debug"
         }
