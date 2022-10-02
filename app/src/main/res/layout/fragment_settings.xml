@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.45" />
+            app:layout_constraintGuide_percent="0.6" />
 
 
         <TextView
@@ -21,8 +21,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/medium_gutter"
+            android:paddingEnd="@dimen/gutter"
             android:text="@string/settings_reminder_label"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/menu"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,14 +33,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/label"
-            android:paddingLeft="@dimen/gutter"
             app:layout_constraintBottom_toBottomOf="@+id/reminder_frequency_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@+id/reminder_frequency_label"
             tools:layout_width="0dp">
 
             <AutoCompleteTextView
+                android:labelFor="@id/menu"
                 android:id="@+id/menu_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,11 +48,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/time_push_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/large_gutter"
-            android:text="Select time push notification"
+            android:text="@string/settings_time_push_notification"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,12 +62,12 @@
             android:id="@+id/time_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/gutter"
+            android:layout_marginStart="@dimen/gutter"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintBottom_toBottomOf="@+id/time_push_label"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/time_push_label"
             tools:text="10:00" />
 
         <Button
@@ -90,7 +90,7 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/time_push_label"
             tools:visibility="visible" />
 
         <TextView
