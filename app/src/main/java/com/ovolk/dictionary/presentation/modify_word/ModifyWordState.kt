@@ -1,6 +1,8 @@
 package com.ovolk.dictionary.presentation.modify_word
 
 import android.view.View
+import androidx.navigation.NavController
+import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
@@ -77,4 +79,16 @@ data class ModifyWordState(
 data class ComposeState(
     val wordListInfo: ModifyWordListItem? = null,
     val wordLists: List<ModifyWordListItem> = emptyList(),
+    val modalError: SimpleError = SimpleError(
+        isError = false,
+        text = ""
+    ),
+    val isOpenSelectModal: Boolean = false,
+    val isOpenAddNewListModal: Boolean = false,
 )
+
+sealed class ModifyWordAction {
+    object ResetModalError: ModifyWordAction()
+    data class HandleAddNewListModal(val isOpen: Boolean) : ModifyWordAction()
+    data class HandleSelectModal(val isOpen: Boolean) : ModifyWordAction()
+}

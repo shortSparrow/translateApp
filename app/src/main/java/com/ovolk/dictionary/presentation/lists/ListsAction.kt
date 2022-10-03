@@ -8,6 +8,7 @@ sealed class ListsAction {
     object DeclineDeleteSelectedLists : ListsAction()
     object CloseModal : ListsAction()
     object OpenModalNewList : ListsAction()
+    object ResetModalError : ListsAction()
     data class OpenModalRenameList(val currentName: String, val listId: Long) : ListsAction()
     data class SelectList(val listId: Long) : ListsAction()
     data class AddNewList(val title: String) : ListsAction()

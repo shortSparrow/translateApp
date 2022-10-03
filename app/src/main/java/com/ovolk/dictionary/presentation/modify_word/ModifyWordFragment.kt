@@ -72,7 +72,9 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                 AddToList(
                     state = state,
                     addNewList = { title: String -> viewModel.addNewList(title) },
-                    onSelectList = { id: Long -> viewModel.onSelectList(id) })
+                    onSelectList = { id: Long -> viewModel.onSelectList(id) },
+                    onAction = viewModel::onComposeAction
+                )
             }
         }
 
@@ -98,7 +100,10 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     private fun launchRightMode() {
         when (args.mode) {
             ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
-            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(args.wordValue, listId = args.listId)
+            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(
+                args.wordValue,
+                listId = args.listId
+            )
         }
     }
 

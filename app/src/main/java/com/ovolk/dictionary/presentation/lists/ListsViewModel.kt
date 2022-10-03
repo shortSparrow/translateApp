@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.DeleteListsUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
@@ -59,7 +60,8 @@ class ListsViewModel @Inject constructor(
 
     private fun closeModalList() {
         state = state.copy(
-            modalList = ModalListState(isOpen = false, listId = null)
+            modalList = ModalListState(isOpen = false, listId = null),
+            modalError = SimpleError(isError = false)
         )
     }
 
@@ -67,13 +69,41 @@ class ListsViewModel @Inject constructor(
         state = state.copy(isOpenDeleteListModal = value)
     }
 
+    private fun handleModalList(
+        text: String,
+        onSuccess: (title: String) -> Unit
+    ) {
+        val title = text.trim()
+        if (title.isNotEmpty()) {
+            onSuccess(title)
+        } else {
+            state = state.copy(
+                modalError = SimpleError(
+                    isError = true,
+                    text = application.getString(R.string.lists_screen_modal_error)
+                )
+            )
+        }
+    }
+
+    private fun resetModalError() {
+        if (state.modalError.isError) {
+            state = state.copy(modalError = SimpleError(isError = false))
+        }
+    }
+
     fun onAction(action: ListsAction) {
         when (action) {
             is ListsAction.AddNewList -> {
-                viewModelScope.launch {
-                    addNewListUseCase.addNewList(action.title)
-                }
-                closeModalList()
+                handleModalList(
+                    action.title,
+                    onSuccess = { title ->
+                        viewModelScope.launch {
+                            addNewListUseCase.addNewList(title)
+                        }
+                        closeModalList()
+                    }
+                )
             }
             is ListsAction.SelectList -> {
                 val newList = state.list.map { item ->
@@ -99,7 +129,10 @@ class ListsViewModel @Inject constructor(
             }
             is ListsAction.OnListItemPress -> {
                 action.navController.navigate(
-                    ListFragmentDirections.actionListFragmentToListFull(listId = action.listId, listName = action.listName)
+                    ListFragmentDirections.actionListFragmentToListFull(
+                        listId = action.listId,
+                        listName = action.listName
+                    )
                 )
             }
             ListsAction.CloseModal -> {
@@ -127,17 +160,24 @@ class ListsViewModel @Inject constructor(
                 )
             }
             is ListsAction.RenameList -> {
-                viewModelScope.launch {
-                    state.modalList.listId?.let {
-                        renameListUseCase.addNewList(
-                            title = action.title,
-                            id = it
-                        )
+                handleModalList(
+                    action.title,
+                    onSuccess = { title ->
+                        viewModelScope.launch {
+                            state.modalList.listId?.let {
+                                renameListUseCase.addNewList(
+                                    title = title,
+                                    id = it
+                                )
+                            }
+                            closeModalList()
+                        }
                     }
-                }
-                closeModalList()
+                )
             }
-
+            ListsAction.ResetModalError -> {
+                resetModalError()
+            }
         }
     }
 }

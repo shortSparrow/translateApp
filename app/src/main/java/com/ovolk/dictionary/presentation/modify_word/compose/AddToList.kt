@@ -1,9 +1,10 @@
 package com.ovolk.dictionary.presentation.modify_word.compose
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,38 +19,23 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 
 @Composable
 fun AddToList(
     state: ComposeState,
     addNewList: (title: String) -> Unit,
-    onSelectList: (id: Long) -> Unit
+    onSelectList: (id: Long) -> Unit,
+    onAction: (ModifyWordAction) -> Unit,
 ) {
-    var isOpenSelectModal by remember {
-        mutableStateOf(false)
-    }
-
-    var isOpenAddNewListModal by remember {
-        mutableStateOf(false)
-    }
-
     var newListName by remember {
         mutableStateOf("")
     }
 
-    fun openModal() {
-        isOpenSelectModal = true
-    }
-
-    fun closeModal() {
-        isOpenSelectModal = false
-    }
-
-
-    if (isOpenAddNewListModal) {
+    if (state.isOpenAddNewListModal) {
         MyDialog(
             onDismissRequest = {
-                isOpenAddNewListModal = false
+                onAction(ModifyWordAction.HandleAddNewListModal(false))
                 newListName = ""
             },
             content = {
@@ -57,40 +43,50 @@ fun AddToList(
                     value = newListName,
                     onValueChange = {
                         newListName = it
+                        onAction(ModifyWordAction.ResetModalError)
                     },
                     label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    isError = state.modalError.isError
                 )
-                OutlinedButton(
-                    onClick = {
-                        addNewList(newListName)
-                        isOpenAddNewListModal = false
-                        newListName = ""
-                    },
-                    Modifier
-                        .padding(top = 20.dp)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Text(text = stringResource(id = R.string.save).uppercase())
+                Box(Modifier.fillMaxWidth()) {
+                    if (state.modalError.isError) {
+                        Text(
+                            text = state.modalError.text,
+                            maxLines = 1,
+                            color = colorResource(id = R.color.red),
+                            modifier = Modifier.padding(horizontal = 5.dp)
+                        )
+                    }
+                    OutlinedButton(
+                        onClick = {
+                            addNewList(newListName)
+                            newListName = ""
+                        },
+                        Modifier
+                            .padding(top = 20.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Text(text = stringResource(id = R.string.save).uppercase())
+                    }
                 }
             },
             title = stringResource(id = R.string.modify_word_dialog_add_new_list_title)
         )
     }
 
-    if (isOpenSelectModal) {
+    if (state.isOpenSelectModal) {
         DialogSelectList(
             list = state.wordLists,
-            onDismissRequest = { closeModal() },
+            onDismissRequest = { onAction(ModifyWordAction.HandleSelectModal(false)) },
             onItemsPress = { id: Long -> onSelectList(id) },
-            onAddNewItemPress = { isOpenAddNewListModal = true }
+            onAddNewItemPress = { onAction(ModifyWordAction.HandleAddNewListModal(true)) }
         )
     }
 
     if (state.wordListInfo == null) {
-
         Column() {
-            OutlinedButton(onClick = { openModal() }) {
+            OutlinedButton(onClick = { onAction(ModifyWordAction.HandleSelectModal(true)) }) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = stringResource(id = R.string.modify_word_add_to_list).uppercase())
                     Icon(
@@ -111,7 +107,7 @@ fun AddToList(
 
             ListItem(
                 wordListInfo = state.wordListInfo,
-                onItemsPress = { openModal() },
+                onItemsPress = { onAction(ModifyWordAction.HandleSelectModal(true)) },
                 withMark = false
             )
         }
@@ -119,7 +115,7 @@ fun AddToList(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Preview(showBackground = true, device = Devices.PIXEL_2)
 @Composable
 fun ComposablePreviewAddToList() {
     AddToList(
@@ -129,14 +125,15 @@ fun ComposablePreviewAddToList() {
                 count = 10,
                 id = 1L
             ),
-            wordLists = emptyList()
+            wordLists = emptyList(),
         ),
         addNewList = {},
-        onSelectList = {}
+        onSelectList = {},
+        onAction = {}
     )
 }
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Preview(showBackground = true, device = Devices.PIXEL_2)
 @Composable
 fun ComposablePreviewAddToList2() {
     AddToList(
@@ -145,6 +142,47 @@ fun ComposablePreviewAddToList2() {
             wordLists = emptyList()
         ),
         addNewList = {},
-        onSelectList = {}
+        onSelectList = {},
+        onAction = {}
+    )
+}
+
+@Preview(showBackground = true, device = Devices.PIXEL_2)
+@Composable
+fun ComposablePreviewAddToList3() {
+    AddToList(
+        state = ComposeState(
+            wordListInfo = ModifyWordListItem(
+                title = "My List",
+                count = 10,
+                id = 1L
+            ),
+            wordLists = emptyList(),
+            isOpenAddNewListModal = true,
+            isOpenSelectModal = false,
+        ),
+        addNewList = {},
+        onSelectList = {},
+        onAction = {}
+    )
+}
+
+@Preview(showBackground = true, device = Devices.PIXEL_2)
+@Composable
+fun ComposablePreviewAddToList4() {
+    AddToList(
+        state = ComposeState(
+            wordListInfo = ModifyWordListItem(
+                title = "My List",
+                count = 10,
+                id = 1L
+            ),
+            wordLists = emptyList(),
+            isOpenAddNewListModal = false,
+            isOpenSelectModal = true,
+        ),
+        addNewList = {},
+        onSelectList = {},
+        onAction = {}
     )
 }
