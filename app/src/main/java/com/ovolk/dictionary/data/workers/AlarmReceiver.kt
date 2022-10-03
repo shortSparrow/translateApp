@@ -83,7 +83,6 @@ class AlarmReceiver : BroadcastReceiver() {
         private const val CHANNEL_NAME = "Exam reminder"
         private const val NOTIFICATION_ID = 100
 
-
         fun newIntent(context: Context): Intent {
             return Intent(context, AlarmReceiver::class.java)
         }
