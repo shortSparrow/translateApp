@@ -200,7 +200,7 @@
                 <Button
                     android:id="@+id/show_variants_label"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="170dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/gutter"
                     android:layout_marginTop="@dimen/medium_gutter"
@@ -223,7 +223,7 @@
                 <Button
                     android:id="@+id/show_hints_label"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="170dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="@dimen/gutter"

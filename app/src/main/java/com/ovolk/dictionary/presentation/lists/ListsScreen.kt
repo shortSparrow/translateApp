@@ -41,6 +41,7 @@ fun ListsScreen(
     if (state.modalList.isOpen) {
         DialogAddNewList(
             modalListState = state.modalList,
+            modalError = state.modalError,
             onAction = onAction
         )
     }

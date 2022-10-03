@@ -32,7 +32,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/label"
+            android:hint="@string/frequency"
             app:layout_constraintBottom_toBottomOf="@+id/reminder_frequency_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/reminder_frequency_label"

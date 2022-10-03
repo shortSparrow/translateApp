@@ -13,6 +13,7 @@ import com.ovolk.dictionary.presentation.settings.SettingsUiState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 data class ReminderTime(
@@ -46,6 +47,7 @@ class ExamReminder @Inject constructor(
             resetReminder().apply {
                 sharedPref.edit().apply {
                     putString(EXAM_REMINDER_TIME, timeGson)
+                    putInt(EXAM_REMINDER_FREQUENCY, frequency)
                     apply()
                 }
             }
@@ -75,8 +77,7 @@ class ExamReminder @Inject constructor(
     private fun resetReminder() {
         sharedPref.edit().apply {
             remove(LEFT_BEFORE_NOTIFICATION)
-            putInt(EXAM_REMINDER_FREQUENCY, PushFrequency.NONE)
-            commit()
+            apply()
         }
 
         val alarmManager =
@@ -91,6 +92,9 @@ class ExamReminder @Inject constructor(
         val gson = Gson()
 
         val frequency = sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)
+        if (frequency == PushFrequency.NONE) {
+            return
+        }
         val defaultValue = gson.toJson(
             ReminderTime(
                 minutes = PushFrequency.DEFAULT_MINUTES,
@@ -119,7 +123,11 @@ class ExamReminder @Inject constructor(
         coroutineScope {
             val isWordListNoEmpty = getExamWordListUseCase.searchWordListSize()
             isWordListNoEmpty.collectLatest { count ->
-                when(count) {
+                /**
+                 * On first install wordCount = 0, if user add one word, we setup reminder.
+                 * If user remove word and count = 0 we again reset reminder.
+                 */
+                when (count) {
                     0 -> resetReminder()
                     1 -> repeatReminder()
                 }
