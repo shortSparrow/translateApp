@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.FragmentExamKnowledgeWordsBinding
 import com.ovolk.dictionary.domain.model.exam.ExamWord
@@ -28,9 +29,7 @@ import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.adapter.ModifyWordAdapter
 import com.ovolk.dictionary.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.ovolk.dictionary.util.setOnTextChange
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBinding>() {
@@ -59,7 +58,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     }
 
     override fun onDestroyView() {
-        Timber.d("onDestroyView")
         viewModel.resetState()
         super.onDestroyView()
     }

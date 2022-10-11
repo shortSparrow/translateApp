@@ -1,6 +1,5 @@
 package com.ovolk.dictionary.util
 
-import timber.log.Timber
 import java.util.*
 
 class PushFrequency {
@@ -28,18 +27,9 @@ fun getExamReminderDelayFromNow(
     dueDate.set(Calendar.SECOND, 0)
     dueDate.set(Calendar.MILLISECOND, 0)
 
-    Timber.tag("SSS").d("TIME: ${hours} ${minutes}")
-    Timber.tag("SSS").d("currentDate_1: ${currentDate.timeInMillis}")
-    Timber.tag("SSS").d("dueDate_1: ${dueDate.timeInMillis}")
-
     if ((dueDate.timeInMillis - currentDate.timeInMillis) <= 0) {
         dueDate.add(Calendar.MILLISECOND, frequencyDelay)
     }
-
-    Timber.tag("SSS").d("frequencyDelay: ${frequencyDelay}")
-    Timber.tag("SSS").d("currentDate: ${currentDate.timeInMillis}")
-    Timber.tag("SSS").d("dueDate: ${dueDate.timeInMillis}")
-    Timber.tag("SSS").d("DIFF: ${dueDate.timeInMillis - currentDate.timeInMillis}")
 
     return dueDate.timeInMillis
 }

@@ -1,30 +1,21 @@
 package com.ovolk.dictionary.presentation.settings
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.app.Application
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.CountDownTimer
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.presentation.exam.ExamReminder
 import com.ovolk.dictionary.presentation.exam.ReminderTime
-import com.ovolk.dictionary.presentation.word_list.WordListViewModelState
 import com.ovolk.dictionary.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -124,8 +115,6 @@ class SettingsViewModel @Inject constructor(
             else -> PushFrequency.ONCE_AT_DAY
         }
 
-        Timber.d("reminderFrequency: ${reminderFrequency}, ${state.frequencyValue}")
-
         try {
             examReminder.updateReminder(
                 frequency = reminderFrequency,
@@ -173,7 +162,6 @@ class SettingsViewModel @Inject constructor(
 
         val getNotificationPref =
             sharedPref.getLong(TIME_TO_NEXT_REMINDER, -1L)
-        Timber.d("getNotificationPref: ${getNotificationPref}")
         if (getNotificationPref == -1L) {
             viewModelScope.launch {
                 // delay is needed for prevent override two uiState, which goe one by one
@@ -184,8 +172,8 @@ class SettingsViewModel @Inject constructor(
         }
 
         val millis = getNotificationPref - Calendar.getInstance().timeInMillis
-        Timber.d("millis: ${millis}")
 
+        // FIXME maybe replace it to main activity
 //        if (millis < 0) {
 //            if (sharedPref.getInt(
 //                    EXAM_REMINDER_FREQUENCY,
@@ -200,7 +188,6 @@ class SettingsViewModel @Inject constructor(
             timer = object : CountDownTimer(millis, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     val hms = convertTimeToHMS(millisUntilFinished)
-                    Timber.d("TIME: ${hms}")
                     _uiState.value = SettingsUiState.TimeBeforePush(time = hms)
                 }
 
@@ -222,7 +209,6 @@ class SettingsViewModel @Inject constructor(
             }
             delay(500)
         }
-        Timber.d("restart showTimeBeforePush")
         showTimeBeforePush()
     }
 
