@@ -5,9 +5,9 @@ import java.util.*
 class PushFrequency {
     companion object {
         const val NONE = 0
-        const val ONCE_AT_DAY = 86_400_000 // 0
-        const val ONCE_AT_THREE_DAYS = 259_200_000 // 86_400_000 * 2
-        const val ONCE_AT_SIX_DAYS = 518_400_000 // 86_400_000 * 5
+        const val ONCE_AT_DAY = 86_400_000
+        const val ONCE_AT_THREE_DAYS = 86_400_000 * 2
+        const val ONCE_AT_SIX_DAYS = 86_400_000 * 5
 
         const val DEFAULT_HOURS = 10
         const val DEFAULT_MINUTES = 0
@@ -27,12 +27,11 @@ fun getExamReminderDelayFromNow(
     dueDate.set(Calendar.SECOND, 0)
     dueDate.set(Calendar.MILLISECOND, 0)
 
-    if (dueDate.before(currentDate)) {
+    if ((dueDate.timeInMillis - currentDate.timeInMillis) <= 0) {
         dueDate.add(Calendar.MILLISECOND, frequencyDelay)
     }
 
     return dueDate.timeInMillis
-
 }
 
 

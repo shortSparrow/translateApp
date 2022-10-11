@@ -8,8 +8,5 @@
 .cxx
 local.properties
 *.jks
-<<<<<<< HEAD
-=======
 app/release
 release.properties
->>>>>>> dev

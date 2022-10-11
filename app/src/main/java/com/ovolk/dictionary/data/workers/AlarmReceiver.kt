@@ -2,7 +2,6 @@ package com.ovolk.dictionary.data.workers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -57,6 +56,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
             notificationManager.notify(NOTIFICATION_ID, notification)
 
+            // TODO maybe change on default repeat method
             examReminder.repeatReminder()
         }
     }

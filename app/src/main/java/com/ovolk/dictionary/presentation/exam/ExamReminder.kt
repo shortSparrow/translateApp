@@ -9,11 +9,8 @@ import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.util.*
 import com.google.gson.Gson
-import com.ovolk.dictionary.presentation.settings.SettingsUiState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 data class ReminderTime(
@@ -42,24 +39,16 @@ class ExamReminder @Inject constructor(
         val gson = Gson()
         val timeGson = gson.toJson(time)
 
-
-        if (frequency == PushFrequency.NONE) {
-            resetReminder().apply {
-                sharedPref.edit().apply {
-                    putString(EXAM_REMINDER_TIME, timeGson)
-                    putInt(EXAM_REMINDER_FREQUENCY, frequency)
-                    apply()
-                }
-            }
-        } else {
-            sharedPref.edit().apply {
-                putInt(EXAM_REMINDER_FREQUENCY, frequency)
-                putLong(LEFT_BEFORE_NOTIFICATION, delay)
-                putString(EXAM_REMINDER_TIME, timeGson)
-                apply()
-            }
-
+        sharedPref.edit().apply {
+            putInt(EXAM_REMINDER_FREQUENCY, frequency)
+            putLong(TIME_TO_NEXT_REMINDER, delay)
+            putString(EXAM_REMINDER_TIME, timeGson)
+            apply()
+        }
+        if (frequency != PushFrequency.NONE) {
             setReminder(delay)
+        } else {
+            resetReminder()
         }
     }
 
@@ -69,14 +58,19 @@ class ExamReminder @Inject constructor(
         val intent = AlarmReceiver.newIntent(application)
 
         val pendingIntent =
-            PendingIntent.getBroadcast(application, 100, intent, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(
+                application,
+                EXAM_REMINDER_INTENT_CODE,
+                intent,
+//                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
     }
 
-
     private fun resetReminder() {
         sharedPref.edit().apply {
-            remove(LEFT_BEFORE_NOTIFICATION)
+            remove(TIME_TO_NEXT_REMINDER)
             apply()
         }
 
@@ -84,11 +78,18 @@ class ExamReminder @Inject constructor(
             application.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
         val intent = AlarmReceiver.newIntent(application)
         val pendingIntent =
-            PendingIntent.getBroadcast(application, 100, intent, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(
+                application,
+                EXAM_REMINDER_INTENT_CODE,
+                intent,
+//                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        pendingIntent.cancel()
         alarmManager.cancel(pendingIntent)
     }
 
-    fun repeatReminder() {
+    fun repeatReminder(isInitial: Boolean = false) {
         val gson = Gson()
 
         val frequency = sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)
@@ -112,7 +113,11 @@ class ExamReminder @Inject constructor(
             )
 
         sharedPref.edit().apply {
-            putLong(LEFT_BEFORE_NOTIFICATION, delay)
+            putLong(TIME_TO_NEXT_REMINDER, delay)
+            if (isInitial) {
+                putInt(EXAM_REMINDER_FREQUENCY, frequency)
+                putString(EXAM_REMINDER_TIME, gson.toJson(time))
+            }
             apply()
         }
 
@@ -129,7 +134,9 @@ class ExamReminder @Inject constructor(
                  */
                 when (count) {
                     0 -> resetReminder()
-                    1 -> repeatReminder()
+                    1 -> {
+                        repeatReminder(isInitial = true)
+                    }
                 }
             }
         }

@@ -110,7 +110,7 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
 
 
     private fun resetChronometer() {
-        val diff = viewModel._player?.let {
+        val diff = viewModel.player?.let {
             it.duration.toLong() - it.currentPosition
         } ?: 0
 
