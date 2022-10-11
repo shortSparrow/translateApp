@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.FragmentSettingsBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
@@ -35,6 +33,12 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         onClickListeners()
     }
 
+    override fun onDestroyView() {
+        viewModel.stopTimer()
+        super.onDestroyView()
+    }
+
+
     private fun observeData() = with(binding) {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             when (uiState) {
@@ -50,12 +54,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     timePicker.text = "${uiState.timeHours}:${uiState.timeMinutes}"
                 }
                 is SettingsUiState.IsSuccessUpdateSettings -> {
-                    val message =
-                        if (uiState.isSuccess) getString(R.string.settings_update_word_success) else getString(
-                            R.string.settings_update_word_failed
-                        )
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
+                    save.isEnabled = false
                 }
                 is SettingsUiState.SettingsHasBeenChanged -> {
                     save.isEnabled = !uiState.isSame
@@ -63,6 +62,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 is SettingsUiState.TimeBeforePush -> {
                     leftTimeBeforeNextPushLabel.visibility = View.VISIBLE
                     leftTimeBeforeNextPush.text = uiState.time
+                }
+                SettingsUiState.ResetTimeBeforePush -> {
+                    leftTimeBeforeNextPushLabel.visibility = View.INVISIBLE
+                    leftTimeBeforeNextPush.text = ""
                 }
             }
         }

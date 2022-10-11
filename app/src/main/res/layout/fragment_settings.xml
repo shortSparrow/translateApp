@@ -103,6 +103,5 @@
             app:layout_constraintTop_toTopOf="@+id/left_time_before_next_push_label"
             tools:text="20:03" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

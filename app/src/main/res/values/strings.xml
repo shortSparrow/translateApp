@@ -60,8 +60,6 @@
     <!-- Settings fragment -->
     <string name="settings_reminder_label">Exam frequency</string>
     <string name="left_before_next_reminder">Left time to next exam:</string>
-    <string name="settings_update_word_success">You successfully updated settings</string>
-    <string name="settings_update_word_failed">Error happened</string>
     <string name="settings_time_push_notification">Select push notification time:"</string>
 
     <!-- Lists Screen  -->

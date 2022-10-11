@@ -10,7 +10,9 @@ const val EXAM_WORD_ANSWERS_TABLE_NAME = "exam_word_answers"
 const val EXAM_WORD_ANSWER_LIST_SIZE = 6
 
 const val MY_PREFERENCES = "my_preferences"
-const val LEFT_BEFORE_NOTIFICATION = "left_before_notification"
-const val EXAM_NOTIFICATION_ENABLED = "exam_notification_enabled"
+const val TIME_TO_NEXT_REMINDER = "left_before_notification"
 const val EXAM_REMINDER_FREQUENCY = "exam_reminder_frequency"
 const val EXAM_REMINDER_TIME = "exam_reminder_time"
+
+
+const val EXAM_REMINDER_INTENT_CODE = 101
