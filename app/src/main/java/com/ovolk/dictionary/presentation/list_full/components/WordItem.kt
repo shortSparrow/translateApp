@@ -50,7 +50,7 @@ fun WordItem(
         if (isExpanded) stringResource(id = R.string.show_less) else stringResource(id = R.string.show_more)
 
 
-    Column() {
+    Column {
         Card(
             modifier = Modifier
                 .padding(16.dp)

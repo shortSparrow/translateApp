@@ -44,7 +44,7 @@ class RecordAudioBottomSheet : BottomSheetDialogFragment() {
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             val layoutParams = binding.root.layoutParams
-            layoutParams.height = Resources.getSystem().displayMetrics.heightPixels;
+            layoutParams.height = Resources.getSystem().displayMetrics.heightPixels
             binding.root.layoutParams = layoutParams
         }
     }

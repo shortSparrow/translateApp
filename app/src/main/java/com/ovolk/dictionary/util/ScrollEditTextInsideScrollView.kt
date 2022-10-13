@@ -6,7 +6,7 @@ import android.view.View
 import com.google.android.material.textfield.TextInputEditText
 
 
-class ScrollEditTextInsideScrollView() {
+class ScrollEditTextInsideScrollView {
     companion object {
         @SuppressLint("ClickableViewAccessibility")
         fun allowScroll(target: TextInputEditText) {

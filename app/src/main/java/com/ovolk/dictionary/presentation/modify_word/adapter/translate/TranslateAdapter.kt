@@ -30,11 +30,11 @@ class TranslateAdapter :
             binding.chipItem.backgroundTintList =
                 ContextCompat.getColorStateList(context, R.color.light_grey)
             binding.chipItem.alpha = 0.5f
-            binding.chipItem.setTextColor(ContextCompat.getColor(context, R.color.white));
+            binding.chipItem.setTextColor(ContextCompat.getColor(context, R.color.white))
         } else {
             binding.chipItem.backgroundTintList = null
             binding.chipItem.alpha = 1.0f
-            binding.chipItem.setTextColor(ContextCompat.getColor(context, androidx.media.R.color.secondary_text_default_material_light));
+            binding.chipItem.setTextColor(ContextCompat.getColor(context, androidx.media.R.color.secondary_text_default_material_light))
         }
     }
 

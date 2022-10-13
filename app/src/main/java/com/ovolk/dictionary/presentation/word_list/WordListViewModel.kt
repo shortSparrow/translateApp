@@ -43,7 +43,7 @@ class WordListViewModel @Inject constructor(
     val uiState: LiveData<WordListViewModelState> = _uiState
 
     private var state = WordListState()
-    var previousSize = 0;
+    var previousSize = 0
 
     private var searchJob: Job? = null
     private var dictionaryIsEmpty = false

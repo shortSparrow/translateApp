@@ -28,8 +28,7 @@ fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMar
     val borderColor =
         if (wordListInfo.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
 
-    ConstraintLayout(
-    ) {
+    ConstraintLayout {
         val (dd, mark) = createRefs()
         val modifier = if (withMark) Modifier
             .constrainAs(dd) {
