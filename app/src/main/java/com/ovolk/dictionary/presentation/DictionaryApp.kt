@@ -11,7 +11,7 @@ import timber.log.Timber
 class DictionaryApp : Application() {
     init {
         instance = this
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     override fun onCreate() {

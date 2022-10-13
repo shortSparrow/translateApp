@@ -22,7 +22,7 @@ fun TranslateChipItem(title: String, isHidden: Boolean = false) {
     val alpha = if (isHidden) 0.5f else 1f
     val textColor = if (isHidden) Color.White else colorResource(id = R.color.grey_2)
 
-    Column() {
+    Column {
         Surface(
             shape = RoundedCornerShape(8.dp),
             border = BorderStroke(1.dp, color = colorResource(id = R.color.grey_2)),

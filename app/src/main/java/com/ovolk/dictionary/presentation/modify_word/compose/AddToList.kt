@@ -85,7 +85,7 @@ fun AddToList(
     }
 
     if (state.wordListInfo == null) {
-        Column() {
+        Column {
             OutlinedButton(onClick = { onAction(ModifyWordAction.HandleSelectModal(true)) }) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = stringResource(id = R.string.modify_word_add_to_list).uppercase())
@@ -98,7 +98,7 @@ fun AddToList(
             }
         }
     } else {
-        Column() {
+        Column {
             Text(
                 text = stringResource(id = R.string.modify_word_select_list),
                 color = colorResource(id = R.color.blue_3),

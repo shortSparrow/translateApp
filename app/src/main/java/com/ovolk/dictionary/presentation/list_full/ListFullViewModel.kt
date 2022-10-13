@@ -72,7 +72,7 @@ class ListsFullViewModel @Inject constructor(
             AudioManager.STREAM_MUSIC,
             audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             0
-        );
+        )
 
         player.apply {
             try {
@@ -90,7 +90,7 @@ class ListsFullViewModel @Inject constructor(
                 AudioManager.STREAM_MUSIC,
                 oldVolume,
                 0
-            );
+            )
         }
     }
 

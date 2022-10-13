@@ -102,7 +102,7 @@ class WordItemViewHolder(
             AudioManager.STREAM_MUSIC,
             audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             0
-        );
+        )
         setVolumeImage(playSound, word)
 
         player.apply {
@@ -122,7 +122,7 @@ class WordItemViewHolder(
                 AudioManager.STREAM_MUSIC,
                 oldVolume,
                 0
-            );
+            )
         }
     }
 

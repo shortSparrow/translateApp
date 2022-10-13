@@ -142,7 +142,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
             AudioManager.STREAM_MUSIC,
             audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             0
-        );
+        )
 
         _isPlaying.value = true
         player?.start()
@@ -151,7 +151,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
                 AudioManager.STREAM_MUSIC,
                 oldVolume,
                 0
-            );
+            )
             it.seekTo(0)
             _isPlaying.value = false
         }
