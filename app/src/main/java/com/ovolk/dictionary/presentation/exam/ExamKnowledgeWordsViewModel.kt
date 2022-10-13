@@ -1,16 +1,18 @@
 package com.ovolk.dictionary.presentation.exam
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
-import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
+import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +24,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     private val modifyWordUseCase: ModifyWordUseCase,
     val repository: TranslatedWordRepository,
+    val application: Application
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ExamKnowledgeUiState>()
@@ -99,8 +102,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     fun changeExamMode(mode: ExamMode) {
         // reset state and set new mode
         getExamWordListUseCase.resetExamWordListCurrentPage()
-        state = ExamKnowledgeState().copy(mode = mode, listId = state.listId)
-        generateWordsList(state.listId)
+        state =
+            ExamKnowledgeState().copy(mode = mode, listId = state.listId, listName = state.listName)
+        generateWordsList(state.listId, listName = state.listName)
     }
 
     fun toggleOpenModeDialog(isOpened: Boolean) {
@@ -128,8 +132,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         }
     }
 
-    fun generateWordsList(listId: Long?) {
-        state = state.copy(isLoading = true, listId = listId)
+    fun generateWordsList(listId: Long?, listName: String? = null) {
+        state = state.copy(isLoading = true, listId = listId, listName = listName)
         viewModelScope.launch {
             val list = getExamWordListUseCase(
                 isInitialLoad = true,
@@ -161,7 +165,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     examWordList = state.examWordList,
                     currentWord = state.currentWord!!,
                     activeWordPosition = state.activeWordPosition,
-                    mode = state.mode
+                    mode = state.mode,
+                    listName = if (state.listName != null) application.getString(
+                        R.string.exam_list_name,
+                        state.listName
+                    ) else ""
                 )
             }
 
@@ -451,7 +459,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         return ExamWordStatus.UNPROCESSED // when user skipped word
     }
 
-
     private fun handleNavigation(newActiveWordPosition: Int) {
         val currentWord = state.currentWord!!.copy(
             isHintsExpanded = false,
@@ -477,8 +484,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             examWordList = state.examWordList,
             currentWord = state.currentWord!!,
             activeWordPosition = newActiveWordPosition,
-
-            )
+        )
     }
 
 }

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -21,13 +22,19 @@ import com.ovolk.dictionary.presentation.list_full.ListFullAction
 
 @Composable
 fun Header(
-    onAction: (ListFullAction) -> Unit
+    onAction: (ListFullAction) -> Unit,
+    listName: String
 ) {
     Column {
         TopAppBar(
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
-            modifier = Modifier.align(Alignment.Start)
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(
+                    bottom = dimensionResource(id = R.dimen.gutter),
+                    start = 1.5.dp
+                )
         ) {
             Box(
                 Modifier.fillMaxWidth(),
@@ -50,12 +57,11 @@ fun Header(
                             stringResource(id = R.string.cd_go_back),
                             tint = colorResource(R.color.grey),
                             modifier = Modifier
-                                .width(25.dp)
-                                .height(25.dp)
+                                .width(24.dp)
+                                .height(24.dp)
                         )
                     }
                 }
-
 
                 Box(
                     contentAlignment = Alignment.Center,
@@ -68,13 +74,12 @@ fun Header(
                             Text(
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
-                                text = stringResource(id = R.string.full_lists_title)
+                                text = listName
                             )
                         }
                     }
                 }
 
-                // TODO make exam logic
                 Surface(
                     Modifier
                         .width(45.dp)
@@ -84,7 +89,7 @@ fun Header(
                     color = Color.Transparent
                 ) {
                     Box(
-                        Modifier.clickable {onAction(ListFullAction.TakeExam)},
+                        Modifier.clickable { onAction(ListFullAction.TakeExam) },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -92,8 +97,8 @@ fun Header(
                             stringResource(id = R.string.lists_screen_cd_rename_selected_list),
                             tint = colorResource(R.color.grey),
                             modifier = Modifier
-                                .width(25.dp)
-                                .height(25.dp)
+                                .width(24.dp)
+                                .height(24.dp)
                         )
                     }
                 }
@@ -108,5 +113,5 @@ fun Header(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewHeader() {
-    Header(onAction = {})
+    Header(onAction = {}, listName = "My favorite list")
 }

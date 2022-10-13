@@ -11,7 +11,6 @@ import com.ovolk.dictionary.util.*
 import com.google.gson.Gson
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 import javax.inject.Inject
 
 data class ReminderTime(
@@ -40,15 +39,17 @@ class ExamReminder @Inject constructor(
         val gson = Gson()
         val timeGson = gson.toJson(time)
 
-        Timber.d("DELAY: ${delay}")
         sharedPref.edit().apply {
             putInt(EXAM_REMINDER_FREQUENCY, frequency)
-            putLong(LEFT_BEFORE_NOTIFICATION, delay)
+            putLong(TIME_TO_NEXT_REMINDER, delay)
             putString(EXAM_REMINDER_TIME, timeGson)
-            commit()
+            apply()
         }
-
-        setReminder(delay)
+        if (frequency != PushFrequency.NONE) {
+            setReminder(delay)
+        } else {
+            resetReminder()
+        }
     }
 
     private fun setReminder(delay: Long) {
@@ -57,29 +58,44 @@ class ExamReminder @Inject constructor(
         val intent = AlarmReceiver.newIntent(application)
 
         val pendingIntent =
-            PendingIntent.getBroadcast(application, 100, intent, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(
+                application,
+                EXAM_REMINDER_INTENT_CODE,
+                intent,
+//                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
     }
 
-
-    fun resetReminder() {
+    private fun resetReminder() {
         sharedPref.edit().apply {
-            remove(LEFT_BEFORE_NOTIFICATION)
-            commit()
+            remove(TIME_TO_NEXT_REMINDER)
+            apply()
         }
 
         val alarmManager =
             application.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
         val intent = AlarmReceiver.newIntent(application)
         val pendingIntent =
-            PendingIntent.getBroadcast(application, 100, intent, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(
+                application,
+                EXAM_REMINDER_INTENT_CODE,
+                intent,
+//                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        pendingIntent.cancel()
         alarmManager.cancel(pendingIntent)
     }
 
-    fun repeatReminder() {
+    fun repeatReminder(isInitial: Boolean = false) {
         val gson = Gson()
 
         val frequency = sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)
+        if (frequency == PushFrequency.NONE) {
+            return
+        }
         val defaultValue = gson.toJson(
             ReminderTime(
                 minutes = PushFrequency.DEFAULT_MINUTES,
@@ -97,8 +113,12 @@ class ExamReminder @Inject constructor(
             )
 
         sharedPref.edit().apply {
-            putLong(LEFT_BEFORE_NOTIFICATION, delay)
-            commit()
+            putLong(TIME_TO_NEXT_REMINDER, delay)
+            if (isInitial) {
+                putInt(EXAM_REMINDER_FREQUENCY, frequency)
+                putString(EXAM_REMINDER_TIME, gson.toJson(time))
+            }
+            apply()
         }
 
         setReminder(delay)
@@ -108,9 +128,15 @@ class ExamReminder @Inject constructor(
         coroutineScope {
             val isWordListNoEmpty = getExamWordListUseCase.searchWordListSize()
             isWordListNoEmpty.collectLatest { count ->
-                when(count) {
+                /**
+                 * On first install wordCount = 0, if user add one word, we setup reminder.
+                 * If user remove word and count = 0 we again reset reminder.
+                 */
+                when (count) {
                     0 -> resetReminder()
-                    1 -> repeatReminder()
+                    1 -> {
+                        repeatReminder(isInitial = true)
+                    }
                 }
             }
         }

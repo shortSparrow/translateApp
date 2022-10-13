@@ -103,7 +103,7 @@ class WordMapper @Inject constructor() {
         id = wordDb.wordInfo.id,
         value = wordDb.wordInfo.value,
         translates = wordDb.translates.map { translateDbToLocal(it) },
-        hints = wordDb.hints.map { hintDbToLocal(it) } ?: emptyList(),
+        hints = wordDb.hints.map { hintDbToLocal(it) },
         priority = wordDb.wordInfo.priority,
         status = ExamWordStatus.UNPROCESSED,
         answerVariants = emptyList(),

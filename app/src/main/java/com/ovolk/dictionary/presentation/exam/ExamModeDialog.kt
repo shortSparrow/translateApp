@@ -39,7 +39,7 @@ class ExamModeDialog(context: Context, val viewModel: ExamKnowledgeWordsViewMode
 
         // invoke only after set default value
         dialogView.findViewById<RadioGroup>(R.id.exam_radio_group)
-            .setOnCheckedChangeListener { group, checkedId ->
+            .setOnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {
                     R.id.daily_mode_button -> viewModel.changeExamMode(mode = ExamMode.DAILY_MODE)
                     R.id.infinity_mode_button -> viewModel.changeExamMode(mode = ExamMode.INFINITY_MODE)

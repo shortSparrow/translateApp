@@ -8,12 +8,12 @@ import android.media.MediaRecorder
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ovolk.dictionary.util.generateFileName
 import com.ovolk.dictionary.util.getAudioPath
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
@@ -31,9 +31,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
 
     private var recorder: MediaRecorder? = null
 
-    // FIXME
-    var _player: MediaPlayer? = null
-    val player: MediaPlayer? = _player
+    var player: MediaPlayer? = null
 
     private val _isRecordExist = MutableLiveData<Boolean>()
     val isRecordExist: LiveData<Boolean> = _isRecordExist
@@ -57,13 +55,13 @@ class RecordAudioViewModel(private val applicationContext: Application) :
     }
 
     private fun setupPlayer() {
-        _player = MediaPlayer().apply {
+        player = MediaPlayer().apply {
             try {
                 reset()
                 setDataSource(audioPath)
                 prepare()
             } catch (e: IOException) {
-                Log.e(TAG, "prepare() failed $e")
+                Timber.tag(TAG).e("prepare() failed $e")
             }
         }
     }
@@ -91,7 +89,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
                     )
                 }
             } catch (e: IOException) {
-                Log.e(TAG, "prepare() failed: $e")
+                Timber.tag(TAG).e("prepare() failed: $e")
             }
         }
     }
@@ -108,7 +106,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
             _isRecordExist.value = true
             fileRecordedBuNotSaved = true
         } catch (e: Exception) {
-            Log.e(TAG, "Error endRecording $e")
+            Timber.tag(TAG).e("Error endRecording $e")
             recorder = null
             deleteRecording()
         }
@@ -121,7 +119,7 @@ class RecordAudioViewModel(private val applicationContext: Application) :
             deleteAudioFile()
             fileRecordedBuNotSaved = false
         } catch (e: Exception) {
-            Log.e(TAG, "Deletion failed. $e")
+            Timber.tag(TAG).e("Deletion failed. $e")
         }
     }
 
@@ -130,8 +128,8 @@ class RecordAudioViewModel(private val applicationContext: Application) :
             stop()
         }
         recorder = null
-        _player?.stop()
-        _player = null
+        player?.stop()
+        player = null
     }
 
     private fun deleteAudioFile() {
@@ -144,16 +142,16 @@ class RecordAudioViewModel(private val applicationContext: Application) :
             AudioManager.STREAM_MUSIC,
             audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             0
-        );
+        )
 
         _isPlaying.value = true
-        _player?.start()
-        _player?.setOnCompletionListener {
+        player?.start()
+        player?.setOnCompletionListener {
             audioManager.setStreamVolume(
                 AudioManager.STREAM_MUSIC,
                 oldVolume,
                 0
-            );
+            )
             it.seekTo(0)
             _isPlaying.value = false
         }

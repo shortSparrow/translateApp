@@ -24,16 +24,17 @@ class TranslateAdapter :
     private fun applyHiddenStyle(isHidden: Boolean, binding: ItemTranslateChipBinding) {
         val context = binding.root.context
 
-        binding.chipItem.backgroundTintList = ColorStateList.valueOf(Color.parseColor(R.color.blue.toString()))
+        binding.chipItem.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(R.color.blue))
+
         if (isHidden) {
             binding.chipItem.backgroundTintList =
                 ContextCompat.getColorStateList(context, R.color.light_grey)
             binding.chipItem.alpha = 0.5f
-            binding.chipItem.setTextColor(ContextCompat.getColor(context, R.color.white));
+            binding.chipItem.setTextColor(ContextCompat.getColor(context, R.color.white))
         } else {
             binding.chipItem.backgroundTintList = null
             binding.chipItem.alpha = 1.0f
-            binding.chipItem.setTextColor(ContextCompat.getColor(context, androidx.media.R.color.secondary_text_default_material_light));
+            binding.chipItem.setTextColor(ContextCompat.getColor(context, androidx.media.R.color.secondary_text_default_material_light))
         }
     }
 

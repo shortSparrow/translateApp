@@ -3,7 +3,7 @@ name: Android Build
 on:
   push:
     branches:
-      - pre-prod
+      - qa
       - main
 
 jobs:
@@ -58,11 +58,10 @@ jobs:
           groups: testers
           file: app/build/outputs/apk/release/app-release.apk
 
-
   un_signed:
     name: build unsigned APK
     runs-on: ubuntu-latest
-    if: github.ref_name == 'pre-prod'
+    if: github.ref_name == 'qa'
     steps:
       - uses: actions/checkout@v1
 
@@ -77,9 +76,13 @@ jobs:
       - run: sudo apt-get -y install openjdk-11-jdk
         shell: bash
 
+      - name: Setup verions code
+        run: |
+          echo "VERSION_CODE=${{ github.run_number }}" > release.properties
+
       - name: Run test
         run: ./gradlew test
-      #
+
       #      - name: Run lint
       #        run: ./gradlew lint
 
@@ -93,3 +96,4 @@ jobs:
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: testers
           file: app/build/outputs/apk/qarelease/app-qarelease.apk
+          releaseNotes: ${{ github.event.head_commit.message }}

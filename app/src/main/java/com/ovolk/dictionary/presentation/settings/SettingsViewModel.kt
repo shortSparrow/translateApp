@@ -9,16 +9,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.ovolk.dictionary.presentation.exam.ExamReminder
 import com.ovolk.dictionary.presentation.exam.ReminderTime
 import com.ovolk.dictionary.util.*
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 sealed interface SettingsUiState {
     data class SetReminderFrequency(val frequency: String) : SettingsUiState
@@ -31,13 +32,15 @@ sealed interface SettingsUiState {
         val frequency: String,
         val timeHours: String,
         val timeMinutes: String,
-        val isSettingsTheSame: Boolean = true
+        val isSettingsTheSame: Boolean = true,
     ) : SettingsUiState
 
     data class IsSuccessUpdateSettings(val isSuccess: Boolean) : SettingsUiState
     data class SettingsHasBeenChanged(val isSame: Boolean) : SettingsUiState
 
     data class TimeBeforePush(val time: String) : SettingsUiState
+    object ResetTimeBeforePush: SettingsUiState
+
 }
 
 data class SettingsState(
@@ -48,8 +51,8 @@ data class SettingsState(
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    application: Application,
-    private val examReminder: ExamReminder
+    val application: Application,
+    private val examReminder: ExamReminder,
 ) : ViewModel() {
     private val _uiState = MutableLiveData<SettingsUiState>()
     val uiState: LiveData<SettingsUiState> = _uiState
@@ -63,27 +66,6 @@ class SettingsViewModel @Inject constructor(
             AppCompatActivity.MODE_PRIVATE
         )
 
-    private fun setInitialData() {
-        val position =
-            when (sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)) {
-                PushFrequency.NONE -> 0
-                PushFrequency.ONCE_AT_DAY -> 1
-                PushFrequency.ONCE_AT_THREE_DAYS -> 2
-                PushFrequency.ONCE_AT_SIX_DAYS -> 3
-                else -> 0
-            }
-        val text = reminderFrequencyList[position]
-
-        val time = getTimeReminder()
-        val hours = convertTime(time.hours)
-        val minutes = convertTime(time.minutes)
-
-        _uiState.value =
-            SettingsUiState.SetInitial(frequency = text, timeHours = hours, timeMinutes = minutes)
-        state = state.copy(frequencyValue = text, timeHours = hours, timeMinutes = minutes)
-        initialValues = state
-        showTimeBeforePush()
-    }
 
     fun setupData(initialLaunch: Boolean) {
         if (initialLaunch) {
@@ -94,23 +76,10 @@ class SettingsViewModel @Inject constructor(
                     frequency = state.frequencyValue,
                     timeHours = state.timeHours,
                     timeMinutes = state.timeMinutes,
-                    isSettingsTheSame = state == initialValues
+                    isSettingsTheSame = state == initialValues,
                 )
             showTimeBeforePush()
         }
-    }
-
-    private fun getTimeReminder(): ReminderTime {
-        val gson = Gson()
-        val defaultValue = gson.toJson(
-            ReminderTime(
-                minutes = PushFrequency.DEFAULT_MINUTES,
-                hours = PushFrequency.DEFAULT_HOURS
-            )
-        )
-        val examReminderTime = sharedPref.getString(EXAM_REMINDER_TIME, defaultValue).toString()
-
-        return gson.fromJson(examReminderTime, ReminderTime::class.java)
     }
 
     fun updateUiFrequency(frequencyPosition: Int) {
@@ -132,6 +101,131 @@ class SettingsViewModel @Inject constructor(
         checkIsChangedExist()
     }
 
+    fun stopTimer() {
+        timer?.cancel()
+    }
+
+
+    fun updateSettingsPreferences() {
+        val reminderFrequency = when (reminderFrequencyList.indexOf(state.frequencyValue)) {
+            0 -> PushFrequency.NONE
+            1 -> PushFrequency.ONCE_AT_DAY
+            2 -> PushFrequency.ONCE_AT_THREE_DAYS
+            3 -> PushFrequency.ONCE_AT_SIX_DAYS
+            else -> PushFrequency.ONCE_AT_DAY
+        }
+
+        try {
+            examReminder.updateReminder(
+                frequency = reminderFrequency,
+                startHour = state.timeHours.toInt(),
+                startMinute = state.timeMinutes.toInt()
+            )
+
+            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
+            initialValues = state
+        } catch (e: Exception) {
+            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(false)
+        }
+        showTimeBeforePush()
+    }
+
+    private fun setInitialData() {
+        val position =
+            when (sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)) {
+                PushFrequency.NONE -> 0
+                PushFrequency.ONCE_AT_DAY -> 1
+                PushFrequency.ONCE_AT_THREE_DAYS -> 2
+                PushFrequency.ONCE_AT_SIX_DAYS -> 3
+                else -> 0
+            }
+        val text = reminderFrequencyList[position]
+
+        val time = getTimeReminder()
+        val hours = convertTime(time.hours)
+        val minutes = convertTime(time.minutes)
+
+        _uiState.value =
+            SettingsUiState.SetInitial(
+                frequency = text,
+                timeHours = hours,
+                timeMinutes = minutes,
+            )
+        state = state.copy(frequencyValue = text, timeHours = hours, timeMinutes = minutes)
+        initialValues = state
+        showTimeBeforePush()
+    }
+
+
+    private fun showTimeBeforePush() {
+        timer?.cancel()
+
+        val getNotificationPref =
+            sharedPref.getLong(TIME_TO_NEXT_REMINDER, -1L)
+        if (getNotificationPref == -1L) {
+            viewModelScope.launch {
+                // delay is needed for prevent override two uiState, which goe one by one
+                delay(500)
+                _uiState.value = SettingsUiState.ResetTimeBeforePush
+            }
+            return
+        }
+
+        val millis = getNotificationPref - Calendar.getInstance().timeInMillis
+
+        // FIXME maybe replace it to main activity
+//        if (millis < 0) {
+//            if (sharedPref.getInt(
+//                    EXAM_REMINDER_FREQUENCY,
+//                    PushFrequency.ONCE_AT_DAY
+//                ) != PushFrequency.NONE
+//            ) {
+//                Toast.makeText(application, "restart PUSH notification", Toast.LENGTH_LONG).show()
+//            }
+//        }
+
+        if (millis > 0) {
+            timer = object : CountDownTimer(millis, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val hms = convertTimeToHMS(millisUntilFinished)
+                    _uiState.value = SettingsUiState.TimeBeforePush(time = hms)
+                }
+
+                override fun onFinish() {
+                    // repeat timer
+                    listenReminderRepeat()
+                }
+            }
+            timer?.start()
+        }
+    }
+
+    private fun listenReminderRepeat() = viewModelScope.launch {
+        var listen = true
+        while (listen) {
+            val isReady = sharedPref.getLong(TIME_TO_NEXT_REMINDER, -1L)
+            if (isReady !== -1L) {
+                listen = false
+            }
+            delay(500)
+        }
+        showTimeBeforePush()
+    }
+
+
+    private fun getTimeReminder(): ReminderTime {
+        val gson = Gson()
+        val defaultValue = gson.toJson(
+            ReminderTime(
+                minutes = PushFrequency.DEFAULT_MINUTES,
+                hours = PushFrequency.DEFAULT_HOURS
+            )
+        )
+        val examReminderTime = sharedPref.getString(EXAM_REMINDER_TIME, defaultValue).toString()
+
+        return gson.fromJson(examReminderTime, ReminderTime::class.java)
+    }
+
     private fun checkIsChangedExist() {
         val isSame = state == initialValues
         _uiState.value = SettingsUiState.SettingsHasBeenChanged(isSame)
@@ -139,42 +233,6 @@ class SettingsViewModel @Inject constructor(
 
     private fun convertTime(value: Int): String {
         return if (value < 10) "0$value" else value.toString()
-    }
-
-    private fun showTimeBeforePush() {
-        timer?.cancel()
-        val getNotificationPref =
-            sharedPref.getLong(LEFT_BEFORE_NOTIFICATION, -1L)
-        if (getNotificationPref == -1L) {
-            return
-        }
-
-        val millis = getNotificationPref - Calendar.getInstance().timeInMillis
-
-        timer = object : CountDownTimer(millis, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                val hms = convertTimeToHMS(millisUntilFinished)
-                _uiState.value = SettingsUiState.TimeBeforePush(time = hms)
-            }
-
-            override fun onFinish() {
-                // repeat timer
-                listenReminderRepeat()
-            }
-        }
-        timer?.start()
-    }
-
-    fun listenReminderRepeat() = viewModelScope.launch {
-        var listen = true
-        while (listen) {
-            val isReady = sharedPref.getLong(LEFT_BEFORE_NOTIFICATION, -1L)
-            if (isReady !== -1L) {
-                listen = false
-            }
-            delay(500)
-        }
-        showTimeBeforePush()
     }
 
     @SuppressLint("DefaultLocale")
@@ -194,32 +252,4 @@ class SettingsViewModel @Inject constructor(
         )
     }
 
-
-    fun updateSettingsPreferences() {
-        val reminderFrequency = when (reminderFrequencyList.indexOf(state.frequencyValue)) {
-            0 -> PushFrequency.NONE
-            1 -> PushFrequency.ONCE_AT_DAY
-            2 -> PushFrequency.ONCE_AT_THREE_DAYS
-            3 -> PushFrequency.ONCE_AT_SIX_DAYS
-            else -> PushFrequency.ONCE_AT_DAY
-        }
-
-        if (reminderFrequency == PushFrequency.NONE) {
-            examReminder.resetReminder()
-            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
-            return
-        }
-
-        try {
-            examReminder.updateReminder(
-                frequency = reminderFrequency,
-                startHour = state.timeHours.toInt(),
-                startMinute = state.timeMinutes.toInt()
-            )
-
-            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(true)
-        } catch (e: Exception) {
-            _uiState.value = SettingsUiState.IsSuccessUpdateSettings(false)
-        }
-    }
 }

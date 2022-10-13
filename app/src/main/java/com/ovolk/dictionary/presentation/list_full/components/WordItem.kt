@@ -50,10 +50,10 @@ fun WordItem(
         if (isExpanded) stringResource(id = R.string.show_less) else stringResource(id = R.string.show_more)
 
 
-    Column() {
+    Column {
         Card(
             modifier = Modifier
-                .padding(8.dp) // TODO remove
+                .padding(16.dp)
                 .clickable { onAction(ListFullAction.PressOnWord(wordId = word.id)) },
             elevation = 3.dp,
 

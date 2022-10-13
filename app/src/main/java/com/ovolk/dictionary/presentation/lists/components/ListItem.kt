@@ -32,7 +32,7 @@ import com.ovolk.dictionary.presentation.lists.ListsAction
 fun ListItem(
     item: ListItem,
     onAction: (ListsAction) -> Unit,
-    onItemClick: (listId: Long) -> Unit,
+    onItemClick: (listId: Long, listName: String) -> Unit,
     atLeastOneListSelected: Boolean
 ) {
     val borderColor =
@@ -63,7 +63,7 @@ fun ListItem(
                             if (atLeastOneListSelected) {
                                 onAction(ListsAction.SelectList(item.id))
                             } else {
-                                onItemClick(item.id)
+                                onItemClick(item.id, item.title)
                             }
                         },
                         interactionSource = remember { MutableInteractionSource() },
@@ -123,7 +123,7 @@ fun ComposableListItemPreview() {
             title = "Sport",
             isSelected = true
         ),
-        onItemClick = {},
+        onItemClick = {_: Long, _: String ->  },
         onAction = {},
         atLeastOneListSelected = false,
     )

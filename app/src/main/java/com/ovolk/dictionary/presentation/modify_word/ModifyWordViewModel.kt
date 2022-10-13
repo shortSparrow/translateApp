@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
@@ -55,9 +57,36 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    fun addNewList(title:String) {
+    private fun resetModalError() {
+        if (composeState.modalError.isError) {
+            composeState = composeState.copy(modalError = SimpleError(isError = false))
+        }
+    }
+
+    fun onComposeAction(action: ModifyWordAction) {
+        when (action) {
+            ModifyWordAction.ResetModalError -> {
+                resetModalError()
+            }
+            is ModifyWordAction.HandleAddNewListModal -> {
+                composeState = composeState.copy(isOpenAddNewListModal = action.isOpen)
+                if (!action.isOpen) {
+                    resetModalError()
+                }
+            }
+            is ModifyWordAction.HandleSelectModal -> {
+                composeState = composeState.copy(isOpenSelectModal = action.isOpen)
+            }
+        }
+    }
+
+    fun addNewList(title: String) {
         viewModelScope.launch {
-            addNewListUseCase.addNewList(title)
+            val validationResult = addNewListUseCase.addNewList(title)
+            composeState = composeState.copy(
+                isOpenAddNewListModal = validationResult.isError,
+                modalError = validationResult
+            )
         }
     }
 
@@ -158,7 +187,7 @@ class ModifyWordViewModel @Inject constructor(
 
     private fun prefillListIdFromArgs(listId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val res =  getListsUseCase.getListById(listId)
+            val res = getListsUseCase.getListById(listId)
             composeState = composeState.copy(
                 wordListInfo = res
             )
