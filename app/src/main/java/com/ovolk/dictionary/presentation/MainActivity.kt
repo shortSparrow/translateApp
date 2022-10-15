@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.presentation
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -10,14 +11,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.exam.ExamReminder
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.word_list.WordListFragmentDirections
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
+import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var examReminder: ExamReminder
     lateinit var listener: NavController.OnDestinationChangedListener
     private lateinit var bottomBar: BottomNavigationView
+    private var isChooseLanguage = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -38,21 +41,6 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             examReminder.setInitialReminderIfNeeded()
-        }
-
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-
-        // get text from selected items
-        val text = intent
-            .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
-        if (text != null) {
-            navController.navigate(
-                WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
-                    mode = ModifyWordModes.MODE_ADD, wordValue = text.toString()
-                )
-            )
         }
     }
 
@@ -140,6 +128,36 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        val userStatePreferences: SharedPreferences = application.getSharedPreferences(
+            USER_STATE_PREFERENCES,
+            MODE_PRIVATE
+        )
+
+         isChooseLanguage = userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
+
+        if (!isChooseLanguage) {
+            navController.navigate(WordListFragmentDirections.actionWordListFragmentToLanguageToFragment())
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // get text from selected items
+        val text = intent
+            .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
+        if (text != null && isChooseLanguage) {
+            navController.navigate(
+                WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
+                    mode = ModifyWordModes.MODE_ADD, wordValue = text.toString()
+                )
+            )
+        }
     }
 
     private fun showBottomNav() {

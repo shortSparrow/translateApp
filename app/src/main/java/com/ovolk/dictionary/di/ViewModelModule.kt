@@ -3,6 +3,7 @@ package com.ovolk.dictionary.di
 import androidx.lifecycle.ViewModel
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsViewModel
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordViewModel
+import com.ovolk.dictionary.presentation.select_languages.languages_to.LanguagesToViewModel
 import com.ovolk.dictionary.presentation.settings.SettingsViewModel
 import com.ovolk.dictionary.presentation.word_list.WordListViewModel
 import dagger.Binds
@@ -40,4 +41,10 @@ interface ViewModelModule {
     @Binds
     @ViewModelScoped
     fun bindSettingsViewModel(impl: SettingsViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(LanguagesToViewModel::class)
+    @Binds
+    @ViewModelScoped
+    fun bindSelectLanguagesViewModel(impl: LanguagesToViewModel): ViewModel
 }

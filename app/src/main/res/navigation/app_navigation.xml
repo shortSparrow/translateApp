@@ -14,6 +14,11 @@
             android:id="@+id/action_wordListFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment"
             app:popUpTo="@id/wordListFragment" />
+        <action
+            android:id="@+id/action_wordListFragment_to_languageToFragment"
+            app:destination="@id/languagesToFragment"
+            app:popUpTo="@id/wordListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/modifyWordFragment"
@@ -47,9 +52,9 @@
             app:destination="@id/modifyWordFragment" />
         <argument
             android:name="listName"
-            app:argType="string"
             android:defaultValue="@null"
-            app:nullable="true"/>
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="listId"
             android:defaultValue="-1L"
@@ -91,6 +96,24 @@
         <argument
             android:name="listName"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/languagesFromFragment"
+        android:name="com.ovolk.dictionary.presentation.select_languages.languages_from.LanguagesFromFragment"
+        android:label="LanguagesFromFragment">
+        <action
+            app:popUpTo="@id/languagesToFragment"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_languageFromFragment_to_wordListFragment"
+            app:destination="@id/wordListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/languagesToFragment"
+        android:name="com.ovolk.dictionary.presentation.select_languages.languages_to.LanguagesToFragment"
+        android:label="LanguagesToFragment">
+        <action
+            android:id="@+id/action_languageToFragment_to_languageFromFragment"
+            app:destination="@id/languagesFromFragment" />
     </fragment>
 
 </navigation>

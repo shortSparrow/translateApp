@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.list_full.components
+package com.ovolk.dictionary.presentation.core.compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -16,12 +16,12 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.list_full.ListFullAction
 
 
 @Composable
 fun SearchBar(
-    onAction: (ListFullAction) -> Unit
+    onSearch: (query:String) -> Unit,
+    onPressCross: () -> Unit,
 ) {
     var text by remember {
         mutableStateOf("")
@@ -46,7 +46,7 @@ fun SearchBar(
                 ),
                 onValueChange = {
                     text = it
-                    onAction(ListFullAction.SearchWord(it))
+                    onSearch(it)
                 },
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
@@ -54,7 +54,7 @@ fun SearchBar(
                     if (text.isNotEmpty()) {
                         IconButton(onClick = {
                             text = ""
-                            onAction(ListFullAction.SearchWord(""))
+                            onPressCross()
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Close,
@@ -80,5 +80,5 @@ fun SearchBar(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewSearchBar() {
-    SearchBar(onAction = {})
+    SearchBar(onSearch = {}, onPressCross = {})
 }

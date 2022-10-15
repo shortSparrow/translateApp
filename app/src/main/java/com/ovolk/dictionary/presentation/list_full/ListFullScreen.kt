@@ -2,7 +2,6 @@ package com.ovolk.dictionary.presentation.list_full
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,7 +10,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +27,7 @@ import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
 import com.ovolk.dictionary.presentation.list_full.components.Header
-import com.ovolk.dictionary.presentation.list_full.components.SearchBar
+import com.ovolk.dictionary.presentation.core.compose.SearchBar
 import com.ovolk.dictionary.presentation.list_full.components.WordItem
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -57,7 +55,7 @@ fun ListFullScreen(
         }
     ) {
         Column {
-            Header(onAction = onAction, listName=state.listName)
+            Header(onAction = onAction, listName = state.listName)
 
             if (state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
                 LazyColumn(
@@ -68,32 +66,34 @@ fun ListFullScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                   item {
-                       Image(
-                           painter = painterResource(id = R.drawable.empty_list),
-                           contentDescription = stringResource(id = R.string.full_lists_cd_list_is_empty),
-                           modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                       )
-                       Text(
-                           text = stringResource(id = R.string.full_lists_list_is_empty),
-                           modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                           fontSize = 20.sp,
-                           color = colorResource(id = R.color.grey_2)
-                       )
+                    item {
+                        Image(
+                            painter = painterResource(id = R.drawable.empty_list),
+                            contentDescription = stringResource(id = R.string.full_lists_cd_list_is_empty),
+                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
+                        )
+                        Text(
+                            text = stringResource(id = R.string.full_lists_list_is_empty),
+                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
+                            fontSize = 20.sp,
+                            color = colorResource(id = R.color.grey_2)
+                        )
 
-                       Button(onClick = { onAction(ListFullAction.AddNewWord) }) {
-                           Text(
-                               text = stringResource(id = R.string.full_lists_add_new_word).uppercase(),
-                               color = Color.White
-                           )
-                       }
-                   }
+                        Button(onClick = { onAction(ListFullAction.AddNewWord) }) {
+                            Text(
+                                text = stringResource(id = R.string.full_lists_add_new_word).uppercase(),
+                                color = Color.White
+                            )
+                        }
+                    }
                 }
             }
 
             if (state.loadingStatusWordList == LoadingState.SUCCESS) {
                 Box(Modifier.padding(horizontal = 20.dp)) {
-                    SearchBar(onAction = onAction)
+                    SearchBar(
+                        onSearch = { query -> onAction(ListFullAction.SearchWord(query)) },
+                        onPressCross = { onAction(ListFullAction.SearchWord("")) })
                 }
 
                 if (state.wordList.isEmpty() && !state.noAnyWords) {
@@ -102,7 +102,7 @@ fun ListFullScreen(
                     ) {
                         LazyColumn(
                             contentPadding = PaddingValues(
-                               vertical = dimensionResource(id = R.dimen.large_gutter)
+                                vertical = dimensionResource(id = R.dimen.large_gutter)
                             ),
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
@@ -114,9 +114,12 @@ fun ListFullScreen(
                                     contentDescription = stringResource(id = R.string.nothing_found),
                                     modifier = Modifier
                                         .size(250.dp)
-                                        .padding(bottom =  dimensionResource(id = R.dimen.medium_gutter))
+                                        .padding(bottom = dimensionResource(id = R.dimen.medium_gutter))
                                 )
-                                Text(text = stringResource(id = R.string.nothing_found), fontSize = 20.sp)
+                                Text(
+                                    text = stringResource(id = R.string.nothing_found),
+                                    fontSize = 20.sp
+                                )
                             }
                         }
                     }
