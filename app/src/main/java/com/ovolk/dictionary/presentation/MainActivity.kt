@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
             .setGraph(R.navigation.app_navigation)
             .setDestination(R.id.wordListFragment)
             .createPendingIntent()
-
     }
 
 

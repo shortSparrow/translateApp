@@ -5,6 +5,7 @@ import com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsViewModel
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordViewModel
 import com.ovolk.dictionary.presentation.select_languages.languages_to.LanguagesToViewModel
 import com.ovolk.dictionary.presentation.settings.SettingsViewModel
+import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderViewModel
 import com.ovolk.dictionary.presentation.word_list.WordListViewModel
 import dagger.Binds
 import dagger.Module
@@ -47,4 +48,10 @@ interface ViewModelModule {
     @Binds
     @ViewModelScoped
     fun bindSelectLanguagesViewModel(impl: LanguagesToViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(ExamReminderViewModel::class)
+    @Binds
+    @ViewModelScoped
+    fun bindExamReminderViewModel(impl: ExamReminderViewModel): ViewModel
 }

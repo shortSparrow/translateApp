@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.Language
 
 @Composable
 fun LanguageCheckBox(language: Language, onCheck: (language: Language) -> Unit) {

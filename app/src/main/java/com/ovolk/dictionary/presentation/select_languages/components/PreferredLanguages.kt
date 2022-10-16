@@ -16,8 +16,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.select_languages.Language
-import com.ovolk.dictionary.presentation.select_languages.LanguagesToActions
+import com.ovolk.dictionary.domain.model.select_languages.Language
 
 @Composable
 fun PreferredLanguages(langList: List<Language>, onCheck: (language:Language) -> Unit) {

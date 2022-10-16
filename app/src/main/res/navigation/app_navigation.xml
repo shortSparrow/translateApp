@@ -65,7 +65,14 @@
         android:id="@+id/settingsFragment"
         android:name="com.ovolk.dictionary.presentation.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_settingsLanguagesFragment"
+            app:destination="@id/settingsLanguagesFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_examReminderFragment"
+            app:destination="@id/examReminderFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/listFragment"
@@ -115,5 +122,13 @@
             android:id="@+id/action_languageToFragment_to_languageFromFragment"
             app:destination="@id/languagesFromFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsLanguagesFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesFragment"
+        android:label="SettingsLanguagesFragment" />
+    <fragment
+        android:id="@+id/examReminderFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderFragment"
+        android:label="ExamReminderFragment" />
 
 </navigation>

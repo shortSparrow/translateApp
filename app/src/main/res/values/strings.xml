@@ -58,9 +58,16 @@
     <string name="exam_list_name">(%s)</string>
 
     <!-- Settings fragment -->
-    <string name="settings_reminder_label">Exam frequency</string>
-    <string name="left_before_next_reminder">Left time to next exam:</string>
-    <string name="settings_time_push_notification">Select push notification time:"</string>
+    <string name="settings_language_item_title">language</string>
+    <string name="settings_language_cd_item_title">go to the language settings</string>
+    <string name="settings_exam_reminder_item_title">exam reminder</string>
+    <string name="settings_exam_reminder_cd_item_title">go to the exam reminder settings</string>
+
+    <!-- Settings exam reminder fragment -->
+    <string name="settings_exam_reminder_screen_title">Exam Reminder Settings</string>
+    <string name="settings_exam_reminder_label">Exam frequency</string>
+    <string name="settings_exam_reminder_left_before_next_reminder">Left time to next exam:</string>
+    <string name="settings_exam_reminder_time_push_notification">Select push notification time:</string>
 
     <!-- Lists Screen  -->
     <string name="lists_screen_add_new_list_label">Name of new list</string>

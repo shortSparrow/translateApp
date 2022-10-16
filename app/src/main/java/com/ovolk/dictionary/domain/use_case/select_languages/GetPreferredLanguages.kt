@@ -3,7 +3,7 @@ package com.ovolk.dictionary.domain.use_case.select_languages
 import android.app.Application
 import android.content.Context
 import android.telephony.TelephonyManager
-import com.ovolk.dictionary.presentation.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.util.UKRAINE_COUNTRY_CODE
 import com.ovolk.dictionary.util.UKRAINE_LANGUAGE_CODE
 import java.util.*

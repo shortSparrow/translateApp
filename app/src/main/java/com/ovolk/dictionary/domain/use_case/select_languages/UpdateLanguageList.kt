@@ -1,6 +1,6 @@
 package com.ovolk.dictionary.domain.use_case.select_languages
 
-import com.ovolk.dictionary.presentation.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.Language
 import javax.inject.Inject
 
 class UpdateLanguageList @Inject constructor() {

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.util.LANGUAGE_FROM
 import com.ovolk.dictionary.util.LANGUAGE_TO
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES

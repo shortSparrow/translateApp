@@ -1,11 +1,7 @@
 package com.ovolk.dictionary.presentation.select_languages
 
-data class Language(
-    val langCode: String,
-    val name: String,
-    val nativeName: String,
-    val isChecked: Boolean = false
-)
+import com.ovolk.dictionary.domain.model.select_languages.Language
+
 
 data class LanguageState(
     val languageList: List<Language> = emptyList(),

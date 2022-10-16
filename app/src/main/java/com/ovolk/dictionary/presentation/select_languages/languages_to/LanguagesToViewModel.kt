@@ -24,7 +24,7 @@ class LanguagesToViewModel @Inject constructor(
     getLanguageList: GetLanguageList,
     val searchLanguageList: SearchLanguageList,
     val updateLanguageList: UpdateLanguageList,
-    val updateTranslatableLanguages: UpdateTranslatableLanguages
+    private val updateTranslatableLanguages: UpdateTranslatableLanguages
 ) : ViewModel() {
     var state by mutableStateOf(LanguageState())
         private set

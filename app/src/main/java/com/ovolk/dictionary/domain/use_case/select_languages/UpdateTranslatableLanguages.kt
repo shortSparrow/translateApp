@@ -3,7 +3,7 @@ package com.ovolk.dictionary.domain.use_case.select_languages
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import com.ovolk.dictionary.presentation.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.LANGUAGE_FROM
 import com.ovolk.dictionary.util.LANGUAGE_TO

@@ -1,5 +1,7 @@
 package com.ovolk.dictionary.util
 
+import androidx.compose.ui.unit.dp
+
 const val TRANSLATED_WORDS_TABLE_NAME = "translated_words"
 const val TRANSLATED_WORDS_TRANSLATIONS = "word_translations"
 const val TRANSLATED_WORDS_HINTS = "word_hints"
@@ -24,3 +26,6 @@ const val EXAM_REMINDER_INTENT_CODE = 101
 
 const val UKRAINE_COUNTRY_CODE = "ua"
 const val UKRAINE_LANGUAGE_CODE = "uk"
+
+
+val MAX_BUTTON_WIDTH = 300.dp

@@ -14,8 +14,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.presentation.core.compose.SearchBar
-import com.ovolk.dictionary.presentation.select_languages.Language
 import com.ovolk.dictionary.presentation.select_languages.LanguageState
 import com.ovolk.dictionary.presentation.select_languages.LanguagesFromActions
 import com.ovolk.dictionary.presentation.select_languages.components.Header
