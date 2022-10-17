@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.select_languages.languages_from
+package com.ovolk.dictionary.presentation.select_languages
 
 import android.os.Bundle
 import android.view.View
@@ -6,9 +6,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.databinding.FragmentLanguageFromBinding
+import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
-import com.ovolk.dictionary.presentation.select_languages.languages_from.componenets.SelectLanguagesFrom
+import com.ovolk.dictionary.presentation.select_languages.components.SelectLanguagesToFrom
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -22,7 +23,9 @@ class LanguagesFromFragment : BaseFragment<FragmentLanguageFromBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fragmentRoot.setContent {
-            val viewModel = hiltViewModel<LanguagesFromViewModel>()
+            val viewModel = hiltViewModel<LanguagesToFromViewModel>()
+            viewModel.setCurrentType(LanguagesType.LANG_FROM)
+
             val state = viewModel.state
             if (!viewModel.initialMount) {
                 viewModel.setNavController(findNavController())
@@ -30,7 +33,7 @@ class LanguagesFromFragment : BaseFragment<FragmentLanguageFromBinding>() {
             }
 
             AppCompatTheme {
-                SelectLanguagesFrom(state = state, onAction = viewModel::onAction)
+                SelectLanguagesToFrom(title="select language from",state = state, onAction = viewModel::onAction)
             }
         }
     }

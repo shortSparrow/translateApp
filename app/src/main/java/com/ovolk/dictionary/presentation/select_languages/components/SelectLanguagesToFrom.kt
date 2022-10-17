@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.select_languages.languages_to.components
+package com.ovolk.dictionary.presentation.select_languages.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,22 +15,21 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.compose.SearchBar
-import com.ovolk.dictionary.presentation.select_languages.LanguageState
-import com.ovolk.dictionary.presentation.select_languages.LanguagesToActions
-import com.ovolk.dictionary.presentation.select_languages.components.Header
-import com.ovolk.dictionary.presentation.select_languages.components.LanguageCheckBox
-import com.ovolk.dictionary.presentation.select_languages.components.PreferredLanguages
+import com.ovolk.dictionary.presentation.core.compose.languages.PreferredLanguages
+import com.ovolk.dictionary.presentation.select_languages.LanguageToFromState
+import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
 
 @Composable
-fun SelectLanguagesTo(state: LanguageState, onAction: (LanguagesToActions) -> Unit) {
+fun SelectLanguagesToFrom(title: String, state: LanguageToFromState, onAction: (LanguagesToFromActions) -> Unit) {
     Column {
-        Header(title = "select native language", wiBackButton = false)
+        Header(title = title, wiBackButton = state.headerWithBackButton)
 
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
             SearchBar(
-                onSearch = { query -> onAction(LanguagesToActions.OnSearchLanguagesTo(query)) },
-                onPressCross = { onAction(LanguagesToActions.OnSearchLanguagesTo("")) }
+                onSearch = { query -> onAction(LanguagesToFromActions.OnSearchLanguagesTo(query)) },
+                onPressCross = { onAction(LanguagesToFromActions.OnSearchLanguagesTo("")) }
             )
         }
 
@@ -40,20 +39,25 @@ fun SelectLanguagesTo(state: LanguageState, onAction: (LanguagesToActions) -> Un
             ),
             modifier = Modifier.weight(1f)
         ) {
-            item {
-                PreferredLanguages(
-                    langList = state.preferredLanguages,
-                    onCheck = { language -> onAction(LanguagesToActions.ToggleCheck(language)) })
+            if (state.type == LanguagesType.LANG_TO && state.preferredLanguages.isNotEmpty()) {
+                item {
+                    PreferredLanguages(
+                        languages = state.preferredLanguages,
+                        onCheck = { language -> onAction(LanguagesToFromActions.ToggleCheck(language)) },
+                        title = "Preferred languages"
+                    )
+                }
             }
+
             items(state.filteredLanguageList) { language ->
                 LanguageCheckBox(
                     language = language,
-                    onCheck = { language -> onAction(LanguagesToActions.ToggleCheck(language)) }
+                    onCheck = { language -> onAction(LanguagesToFromActions.ToggleCheck(language)) }
                 )
             }
         }
         Button(
-            onClick = { onAction(LanguagesToActions.NavigateToLanguagesToFrom) },
+            onClick = { onAction(LanguagesToFromActions.GoNext) },
             enabled = state.languageList.find { it.isChecked } != null,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -70,9 +74,10 @@ fun SelectLanguagesTo(state: LanguageState, onAction: (LanguagesToActions) -> Un
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SelectLanguagePreview() {
-    SelectLanguagesTo(
-        state = LanguageState(
+fun SelectLanguagesToFromPreview() {
+    SelectLanguagesToFrom(
+        title="select native language",
+        state = LanguageToFromState(
             filteredLanguageList = listOf(
                 Language(
                     langCode = "rm",

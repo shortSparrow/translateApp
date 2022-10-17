@@ -13,7 +13,6 @@ import javax.inject.Inject
 class GetPreferredLanguages @Inject constructor(
     val application: Application,
 ) {
-
     operator fun invoke(languageList: List<Language>): List<Language> {
         val systemLanguage = Locale.getDefault().language
 
@@ -26,7 +25,6 @@ class GetPreferredLanguages @Inject constructor(
             } else {
                 languageList.filter { it.langCode == systemLanguage }
             }
-
 
         return preferredLanguages
     }

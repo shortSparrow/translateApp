@@ -6,3 +6,5 @@ data class Language(
     val nativeName: String,
     val isChecked: Boolean = false
 )
+
+enum class LanguagesType { LANG_TO, LANG_FROM }

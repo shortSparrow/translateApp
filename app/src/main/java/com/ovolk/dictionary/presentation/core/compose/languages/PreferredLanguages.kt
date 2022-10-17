@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.select_languages.components
+package com.ovolk.dictionary.presentation.core.compose.languages
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -17,9 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
+import com.ovolk.dictionary.presentation.select_languages.components.LanguageCheckBox
 
 @Composable
-fun PreferredLanguages(langList: List<Language>, onCheck: (language:Language) -> Unit) {
+fun PreferredLanguages(
+    languages: List<Language>,
+    title: String = "",
+    onCheck: (lang: Language) -> Unit
+) {
     Column(Modifier.padding(top = dimensionResource(id = R.dimen.small_gutter))) {
         Text(
             buildAnnotatedString {
@@ -34,12 +39,12 @@ fun PreferredLanguages(langList: List<Language>, onCheck: (language:Language) ->
                 withStyle(
                     style = SpanStyle(fontWeight = FontWeight.Bold)
                 ) {
-                    append("Preferred languages")
+                    append(title)
                 }
 
             }
         )
-        langList.forEach { language ->
+        languages.forEach { language ->
             LanguageCheckBox(
                 language = language,
                 onCheck = { language -> onCheck(language) })
@@ -58,18 +63,17 @@ fun PreferredLanguages(langList: List<Language>, onCheck: (language:Language) ->
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun preferredLanguagesPreview() {
-    Column {
-        PreferredLanguages(
-            langList = listOf(
-                Language(
-                    langCode = "uk",
-                    name = "Ukrainian",
-                    nativeName = "Українська",
-                    isChecked = true
-                ),
-                Language(langCode = "en", name = "English", nativeName = "English"),
+    PreferredLanguages(
+        languages = listOf(
+            Language(
+                langCode = "uk",
+                name = "Ukrainian",
+                nativeName = "Українська",
+                isChecked = true
             ),
-            onCheck = {}
-        )
-    }
+            Language(langCode = "en", name = "English", nativeName = "English"),
+        ),
+        title = "Preferred languages",
+        onCheck = {}
+    )
 }

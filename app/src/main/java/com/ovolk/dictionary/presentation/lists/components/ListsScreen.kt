@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.lists
+package com.ovolk.dictionary.presentation.lists.components
 
 import android.content.Context
 import androidx.compose.foundation.*
@@ -24,8 +24,8 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.compose.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
 import com.ovolk.dictionary.presentation.list_full.LoadingState
-import com.ovolk.dictionary.presentation.lists.components.DialogAddNewList
-import com.ovolk.dictionary.presentation.lists.components.Header
+import com.ovolk.dictionary.presentation.lists.ListsAction
+import com.ovolk.dictionary.presentation.lists.ListsState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -106,17 +106,19 @@ fun ListsScreen(
             }
 
             if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {
-                Header(
-                    selectedLists = selectedLists,
-                    onAction = onAction
-                )
+                Header(selectedLists = selectedLists, onAction = onAction)
 
                 CompositionLocalProvider(
                     LocalOverscrollConfiguration provides null
                 ) {
-                    LazyColumn(contentPadding = PaddingValues(top = dimensionResource(id = R.dimen.gutter), bottom = 60.dp)) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            top = dimensionResource(id = R.dimen.gutter),
+                            bottom = 60.dp
+                        )
+                    ) {
                         items(items = state.list) { item ->
-                            com.ovolk.dictionary.presentation.lists.components.ListItem(
+                            ListItem(
                                 item = item,
                                 onAction = onAction,
                                 onItemClick = { listId: Long, listName: String ->

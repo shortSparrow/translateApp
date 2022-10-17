@@ -6,8 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
-import com.ovolk.dictionary.util.LANGUAGE_FROM
-import com.ovolk.dictionary.util.LANGUAGE_TO
+import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -17,14 +16,18 @@ class GetLanguageList @Inject constructor(
 ) {
 
     fun getLanguageListTo(): List<Language> {
-        return getLanguageList(LANGUAGE_TO)
+        return getLanguageList(LanguagesType.LANG_TO)
     }
 
     fun getLanguageListFrom(): List<Language> {
-        return getLanguageList(LANGUAGE_FROM)
+        return getLanguageList(LanguagesType.LANG_FROM)
     }
 
-     private fun getLanguageList(key: String): List<Language> {
+    fun getLanguageListByKey(key: LanguagesType): List<Language> {
+        return getLanguageList(key)
+    }
+
+     private fun getLanguageList(key: LanguagesType): List<Language> {
         val languageRaw = application.resources.openRawResource(R.raw.languges).bufferedReader()
             .use { it.readText() }
         val gson = Gson()
@@ -35,7 +38,7 @@ class GetLanguageList @Inject constructor(
         val savedSelectedListPref = application.getSharedPreferences(
             USER_STATE_PREFERENCES,
             AppCompatActivity.MODE_PRIVATE
-        ).getString(key, "")
+        ).getString(key.toString(), "")
 
         savedSelectedListPref?.let {
             if (it.isNotEmpty()) {

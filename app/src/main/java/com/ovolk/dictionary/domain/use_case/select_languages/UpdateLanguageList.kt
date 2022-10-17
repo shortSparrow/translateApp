@@ -4,11 +4,11 @@ import com.ovolk.dictionary.domain.model.select_languages.Language
 import javax.inject.Inject
 
 class UpdateLanguageList @Inject constructor() {
-    operator fun invoke(list: List<Language>, toggleLanguage: Language):List<Language> {
-        val updatedLang = toggleLanguage.copy(isChecked = !toggleLanguage.isChecked)
+    operator fun invoke(list: List<Language>, toggledLanguage: Language):List<Language> {
+        val updatedLang = toggledLanguage.copy(isChecked = !toggledLanguage.isChecked)
 
         return list.map {
-            return@map if (it.langCode == toggleLanguage.langCode) {
+            return@map if (it.langCode == toggledLanguage.langCode) {
                 updatedLang
             } else {
                 it

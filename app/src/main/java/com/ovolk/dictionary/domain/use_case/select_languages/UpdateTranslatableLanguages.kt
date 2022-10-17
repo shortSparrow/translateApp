@@ -4,23 +4,26 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.ovolk.dictionary.domain.model.select_languages.Language
+import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
-import com.ovolk.dictionary.util.LANGUAGE_FROM
-import com.ovolk.dictionary.util.LANGUAGE_TO
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import javax.inject.Inject
 
 class UpdateTranslatableLanguages @Inject constructor(val application: Application) {
 
     fun saveLanguagesTo(list: List<Language>) {
-        save(list, LANGUAGE_TO)
+        save(list, LanguagesType.LANG_TO)
     }
 
     fun saveLanguagesFrom(list: List<Language>) {
-        save(list, LANGUAGE_FROM)
+        save(list, LanguagesType.LANG_FROM)
     }
 
-    private fun save(list: List<Language>, key: String) {
+    fun saveLanguagesByKey(list: List<Language>, key: LanguagesType) {
+        save(list, key)
+    }
+
+    private fun save(list: List<Language>, key: LanguagesType) {
         application.getSharedPreferences(
             USER_STATE_PREFERENCES,
             AppCompatActivity.MODE_PRIVATE
@@ -29,8 +32,8 @@ class UpdateTranslatableLanguages @Inject constructor(val application: Applicati
             .apply {
                 val gson = Gson()
                 val json = gson.toJson(list.filter { it.isChecked })
-                putString(key, json)
-                if (key == LANGUAGE_TO) {
+                putString(key.toString(), json)
+                if (key == LanguagesType.LANG_TO) {
                     putBoolean(IS_CHOOSE_LANGUAGE, true)
                 }
                 apply()

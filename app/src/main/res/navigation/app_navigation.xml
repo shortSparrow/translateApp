@@ -106,7 +106,7 @@
     </fragment>
     <fragment
         android:id="@+id/languagesFromFragment"
-        android:name="com.ovolk.dictionary.presentation.select_languages.languages_from.LanguagesFromFragment"
+        android:name="com.ovolk.dictionary.presentation.select_languages.LanguagesFromFragment"
         android:label="LanguagesFromFragment">
         <action
             app:popUpTo="@id/languagesToFragment"
@@ -116,7 +116,7 @@
     </fragment>
     <fragment
         android:id="@+id/languagesToFragment"
-        android:name="com.ovolk.dictionary.presentation.select_languages.languages_to.LanguagesToFragment"
+        android:name="com.ovolk.dictionary.presentation.select_languages.LanguagesToFragment"
         android:label="LanguagesToFragment">
         <action
             android:id="@+id/action_languageToFragment_to_languageFromFragment"
@@ -125,10 +125,25 @@
     <fragment
         android:id="@+id/settingsLanguagesFragment"
         android:name="com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesFragment"
-        android:label="SettingsLanguagesFragment" />
+        android:label="SettingsLanguagesFragment" >
+        <action
+            android:id="@+id/action_settingsLanguagesFragment_to_settingsLanguagesFromFragment"
+            app:destination="@id/settingsLanguagesFromFragment" />
+        <action
+            android:id="@+id/action_settingsLanguagesFragment_to_settingsLanguagesToFragment"
+            app:destination="@id/settingsLanguagesToFragment" />
+    </fragment>
     <fragment
         android:id="@+id/examReminderFragment"
         android:name="com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderFragment"
         android:label="ExamReminderFragment" />
+    <fragment
+        android:id="@+id/settingsLanguagesFromFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromFragment"
+        android:label="SettingsLanguagesFromFragment" />
+    <fragment
+        android:id="@+id/settingsLanguagesToFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFragment"
+        android:label="SettingsLanguagesToFragment" />
 
 </navigation>

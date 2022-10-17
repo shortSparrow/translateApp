@@ -18,8 +18,8 @@ const val EXAM_REMINDER_FREQUENCY = "exam_reminder_frequency"
 const val EXAM_REMINDER_TIME = "exam_reminder_time"
 const val USER_STATE_PREFERENCES = "user_state_preferences"
 const val IS_CHOOSE_LANGUAGE = "is_choose_language"
-const val LANGUAGE_FROM = "language_from"
-const val LANGUAGE_TO = "language_to"
+//const val LANGUAGE_FROM = "language_from"
+//const val LANGUAGE_TO = "language_to"
 
 
 const val EXAM_REMINDER_INTENT_CODE = 101

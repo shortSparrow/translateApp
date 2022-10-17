@@ -3,8 +3,9 @@ package com.ovolk.dictionary.di
 import androidx.lifecycle.ViewModel
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsViewModel
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordViewModel
-import com.ovolk.dictionary.presentation.select_languages.languages_to.LanguagesToViewModel
+import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromViewModel
 import com.ovolk.dictionary.presentation.settings.SettingsViewModel
+import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromViewModel
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderViewModel
 import com.ovolk.dictionary.presentation.word_list.WordListViewModel
 import dagger.Binds
@@ -44,14 +45,22 @@ interface ViewModelModule {
     fun bindSettingsViewModel(impl: SettingsViewModel): ViewModel
 
     @IntoMap
-    @ViewModelKey(LanguagesToViewModel::class)
-    @Binds
-    @ViewModelScoped
-    fun bindSelectLanguagesViewModel(impl: LanguagesToViewModel): ViewModel
-
-    @IntoMap
     @ViewModelKey(ExamReminderViewModel::class)
     @Binds
     @ViewModelScoped
     fun bindExamReminderViewModel(impl: ExamReminderViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(SettingsLanguagesToFromViewModel::class)
+    @Binds
+    @ViewModelScoped
+    fun bindSettingsLanguagesToViewModel(impl: SettingsLanguagesToFromViewModel): ViewModel
+
+
+    @IntoMap
+    @ViewModelKey(LanguagesToFromViewModel::class)
+    @Binds
+    @ViewModelScoped
+    fun bindLanguagesToFromViewModel(impl: LanguagesToFromViewModel): ViewModel
+
 }
