@@ -30,10 +30,10 @@ class GetSelectedLanguages @Inject constructor(
             AppCompatActivity.MODE_PRIVATE
         ).getString(key.toString(), "")
 
-        val savedSelectedFromLanguage: List<Language> = gson.fromJson(savedSelectedListPref, languageListType)
-
-        return savedSelectedFromLanguage.ifEmpty {
+        return if (savedSelectedListPref == null || savedSelectedListPref.isEmpty()) {
             emptyList()
+        } else {
+            gson.fromJson(savedSelectedListPref, languageListType)
         }
     }
 }
