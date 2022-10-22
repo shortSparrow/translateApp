@@ -7,4 +7,8 @@ data class Language(
     val isChecked: Boolean = false
 )
 
+data class SharedLanguage(
+    val langCode: String,
+)
+
 enum class LanguagesType { LANG_TO, LANG_FROM }

@@ -35,7 +35,8 @@
     <string name="modify_word_select_list">Selected List</string>
     <string name="modify_word_add_to_list">Add To List</string>
     <string name="modify_word_dialog_add_new_list_placeholder">Name of the list</string>
-    <string name="modify_word_dialog_add_new_list_title">Add  new List</string>
+    <string name="modify_word_dialog_add_new_list_title">Add new List</string>
+    <string name="modify_word_saved_word_success">Word safe successfully</string>
 
 
     <!-- Exam counter-->

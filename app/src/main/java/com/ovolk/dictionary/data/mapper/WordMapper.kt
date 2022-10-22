@@ -64,8 +64,8 @@ class WordMapper @Inject constructor() {
         translates = wordDb.translates.map { translateDbToLocal(it) },
         description = wordDb.wordInfo.description,
         sound = wordDb.wordInfo.sound,
-        langFrom = wordDb.wordInfo.langFrom,
-        langTo = wordDb.wordInfo.langTo,
+        langFrom = wordDb.wordInfo.langFrom ?: "",
+        langTo = wordDb.wordInfo.langTo ?: "",
         transcription = wordDb.wordInfo.transcription,
     )
 
@@ -149,5 +149,5 @@ class WordMapper @Inject constructor() {
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
 
-    )
+        )
 }

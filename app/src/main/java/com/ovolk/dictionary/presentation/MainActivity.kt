@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
          isChooseLanguage = userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
 
         if (!isChooseLanguage) {
-            navController.navigate(WordListFragmentDirections.actionWordListFragmentToLanguageToFragment())
+            navController.navigate(WordListFragmentDirections.actionWordListFragmentToLanguagesFromFragment())
         }
 
     }

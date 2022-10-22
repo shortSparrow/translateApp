@@ -57,26 +57,5 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <TextView
-            android:id="@+id/translate_language_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gutter"
-            android:text="@string/modify_word_select_translated_language"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/english_transcription_container" />
-
-        <Spinner
-            android:id="@+id/select_language_spinner"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:drawSelectorOnTop="true"
-            android:entries="@array/translate_from_language"
-            app:layout_constraintBottom_toBottomOf="@+id/translate_language_label"
-            app:layout_constraintStart_toEndOf="@+id/translate_language_label"
-            app:layout_constraintTop_toTopOf="@+id/translate_language_label" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

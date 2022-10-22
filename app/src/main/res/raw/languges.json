@@ -82,7 +82,7 @@
   {
     "langCode": "eu",
     "name": "Basque",
-    "nativeName": "euskara, euskera"
+    "nativeName": "euskara"
   },
   {
     "langCode": "be",
@@ -256,7 +256,7 @@
   },
   {
     "langCode": "el",
-    "name": "Greek, Modern",
+    "name": "Greek",
     "nativeName": "Ελληνικά"
   },
   {
@@ -536,7 +536,7 @@
   },
   {
     "langCode": "nv",
-    "name": "Navajo, Navaho",
+    "name": "Navajo",
     "nativeName": "Diné bizaad"
   },
   {
@@ -586,7 +586,7 @@
   },
   {
     "langCode": "oj",
-    "name": "Ojibwe, Ojibwa",
+    "name": "Ojibwe",
     "nativeName": "ᐊᓂᔑᓈᐯᒧᐎᓐ"
   },
   {

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/root_scroll_view"
         android:layout_width="match_parent"
@@ -42,17 +41,26 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/gutter">
+                android:paddingHorizontal="@dimen/gutter"
+                android:paddingBottom="@dimen/gutter">
 
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/select_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <include
                     android:id="@+id/input_translated_word"
                     layout="@layout/view_input_translated_word"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gutter"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/select_language" />
 
                 <include
                     android:id="@+id/add_translate"
@@ -121,11 +129,11 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.compose.ui.platform.ComposeView
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/word_priority_container"
                     android:id="@+id/add_to_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/word_priority_container" />
 
                 <TextView
                     android:id="@+id/toggleAdditionalField"

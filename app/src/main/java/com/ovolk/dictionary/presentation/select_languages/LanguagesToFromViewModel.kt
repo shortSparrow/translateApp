@@ -35,8 +35,8 @@ class LanguagesToFromViewModel @Inject constructor(
                 preferredLanguages = preferredLanguage,
                 type = type,
                 headerWithBackButton = when (type) {
-                    LanguagesType.LANG_TO -> false
-                    LanguagesType.LANG_FROM -> true
+                    LanguagesType.LANG_TO -> true
+                    LanguagesType.LANG_FROM -> false
                 }
             )
         }
@@ -56,11 +56,11 @@ class LanguagesToFromViewModel @Inject constructor(
                 when (state.type) {
                     LanguagesType.LANG_TO -> {
                         updateTranslatableLanguages.saveLanguagesTo(list = state.languageList)
-                        navController?.navigate(LanguagesToFragmentDirections.actionLanguageToFragmentToLanguageFromFragment())
+                        navController?.navigate(LanguagesToFragmentDirections.actionLanguagesToFragmentToWordListFragment())
                     }
                     LanguagesType.LANG_FROM -> {
                         updateTranslatableLanguages.saveLanguagesFrom(list = state.languageList)
-                        navController?.navigate(LanguagesFromFragmentDirections.actionLanguageFromFragmentToWordListFragment())
+                        navController?.navigate(LanguagesFromFragmentDirections.actionLanguagesFromFragmentToLanguagesToFragment())
                     }
                     null -> {}
                 }

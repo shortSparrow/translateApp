@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
+import com.ovolk.dictionary.domain.model.select_languages.SharedLanguage
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class GetLanguageList @Inject constructor(
         return getLanguageList(key)
     }
 
-     private fun getLanguageList(key: LanguagesType): List<Language> {
+    private fun getLanguageList(key: LanguagesType): List<Language> {
         val languageRaw = application.resources.openRawResource(R.raw.languges).bufferedReader()
             .use { it.readText() }
         val gson = Gson()
@@ -35,17 +36,25 @@ class GetLanguageList @Inject constructor(
         val languageListType: Type = object : TypeToken<List<Language>?>() {}.type
         var languageList: List<Language> = gson.fromJson(languageRaw, languageListType)
 
-        val savedSelectedListPref = application.getSharedPreferences(
+        val languageCodeListType: Type = object : TypeToken<List<SharedLanguage>?>() {}.type
+
+        val sharedLanguageList = application.getSharedPreferences(
             USER_STATE_PREFERENCES,
             AppCompatActivity.MODE_PRIVATE
         ).getString(key.toString(), "")
 
-        savedSelectedListPref?.let {
+        sharedLanguageList?.let {
             if (it.isNotEmpty()) {
-                val savedSelectedFromLanguage: List<Language> = gson.fromJson(it, languageListType)
+                val savedSelectedFromLanguage: List<SharedLanguage> =
+                    gson.fromJson(it, languageCodeListType)
+
                 languageList = languageList.map { lang ->
-                    return@map savedSelectedFromLanguage.find { it.langCode == lang.langCode }
-                        ?: lang
+                    return@map if (savedSelectedFromLanguage.find { it.langCode == lang.langCode } != null) {
+                        lang.copy(isChecked = true)
+                    } else {
+                        lang
+                    }
+
                 }
             }
         }
