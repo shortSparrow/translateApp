@@ -25,7 +25,8 @@
     <string name="modify_word_additional">Additional</string>
     <string name="modify_word_microphone">Record pronunciation</string>
     <string name="modify_word_add_new_word">Add new word</string>
-    <string name="modify_word_toolbar_title">Modify word</string>
+    <string name="modify_word_toolbar_title_add">Add new word</string>
+    <string name="modify_word_toolbar_title_edit">Edit word</string>
     <string name="modify_word_confirm_delete_title">Are you sure you want to delete this word?</string>
     <string name="modify_word_enable_audio_permission">Your audio permission is disabled, please, go to settings and enable one</string>
     <string name="modify_word_cd_selected_mark">selected mark</string>

@@ -250,6 +250,15 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                         inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)
                         translateWordDescription.descriptionInput.setText(uiState.description)
                         wordPriorityValue.setText(uiState.priority.toString())
+
+                        when (args.mode) {
+                            ModifyWordModes.MODE_ADD -> {
+                                toolbar.title = getString(R.string.modify_word_toolbar_title_add)
+                            }
+                            ModifyWordModes.MODE_EDIT -> {
+                                toolbar.title = getString(R.string.modify_word_toolbar_title_edit)
+                            }
+                        }
                     }
 
                     confirmDialog.setIsOpenModeDialog(uiState.isDeleteModalOpen)
