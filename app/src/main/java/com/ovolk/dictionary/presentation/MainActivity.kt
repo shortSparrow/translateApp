@@ -65,7 +65,13 @@ class MainActivity : AppCompatActivity() {
             "Home" to listOf("WordListFragment", "ModifyWordFragment"),
             "Exam" to listOf("ExamKnowledgeWordsFragment"),
             "Lists" to listOf("ListFragment", "ListFullFragment"),
-            "Settings" to listOf("SettingsFragment"),
+            "Settings" to listOf(
+                "SettingsFragment",
+                "SettingsLanguagesFragment",
+                "ExamReminderFragment",
+                "SettingsLanguagesFromFragment",
+                "SettingsLanguagesToFragment"
+            ),
         )
 
         bottomBar.setOnItemSelectedListener { item ->
@@ -111,15 +117,9 @@ class MainActivity : AppCompatActivity() {
 
         bottomBar.setOnItemReselectedListener { item ->
             when (item.itemId) {
-                R.id.wordListFragment -> {
-                    true
-                }
-                R.id.examKnowledgeWordsFragment -> {
-                    true
-                }
-                R.id.listFragment -> {
-                    true
-                }
+                R.id.wordListFragment,
+                R.id.examKnowledgeWordsFragment,
+                R.id.listFragment,
                 R.id.settingsFragment -> {
                     true
                 }
@@ -127,13 +127,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         val userStatePreferences: SharedPreferences = application.getSharedPreferences(
             USER_STATE_PREFERENCES,
             MODE_PRIVATE
         )
 
-         isChooseLanguage = userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
+        isChooseLanguage = userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
 
         if (!isChooseLanguage) {
             navController.navigate(WordListFragmentDirections.actionWordListFragmentToLanguagesFromFragment())
