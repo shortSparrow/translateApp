@@ -2,12 +2,14 @@ package com.ovolk.dictionary.presentation.settings_languages_to_from
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.foundation.layout.Column
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.databinding.FragmentSettingsLanguagesToBinding
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
+import com.ovolk.dictionary.presentation.select_languages.components.Header
 import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,11 +29,13 @@ class SettingsLanguagesToFragment : BaseFragment<FragmentSettingsLanguagesToBind
             val state = viewModel.state
 
             AppCompatTheme {
-                SettingsLanguagesToScreen(
-                    title = "select language to",
-                    state = state,
-                    onAction = viewModel::onAction
-                )
+                Column {
+                    Header(title = "select language to", wiBackButton = true)
+                    SettingsLanguagesToScreen(
+                        state = state,
+                        onAction = viewModel::onAction
+                    )
+                }
             }
         }
     }

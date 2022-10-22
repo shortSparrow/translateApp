@@ -2,9 +2,11 @@ package com.ovolk.dictionary.presentation.modify_word.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +23,11 @@ fun LanguagesPicker(
     state: ComposeState,
     onAction: (ModifyWordAction) -> Unit,
 ) {
+
+    if (state.addNewLangModal.isOpen) {
+        AddNewLangBottomSheet(state = state.addNewLangModal, onAction = onAction)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -63,7 +70,8 @@ fun LanguagesPicker(
                         )
                     )
                 },
-                error = state.selectLanguageFromError
+                error = state.selectLanguageFromError,
+                onAddNewLangPress = { onAction(ModifyWordAction.PressAddNewLanguage(LanguagesType.LANG_FROM)) }
             )
 
 
@@ -76,7 +84,6 @@ fun LanguagesPicker(
                 )
             }
 
-
             SelectLanguagePicker(
                 state.languageToList,
                 onSelect = { lang ->
@@ -87,7 +94,8 @@ fun LanguagesPicker(
                         )
                     )
                 },
-                error = state.selectLanguageToError
+                error = state.selectLanguageToError,
+                onAddNewLangPress = { onAction(ModifyWordAction.PressAddNewLanguage(LanguagesType.LANG_TO)) }
             )
 
         }

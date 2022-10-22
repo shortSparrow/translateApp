@@ -123,6 +123,26 @@ class ModifyWordViewModel @Inject constructor(
                     }
                 }
             }
+            is ModifyWordAction.PressAddNewLanguage -> {
+                composeState = composeState.copy(
+                    addNewLangModal = AddNewLangModal(
+                        isOpen = true,
+                        type = action.type
+                    )
+                )
+            }
+            ModifyWordAction.CloseAddNewLanguageModal -> {
+                val langList = loadLanguages(langFromCode = state.langFrom, langToCode = state.langTo)
+
+                composeState = composeState.copy(
+                    addNewLangModal = AddNewLangModal(
+                        isOpen = false,
+                        type = null
+                    ),
+                    languageFromList = langList["languageFrom"] ?: emptyList(),
+                    languageToList = langList["languageTo"] ?: emptyList(),
+                )
+            }
         }
     }
 
@@ -452,7 +472,6 @@ class ModifyWordViewModel @Inject constructor(
     }
 
 
-    // TODO if langTo is empty should be null, no empty string
     private fun loadLanguages(
         langToCode: String? = null,
         langFromCode: String? = null

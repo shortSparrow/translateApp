@@ -81,6 +81,11 @@ data class ModifyWordState(
     val isDeleteModalOpen: Boolean = false,
 )
 
+data class AddNewLangModal(
+    val isOpen: Boolean = false,
+    val type: LanguagesType? = null
+)
+
 data class ComposeState(
     val wordListInfo: ModifyWordListItem? = null,
     val wordLists: List<ModifyWordListItem> = emptyList(),
@@ -96,6 +101,8 @@ data class ComposeState(
 
     val selectLanguageFromError: ValidateResult = ValidateResult(),
     val selectLanguageToError: ValidateResult = ValidateResult(),
+
+    val addNewLangModal: AddNewLangModal = AddNewLangModal(),
 )
 
 sealed class ModifyWordAction {
@@ -104,4 +111,7 @@ sealed class ModifyWordAction {
     data class HandleSelectModal(val isOpen: Boolean) : ModifyWordAction()
     data class OnSelectLanguage(val type: LanguagesType, val language: SelectLanguage) :
         ModifyWordAction()
+
+    data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction()
+    object CloseAddNewLanguageModal: ModifyWordAction()
 }

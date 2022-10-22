@@ -20,13 +20,10 @@ import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLang
 
 @Composable
 fun SettingsLanguagesToScreen(
-    title: String,
     state: SettingsLanguagesToFromState,
     onAction: (SettingsLanguagesToFromActions) -> Unit
 ) {
     Column {
-        Header(title = title, wiBackButton = true)
-
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
             SearchBar(
                 onSearch = { query ->
@@ -82,7 +79,6 @@ fun SettingsLanguagesToScreen(
 @Composable
 fun SettingsLanguagesToScreenPreview() {
     SettingsLanguagesToScreen(
-        title = "select native language",
         state = SettingsLanguagesToFromState(
             filteredLanguageList = listOf(
                 Language(

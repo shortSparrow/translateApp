@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,8 @@ val selectLanguagePickerWidth = 110.dp
 fun SelectLanguagePicker(
     dropDownItem: List<SelectLanguage>,
     onSelect: (lang: SelectLanguage) -> Unit,
-    error: ValidateResult
+    onAddNewLangPress: () -> Unit,
+    error: ValidateResult,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val transition = updateTransition(expanded, label = "selectIsOpen")
@@ -112,6 +114,18 @@ fun SelectLanguagePicker(
                         Text(it.langCode)
                     }
                 }
+
+                Divider()
+                DropdownMenuItem(onClick = {
+                    onAddNewLangPress()
+                    expanded = false
+                }) {
+                    Text(
+                        "add new",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 
@@ -136,7 +150,8 @@ fun SelectLanguagePreview() {
                 SelectLanguage(langCode = "UA", name = "ukrainian", nativeName = "Українська"),
             ),
             onSelect = {},
-            error = ValidateResult(errorMessage = "this field is required")
+            error = ValidateResult(errorMessage = "this field is required"),
+            onAddNewLangPress = {}
         )
     }
 
