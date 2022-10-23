@@ -13,19 +13,21 @@ const val EXAM_WORD_ANSWER_LIST_SIZE = 6
 
 // PREFERENCES
 const val MY_PREFERENCES = "my_preferences"
+const val USER_STATE_PREFERENCES = "user_state_preferences"
+
+// PREFERENCES KEYS
 const val TIME_TO_NEXT_REMINDER = "left_before_notification"
 const val EXAM_REMINDER_FREQUENCY = "exam_reminder_frequency"
 const val EXAM_REMINDER_TIME = "exam_reminder_time"
-const val USER_STATE_PREFERENCES = "user_state_preferences"
 const val IS_CHOOSE_LANGUAGE = "is_choose_language"
-//const val LANGUAGE_FROM = "language_from"
-//const val LANGUAGE_TO = "language_to"
-
+const val SHOW_VARIANTS_EXAM_AVAILABLE_LANGUAGES = "show_variants_exam_available_languages"
 
 const val EXAM_REMINDER_INTENT_CODE = 101
 
 const val UKRAINE_COUNTRY_CODE = "ua"
 const val UKRAINE_LANGUAGE_CODE = "uk"
 
+
+val showVariantsAvailableLanguages = listOf("UK")
 
 val MAX_BUTTON_WIDTH = 300.dp

@@ -476,17 +476,26 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     }
 
     private fun renderShowVariants(examWord: ExamWord) = with(binding) {
-        for (i in (0 until examWord.answerVariants.size)) {
-            val view = LayoutInflater.from(showVariantsContainer.context)
-                .inflate(R.layout.item_translate_chip, showVariantsContainer, false)
-            val textItem = view.findViewById<TextView>(R.id.chip_item)
-            textItem.text = examWord.answerVariants[i].value
 
-            textItem.setOnClickListener {
-                viewModel.setSelectVariant(selectedVariantValue = examWord.answerVariants[i].value)
+        if (examWord.isShowVariantsAvailable) {
+            for (i in (0 until examWord.answerVariants.size)) {
+                val view = LayoutInflater.from(showVariantsContainer.context)
+                    .inflate(R.layout.item_translate_chip, showVariantsContainer, false)
+                val textItem = view.findViewById<TextView>(R.id.chip_item)
+                textItem.text = examWord.answerVariants[i].value
+
+                textItem.setOnClickListener {
+                    viewModel.setSelectVariant(selectedVariantValue = examWord.answerVariants[i].value)
+                }
+                showVariantsContainer.addView(view)
             }
+        } else {
+            val view = LayoutInflater.from(showVariantsContainer.context)
+                .inflate(R.layout.item_translate_unavailable, showVariantsContainer, false)
+
             showVariantsContainer.addView(view)
         }
+
     }
 
     private fun setHintsStyle(currentWord: ExamWord) = with(binding) {

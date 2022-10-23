@@ -99,15 +99,17 @@ class WordMapper @Inject constructor() {
         wordListId = modifyWord.wordListId
     )
 
-    fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord = ExamWord(
-        id = wordDb.wordInfo.id,
-        value = wordDb.wordInfo.value,
-        translates = wordDb.translates.map { translateDbToLocal(it) },
-        hints = wordDb.hints.map { hintDbToLocal(it) },
-        priority = wordDb.wordInfo.priority,
-        status = ExamWordStatus.UNPROCESSED,
-        answerVariants = emptyList(),
-    )
+    fun wordFullDbToExamWord(wordDb: WordFullDb, isShowVariantsAvailable: Boolean): ExamWord =
+        ExamWord(
+            id = wordDb.wordInfo.id,
+            value = wordDb.wordInfo.value,
+            translates = wordDb.translates.map { translateDbToLocal(it) },
+            hints = wordDb.hints.map { hintDbToLocal(it) },
+            priority = wordDb.wordInfo.priority,
+            status = ExamWordStatus.UNPROCESSED,
+            answerVariants = emptyList(),
+            isShowVariantsAvailable = isShowVariantsAvailable
+        )
 
 
     fun examAnswerToExamAnswerDb(examAnswer: ExamAnswerVariant) = PotentialExamAnswerDb(

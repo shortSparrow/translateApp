@@ -12,12 +12,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.exam.ExamReminder
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.word_list.WordListFragmentDirections
-import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
-import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
+import com.ovolk.dictionary.util.*
+import com.ovolk.dictionary.util.helpers.setShowVariantsExamAvailableLanguagesIdNeeded
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,9 +38,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         setupNavigation()
 
         lifecycleScope.launch {
+            setShowVariantsExamAvailableLanguagesIdNeeded(application)
             examReminder.setInitialReminderIfNeeded()
         }
     }

@@ -13,7 +13,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.ItemWordRvBinding
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.presentation.modify_word.adapter.translate.TranslateAdapter
-import com.ovolk.dictionary.util.getAudioPath
+import com.ovolk.dictionary.util.helpers.getAudioPath
 import timber.log.Timber
 import java.io.IOException
 

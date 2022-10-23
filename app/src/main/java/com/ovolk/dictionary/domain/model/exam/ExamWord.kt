@@ -25,5 +25,6 @@ data class ExamWord(
     val allHintsIsShown: Boolean = false,
     val countOfRenderHints: Int = 0,
 
-    )
+    val isShowVariantsAvailable: Boolean = false, // needed fro disabling "show variants" feature for unavailable languages (for now except UA)
+)
 
