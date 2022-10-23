@@ -109,7 +109,7 @@ fun SelectLanguagePicker(
                         onSelect(it)
                         expanded = false
                     }) {
-                        Text(it.langCode)
+                        Text(it.langCode.uppercase())
                     }
                 }
 

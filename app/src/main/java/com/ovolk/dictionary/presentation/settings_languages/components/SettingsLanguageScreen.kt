@@ -62,7 +62,7 @@ fun SettingsLanguageScreen(
                                 onClick = { langPress(LanguagesType.LANG_TO) },
                                 modifier = padding
                             ) {
-                                Text(text = it.langCode)
+                                Text(text = it.langCode.uppercase())
                             }
                         }
                     }
@@ -82,7 +82,7 @@ fun SettingsLanguageScreen(
                                 onClick = { langPress(LanguagesType.LANG_FROM) },
                                 modifier = padding
                             ) {
-                                Text(text = it.langCode)
+                                Text(text = it.langCode.uppercase())
                             }
                         }
                     }

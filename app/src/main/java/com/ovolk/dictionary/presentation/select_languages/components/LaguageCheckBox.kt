@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
@@ -27,7 +28,7 @@ fun LanguageCheckBox(language: Language, onCheck: (language: Language) -> Unit) 
             onCheckedChange = { onCheck(language) },
             colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.blue))
         )
-        Text(text = language.nativeName)
+        Text(text = language.nativeName.replaceFirstChar { it.uppercase() })
     }
 
 }
