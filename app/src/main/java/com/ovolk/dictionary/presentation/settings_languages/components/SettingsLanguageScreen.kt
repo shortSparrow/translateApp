@@ -1,16 +1,17 @@
 package com.ovolk.dictionary.presentation.settings_languages.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -21,7 +22,6 @@ import com.ovolk.dictionary.presentation.select_languages.components.Header
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesAction
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesState
 import com.ovolk.dictionary.util.compose.OnLifecycleEvent
-import timber.log.Timber
 
 @Composable
 fun SettingsLanguageScreen(
@@ -39,24 +39,31 @@ fun SettingsLanguageScreen(
     }
 
     // on focus load lang
-    OnLifecycleEvent { owner, event ->
+    OnLifecycleEvent { _, event ->
         when (event) {
             Lifecycle.Event.ON_RESUME -> {
                 onAction(SettingsLanguagesAction.OnFocusScreen)
-                Timber.d("RESUME")
             }
             else -> {}
         }
     }
 
     Column {
-        Header(title = "Select translate languages", wiBackButton = true)
+        Header(title = stringResource(id = R.string.settings_languages_title), wiBackButton = true)
         Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Translate lang to:", modifier = padding)
+
+            Divider(modifier = Modifier.padding(vertical = 10.dp))
+
+            Column {
+                Text(
+                    text = stringResource(id = R.string.settings_languages_translate_language_to),
+                    modifier = padding
+                )
 
                 if (state.languagesTo.isNotEmpty()) {
-                    LazyRow {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 100.dp)
+                    ) {
                         items(state.languagesTo) {
                             OutlinedButton(
                                 onClick = { langPress(LanguagesType.LANG_TO) },
@@ -67,16 +74,23 @@ fun SettingsLanguageScreen(
                         }
                     }
                 } else {
-                    OutlinedButton(onClick = {  langPress(LanguagesType.LANG_TO) }) {
-                        Text(text = "select lang")
+                    OutlinedButton(onClick = { langPress(LanguagesType.LANG_TO) }) {
+                        Text(text = stringResource(id = R.string.settings_languages_select_language))
                     }
                 }
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Translate lang from:", modifier = padding)
+            Divider(modifier = Modifier.padding(vertical = 10.dp))
+
+            Column {
+                Text(
+                    text = stringResource(id = R.string.settings_languages_translate_language_from),
+                    modifier = padding
+                )
                 if (state.languagesFrom.isNotEmpty()) {
-                    LazyRow {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 100.dp)
+                    ) {
                         items(state.languagesFrom) {
                             OutlinedButton(
                                 onClick = { langPress(LanguagesType.LANG_FROM) },
@@ -87,12 +101,12 @@ fun SettingsLanguageScreen(
                         }
                     }
                 } else {
-                    OutlinedButton(onClick = {  langPress(LanguagesType.LANG_FROM) }) {
-                        Text(text = "select lang")
+                    OutlinedButton(onClick = { langPress(LanguagesType.LANG_FROM) }) {
+                        Text(text = stringResource(id = R.string.settings_languages_select_language))
                     }
                 }
-
             }
+            Divider(modifier = Modifier.padding(vertical = 10.dp))
         }
 
     }

@@ -315,7 +315,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
                 is ExamKnowledgeUiState.ToggleHiddenDescriptionExpanded -> {
                     setHiddenTranslateDescriptionVisible(true, isExpanded = uiState.isExpanded)
                 }
-                is ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded -> {
+                is ExamKnowledgeUiState.ToggleCurrentWordTranslateExpanded -> {
                     setExpandedTranslates(uiState.isExpanded)
                 }
                 is ExamKnowledgeUiState.UpdateHiddenTranslates -> {

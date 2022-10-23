@@ -35,7 +35,7 @@ fun ExamReminderScreen(state: SettingsReminderExamState, onAction: (OnExamRemind
         }, state.timeHours, state.timeMinutes, true
     )
 
-    Column() {
+    Column {
         Header(title = stringResource(id = R.string.settings_exam_reminder_screen_title), wiBackButton = true)
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
             Column(

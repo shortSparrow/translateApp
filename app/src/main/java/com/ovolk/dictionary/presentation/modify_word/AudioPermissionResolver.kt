@@ -9,6 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.ovolk.dictionary.R
+import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.MainActivity
 import kotlin.properties.Delegates.notNull
 
 class AudioPermissionResolver(
@@ -49,7 +52,7 @@ class AudioPermissionResolver(
                 listener.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
             if (!showRationaleRecord) {
                 // TODO show alert with navigation to settings
-                listener.showMessage("enable RECORD_AUDIO")
+                listener.showMessage(DictionaryApp.applicationContext().getString(R.string.modify_word_enable_audio_permission))
             }
         }
     }

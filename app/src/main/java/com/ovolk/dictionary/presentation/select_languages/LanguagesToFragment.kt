@@ -2,9 +2,11 @@ package com.ovolk.dictionary.presentation.select_languages
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.FragmentLanguageToBinding
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
@@ -34,7 +36,7 @@ class LanguagesToFragment : BaseFragment<FragmentLanguageToBinding>() {
 
             AppCompatTheme {
                 SelectLanguagesToFrom(
-                    title = "select language to",
+                    title = stringResource(id = R.string.select_languages_translate_language_to),
                     state = state,
                     onAction = viewModel::onAction
                 )

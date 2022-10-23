@@ -1,7 +1,9 @@
 package com.ovolk.dictionary.presentation.list_full
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,9 +27,9 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.presentation.core.compose.SearchBar
 import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
 import com.ovolk.dictionary.presentation.list_full.components.Header
-import com.ovolk.dictionary.presentation.core.compose.SearchBar
 import com.ovolk.dictionary.presentation.list_full.components.WordItem
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -49,7 +51,7 @@ fun ListFullScreen(
             if (state.wordList.isNotEmpty() && state.loadingStatusWordList == LoadingState.SUCCESS) {
                 AddButton(
                     onClick = { onAction(ListFullAction.AddNewWord) },
-                    contentDescription = "add new list"
+                    contentDescription = stringResource(id = R.string.full_lists_cd_add_new_list)
                 )
             }
         }

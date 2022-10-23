@@ -6,10 +6,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
@@ -37,14 +39,14 @@ fun LanguagesPicker(
         ) {
 
             Text(
-                text = "(language from)",
+                text = stringResource(id = R.string.modify_word_language_picker_from),
                 fontSize = 12.sp,
                 modifier = Modifier.width(110.dp),
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = "(language to)",
+                text = stringResource(id = R.string.modify_word_language_picker_to),
                 fontSize = 12.sp,
                 modifier = Modifier.width(110.dp),
                 textAlign = TextAlign.Center

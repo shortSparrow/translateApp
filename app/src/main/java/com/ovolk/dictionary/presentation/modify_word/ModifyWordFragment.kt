@@ -102,7 +102,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     override fun showMessage(text: String) {
         Toast.makeText(
             context,
-            getString(R.string.modify_word_enable_audio_permission),
+            text,
             Toast.LENGTH_SHORT
         ).show()
     }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
@@ -54,7 +55,7 @@ fun SettingsLanguagesToScreen(
                                 )
                             )
                         },
-                        title = "Selected languages"
+                        title = stringResource(id = R.string.settings_languages_from_to_selected_lang)
                     )
                 }
             }

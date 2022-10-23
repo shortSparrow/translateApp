@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,9 +37,9 @@ fun SelectLanguagePicker(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val transition = updateTransition(expanded, label = "selectIsOpen")
-    val errorColor = colorResource(id = com.google.android.material.R.color.mtrl_error)
+    val errorColor =
+        colorResource(id = com.google.android.material.R.color.mtrl_error) // TODO change on my own color (only after rewrite old code on compose)
     val borderColor = if (error.successful) {
-//        Color.Gray
         colorResource(id = R.color.blue)
     } else {
         errorColor
@@ -60,10 +61,6 @@ fun SelectLanguagePicker(
         },
     )
 
-
-//    val rotateArrow: Float by animateFloatAsState(if (expanded) 90f else -90f)
-
-
     Column(
         modifier = Modifier
             .width(selectLanguagePickerWidth),
@@ -84,7 +81,7 @@ fun SelectLanguagePicker(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         painter = painterResource(id = R.drawable.language),
-                        contentDescription = "lang"
+                        contentDescription = stringResource(id = R.string.cd_lang_icon)
                     )
                     Text(
                         text = dropDownItem.find { it.isChecked }?.langCode?.uppercase() ?: "",
@@ -93,7 +90,7 @@ fun SelectLanguagePicker(
                 }
                 Icon(
                     painter = painterResource(id = R.drawable.prev_arrow),
-                    contentDescription = "arrow",
+                    contentDescription = stringResource(id = R.string.cd_arrow_lang),
                     modifier = Modifier.rotate(rotateArrow)
                 )
             }
@@ -119,7 +116,7 @@ fun SelectLanguagePicker(
                     expanded = false
                 }) {
                     Text(
-                        "add new",
+                        stringResource(id = R.string.add_new),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
@@ -142,7 +139,7 @@ fun SelectLanguagePicker(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun SelectLanguagePreview() {
-    Row() {
+    Row {
         SelectLanguagePicker(
             dropDownItem = listOf(
                 SelectLanguage(langCode = "UA", name = "ukrainian", nativeName = "Українська"),

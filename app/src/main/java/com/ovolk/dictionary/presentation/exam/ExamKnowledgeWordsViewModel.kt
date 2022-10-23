@@ -262,7 +262,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         state = state.copy(currentWord = currentWord.copy(isTranslateExpanded = isExpanded))
 
         val translates = state.currentWord?.translates ?: emptyList()
-        _uiState.value = ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded(
+        _uiState.value = ExamKnowledgeUiState.ToggleCurrentWordTranslateExpanded(
             isExpanded = isExpanded,
             translates = translates
         )

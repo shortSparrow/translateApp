@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +44,7 @@ fun SettingsList(list: List<SettingsItem>, onAction: (SettingsAction) -> Unit) {
                 .padding(bottom = dimensionResource(id = R.dimen.small_gutter))
         ) {
             Text(
-                text = "version ${BuildConfig.VERSION_NAME}",
+                text = stringResource(id = R.string.app_version, BuildConfig.VERSION_NAME),
                 color = colorResource(id = R.color.light_grey),
                 fontWeight = FontWeight.Bold
             )

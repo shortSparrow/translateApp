@@ -3,8 +3,10 @@ package com.ovolk.dictionary.presentation.settings_languages_to_from
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.FragmentSettingsLanguagesToBinding
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
@@ -30,7 +32,10 @@ class SettingsLanguagesToFragment : BaseFragment<FragmentSettingsLanguagesToBind
 
             AppCompatTheme {
                 Column {
-                    Header(title = "select language to", wiBackButton = true)
+                    Header(
+                        title = stringResource(id = R.string.settings_languages_to_title),
+                        wiBackButton = true
+                    )
                     SettingsLanguagesToScreen(
                         state = state,
                         onAction = viewModel::onAction

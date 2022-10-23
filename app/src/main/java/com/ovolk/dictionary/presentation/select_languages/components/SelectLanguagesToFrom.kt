@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
@@ -22,7 +23,11 @@ import com.ovolk.dictionary.presentation.select_languages.LanguageToFromState
 import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
 
 @Composable
-fun SelectLanguagesToFrom(title: String, state: LanguageToFromState, onAction: (LanguagesToFromActions) -> Unit) {
+fun SelectLanguagesToFrom(
+    title: String,
+    state: LanguageToFromState,
+    onAction: (LanguagesToFromActions) -> Unit
+) {
     Column {
         Header(title = title, wiBackButton = state.headerWithBackButton)
 
@@ -44,7 +49,7 @@ fun SelectLanguagesToFrom(title: String, state: LanguageToFromState, onAction: (
                     PreferredLanguages(
                         languages = state.preferredLanguages,
                         onCheck = { language -> onAction(LanguagesToFromActions.ToggleCheck(language)) },
-                        title = "Preferred languages"
+                        title = stringResource(id = R.string.settings_languages_from_to_preferred_lang)
                     )
                 }
             }
@@ -52,7 +57,7 @@ fun SelectLanguagesToFrom(title: String, state: LanguageToFromState, onAction: (
             items(state.filteredLanguageList) { language ->
                 LanguageCheckBox(
                     language = language,
-                    onCheck = { language -> onAction(LanguagesToFromActions.ToggleCheck(language)) }
+                    onCheck = { lang -> onAction(LanguagesToFromActions.ToggleCheck(lang)) }
                 )
             }
         }
@@ -67,7 +72,10 @@ fun SelectLanguagesToFrom(title: String, state: LanguageToFromState, onAction: (
                     )
                 )
         ) {
-            Text(text = "Next".uppercase(), color = colorResource(id = R.color.white))
+            Text(
+                text = stringResource(id = R.string.next).uppercase(),
+                color = colorResource(id = R.color.white)
+            )
         }
     }
 }
@@ -76,7 +84,7 @@ fun SelectLanguagesToFrom(title: String, state: LanguageToFromState, onAction: (
 @Composable
 fun SelectLanguagesToFromPreview() {
     SelectLanguagesToFrom(
-        title="select native language",
+        title = "select native language",
         state = LanguageToFromState(
             filteredLanguageList = listOf(
                 Language(
