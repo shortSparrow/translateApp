@@ -20,6 +20,7 @@ import com.ovolk.dictionary.presentation.modify_word.AddNewLangModal
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromViewModel
 import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -32,9 +33,11 @@ fun AddNewLangBottomSheet(
             BottomSheetValue.Expanded,
         ),
     )
+    val viewModel = hiltViewModel<SettingsLanguagesToFromViewModel>()
 
     fun closeModal(){
         onAction(ModifyWordAction.CloseAddNewLanguageModal)
+        viewModel.clearCurrentType()
     }
 
 
@@ -53,9 +56,9 @@ fun AddNewLangBottomSheet(
                 sheetContent = {
                     if (state.type == null) return@BottomSheetScaffold
 
-                    val viewModel = hiltViewModel<SettingsLanguagesToFromViewModel>()
                     viewModel.setCurrentType(state.type)
                     val languageState = viewModel.state
+                    Timber.d("type: ${state.type}")
 
                     if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
                         closeModal()

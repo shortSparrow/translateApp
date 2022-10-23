@@ -25,7 +25,7 @@ open class SettingsLanguagesToFromViewModel @Inject constructor(
 
     private var currentType: LanguagesType? = null
 
-    fun setCurrentType(type:LanguagesType) {
+    fun setCurrentType(type: LanguagesType) {
         if (currentType == null) {
             currentType = type
 
@@ -39,6 +39,10 @@ open class SettingsLanguagesToFromViewModel @Inject constructor(
         }
     }
 
+    // needed for ModifyWord screen, for clearing state after close bottomSheet
+    fun clearCurrentType() {
+        currentType = null
+    }
 
     fun onAction(action: SettingsLanguagesToFromActions) {
         when (action) {

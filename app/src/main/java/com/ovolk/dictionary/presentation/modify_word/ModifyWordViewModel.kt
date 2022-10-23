@@ -132,7 +132,13 @@ class ModifyWordViewModel @Inject constructor(
                 )
             }
             ModifyWordAction.CloseAddNewLanguageModal -> {
-                val langList = loadLanguages(langFromCode = state.langFrom, langToCode = state.langTo)
+
+
+
+                val langList = when(state.modifyMode) {
+                    ModifyWordModes.MODE_ADD -> loadLanguages(langFromCode = null, langToCode = null)
+                    ModifyWordModes.MODE_EDIT -> loadLanguages(langFromCode = state.langFrom, langToCode = state.langTo)
+                }
 
                 composeState = composeState.copy(
                     addNewLangModal = AddNewLangModal(
@@ -253,7 +259,7 @@ class ModifyWordViewModel @Inject constructor(
 
     // wordValue which selected and passed into app as intent
     fun launchAddMode(wordValue: String, listId: Long) {
-        state = state.copy(wordValue = wordValue)
+        state = state.copy(wordValue = wordValue, modifyMode = ModifyWordModes.MODE_ADD)
         _uiState.postValue(state.toUiState())
 
         val langList = loadLanguages(langFromCode = null, langToCode = null)
@@ -273,6 +279,7 @@ class ModifyWordViewModel @Inject constructor(
         } else {
             wordId
         }
+        state = state.copy(modifyMode = ModifyWordModes.MODE_EDIT)
         getWordById(id)
     }
 

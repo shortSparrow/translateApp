@@ -99,7 +99,9 @@ class GetSelectedLanguages @Inject constructor(
         savedLangCode: String? = null,
     ): List<SelectLanguage> {
         val filtered =
-            langList.filter { item -> langCodeList.find { it.langCode == item.langCode } != null }
+            langList.filter { item -> langCodeList.find { it.langCode == item.langCode } != null || item.langCode == savedLangCode  }
+        // item.langCode == savedLangCode if user added word with language UK before, and then removed one in settings,
+        // we add this word to available language when user modify word. If the user adds a new word, this language will not be displayed
 
         val res = filtered.mapIndexed { index, language ->
             mapper.languageToSelectLanguage(

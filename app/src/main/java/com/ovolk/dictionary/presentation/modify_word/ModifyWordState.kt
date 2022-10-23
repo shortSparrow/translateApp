@@ -79,6 +79,7 @@ data class ModifyWordState(
     val editableWordId: Long? = null,
     val createdAt: Long? = null,
     val isDeleteModalOpen: Boolean = false,
+    val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD
 )
 
 data class AddNewLangModal(
