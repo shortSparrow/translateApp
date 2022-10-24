@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.domain.use_case.select_languages.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +22,8 @@ class LanguagesToFromViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(LanguageToFromState())
         private set
+
+    var listener: Listener? = null
 
     fun setCurrentType(type: LanguagesType) {
         if (state.type == null) {
@@ -42,28 +43,19 @@ class LanguagesToFromViewModel @Inject constructor(
         }
     }
 
-
-    var initialMount = false
-    private var navController: NavController? = null
-
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
-
     fun onAction(action: LanguagesToFromActions) {
         when (action) {
             LanguagesToFromActions.GoNext -> {
                 when (state.type) {
                     LanguagesType.LANG_TO -> {
                         updateTranslatableLanguages.saveLanguagesTo(list = state.languageList)
-                        navController?.navigate(LanguagesToFragmentDirections.actionLanguagesToFragmentToWordListFragment())
                     }
                     LanguagesType.LANG_FROM -> {
                         updateTranslatableLanguages.saveLanguagesFrom(list = state.languageList)
-                        navController?.navigate(LanguagesFromFragmentDirections.actionLanguagesFromFragmentToLanguagesToFragment())
                     }
                     null -> {}
                 }
+                listener?.navigate(state.type)
             }
             is LanguagesToFromActions.OnSearchLanguagesTo -> {
                 state = state.copy(
@@ -96,5 +88,9 @@ class LanguagesToFromViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    interface Listener {
+        fun navigate(lang: LanguagesType?)
     }
 }

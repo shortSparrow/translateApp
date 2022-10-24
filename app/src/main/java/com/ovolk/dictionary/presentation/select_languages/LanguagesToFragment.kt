@@ -27,12 +27,10 @@ class LanguagesToFragment : BaseFragment<FragmentLanguageToBinding>() {
         binding.fragmentRoot.setContent {
             val viewModel = hiltViewModel<LanguagesToFromViewModel>()
             viewModel.setCurrentType(LanguagesType.LANG_TO)
-
-            val state = viewModel.state
-            if (!viewModel.initialMount) {
-                viewModel.setNavController(findNavController())
-                viewModel.initialMount = true
+            if (viewModel.listener == null) {
+                viewModel.listener = listener()
             }
+            val state = viewModel.state
 
             AppCompatTheme {
                 SelectLanguagesToFrom(
@@ -40,6 +38,20 @@ class LanguagesToFragment : BaseFragment<FragmentLanguageToBinding>() {
                     state = state,
                     onAction = viewModel::onAction
                 )
+            }
+        }
+    }
+
+    fun listener() = object : LanguagesToFromViewModel.Listener {
+        override fun navigate(lang: LanguagesType?) {
+            when (lang) {
+                LanguagesType.LANG_TO -> {
+                    findNavController().navigate(LanguagesToFragmentDirections.actionLanguagesToFragmentToWordListFragment())
+                }
+                LanguagesType.LANG_FROM -> {
+                    findNavController().navigate(LanguagesFromFragmentDirections.actionLanguagesFromFragmentToLanguagesToFragment())
+                }
+                null -> {}
             }
         }
     }

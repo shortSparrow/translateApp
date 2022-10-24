@@ -156,7 +156,6 @@ class ExamReminderViewModel @Inject constructor(
         showTimeBeforePush()
     }
 
-
     private fun checkIsChangedExist() {
         val isSame =
             state.selectedFrequency != initialValues.selectedFrequency ||
@@ -169,6 +168,4 @@ class ExamReminderViewModel @Inject constructor(
     private fun convertTime(value: Int): String {
         return if (value < 10) "0$value" else value.toString()
     }
-
-
 }

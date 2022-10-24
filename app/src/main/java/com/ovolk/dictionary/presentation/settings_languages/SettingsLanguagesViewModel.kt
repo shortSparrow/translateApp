@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.domain.use_case.settings_languages.GetSelectedLanguages
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +19,7 @@ class SettingsLanguagesViewModel @Inject constructor(
     var state by mutableStateOf(SettingsLanguagesState())
         private set
 
-    var initialMount = false
-    private var navController: NavController? = null
-
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
+    var listener: Listener? = null
 
 
     private fun getLanguages() {
@@ -40,14 +34,7 @@ class SettingsLanguagesViewModel @Inject constructor(
     fun onAction(action: SettingsLanguagesAction) {
         when (action) {
             is SettingsLanguagesAction.EditSelectedLanguages -> {
-                when (action.type) {
-                    LanguagesType.LANG_TO -> {
-                        navController?.navigate(SettingsLanguagesFragmentDirections.actionSettingsLanguagesFragmentToSettingsLanguagesToFragment())
-                    }
-                    LanguagesType.LANG_FROM -> {
-                        navController?.navigate(SettingsLanguagesFragmentDirections.actionSettingsLanguagesFragmentToSettingsLanguagesFromFragment())
-                    }
-                }
+                listener?.navigate(action.type)
             }
             SettingsLanguagesAction.OnFocusScreen -> {
                 getLanguages()
@@ -55,4 +42,7 @@ class SettingsLanguagesViewModel @Inject constructor(
         }
     }
 
+    interface Listener {
+        fun navigate(lang: LanguagesType)
+    }
 }

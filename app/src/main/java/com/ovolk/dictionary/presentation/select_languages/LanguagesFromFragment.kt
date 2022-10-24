@@ -29,11 +29,9 @@ class LanguagesFromFragment : BaseFragment<FragmentLanguageFromBinding>() {
             viewModel.setCurrentType(LanguagesType.LANG_FROM)
 
             val state = viewModel.state
-            if (!viewModel.initialMount) {
-                viewModel.setNavController(findNavController())
-                viewModel.initialMount = true
+            if (viewModel.listener == null) {
+                viewModel.listener = listener()
             }
-
             AppCompatTheme {
                 SelectLanguagesToFrom(
                     title = stringResource(id = R.string.select_languages_translate_language_from),
@@ -44,4 +42,17 @@ class LanguagesFromFragment : BaseFragment<FragmentLanguageFromBinding>() {
         }
     }
 
+    fun listener() = object : LanguagesToFromViewModel.Listener {
+        override fun navigate(lang: LanguagesType?) {
+            when (lang) {
+                LanguagesType.LANG_TO -> {
+                    findNavController().navigate(LanguagesToFragmentDirections.actionLanguagesToFragmentToWordListFragment())
+                }
+                LanguagesType.LANG_FROM -> {
+                    findNavController().navigate(LanguagesFromFragmentDirections.actionLanguagesFromFragmentToLanguagesToFragment())
+                }
+                null -> {}
+            }
+        }
+    }
 }
