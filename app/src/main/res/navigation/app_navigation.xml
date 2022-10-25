@@ -14,6 +14,16 @@
             android:id="@+id/action_wordListFragment_to_modifyWordFragment"
             app:destination="@id/modifyWordFragment"
             app:popUpTo="@id/wordListFragment" />
+        <action
+            android:id="@+id/action_wordListFragment_to_languagesFromFragment"
+            app:destination="@id/languagesFromFragment"
+            app:popUpTo="@id/languagesToFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="searchedWord"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/modifyWordFragment"
@@ -47,9 +57,9 @@
             app:destination="@id/modifyWordFragment" />
         <argument
             android:name="listName"
-            app:argType="string"
             android:defaultValue="@null"
-            app:nullable="true"/>
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="listId"
             android:defaultValue="-1L"
@@ -60,7 +70,14 @@
         android:id="@+id/settingsFragment"
         android:name="com.ovolk.dictionary.presentation.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_settingsLanguagesFragment"
+            app:destination="@id/settingsLanguagesFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_examReminderFragment"
+            app:destination="@id/examReminderFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/listFragment"
@@ -92,5 +109,46 @@
             android:name="listName"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/languagesFromFragment"
+        android:name="com.ovolk.dictionary.presentation.select_languages.LanguagesFromFragment"
+        android:label="LanguagesFromFragment">
+        <action
+            android:id="@+id/action_languagesFromFragment_to_languagesToFragment"
+            app:destination="@id/languagesToFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/languagesToFragment"
+        android:name="com.ovolk.dictionary.presentation.select_languages.LanguagesToFragment"
+        android:label="LanguagesToFragment">
+        <action
+            android:id="@+id/action_languagesToFragment_to_wordListFragment"
+            app:destination="@id/wordListFragment"
+            app:popUpTo="@id/wordListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsLanguagesFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesFragment"
+        android:label="SettingsLanguagesFragment">
+        <action
+            android:id="@+id/action_settingsLanguagesFragment_to_settingsLanguagesFromFragment"
+            app:destination="@id/settingsLanguagesFromFragment" />
+        <action
+            android:id="@+id/action_settingsLanguagesFragment_to_settingsLanguagesToFragment"
+            app:destination="@id/settingsLanguagesToFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/examReminderFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderFragment"
+        android:label="ExamReminderFragment" />
+    <fragment
+        android:id="@+id/settingsLanguagesFromFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromFragment"
+        android:label="SettingsLanguagesFromFragment" />
+    <fragment
+        android:id="@+id/settingsLanguagesToFragment"
+        android:name="com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFragment"
+        android:label="SettingsLanguagesToFragment" />
 
 </navigation>

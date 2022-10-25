@@ -1,14 +1,8 @@
-package com.ovolk.dictionary.util
+package com.ovolk.dictionary.util.helpers
 
 import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
-
-fun generateFileName(): String {
-    val formatter = SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.US)
-    val date = Date()
-    return "Recording_" + formatter.format(date) + ".3gp"
-}
 
 fun getAudioPath(context: Context, fileName: String): String {
     val dirName =
@@ -16,3 +10,11 @@ fun getAudioPath(context: Context, fileName: String): String {
 
     return "$dirName/$fileName"
 }
+
+
+fun generateFileName(): String {
+    val formatter = SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.US)
+    val date = Date()
+    return "Recording_" + formatter.format(date) + ".3gp"
+}
+

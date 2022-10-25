@@ -92,7 +92,7 @@ fun AddToList(
                     Icon(
                         modifier = Modifier.padding(start = 10.dp),
                         painter = painterResource(id = R.drawable.add),
-                        contentDescription = "add"
+                        contentDescription = stringResource(id = R.string.add)
                     )
                 }
             }

@@ -5,10 +5,11 @@ import android.view.View
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.databinding.FragmentListFullBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
-import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,10 +24,9 @@ class ListFullFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.listFull.setContent {
             val viewModel = hiltViewModel<ListsFullViewModel>()
-            if (!viewModel.initialMount) {
-                viewModel.setNavController(findNavController())
+            if (viewModel.listener == null) {
+                viewModel.listener = listener()
                 viewModel.onAction(ListFullAction.InitialLoadData(args.listId, args.listName))
-                viewModel.initialMount = true
             }
 
             val state = viewModel.state
@@ -34,6 +34,39 @@ class ListFullFragment :
             AppCompatTheme {
                 ListFullScreen(state = state, onAction = viewModel::onAction)
             }
+        }
+    }
+
+    fun listener() = object : ListsFullViewModel.Listener {
+        override fun goBack() {
+            findNavController().popBackStack()
+        }
+
+        override fun navigateToExam(listId: Long, listName: String) {
+            findNavController().navigate(
+                ListFullFragmentDirections.actionListFullFragmentToExamKnowledgeWordsFragment(
+                    listId = listId,
+                    listName = listName
+                )
+            )
+        }
+
+        override fun navigateToEditWord(wordId: Long) {
+            findNavController().navigate(
+                ListFullFragmentDirections.actionListFullFragmentToModifyWordFragment(
+                    mode = ModifyWordModes.MODE_EDIT,
+                    wordId = wordId
+                )
+            )
+        }
+
+        override fun navigateToAddWord(listId: Long) {
+            findNavController().navigate(
+                ListFullFragmentDirections.actionListFullFragmentToModifyWordFragment(
+                    mode = ModifyWordModes.MODE_ADD,
+                    listId = listId
+                )
+            )
         }
     }
 

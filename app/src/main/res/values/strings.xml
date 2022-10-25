@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- cd - content description  -->
 
@@ -25,7 +25,8 @@
     <string name="modify_word_additional">Additional</string>
     <string name="modify_word_microphone">Record pronunciation</string>
     <string name="modify_word_add_new_word">Add new word</string>
-    <string name="modify_word_toolbar_title">Modify word</string>
+    <string name="modify_word_toolbar_title_add">Add new word</string>
+    <string name="modify_word_toolbar_title_edit">Edit word</string>
     <string name="modify_word_confirm_delete_title">Are you sure you want to delete this word?</string>
     <string name="modify_word_enable_audio_permission">Your audio permission is disabled, please, go to settings and enable one</string>
     <string name="modify_word_cd_selected_mark">selected mark</string>
@@ -35,10 +36,13 @@
     <string name="modify_word_select_list">Selected List</string>
     <string name="modify_word_add_to_list">Add To List</string>
     <string name="modify_word_dialog_add_new_list_placeholder">Name of the list</string>
-    <string name="modify_word_dialog_add_new_list_title">Add  new List</string>
+    <string name="modify_word_dialog_add_new_list_title">Add new List</string>
+    <string name="modify_word_saved_word_success">Word safe successfully</string>
+    <string name="modify_word_language_picker_from">(language from)</string>
+    <string name="modify_word_language_picker_to">(language to)</string>
 
 
-    <!-- Exam counter-->
+    <!-- Exam -->
     <string name="exam_counter_toolbar_title_daily_mode">Daily exam</string>
     <string name="exam_counter_toolbar_title_infinity_mode">Infinity exam</string>
     <string name="exam_counter">%1$d from %2$d</string>
@@ -56,11 +60,46 @@
     <string name="exam_alert_complete_daily_exam_description">Congratulations, you complete daily exam</string>
     <string name="exam_complete_infinity_exam">Congratulations, you complete infinity exam</string>
     <string name="exam_list_name">(%s)</string>
+    <string name="exam_show_variants_unavailable">Show variants currently is unavailable for this language</string>
 
     <!-- Settings fragment -->
-    <string name="settings_reminder_label">Exam frequency</string>
-    <string name="left_before_next_reminder">Left time to next exam:</string>
-    <string name="settings_time_push_notification">Select push notification time:"</string>
+    <string name="settings_language_item_title">language</string>
+    <string name="settings_language_cd_item_title">go to the language settings</string>
+    <string name="settings_exam_reminder_item_title">exam reminder</string>
+    <string name="settings_exam_reminder_cd_item_title">go to the exam reminder settings</string>
+
+    <!-- Settings exam reminder fragment -->
+    <string name="settings_exam_reminder_screen_title">Exam Reminder Settings</string>
+    <string name="settings_exam_reminder_label">Exam frequency</string>
+    <string name="settings_exam_reminder_left_before_next_reminder">Left time to next exam:</string>
+    <string name="settings_exam_reminder_time_push_notification">Select push notification time:</string>
+    <string name="settings_exam_reminder_frequency_disable">disable</string>
+    <string name="settings_exam_reminder_frequency_once_a_day">once a day</string>
+    <string name="settings_exam_reminder_frequency_once_every_3_days">once every 3 days</string>
+    <string name="settings_exam_reminder_frequency_once_every_6_days">once every 6 days</string>
+
+
+    <!--  Settings Languages From To  -->
+    <string name="settings_languages_from_to_selected_lang">Selected languages</string>
+    <string name="settings_languages_from_to_preferred_lang">Preferred languages</string>
+
+    <!--  Settings Languages From -->
+    <string name="settings_languages_from_title">Language to translate from</string>
+
+    <!--  Settings Languages To -->
+    <string name="settings_languages_to_title">Language to translate into</string>
+
+
+    <!--  Settings Languages -->
+    <string name="settings_languages_title">Select translation languages</string>
+    <string name="settings_languages_select_language">Select languages</string>
+    <string name="settings_languages_translate_language_to">Choose the languages of translation:</string>
+    <string name="settings_languages_translate_language_from">Choose the languages from which to translate:</string>
+
+
+    <!--  Select Languages -->
+    <string name="select_languages_translate_language_to">Language to translate into</string>
+    <string name="select_languages_translate_language_from">Language to translate from</string>
 
     <!-- Lists Screen  -->
     <string name="lists_screen_add_new_list_label">Name of new list</string>
@@ -84,6 +123,7 @@
     <string name="full_lists_add_new_word">Add new word</string>
     <string name="full_lists_list_is_empty">There are not any word here :(</string>
     <string name="full_lists_cd_list_is_empty">empty list icon</string>
+    <string name="full_lists_cd_add_new_list">add new list</string>
 
 
     <!--Validation -->
@@ -115,14 +155,15 @@
     <string name="show_less">Show less</string>
     <string name="nothing_found">Nothing found :(</string>
     <string name="frequency">frequency</string>
+    <string name="search_word_placeholder">Search a word...</string>
+    <string name="add_new">add new</string>
+    <string name="app_version">version %s</string>
 
     <string name="cd_go_back">Go Back</string>
     <string name="cd_close_dialog">Close dialog</string>
     <string name="cd_nothing_found">Nothing found</string>
-
-
-    <string-array name="translate_from_language">
-        <item>UA</item>
-    </string-array>
+    <string name="cd_search_icon">search icon</string>
+    <string name="cd_arrow_lang">arrow picker</string>
+    <string name="cd_lang_icon">language icon</string>
 
 </resources>

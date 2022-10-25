@@ -24,7 +24,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     private val modifyWordUseCase: ModifyWordUseCase,
     val repository: TranslatedWordRepository,
-    val application: Application
+    val application: Application,
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ExamKnowledgeUiState>()
@@ -76,21 +76,21 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     }
 
-    // after we add orientation|screenLayout to configChanges is no needed
-    fun restoreUI() {
-        _uiState.value = ExamKnowledgeUiState.RestoreUI(
-            isLoading = state.isLoading,
-            examWordList = state.examWordList,
-            examWordListEmpty = state.examWordListEmpty,
-            currentWord = state.currentWord,
-            isExamEnd = state.isExamEnd,
-            isInputWordInvalid = state.isInputWordInvalid,
-            activeWordPosition = state.activeWordPosition,
-            mode = state.mode,
-            isModeDialogOpen = state.isModeDialogOpen,
-            isExamEndDialogOpen = state.isExamEndDialogOpen,
-        )
-    }
+//    // after we add orientation|screenLayout to configChanges is no needed
+//    fun restoreUI() {
+//        _uiState.value = ExamKnowledgeUiState.RestoreUI(
+//            isLoading = state.isLoading,
+//            examWordList = state.examWordList,
+//            examWordListEmpty = state.examWordListEmpty,
+//            currentWord = state.currentWord,
+//            isExamEnd = state.isExamEnd,
+//            isInputWordInvalid = state.isInputWordInvalid,
+//            activeWordPosition = state.activeWordPosition,
+//            mode = state.mode,
+//            isModeDialogOpen = state.isModeDialogOpen,
+//            isExamEndDialogOpen = state.isExamEndDialogOpen,
+//        )
+//    }
 
     fun getTotalCountExamList() = getExamWordListUseCase.getTotalCountExamList()
 
@@ -262,7 +262,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         state = state.copy(currentWord = currentWord.copy(isTranslateExpanded = isExpanded))
 
         val translates = state.currentWord?.translates ?: emptyList()
-        _uiState.value = ExamKnowledgeUiState.ToggleCurrentWordTrasnalteExpanded(
+        _uiState.value = ExamKnowledgeUiState.ToggleCurrentWordTranslateExpanded(
             isExpanded = isExpanded,
             translates = translates
         )

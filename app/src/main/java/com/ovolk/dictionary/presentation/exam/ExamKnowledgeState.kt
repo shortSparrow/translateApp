@@ -69,7 +69,7 @@ sealed interface ExamKnowledgeUiState {
 
     data class ToggleHiddenDescriptionExpanded(val isExpanded: Boolean) : ExamKnowledgeUiState
 
-    data class ToggleCurrentWordTrasnalteExpanded(
+    data class ToggleCurrentWordTranslateExpanded(
         val isExpanded: Boolean,
         val translates: List<Translate>
     ) : ExamKnowledgeUiState
