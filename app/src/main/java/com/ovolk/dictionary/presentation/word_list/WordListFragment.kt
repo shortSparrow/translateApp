@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.ovolk.dictionary.databinding.FragmentWordListBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
@@ -22,15 +23,14 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
         get() = FragmentWordListBinding::inflate
 
     private val viewModel: WordListViewModel by viewModels()
-
+    private val args by navArgs<WordListFragmentArgs>()
 
     @Inject
-    lateinit var  wordListAdapter: WordListAdapter
+    lateinit var wordListAdapter: WordListAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 //        But we want restore ui on rotate and go over from fragment
         viewModel.restoreUI()
 
@@ -51,6 +51,12 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
                 return true
             }
         })
+
+        // prefilled search field and do search when open app from intent and pass searchWord
+        if (args.searchedWord != null) {
+            binding.searchWord.onActionViewExpanded()
+            binding.searchWord.setQuery(args.searchedWord, false)
+        }
     }
 
     private fun observeData() = with(binding) {
@@ -79,7 +85,7 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
 
                     wordListAdapter.submitList(uiState.wordList) {
                         if (uiState.shouldScrollToStart) {
-                            binding.wordListRv.scrollToPosition(0)
+                            wordListRv.scrollToPosition(0)
                         }
                     }
                     viewModel.previousSize = uiState.wordList.size

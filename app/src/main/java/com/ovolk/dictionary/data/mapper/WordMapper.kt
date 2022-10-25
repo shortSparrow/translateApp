@@ -58,7 +58,7 @@ class WordMapper @Inject constructor() {
         )
 
 
-    private fun wordFullDbToWordRv(wordDb: WordFullDb): WordRV = WordRV(
+    fun wordFullDbToWordRv(wordDb: WordFullDb): WordRV = WordRV(
         id = wordDb.wordInfo.id,
         value = wordDb.wordInfo.value,
         translates = wordDb.translates.map { translateDbToLocal(it) },

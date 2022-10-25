@@ -92,6 +92,17 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun searchExactWordList(query: String): WordRV? {
+        val res = translatedWordDao.searchExactWord(query = query)
+        return if (res != null) {
+            mapper.wordFullDbToWordRv(res)
+        } else {
+            res
+        }
+
+    }
+
+
     override suspend fun searchWordListSize(): Flow<Int> {
         return translatedWordDao.searchWordListSize()
     }
