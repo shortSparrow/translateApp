@@ -10,5 +10,5 @@ class GetSearchedWordListUseCase @Inject constructor(
         repository.searchWordList(query = searchValue)
 
     suspend fun getExactSearchedWord(searchValue: String) =
-        repository.searchExactWordList(query = searchValue)
+        repository.searchExactWordList(query = searchValue.trim().lowercase())
 }
