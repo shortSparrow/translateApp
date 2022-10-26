@@ -2,16 +2,17 @@ package com.ovolk.dictionary.presentation
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -24,9 +25,7 @@ import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import com.ovolk.dictionary.util.helpers.setShowVariantsExamAvailableLanguagesIdNeeded
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -40,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var listener: NavController.OnDestinationChangedListener
     private lateinit var bottomBar: BottomNavigationView
+    var isAppReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             setShowVariantsExamAvailableLanguagesIdNeeded(application)
             examReminder.setInitialReminderIfNeeded()
         }
+        hideSplashScreen()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -187,7 +188,14 @@ class MainActivity : AppCompatActivity() {
                             .build()
                     )
                 }
+
+                // without Handler calls before navigation works
+                Handler(Looper.getMainLooper()).post {
+                    isAppReady = true
+                }
             }
+        } else {
+            isAppReady = true
         }
     }
 
@@ -198,5 +206,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideBottomNav() {
         bottomBar.visibility = View.GONE
+    }
+
+    private fun hideSplashScreen() {
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (isAppReady) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        )
     }
 }
