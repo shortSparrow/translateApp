@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
         if (text != null && getIsChosenLanguage()) {
             lifecycleScope.launch {
                 val searchedValue =
-                    getSearchedWordListUseCase.getExactSearchedWord(text.toString().trim())
+                    getSearchedWordListUseCase.getExactSearchedWord(text.toString())
 
                 if (searchedValue == null) {
                     val bundle = bundleOf(
