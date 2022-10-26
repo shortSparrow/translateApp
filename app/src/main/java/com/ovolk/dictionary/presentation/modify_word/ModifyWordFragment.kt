@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.FragmentModifyWordBinding
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
@@ -25,9 +26,9 @@ import com.ovolk.dictionary.presentation.modify_word.adapter.ModifyWordAdapter
 import com.ovolk.dictionary.presentation.modify_word.adapter.hints.HintAdapter
 import com.ovolk.dictionary.presentation.modify_word.adapter.translate.TranslateAdapter
 import com.ovolk.dictionary.presentation.modify_word.compose.AddToList
+import com.ovolk.dictionary.presentation.modify_word.compose.LanguagesPicker
 import com.ovolk.dictionary.util.ScrollEditTextInsideScrollView
 import com.ovolk.dictionary.util.setOnTextChange
-import com.google.accompanist.appcompattheme.AppCompatTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates.notNull
 
@@ -78,6 +79,15 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             }
         }
 
+        binding.selectLanguage.setContent {
+            val viewModel = hiltViewModel<ModifyWordViewModel>()
+            val state = viewModel.composeState
+
+            AppCompatTheme {
+                LanguagesPicker(state = state, onAction = viewModel::onComposeAction)
+            }
+        }
+
         setupView()
         setupObservers()
         setupClickListener()
@@ -92,7 +102,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     override fun showMessage(text: String) {
         Toast.makeText(
             context,
-            getString(R.string.modify_word_enable_audio_permission),
+            text,
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -102,7 +112,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
             ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(
                 args.wordValue,
-                listId = args.listId
+                listId = args.listId // when open fragment from word list fragment
             )
         }
     }
@@ -240,6 +250,15 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                         inputTranslatedWord.englishTranscriptionInput.setText(uiState.transcription)
                         translateWordDescription.descriptionInput.setText(uiState.description)
                         wordPriorityValue.setText(uiState.priority.toString())
+
+                        when (args.mode) {
+                            ModifyWordModes.MODE_ADD -> {
+                                toolbar.title = getString(R.string.modify_word_toolbar_title_add)
+                            }
+                            ModifyWordModes.MODE_EDIT -> {
+                                toolbar.title = getString(R.string.modify_word_toolbar_title_edit)
+                            }
+                        }
                     }
 
                     confirmDialog.setIsOpenModeDialog(uiState.isDeleteModalOpen)
@@ -249,23 +268,12 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
 
                     if (uiState.editableTranslate != null) {
                         addTranslate.cancelEditTranslate.visibility = View.VISIBLE
-                        addTranslate.button.text = "edit"
+                        addTranslate.button.text = getString(R.string.edit)
                     }
                     if (uiState.editableHint != null) {
                         addHints.cancelEditHint.visibility = View.VISIBLE
-                        addHints.button.text = "edit"
+                        addHints.button.text = getString(R.string.edit)
                     }
-
-                    val langList = mutableMapOf<String, Int>()
-                    val adapter = inputTranslatedWord.selectLanguageSpinner.adapter
-                    for (i in 0 until adapter.count) {
-                        langList[adapter.getItem(i).toString()] = i
-                    }
-
-                    // FIXME change spinner for text view on edit mode
-                    val spinnerValue = langList[uiState.langFrom] ?: 0
-                    inputTranslatedWord.selectLanguageSpinner.setSelection(spinnerValue)
-                    inputTranslatedWord.selectLanguageSpinner.isEnabled = false
 
                     addTranslate.englishWordContainer.error = uiState.translatesError
                     translateAdapter.submitList(uiState.translates)
@@ -280,29 +288,31 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                 }
                 is ModifyWordUiState.ShowResultModify -> {
                     val message =
-                        if (uiState.isSuccess) "word safe successfully" else "Error happened"
+                        if (uiState.isSuccess) getString(R.string.modify_word_saved_word_success) else getString(
+                            R.string.error_happened
+                        )
                     Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }
                 is ModifyWordUiState.StartModifyTranslate -> {
                     addTranslate.cancelEditTranslate.visibility = View.VISIBLE
-                    addTranslate.button.text = "edit"
+                    addTranslate.button.text = getString(R.string.edit)
                     addTranslate.translateInput.setText(uiState.value)
                 }
                 is ModifyWordUiState.CompleteModifyTranslate -> {
                     addTranslate.cancelEditTranslate.visibility = View.INVISIBLE
-                    addTranslate.button.text = "add"
+                    addTranslate.button.text = getString(R.string.add)
                     addTranslate.translateInput.setText("")
                     translateAdapter.submitList(uiState.translates)
                 }
                 is ModifyWordUiState.StartModifyHint -> {
                     addHints.cancelEditHint.visibility = View.VISIBLE
-                    addHints.button.text = "edit"
+                    addHints.button.text = getString(R.string.edit)
                     addHints.inputHint.setText(uiState.value)
                 }
                 is ModifyWordUiState.CompleteModifyHint -> {
                     addHints.cancelEditHint.visibility = View.INVISIBLE
-                    addHints.button.text = "add"
+                    addHints.button.text = getString(R.string.add)
                     addHints.inputHint.setText("")
                     hintAdapter.submitList(uiState.hints)
                 }
@@ -371,8 +381,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                 value = inputTranslatedWord.englishWordInput.text.toString(),
                 description = translateWordDescription.descriptionInput.text.toString(),
                 transcription = inputTranslatedWord.englishTranscriptionInput.text.toString(),
-                langFrom = "EN",
-                langTo = inputTranslatedWord.selectLanguageSpinner.selectedItem.toString(),
                 priority = wordPriorityValue.text.toString()
             )
         }

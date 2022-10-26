@@ -89,7 +89,7 @@ fun Cross(onClose: () -> Unit) {
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
-fun ComposableDialog() {
+fun ComposableDialogPreview() {
     MyDialog(
         onDismissRequest = {},
         content = {

@@ -9,6 +9,7 @@ import com.ovolk.dictionary.databinding.FragmentListBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.presentation.lists.components.ListsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 

@@ -11,8 +11,8 @@ import android.os.Vibrator
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ovolk.dictionary.util.generateFileName
-import com.ovolk.dictionary.util.getAudioPath
+import com.ovolk.dictionary.util.helpers.generateFileName
+import com.ovolk.dictionary.util.helpers.getAudioPath
 import timber.log.Timber
 import java.io.File
 import java.io.IOException

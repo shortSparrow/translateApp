@@ -13,7 +13,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.ItemWordRvBinding
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.presentation.modify_word.adapter.translate.TranslateAdapter
-import com.ovolk.dictionary.util.getAudioPath
+import com.ovolk.dictionary.util.helpers.getAudioPath
 import timber.log.Timber
 import java.io.IOException
 
@@ -36,7 +36,6 @@ class WordItemViewHolder(
         if (expandedList[word.id] == null) {
             expandedList[word.id] = false
         }
-
     }
 
     private fun setExpandedStyle(isExpanded: Boolean) = with(binding) {
@@ -58,9 +57,9 @@ class WordItemViewHolder(
         val isExpanded = expandedList[word.id]!!
         setExpandedStyle(isExpanded)
 
-        langFrom.text = word.langFrom
+        langFrom.text = word.langFrom.uppercase()
         englishWord.text = word.value
-        langTo.text = word.langTo
+        langTo.text = word.langTo.uppercase()
         transcription.text = word.transcription
 
 
@@ -77,7 +76,6 @@ class WordItemViewHolder(
             expandedList[word.id] = newIsExpanded
             setExpandedStyle(newIsExpanded)
         }
-
 
         val translateAdapter = TranslateAdapter()
         translateList.adapter = translateAdapter
