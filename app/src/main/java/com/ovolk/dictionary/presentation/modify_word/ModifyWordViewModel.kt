@@ -23,10 +23,7 @@ import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.GetWordItemUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.domain.use_case.settings_languages.GetSelectedLanguages
-import com.ovolk.dictionary.presentation.modify_word.helpers.validateSelectLanguage
-import com.ovolk.dictionary.presentation.modify_word.helpers.validateTranslates
-import com.ovolk.dictionary.presentation.modify_word.helpers.validateWordValue
-import com.ovolk.dictionary.presentation.modify_word.helpers.validationPriority
+import com.ovolk.dictionary.presentation.modify_word.helpers.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -134,10 +131,15 @@ class ModifyWordViewModel @Inject constructor(
             ModifyWordAction.CloseAddNewLanguageModal -> {
 
 
-
-                val langList = when(state.modifyMode) {
-                    ModifyWordModes.MODE_ADD -> loadLanguages(langFromCode = null, langToCode = null)
-                    ModifyWordModes.MODE_EDIT -> loadLanguages(langFromCode = state.langFrom, langToCode = state.langTo)
+                val langList = when (state.modifyMode) {
+                    ModifyWordModes.MODE_ADD -> loadLanguages(
+                        langFromCode = null,
+                        langToCode = null
+                    )
+                    ModifyWordModes.MODE_EDIT -> loadLanguages(
+                        langFromCode = state.langFrom,
+                        langToCode = state.langTo
+                    )
                 }
 
                 composeState = composeState.copy(
@@ -166,7 +168,9 @@ class ModifyWordViewModel @Inject constructor(
         state = state.copy(wordValueError = null)
         _uiState.value = ModifyWordUiState.EditFieldError(
             wordValueError = null,
-            translatesError = state.translatesError
+            translatesError = state.translatesError,
+            hintWordError = state.hintWordError,
+            priorityValidation = state.priorityValidation,
         )
     }
 
@@ -174,7 +178,9 @@ class ModifyWordViewModel @Inject constructor(
         state = state.copy(translatesError = null)
         _uiState.value = ModifyWordUiState.EditFieldError(
             translatesError = null,
-            wordValueError = state.wordValueError
+            wordValueError = state.wordValueError,
+            hintWordError = state.hintWordError,
+            priorityValidation = state.priorityValidation,
         )
     }
 
@@ -223,6 +229,7 @@ class ModifyWordViewModel @Inject constructor(
                 wordValueError = wordValidation.errorMessage,
                 translatesError = translatesValidation.errorMessage,
                 priorityValidation = priorityValidation.errorMessage,
+                hintWordError = state.hintWordError,
             )
             composeState = composeState.copy(
                 selectLanguageFromError = selectLanguageFromValidation,
@@ -311,6 +318,22 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     fun addTranslate(translateValue: String) {
+        val wordValidation = validateOnAddChip(translateValue)
+        val hasError = !wordValidation.successful
+
+        if (hasError) {
+            state = state.copy(
+                translatesError = wordValidation.errorMessage,
+            )
+            _uiState.value = ModifyWordUiState.EditFieldError(
+                translatesError = wordValidation.errorMessage,
+                hintWordError = state.hintWordError,
+                wordValueError = state.wordValueError,
+                priorityValidation = state.priorityValidation,
+            )
+            return
+        }
+
         if (translateValue.isBlank()) return
 
         val translateList = state.translates
@@ -345,7 +368,22 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     fun addHint(hintValue: String) {
-        if (hintValue.isBlank()) return
+        val wordValidation = validateOnAddChip(hintValue)
+        val hasError = !wordValidation.successful
+
+        if (hasError) {
+            state = state.copy(
+                hintWordError = wordValidation.errorMessage,
+            )
+            _uiState.value = ModifyWordUiState.EditFieldError(
+                hintWordError = wordValidation.errorMessage,
+                translatesError = state.translatesError,
+                wordValueError = state.wordValueError,
+                priorityValidation = state.priorityValidation,
+            )
+            return
+        }
+
 
         val hintList = state.hints
         val editableHint = state.editableHint
@@ -520,6 +558,8 @@ class ModifyWordViewModel @Inject constructor(
             isAdditionalFieldVisible = isAdditionalFieldVisible,
             screenIsRestored = screenIsRestored,
             isDeleteModalOpen = isDeleteModalOpen,
+            hintWordError = hintWordError
+
         )
     }
 }

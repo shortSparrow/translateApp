@@ -40,6 +40,9 @@
     <string name="modify_word_saved_word_success">Word safe successfully</string>
     <string name="modify_word_language_picker_from">(language from)</string>
     <string name="modify_word_language_picker_to">(language to)</string>
+    <string name="modify_word_validate_add_empty_field">this field is required, input translate and press add</string>
+
+
 
 
     <!-- Exam -->
@@ -158,6 +161,7 @@
     <string name="search_word_placeholder">Search a word...</string>
     <string name="add_new">add new</string>
     <string name="app_version">version %s</string>
+    <string name="field_cant_be_empty">this field can\'t be empty</string>
 
     <string name="cd_go_back">Go Back</string>
     <string name="cd_close_dialog">Close dialog</string>

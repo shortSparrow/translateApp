@@ -49,10 +49,8 @@
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginBottom="16.5dp"
+            android:layout_height="65dp"
             android:text="@string/add"
-            app:layout_constraintBottom_toBottomOf="@+id/english_word_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/english_word_container" />
 

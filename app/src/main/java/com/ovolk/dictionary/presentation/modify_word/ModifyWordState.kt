@@ -20,8 +20,8 @@ sealed interface ModifyWordUiState {
         val wordValueError: String? = null,
         val translatesError: String? = null,
         val priorityValidation: String? = null,
-
-        ) : ModifyWordUiState
+        val hintWordError: String? = null,
+    ) : ModifyWordUiState
 
     data class PreScreen(
         val wordValue: String,
@@ -39,6 +39,7 @@ sealed interface ModifyWordUiState {
         val translatesError: String? = null,
         val screenIsRestored: Boolean? = false,
         val isDeleteModalOpen: Boolean = false,
+        val hintWordError: String? = null,
     ) : ModifyWordUiState
 
     data class ShowAdditionalFields(val isVisible: Int) : ModifyWordUiState
@@ -73,6 +74,7 @@ data class ModifyWordState(
     val priority: Int = ModifyWord.DEFAULT_PRIORITY,
     val translatesError: String? = null,
     val wordValueError: String? = null,
+    val hintWordError: String? = null,
     val priorityValidation: String? = null,
     val isAdditionalFieldVisible: Int = View.GONE,
     val savedWordResult: Boolean = false,
@@ -114,5 +116,5 @@ sealed class ModifyWordAction {
         ModifyWordAction()
 
     data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction()
-    object CloseAddNewLanguageModal: ModifyWordAction()
+    object CloseAddNewLanguageModal : ModifyWordAction()
 }

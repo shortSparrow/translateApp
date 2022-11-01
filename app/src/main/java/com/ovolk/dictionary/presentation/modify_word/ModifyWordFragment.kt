@@ -242,6 +242,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     inputTranslatedWord.englishWordContainer.error = uiState.wordValueError
                     addTranslate.englishWordContainer.error = uiState.translatesError
                     wordPriorityContainer.error = uiState.priorityValidation
+                    addHints.inputHintContainer.error = uiState.hintWordError
                 }
                 is ModifyWordUiState.PreScreen -> {
                     // set value only if load screen firstly, ignore on rotate, system do it instead of us. And we don't have input value in state

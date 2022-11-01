@@ -25,6 +25,7 @@
             android:layout_marginTop="@dimen/gutter"
             android:layout_marginRight="@dimen/gutter"
             android:hint="@string/modify_word_input_hint"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toStartOf="@+id/button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,9 +45,8 @@
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="65dp"
             android:text="@string/add"
-            app:layout_constraintBottom_toBottomOf="@+id/input_hint_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/input_hint_container" />
 
