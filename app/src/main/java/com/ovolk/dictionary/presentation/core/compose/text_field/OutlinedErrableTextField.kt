@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.core.compose.text_field
 
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,6 +55,7 @@ fun OutlinedErrableTextField(
     errorMessage: String? = null
 ) {
 
+    Log.d("XXXX", "OutlinedErrableTextField")
     val appliedTrailingIcon = if (trailingIcon == null && isError) {
         {
             Icon(

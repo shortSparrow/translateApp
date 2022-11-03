@@ -7,9 +7,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.presentation.modify_word.Hints
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
 
 @Composable
-fun HintPart(hintsState: Hints, onAction: (ModifyWordAction) -> Unit) {
+fun HintPart(hintsState: Hints, onAction: (ModifyWordHintsAction) -> Unit) {
     val focusRequesterTranslates = remember { FocusRequester() }
 
     Column {

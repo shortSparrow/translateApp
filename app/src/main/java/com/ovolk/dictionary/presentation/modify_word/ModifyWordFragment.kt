@@ -39,16 +39,18 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             val viewModel = hiltViewModel<ModifyWordViewModel>()
             val state = viewModel.composeState
             val languageState = viewModel.languageState
-            val translatesState = viewModel.translateState
-            val hintState = viewModel.hintState
+//            val translatesState = viewModel.translateState
+//            val hintState = viewModel.hintState
 
             AppCompatTheme {
                 ModifyWordScreen(
                     state = state,
                     languageState = languageState,
-                    translatesState = translatesState,
-                    hintState = hintState,
-                    onAction = viewModel::onComposeAction
+//                    translatesState = translatesState,
+//                    hintState = hintState,
+                    onAction = viewModel::onComposeAction,
+                    onTranslateAction = viewModel::onTranslateAction,
+                    onHintAction = viewModel::onHintAction
                 )
             }
         }
@@ -67,13 +69,13 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     }
 
     private fun launchRightMode() {
-        when (args.mode) {
-            ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
-            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(
-                args.wordValue,
-                listId = args.listId // when open fragment from word list fragment
-            )
-        }
+//        when (args.mode) {
+//            ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
+//            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(
+//                args.wordValue,
+//                listId = args.listId // when open fragment from word list fragment
+//            )
+//        }
     }
 
 //    private fun setupView() = with(binding) {
@@ -97,7 +99,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
 //            .handleOutsideClick { viewModel.setIsOpenedDeleteModal(false) }
 //            .handleCancelClick { viewModel.setIsOpenedDeleteModal(false) }
 //    }
-
 
 
     private fun openRecordBottomSheet() {

@@ -23,33 +23,34 @@ import com.ovolk.dictionary.presentation.core.compose.chip.TranslateChipItem
 import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TranslateList(
     translates: List<Translate>,
     focusRequesterTranslates: FocusRequester,
-    onAction: (ModifyWordAction) -> Unit
+    onAction: (ModifyWordTranslatesAction) -> Unit
 ) {
     FlowRow {
         translates.map { translate ->
             var expanded by remember { mutableStateOf(false) }
             fun onPressEditTranslate() {
                 expanded = false
-                onAction(ModifyWordAction.OnPressEditTranslate(translate))
+                onAction(ModifyWordTranslatesAction.OnPressEditTranslate(translate))
                 focusRequesterTranslates.requestFocus()
             }
 
             fun onPressRemoveTranslate() {
                 expanded = false;
-                onAction(ModifyWordAction.OnPressDeleteTranslate(translate.localId))
+                onAction(ModifyWordTranslatesAction.OnPressDeleteTranslate(translate.localId))
             }
 
             Surface(modifier = Modifier.padding(8.dp), shape = RoundedCornerShape(8.dp)) {
                 Box(
                     modifier = Modifier.combinedClickable(
                         onLongClick = {
-                            onAction(ModifyWordAction.OnLongPressTranslate(translate.localId))
+                            onAction(ModifyWordTranslatesAction.OnLongPressTranslate(translate.localId))
                         },
                         onClick = { expanded = !expanded },
                         interactionSource = remember { MutableInteractionSource() },

@@ -193,34 +193,31 @@ sealed class ModifyWordAction {
     data class HandleSelectModal(val isOpen: Boolean) : ModifyWordAction()
     data class OnSelectLanguage(val type: LanguagesType, val language: SelectLanguage) :
         ModifyWordAction()
-
     data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction()
     object CloseAddNewLanguageModal : ModifyWordAction()
-
     data class OnChangeEnglishWord(val value: String) : ModifyWordAction()
     data class OnChangeEnglishTranscription(val value: String) : ModifyWordAction()
-
-    data class OnChangeTranslate(val value: String) : ModifyWordAction()
-    object OnPressAddTranslate : ModifyWordAction()
-    data class OnPressEditTranslate(val translate: Translate) : ModifyWordAction()
-    data class OnPressDeleteTranslate(val translateLocalId: Long) : ModifyWordAction()
-    data class OnLongPressTranslate(val translateLocalId: Long) : ModifyWordAction()
-    object CancelEditTranslate : ModifyWordAction()
-
     data class OnChangeDescription(val value: String) : ModifyWordAction()
     data class OnChangePriority(val value: String) : ModifyWordAction()
-
     data class AddNewList(val title: String) : ModifyWordAction()
     data class OnSelectList(val listId: Long) : ModifyWordAction()
-
-
-    data class OnChangeHint(val value: String) : ModifyWordAction()
-    object OnPressAddHint : ModifyWordAction()
-    data class OnPressEditHint(val hint: HintItem) : ModifyWordAction()
-    object CancelEditHint: ModifyWordAction()
-    data class OnDeleteHint(val hintLocalId: Long): ModifyWordAction()
-
     object ToggleVisibleAdditionalPart: ModifyWordAction()
-
     object OnPressSaveWord: ModifyWordAction()
+}
+
+sealed class ModifyWordHintsAction {
+    object CancelEditHint: ModifyWordHintsAction()
+    object OnPressAddHint : ModifyWordHintsAction()
+    data class OnChangeHint(val value: String) : ModifyWordHintsAction()
+    data class OnPressEditHint(val hint: HintItem) : ModifyWordHintsAction()
+    data class OnDeleteHint(val hintLocalId: Long): ModifyWordHintsAction()
+}
+
+sealed class ModifyWordTranslatesAction {
+    object CancelEditTranslate : ModifyWordAction()
+    object OnPressAddTranslate : ModifyWordTranslatesAction()
+    data class OnChangeTranslate(val value: String) : ModifyWordTranslatesAction()
+    data class OnPressEditTranslate(val translate: Translate) : ModifyWordTranslatesAction()
+    data class OnPressDeleteTranslate(val translateLocalId: Long) : ModifyWordTranslatesAction()
+    data class OnLongPressTranslate(val translateLocalId: Long) : ModifyWordTranslatesAction()
 }

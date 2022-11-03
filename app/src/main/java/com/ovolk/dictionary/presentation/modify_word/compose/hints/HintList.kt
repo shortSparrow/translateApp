@@ -20,19 +20,20 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.presentation.core.compose.chip.HintChipItem
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
 
 @Composable
 fun HintList(
     hints: List<HintItem>,
     focusRequesterTranslates: FocusRequester,
-    onAction: (ModifyWordAction) -> Unit
+    onAction: (ModifyWordHintsAction) -> Unit
 ) {
     Column() {
         hints.map { hint ->
             var expanded by remember { mutableStateOf(false) }
             fun onPressEditTranslate() {
                 expanded = false
-                onAction(ModifyWordAction.OnPressEditHint(hint))
+                onAction(ModifyWordHintsAction.OnPressEditHint(hint))
                 focusRequesterTranslates.requestFocus()
             }
 
@@ -41,7 +42,7 @@ fun HintList(
                     HintChipItem(
                         title = hint.value,
                         onHintPress = { expanded = !expanded },
-                        onDeleteHintPress = { onAction(ModifyWordAction.OnDeleteHint(hint.localId)) }
+                        onDeleteHintPress = { onAction(ModifyWordHintsAction.OnDeleteHint(hint.localId)) }
                     )
                 }
 

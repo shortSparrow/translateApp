@@ -26,7 +26,7 @@ import com.ovolk.dictionary.presentation.modify_word.*
 fun TranslateInput(
     translatesState: Translates,
     focusRequesterTranslates: FocusRequester,
-    onAction: (ModifyWordAction) -> Unit
+    onAction: (ModifyWordTranslatesAction) -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.SpaceBetween) {
         Column(modifier = Modifier.weight(1f)) {
@@ -49,14 +49,14 @@ fun TranslateInput(
             OutlinedErrableTextField(
                 modifier = Modifier.focusRequester(focusRequesterTranslates),
                 value = translatesState.translationWord,
-                onValueChange = { value -> onAction(ModifyWordAction.OnChangeTranslate(value)) },
+                onValueChange = { value -> onAction(ModifyWordTranslatesAction.OnChangeTranslate(value)) },
                 label = { Text(text = stringResource(id = R.string.modify_word_transcription)) },
 //                isError = !translatesState.error.successful,
 //                errorMessage = translatesState.error.errorMessage,
             )
         }
         Button(
-            onClick = { onAction(ModifyWordAction.OnPressAddTranslate) },
+            onClick = { onAction(ModifyWordTranslatesAction.OnPressAddTranslate) },
             modifier = Modifier
                 .padding(start = 20.dp, top = 30.dp)
                 .width(85.dp)

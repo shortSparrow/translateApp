@@ -34,13 +34,14 @@ import com.ovolk.dictionary.presentation.modify_word.compose.translates.Translat
 fun ModifyWordScreen(
     state: ComposeState,
     languageState: Languages,
-    translatesState: Translates,
-    hintState: Hints,
+//    translatesState: Translates,
+//    hintState: Hints,
     onAction: (ModifyWordAction) -> Unit,
+    onTranslateAction: (ModifyWordTranslatesAction) -> Unit,
+    onHintAction: (ModifyWordHintsAction) -> Unit,
 ) {
-
+    Log.d("XXXX", "ModifyWordScreen")
     // TODO add header
-    Log.d("DDDD", "ModifyWordScreen")
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -59,7 +60,7 @@ fun ModifyWordScreen(
             onValueChange = { value -> onAction(ModifyWordAction.OnChangeEnglishWord(value)) },
             label = { Text(text = stringResource(id = R.string.modify_word_english_word_hint)) },
             errorMessage = state.englishWordError.errorMessage,
-            isError = state.englishWordError.successful
+            isError = !state.englishWordError.successful
         )
 
         OutlinedErrableTextField(
@@ -69,64 +70,64 @@ fun ModifyWordScreen(
         )
 
 
-        TranslatePart(translatesState = translatesState, onAction = onAction)
-
-        OutlinedTextField(
-            value = state.descriptionWord,
-            onValueChange = { value -> onAction(ModifyWordAction.OnChangeDescription(value)) },
-            label = { Text(text = stringResource(id = R.string.modify_word_description)) },
-            modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth(1f)
-        )
-
-        // TODO audio
-
-        OutlinedErrableTextField(
-            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
-            value = state.priorityValue,
-            onValueChange = { value -> onAction(ModifyWordAction.OnChangePriority(value)) },
-            label = { Text(text = stringResource(id = R.string.modify_word_priority)) },
-            errorMessage = state.priorityError.errorMessage,
-            isError = !state.priorityError.successful,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-
-        AddToList(
-            state = state,
-            addNewList = { title: String -> onAction(ModifyWordAction.AddNewList(title)) },
-            onSelectList = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
-            onAction = onAction
-        )
-
-        Text(
-            text = stringResource(id = R.string.modify_word_additional),
-            modifier = Modifier.clickable { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) },
-            color = colorResource(id = R.color.blue_2)
-        )
-
-        if (state.isAdditionalFieldVisible) {
-            HintPart(hintsState = hintState, onAction = onAction)
-        }
-
-
-        Button(onClick = { onAction(ModifyWordAction.OnPressSaveWord) }) {
-            Text(text = "Save")
-        }
+//        TranslatePart(translatesState = translatesState, onAction = onAction)
+//
+//        OutlinedTextField(
+//            value = state.descriptionWord,
+//            onValueChange = { value -> onAction(ModifyWordAction.OnChangeDescription(value)) },
+//            label = { Text(text = stringResource(id = R.string.modify_word_description)) },
+//            modifier = Modifier
+//                .height(100.dp)
+//                .fillMaxWidth(1f)
+//        )
+//
+//        // TODO audio
+//
+//        OutlinedErrableTextField(
+//            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
+//            value = state.priorityValue,
+//            onValueChange = { value -> onAction(ModifyWordAction.OnChangePriority(value)) },
+//            label = { Text(text = stringResource(id = R.string.modify_word_priority)) },
+//            errorMessage = state.priorityError.errorMessage,
+//            isError = !state.priorityError.successful,
+//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//        )
+//
+//        AddToList(
+//            state = state,
+//            addNewList = { title: String -> onAction(ModifyWordAction.AddNewList(title)) },
+//            onSelectList = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
+//            onAction = onAction
+//        )
+//
+//        Text(
+//            text = stringResource(id = R.string.modify_word_additional),
+//            modifier = Modifier.clickable { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) },
+//            color = colorResource(id = R.color.blue_2)
+//        )
+//
+//        if (state.isAdditionalFieldVisible) {
+//            HintPart(hintsState = hintState, onAction = onAction)
+//        }
+//
+//
+//        Button(onClick = { onAction(ModifyWordAction.OnPressSaveWord) }) {
+//            Text(text = "Save")
+//        }
     }
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun ModifyWordScreenPreview() {
-    ModifyWordScreen(
-        state = ComposeState(isAdditionalFieldVisible = true),
-        languageState = Languages(),
-        translatesState = Translates(
-            translates = getPreviewTranslates()
-        ),
-        hintState = Hints(hints = getPreviewHints()),
-        onAction = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ModifyWordScreenPreview() {
+//    ModifyWordScreen(
+//        state = ComposeState(isAdditionalFieldVisible = true),
+//        languageState = Languages(),
+//        translatesState = Translates(
+//            translates = getPreviewTranslates()
+//        ),
+//        hintState = Hints(hints = getPreviewHints()),
+//        onAction = {}
+//    )
+//}

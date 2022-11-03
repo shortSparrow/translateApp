@@ -20,12 +20,13 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.modify_word.Hints
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
 
 @Composable
 fun HintInput(
     hintsState: Hints,
     focusRequesterTranslates: FocusRequester,
-    onAction: (ModifyWordAction) -> Unit
+    onAction: (ModifyWordHintsAction) -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.SpaceBetween) {
         Column(modifier = Modifier.weight(1f)) {
@@ -38,7 +39,7 @@ fun HintInput(
                 if (hintsState.editableHint != null) {
                     Text(
                         modifier = Modifier
-                            .clickable { onAction(ModifyWordAction.CancelEditHint) },
+                            .clickable { onAction(ModifyWordHintsAction.CancelEditHint) },
                         textAlign = TextAlign.Right,
                         text = "Cancel edit"
                     )
@@ -48,14 +49,14 @@ fun HintInput(
             OutlinedErrableTextField(
                 modifier = Modifier.focusRequester(focusRequesterTranslates),
                 value = hintsState.hintWord,
-                onValueChange = { value -> onAction(ModifyWordAction.OnChangeHint(value)) },
+                onValueChange = { value -> onAction(ModifyWordHintsAction.OnChangeHint(value)) },
                 label = { Text(text = stringResource(id = R.string.modify_word_input_hint)) },
                 isError = !hintsState.error.successful,
                 errorMessage = hintsState.error.errorMessage,
             )
         }
         Button(
-            onClick = { onAction(ModifyWordAction.OnPressAddHint) },
+            onClick = { onAction(ModifyWordHintsAction.OnPressAddHint) },
             modifier = Modifier
                 .padding(start = 20.dp, top = 30.dp)
                 .width(85.dp)
