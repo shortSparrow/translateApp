@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose
+package com.ovolk.dictionary.presentation.modify_word.compose.languages_picker
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat

@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose
+package com.ovolk.dictionary.presentation.modify_word.compose.alerts
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -20,6 +20,7 @@ import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
 
 @Composable
 fun AddToList(

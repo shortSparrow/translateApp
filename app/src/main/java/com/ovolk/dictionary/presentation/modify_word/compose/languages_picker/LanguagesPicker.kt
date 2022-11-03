@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose
+package com.ovolk.dictionary.presentation.modify_word.compose.languages_picker
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -16,6 +16,7 @@ import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.modify_word.Languages
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddNewLangBottomSheet
 
 @Composable
 fun LanguagesPicker(

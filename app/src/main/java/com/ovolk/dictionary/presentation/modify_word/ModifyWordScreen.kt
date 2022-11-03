@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
-import com.ovolk.dictionary.presentation.modify_word.compose.AddToList
-import com.ovolk.dictionary.presentation.modify_word.compose.LanguagesPicker
+import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
+import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.getPreviewHints
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
