@@ -19,6 +19,7 @@ import com.ovolk.dictionary.domain.model.select_languages.LanguagesType.LANG_FRO
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType.LANG_TO
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
+import com.ovolk.dictionary.domain.use_case.modify_word.AddChipUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.GetWordItemUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
@@ -39,13 +40,20 @@ class ModifyWordViewModel @Inject constructor(
     private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
     private val getSelectedLanguages: GetSelectedLanguages,
+    private val addChipUseCase: AddChipUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<ModifyWordUiState>()
     val uiState: LiveData<ModifyWordUiState> = _uiState
 
-    var composeState by mutableStateOf(ComposeState())
     private var state = ModifyWordState()
+
+    var composeState by mutableStateOf(ComposeState())
+    var languageState by mutableStateOf(Languages())
+    var translateState by mutableStateOf(Translates())
+        private set
+
+    var hintState by mutableStateOf(Hints())
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
     fun getAudioFileName(): String? = state.soundFileName

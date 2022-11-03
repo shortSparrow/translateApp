@@ -24,6 +24,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.presentation.core.compose.chip.TranslateChipItem
 import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.list_full.ListFullAction
 

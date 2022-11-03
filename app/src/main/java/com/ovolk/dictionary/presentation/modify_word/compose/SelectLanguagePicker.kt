@@ -38,7 +38,7 @@ fun SelectLanguagePicker(
     var expanded by remember { mutableStateOf(false) }
     val transition = updateTransition(expanded, label = "selectIsOpen")
     val errorColor =
-        colorResource(id = com.google.android.material.R.color.mtrl_error) // TODO change on my own color (only after rewrite old code on compose)
+        colorResource(id = R.color.red) // TODO change on my own color (only after rewrite old code on compose)
     val borderColor = if (error.successful) {
         colorResource(id = R.color.blue)
     } else {
