@@ -105,10 +105,20 @@ fun LanguagesPickerPreview() {
     LanguagesPicker(
         state = Languages(
             languageFromList = listOf(
-                SelectLanguage(langCode = "EN", name = "English", nativeName = "English", isChecked = true)
+                SelectLanguage(
+                    langCode = "EN",
+                    name = "English",
+                    nativeName = "English",
+                    isChecked = true
+                )
             ),
             languageToList = listOf(
-                SelectLanguage(langCode = "UA", name = "ukrainian", nativeName = "Українська", isChecked = true)
+                SelectLanguage(
+                    langCode = "UA",
+                    name = "ukrainian",
+                    nativeName = "Українська",
+                    isChecked = true
+                )
             )
         ),
         onAction = {}
@@ -121,10 +131,20 @@ fun LanguagesPickerPreview2() {
     LanguagesPicker(
         state = Languages(
             languageFromList = listOf(
-                SelectLanguage(langCode = "EN", name = "English", nativeName = "English", isChecked = false)
+                SelectLanguage(
+                    langCode = "EN",
+                    name = "English",
+                    nativeName = "English",
+                    isChecked = false
+                )
             ),
             languageToList = listOf(
-                SelectLanguage(langCode = "UA", name = "ukrainian", nativeName = "Українська", isChecked = false)
+                SelectLanguage(
+                    langCode = "UA",
+                    name = "ukrainian",
+                    nativeName = "Українська",
+                    isChecked = false
+                )
             )
         ),
         onAction = {}

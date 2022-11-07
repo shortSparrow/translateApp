@@ -6,23 +6,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
 import com.ovolk.dictionary.presentation.modify_word.Translates
 
 @Composable
-fun TranslatePart(translatesState: Translates, onAction: (ModifyWordTranslatesAction) -> Unit) {
+fun TranslatePart(translateState: Translates, onAction: (ModifyWordTranslatesAction) -> Unit) {
     val focusRequesterTranslates = remember { FocusRequester() }
 
     Column {
         TranslateInput(
-            translatesState = translatesState,
+            translatesState = translateState,
             focusRequesterTranslates = focusRequesterTranslates,
             onAction = onAction
         )
 
         TranslateList(
-            translates = translatesState.translates,
+            translates = translateState.translates,
             focusRequesterTranslates = focusRequesterTranslates,
             onAction = onAction
         )
@@ -33,7 +32,7 @@ fun TranslatePart(translatesState: Translates, onAction: (ModifyWordTranslatesAc
 @Composable
 fun TranslatePartPreview() {
     TranslatePart(
-        translatesState = Translates(
+        translateState = Translates(
             translates = getPreviewTranslates()
         ),
         onAction = {}

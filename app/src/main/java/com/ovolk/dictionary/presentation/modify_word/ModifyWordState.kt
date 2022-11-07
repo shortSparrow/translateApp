@@ -1,9 +1,7 @@
 package com.ovolk.dictionary.presentation.modify_word
 
 import android.view.View
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.model.lists.ListItem
@@ -96,9 +94,9 @@ data class AddNewLangModal(
     val type: LanguagesType? = null
 )
 
-
+@Stable
 data class Translates(
-    val translates: List<Translate> = emptyList(),
+    val translates:  List<Translate> = emptyList(),
     val translationWord: String = "",
     val error: ValidateResult = ValidateResult(),
     val editableTranslate: Translate? = null,
@@ -111,6 +109,7 @@ data class Hints(
     val editableHint: HintItem? = null
 )
 
+@Stable
 data class Languages(
     val languageFromList: List<SelectLanguage> = emptyList(),
     val languageToList: List<SelectLanguage> = emptyList(),
@@ -173,7 +172,7 @@ data class ComposeState(
     val priorityError: ValidateResult = ValidateResult(),
 
     val wordListInfo: ModifyWordListItem? = null,
-    val wordLists: List<ModifyWordListItem> = emptyList(),
+    val wordLists: List<ModifyWordListItem> = mutableStateListOf(),
     val isAdditionalFieldVisible: Boolean = false,
     val modalError: SimpleError = SimpleError(
         isError = false,
@@ -214,7 +213,7 @@ sealed class ModifyWordHintsAction {
 }
 
 sealed class ModifyWordTranslatesAction {
-    object CancelEditTranslate : ModifyWordAction()
+    object CancelEditTranslate : ModifyWordTranslatesAction()
     object OnPressAddTranslate : ModifyWordTranslatesAction()
     data class OnChangeTranslate(val value: String) : ModifyWordTranslatesAction()
     data class OnPressEditTranslate(val translate: Translate) : ModifyWordTranslatesAction()

@@ -34,7 +34,7 @@ import com.ovolk.dictionary.presentation.modify_word.compose.translates.Translat
 fun ModifyWordScreen(
     state: ComposeState,
     languageState: Languages,
-//    translatesState: Translates,
+    translateState: Translates,
 //    hintState: Hints,
     onAction: (ModifyWordAction) -> Unit,
     onTranslateAction: (ModifyWordTranslatesAction) -> Unit,
@@ -70,7 +70,7 @@ fun ModifyWordScreen(
         )
 
 
-//        TranslatePart(translatesState = translatesState, onAction = onAction)
+        TranslatePart(translateState = translateState, onAction = onTranslateAction)
 //
 //        OutlinedTextField(
 //            value = state.descriptionWord,

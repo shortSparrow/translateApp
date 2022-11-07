@@ -6,7 +6,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -20,7 +19,8 @@ import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
-import com.ovolk.dictionary.presentation.modify_word.*
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
+import com.ovolk.dictionary.presentation.modify_word.Translates
 
 @Composable
 fun TranslateInput(
@@ -36,23 +36,29 @@ fun TranslateInput(
                     .height(20.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-//                if (translatesState.editableTranslate != null) {
-//                    Text(
-//                        modifier = Modifier
-//                            .clickable { onAction(ModifyWordAction.CancelEditTranslate) },
-//                        textAlign = TextAlign.Right,
-//                        text = "Cancel edit"
-//                    )
-//                }
+                if (translatesState.editableTranslate != null) {
+                    Text(
+                        modifier = Modifier
+                            .clickable { onAction(ModifyWordTranslatesAction.CancelEditTranslate) },
+                        textAlign = TextAlign.Right,
+                        text = "Cancel edit"
+                    )
+                }
             }
 
             OutlinedErrableTextField(
                 modifier = Modifier.focusRequester(focusRequesterTranslates),
                 value = translatesState.translationWord,
-                onValueChange = { value -> onAction(ModifyWordTranslatesAction.OnChangeTranslate(value)) },
+                onValueChange = { value ->
+                    onAction(
+                        ModifyWordTranslatesAction.OnChangeTranslate(
+                            value
+                        )
+                    )
+                },
                 label = { Text(text = stringResource(id = R.string.modify_word_transcription)) },
-//                isError = !translatesState.error.successful,
-//                errorMessage = translatesState.error.errorMessage,
+                isError = !translatesState.error.successful,
+                errorMessage = translatesState.error.errorMessage,
             )
         }
         Button(
@@ -62,7 +68,7 @@ fun TranslateInput(
                 .width(85.dp)
         ) {
             Text(
-                text = "ADD",
+                text = translatesState.editableTranslate?.let { "EDIT" } ?: "ADD",
                 color = colorResource(id = R.color.white),
                 modifier = Modifier.padding(vertical = 9.dp)
             )
@@ -75,7 +81,7 @@ fun TranslateInput(
 fun TranslateInputPreview() {
     TranslateInput(
         translatesState = Translates(
-            translates = getPreviewTranslates().toMutableStateList()
+            translates = getPreviewTranslates()
         ),
         onAction = {},
         focusRequesterTranslates = remember { FocusRequester() }
@@ -87,8 +93,8 @@ fun TranslateInputPreview() {
 fun TranslateInputPreview2() {
     TranslateInput(
         translatesState = Translates(
-            translates = getPreviewTranslates().toMutableStateList(),
-//            error = ValidateResult(successful = false, errorMessage = "This fields is required")
+            translates = getPreviewTranslates(),
+            error = ValidateResult(successful = false, errorMessage = "This fields is required")
         ),
         onAction = {},
         focusRequesterTranslates = remember { FocusRequester() }
@@ -100,15 +106,15 @@ fun TranslateInputPreview2() {
 fun TranslateInputPreview3() {
     TranslateInput(
         translatesState = Translates(
-            translates = getPreviewTranslates().toMutableStateList(),
-//            editableTranslate = Translate(
-//                id = 0L,
-//                localId = 0L,
-//                createdAt = System.currentTimeMillis(),
-//                updatedAt = System.currentTimeMillis(),
-//                value = "Green",
-//                isHidden = false,
-//            )
+            translates = getPreviewTranslates(),
+            editableTranslate = Translate(
+                id = 0L,
+                localId = 0L,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis(),
+                value = "Green",
+                isHidden = false,
+            )
         ),
         onAction = {},
         focusRequesterTranslates = remember { FocusRequester() }

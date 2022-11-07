@@ -39,14 +39,14 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             val viewModel = hiltViewModel<ModifyWordViewModel>()
             val state = viewModel.composeState
             val languageState = viewModel.languageState
-//            val translatesState = viewModel.translateState
+            val translateState = viewModel.translateState
 //            val hintState = viewModel.hintState
 
             AppCompatTheme {
                 ModifyWordScreen(
                     state = state,
                     languageState = languageState,
-//                    translatesState = translatesState,
+                    translateState = translateState,
 //                    hintState = hintState,
                     onAction = viewModel::onComposeAction,
                     onTranslateAction = viewModel::onTranslateAction,
@@ -69,13 +69,13 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     }
 
     private fun launchRightMode() {
-//        when (args.mode) {
-//            ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
-//            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(
-//                args.wordValue,
-//                listId = args.listId // when open fragment from word list fragment
-//            )
-//        }
+        when (args.mode) {
+            ModifyWordModes.MODE_EDIT -> viewModel.launchEditMode(args.wordId)
+            ModifyWordModes.MODE_ADD -> viewModel.launchAddMode(
+                args.wordValue,
+                listId = args.listId // when open fragment from word list fragment
+            )
+        }
     }
 
 //    private fun setupView() = with(binding) {

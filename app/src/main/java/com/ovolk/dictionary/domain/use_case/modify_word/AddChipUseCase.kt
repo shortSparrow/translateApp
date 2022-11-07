@@ -4,7 +4,6 @@ import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.modify_word.Hints
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordUiState
 import com.ovolk.dictionary.presentation.modify_word.Translates
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateOnAddChip
 import javax.inject.Inject
