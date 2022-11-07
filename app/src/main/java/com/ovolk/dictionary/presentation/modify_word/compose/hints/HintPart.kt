@@ -6,7 +6,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.presentation.modify_word.Hints
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
 
 @Composable
@@ -27,12 +26,23 @@ fun HintPart(hintsState: Hints, onAction: (ModifyWordHintsAction) -> Unit) {
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@Preview( showBackground = true)
 @Composable
 fun HintPartPreview() {
     HintPart(
         hintsState = Hints(
-            hints = listOf()
+            hints = emptyList()
+        ),
+        onAction = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HintPartPreview2() {
+    HintPart(
+        hintsState = Hints(
+            hints = getPreviewHints()
         ),
         onAction = {}
     )

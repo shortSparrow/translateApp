@@ -102,6 +102,7 @@ data class Translates(
     val editableTranslate: Translate? = null,
 )
 
+@Stable
 data class Hints(
     val hints: List<HintItem> = emptyList(),
     val hintWord: String = "",
@@ -162,6 +163,7 @@ data class Languages(
 //    val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD
 //)
 
+
 data class ComposeState(
     val englishWord: String = "",
     val englishWordError: ValidateResult = ValidateResult(),
@@ -172,7 +174,8 @@ data class ComposeState(
     val priorityError: ValidateResult = ValidateResult(),
 
     val wordListInfo: ModifyWordListItem? = null,
-    val wordLists: List<ModifyWordListItem> = mutableStateListOf(),
+    @Stable
+    val wordLists: List<ModifyWordListItem> = emptyList(),
     val isAdditionalFieldVisible: Boolean = false,
     val modalError: SimpleError = SimpleError(
         isError = false,

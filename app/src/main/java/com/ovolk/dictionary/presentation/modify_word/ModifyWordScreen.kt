@@ -35,7 +35,7 @@ fun ModifyWordScreen(
     state: ComposeState,
     languageState: Languages,
     translateState: Translates,
-//    hintState: Hints,
+    hintState: Hints,
     onAction: (ModifyWordAction) -> Unit,
     onTranslateAction: (ModifyWordTranslatesAction) -> Unit,
     onHintAction: (ModifyWordHintsAction) -> Unit,
@@ -71,49 +71,48 @@ fun ModifyWordScreen(
 
 
         TranslatePart(translateState = translateState, onAction = onTranslateAction)
-//
-//        OutlinedTextField(
-//            value = state.descriptionWord,
-//            onValueChange = { value -> onAction(ModifyWordAction.OnChangeDescription(value)) },
-//            label = { Text(text = stringResource(id = R.string.modify_word_description)) },
-//            modifier = Modifier
-//                .height(100.dp)
-//                .fillMaxWidth(1f)
-//        )
-//
-//        // TODO audio
-//
-//        OutlinedErrableTextField(
-//            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
-//            value = state.priorityValue,
-//            onValueChange = { value -> onAction(ModifyWordAction.OnChangePriority(value)) },
-//            label = { Text(text = stringResource(id = R.string.modify_word_priority)) },
-//            errorMessage = state.priorityError.errorMessage,
-//            isError = !state.priorityError.successful,
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//        )
-//
-//        AddToList(
-//            state = state,
-//            addNewList = { title: String -> onAction(ModifyWordAction.AddNewList(title)) },
-//            onSelectList = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
-//            onAction = onAction
-//        )
-//
-//        Text(
-//            text = stringResource(id = R.string.modify_word_additional),
-//            modifier = Modifier.clickable { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) },
-//            color = colorResource(id = R.color.blue_2)
-//        )
-//
-//        if (state.isAdditionalFieldVisible) {
-//            HintPart(hintsState = hintState, onAction = onAction)
-//        }
-//
-//
-//        Button(onClick = { onAction(ModifyWordAction.OnPressSaveWord) }) {
-//            Text(text = "Save")
-//        }
+
+        OutlinedTextField(
+            value = state.descriptionWord,
+            onValueChange = { value -> onAction(ModifyWordAction.OnChangeDescription(value)) },
+            label = { Text(text = stringResource(id = R.string.modify_word_description)) },
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(1f)
+        )
+
+       // TODO audio
+
+        OutlinedErrableTextField(
+            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
+            value = state.priorityValue,
+            onValueChange = { value -> onAction(ModifyWordAction.OnChangePriority(value)) },
+            label = { Text(text = stringResource(id = R.string.modify_word_priority)) },
+            errorMessage = state.priorityError.errorMessage,
+            isError = !state.priorityError.successful,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        AddToList(
+            state = state,
+            addNewList = { title: String -> onAction(ModifyWordAction.AddNewList(title)) },
+            onSelectList = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
+            onAction = onAction
+        )
+
+        Text(
+            text = stringResource(id = R.string.modify_word_additional),
+            modifier = Modifier.clickable { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) },
+            color = colorResource(id = R.color.blue_2)
+        )
+
+        if (state.isAdditionalFieldVisible) {
+            HintPart(hintsState = hintState, onAction = onHintAction)
+        }
+
+        Button(onClick = { onAction(ModifyWordAction.OnPressSaveWord) }) {
+            Text(text = stringResource(id = R.string.save))
+        }
     }
 }
 

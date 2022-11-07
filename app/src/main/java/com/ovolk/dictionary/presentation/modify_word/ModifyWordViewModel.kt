@@ -155,25 +155,50 @@ class ModifyWordViewModel @Inject constructor(
                         ?: emptyList(),
                 )
             }
-            is ModifyWordAction.AddNewList -> TODO()
-            is ModifyWordAction.OnChangeDescription -> TODO()
+            is ModifyWordAction.AddNewList -> {
+                viewModelScope.launch {
+                    val validationResult = addNewListUseCase.addNewList(action.title)
+                    composeState = composeState.copy(
+                        isOpenAddNewListModal = validationResult.isError,
+                        modalError = validationResult
+                    )
+                }
+            }
+            is ModifyWordAction.OnChangeDescription -> {
+                composeState = composeState.copy(descriptionWord = action.value)
+            }
             is ModifyWordAction.OnChangeEnglishTranscription -> {
                 composeState = composeState.copy(transcriptionWord = action.value)
             }
             is ModifyWordAction.OnChangeEnglishWord -> {
                 composeState = composeState.copy(englishWord = action.value)
             }
-            is ModifyWordAction.OnChangePriority -> TODO()
+            is ModifyWordAction.OnChangePriority -> {
+                composeState = composeState.copy(priorityValue = action.value)
+            }
+            is ModifyWordAction.OnSelectList -> {
+                val newList = composeState.wordLists.map {
+                    if (it.id == action.listId) it.copy(isSelected = !it.isSelected) else it.copy(isSelected = false)
+                }
+
+                val pressableList = newList.find { it.id == action.listId }.takeIf { it?.isSelected == true }
+
+                composeState = composeState.copy(
+                    wordLists = newList,
+                    wordListInfo = pressableList
+                )
+            }
+            ModifyWordAction.ToggleVisibleAdditionalPart -> {
+                composeState = composeState.copy(isAdditionalFieldVisible = !composeState.isAdditionalFieldVisible)
+            }
             ModifyWordAction.OnPressSaveWord -> TODO()
-            is ModifyWordAction.OnSelectList -> TODO()
-            ModifyWordAction.ToggleVisibleAdditionalPart -> TODO()
         }
     }
 
     fun onTranslateAction(action: ModifyWordTranslatesAction) {
         when (action) {
             is ModifyWordTranslatesAction.OnChangeTranslate -> {
-                translateState = translateState.copy(translationWord = action.value)
+                translateState = translateState.copy(translationWord = action.value, error = ValidateResult())
             }
             is ModifyWordTranslatesAction.OnLongPressTranslate -> {
                 val newTranslateList = translateState.translates.map {
@@ -208,11 +233,30 @@ class ModifyWordViewModel @Inject constructor(
 
     fun onHintAction(action: ModifyWordHintsAction) {
         when (action) {
-            ModifyWordHintsAction.CancelEditHint -> TODO()
-            is ModifyWordHintsAction.OnChangeHint -> TODO()
-            is ModifyWordHintsAction.OnDeleteHint -> TODO()
-            ModifyWordHintsAction.OnPressAddHint -> TODO()
-            is ModifyWordHintsAction.OnPressEditHint -> TODO()
+            is ModifyWordHintsAction.OnChangeHint -> {
+                hintState = hintState.copy(hintWord = action.value, error = ValidateResult())
+            }
+            is ModifyWordHintsAction.OnDeleteHint -> {
+                hintState =
+                    hintState.copy(hints = hintState.hints.filter { it.localId != action.hintLocalId })
+            }
+            is ModifyWordHintsAction.OnPressEditHint -> {
+                hintState = hintState.copy(
+                    editableHint = action.hint,
+                    hintWord = action.hint.value,
+                    error = ValidateResult()
+                )
+            }
+            ModifyWordHintsAction.OnPressAddHint ->  {
+                hintState = addChipUseCase.addHint(
+                    hintValue = hintState.hintWord,
+                    hintState = hintState
+                )
+            }
+            ModifyWordHintsAction.CancelEditHint -> {
+                hintState = hintState.copy(editableHint = null, hintWord = "")
+            }
+
         }
     }
 
@@ -220,16 +264,7 @@ class ModifyWordViewModel @Inject constructor(
 
     }
 
-    //
-//    fun addNewList(title: String) {
-//        viewModelScope.launch {
-//            val validationResult = addNewListUseCase.addNewList(title)
-//            composeState = composeState.copy(
-//                isOpenAddNewListModal = validationResult.isError,
-//                modalError = validationResult
-//            )
-//        }
-//    }
+
 //
 //    fun resetWordValueError() {
 //        state = state.copy(wordValueError = null)
@@ -371,18 +406,7 @@ class ModifyWordViewModel @Inject constructor(
 //        }
 //    }
 //
-//    fun onSelectList(listId: Long) {
-//        val newList = composeState.wordLists.map {
-//            if (it.id == listId) it.copy(isSelected = !it.isSelected) else it.copy(isSelected = false)
-//        }
-//
-//        val pressableList = newList.find { it.id == listId }.takeIf { it?.isSelected == true }
-//
-//        composeState = composeState.copy(
-//            wordLists = newList,
-//            wordListInfo = pressableList
-//        )
-//    }
+
 //
 //    fun restoreRightMode() {
 //        _uiState.value = state.toUiState(screenIsRestored = true)

@@ -40,14 +40,14 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             val state = viewModel.composeState
             val languageState = viewModel.languageState
             val translateState = viewModel.translateState
-//            val hintState = viewModel.hintState
+            val hintState = viewModel.hintState
 
             AppCompatTheme {
                 ModifyWordScreen(
                     state = state,
                     languageState = languageState,
                     translateState = translateState,
-//                    hintState = hintState,
+                    hintState = hintState,
                     onAction = viewModel::onComposeAction,
                     onTranslateAction = viewModel::onTranslateAction,
                     onHintAction = viewModel::onHintAction
