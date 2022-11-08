@@ -1,6 +1,5 @@
 package com.ovolk.dictionary.presentation.core.compose.text_field
 
-import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +22,8 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+enum class MaxErrorLines { ONE, TWO }
 
 @Composable
 fun OutlinedErrableTextField(
@@ -52,10 +53,9 @@ fun OutlinedErrableTextField(
         unfocusedIndicatorColor = Color.Gray,
         disabledIndicatorColor = Color.Transparent,
     ),
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    maxErrorLines: MaxErrorLines = MaxErrorLines.TWO
 ) {
-
-    Log.d("XXXX", "OutlinedErrableTextField")
     val appliedTrailingIcon = if (trailingIcon == null && isError) {
         {
             Icon(
@@ -91,7 +91,12 @@ fun OutlinedErrableTextField(
             colors = colors,
         )
 
-        Column(modifier = Modifier.height(35.dp)) {
+        val height = if (maxErrorLines == MaxErrorLines.ONE) {
+            15.dp
+        } else {
+            30.dp
+        }
+        Column(modifier = Modifier.height(height)) {
             if (errorMessage != null) {
                 Text(
                     text = errorMessage,

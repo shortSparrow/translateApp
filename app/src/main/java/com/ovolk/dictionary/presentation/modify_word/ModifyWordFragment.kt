@@ -5,12 +5,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.databinding.FragmentModifyWordBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
-import com.ovolk.dictionary.presentation.core.ConfirmDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates.notNull
 
@@ -26,7 +27,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     private val viewModel by viewModels<ModifyWordViewModel>()
 
     private var audioResolver: AudioPermissionResolver by notNull()
-    private val confirmDialog by lazy { ConfirmDialog(context = requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +42,10 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             val translateState = viewModel.translateState
             val hintState = viewModel.hintState
 
+            if (viewModel.listener == null) {
+                viewModel.listener = listener()
+            }
+
             AppCompatTheme {
                 ModifyWordScreen(
                     state = state,
@@ -53,6 +57,18 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     onHintAction = viewModel::onHintAction
                 )
             }
+        }
+    }
+
+    fun listener() = object : ModifyWordViewModel.Listener {
+        override fun onDeleteWord() {
+            showMessage(getString(R.string.modify_word_success_delete_word))
+            findNavController().popBackStack()
+        }
+
+        override fun onSaveWord() {
+            showMessage(getString(R.string.modify_word_saved_word_success))
+            findNavController().popBackStack()
         }
     }
 
@@ -85,20 +101,6 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
 //            )
 //        }
 //
-//        confirmDialog
-//            .setTitle(getString(R.string.modify_word_confirm_delete_title))
-//            .handleOkClick {
-//                viewModel.deleteWord(wordId = args.wordId)
-//                Toast.makeText(
-//                    binding.root.context,
-//                    getString(R.string.modify_word_success_delete_word),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//                findNavController().popBackStack()
-//            }
-//            .handleOutsideClick { viewModel.setIsOpenedDeleteModal(false) }
-//            .handleCancelClick { viewModel.setIsOpenedDeleteModal(false) }
-//    }
 
 
     private fun openRecordBottomSheet() {

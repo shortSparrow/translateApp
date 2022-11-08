@@ -16,7 +16,7 @@ fun HintPart(hintsState: Hints, onAction: (ModifyWordHintsAction) -> Unit) {
         HintInput(
             hintsState = hintsState,
             focusRequesterTranslates = focusRequesterTranslates,
-            onAction = onAction
+            onAction = onAction,
         )
         HintList(
             hints = hintsState.hints,

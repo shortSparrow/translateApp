@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
+import com.ovolk.dictionary.presentation.core.compose.text_field.MaxErrorLines
 import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.modify_word.Hints
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
@@ -53,6 +54,7 @@ fun HintInput(
                 label = { Text(text = stringResource(id = R.string.modify_word_input_hint)) },
                 isError = !hintsState.error.successful,
                 errorMessage = hintsState.error.errorMessage,
+                maxErrorLines = MaxErrorLines.ONE
             )
         }
         Button(

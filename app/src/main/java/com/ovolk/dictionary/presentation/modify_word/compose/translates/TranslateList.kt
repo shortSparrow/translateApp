@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,54 +34,62 @@ fun TranslateList(
     focusRequesterTranslates: FocusRequester,
     onAction: (ModifyWordTranslatesAction) -> Unit
 ) {
-    FlowRow {
-        translates.map { translate ->
-            var expanded by remember { mutableStateOf(false) }
-            fun onPressEditTranslate() {
-                expanded = false
-                onAction(ModifyWordTranslatesAction.OnPressEditTranslate(translate))
-                focusRequesterTranslates.requestFocus()
-            }
+    val paddingTop = if (translates.isEmpty()) {
+        0.dp
+    } else {
+        dimensionResource(id = R.dimen.small_gutter)
+    }
 
-            fun onPressRemoveTranslate() {
-                expanded = false;
-                onAction(ModifyWordTranslatesAction.OnPressDeleteTranslate(translate.localId))
-            }
-
-            Surface(modifier = Modifier.padding(8.dp), shape = RoundedCornerShape(8.dp)) {
-                Box(
-                    modifier = Modifier.combinedClickable(
-                        onLongClick = {
-                            onAction(ModifyWordTranslatesAction.OnLongPressTranslate(translate.localId))
-                        },
-                        onClick = { expanded = !expanded },
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(),
-                    )
-                ) {
-                    TranslateChipItem(title = translate.value, isHidden = translate.isHidden)
+    Column(modifier = Modifier.padding(bottom = paddingTop)) {
+        FlowRow {
+            translates.map { translate ->
+                var expanded by remember { mutableStateOf(false) }
+                fun onPressEditTranslate() {
+                    expanded = false
+                    onAction(ModifyWordTranslatesAction.OnPressEditTranslate(translate))
+                    focusRequesterTranslates.requestFocus()
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    properties = PopupProperties(focusable = false),
-                ) {
-                    DropdownMenuItem(onClick = ::onPressEditTranslate) {
-                        Text(
-                            stringResource(id = R.string.edit),
-                            modifier = Modifier.fillMaxWidth(),
+                fun onPressRemoveTranslate() {
+                    expanded = false;
+                    onAction(ModifyWordTranslatesAction.OnPressDeleteTranslate(translate.localId))
+                }
+
+                Surface(modifier = Modifier.padding(8.dp), shape = RoundedCornerShape(8.dp)) {
+                    Box(
+                        modifier = Modifier.combinedClickable(
+                            onLongClick = {
+                                onAction(ModifyWordTranslatesAction.OnLongPressTranslate(translate.localId))
+                            },
+                            onClick = { expanded = !expanded },
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(),
                         )
+                    ) {
+                        TranslateChipItem(title = translate.value, isHidden = translate.isHidden)
                     }
-                    DropdownMenuItem(onClick = ::onPressRemoveTranslate) {
-                        Text(
-                            stringResource(id = R.string.delete),
-                            modifier = Modifier.fillMaxWidth(),
-                        )
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        properties = PopupProperties(focusable = false),
+                    ) {
+                        DropdownMenuItem(onClick = ::onPressEditTranslate) {
+                            Text(
+                                stringResource(id = R.string.edit),
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                        DropdownMenuItem(onClick = ::onPressRemoveTranslate) {
+                            Text(
+                                stringResource(id = R.string.delete),
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
                     }
                 }
-            }
 
+            }
         }
     }
 }

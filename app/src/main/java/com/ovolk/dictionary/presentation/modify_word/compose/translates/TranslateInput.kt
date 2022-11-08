@@ -2,21 +2,27 @@ package com.ovolk.dictionary.presentation.modify_word.compose.translates
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.presentation.core.compose.text_field.MaxErrorLines
 import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
@@ -28,6 +34,14 @@ fun TranslateInput(
     focusRequesterTranslates: FocusRequester,
     onAction: (ModifyWordTranslatesAction) -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
+    val maxErrorLines = if (translatesState.translates.isEmpty()) {
+        MaxErrorLines.TWO
+    } else {
+        MaxErrorLines.ONE
+    }
+
     Row(horizontalArrangement = Arrangement.SpaceBetween) {
         Column(modifier = Modifier.weight(1f)) {
             Row(
@@ -59,6 +73,15 @@ fun TranslateInput(
                 label = { Text(text = stringResource(id = R.string.modify_word_transcription)) },
                 isError = !translatesState.error.successful,
                 errorMessage = translatesState.error.errorMessage,
+                maxErrorLines = maxErrorLines,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
             )
         }
         Button(
@@ -68,7 +91,8 @@ fun TranslateInput(
                 .width(85.dp)
         ) {
             Text(
-                text = translatesState.editableTranslate?.let { "EDIT" } ?: "ADD",
+                text = translatesState.editableTranslate?.let { "EDIT" }
+                    ?: "ADD", // TODO add sstringResource
                 color = colorResource(id = R.color.white),
                 modifier = Modifier.padding(vertical = 9.dp)
             )

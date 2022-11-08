@@ -9,11 +9,6 @@ import com.ovolk.dictionary.presentation.modify_word.helpers.validateOnAddChip
 import javax.inject.Inject
 
 
-//sealed interface AddChipReturn {
-//    data class Success(val data: List<Translate>) : AddChipReturn
-//    class Error(val data: ValidateResult) : AddChipReturn
-//}
-
 class AddChipUseCase @Inject constructor() {
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
