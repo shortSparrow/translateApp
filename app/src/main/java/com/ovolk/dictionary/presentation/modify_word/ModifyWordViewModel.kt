@@ -290,8 +290,7 @@ class ModifyWordViewModel @Inject constructor(
 
         viewModelScope.launch {
             modifyWordUseCase(word).apply {
-//                val isSuccess = this != -1L
-//                _uiState.value = ModifyWordUiState.ShowResultModify(isSuccess)
+                listener?.onSaveWord()
             }
         }
     }

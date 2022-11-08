@@ -38,6 +38,10 @@ import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.getPreviewHints
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldEnglishWord
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldPriority
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldTranscription
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 
@@ -53,7 +57,6 @@ fun ModifyWordScreen(
     onTranslateAction: (ModifyWordTranslatesAction) -> Unit,
     onHintAction: (ModifyWordHintsAction) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val interactionSourceScreen = remember { MutableInteractionSource() }
 
@@ -112,86 +115,29 @@ fun ModifyWordScreen(
                     LanguagesPicker(state = languageState, onAction = onAction)
                 }
 
-                OutlinedErrableTextField(
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
-                    value = state.englishWord,
-                    onValueChange = { value -> onAction(ModifyWordAction.OnChangeEnglishWord(value)) },
-                    label = { Text(text = stringResource(id = R.string.modify_word_english_word_hint)) },
-                    errorMessage = state.englishWordError.errorMessage,
-                    isError = !state.englishWordError.successful,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                TextFieldEnglishWord(
+                    englishWord = state.englishWord,
+                    englishWordError = state.englishWordError,
+                    onAction = onAction
                 )
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    value = state.transcriptionWord,
-                    onValueChange = { value ->
-                        onAction(ModifyWordAction.OnChangeEnglishTranscription(value))
-                    },
-                    label = { Text(text = stringResource(id = R.string.modify_word_transcription)) },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                TextFieldTranscription(
+                    transcriptionWord = state.transcriptionWord,
+                    onAction = onAction
                 )
 
                 TranslatePart(translateState = translateState, onAction = onTranslateAction)
 
-                OutlinedTextField(
-                    value = state.descriptionWord,
-                    onValueChange = { value -> onAction(ModifyWordAction.OnChangeDescription(value)) },
-                    label = { Text(text = stringResource(id = R.string.modify_word_description)) },
-                    modifier = Modifier
-                        .height(100.dp)
-                        .fillMaxWidth(1f),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
-                )
+                TextFieldDescription(descriptionWord = state.descriptionWord, onAction = onAction)
 
                 // TODO audio
 
-                OutlinedErrableTextField(
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
-                    value = state.priorityValue,
-                    onValueChange = { value -> onAction(ModifyWordAction.OnChangePriority(value)) },
-                    label = { Text(text = stringResource(id = R.string.modify_word_priority)) },
-                    errorMessage = state.priorityError.errorMessage,
-                    isError = !state.priorityError.successful,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            keyboardController?.hide()
-                        }
-                    ),
-                )
-
-                AddToList(
-                    state = state,
-                    addNewList = { title: String -> onAction(ModifyWordAction.AddNewList(title)) },
-                    onSelectList = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
+                TextFieldPriority(
+                    priorityValue = state.priorityValue,
+                    priorityError = state.priorityError,
                     onAction = onAction
                 )
+
+                AddToList(state = state, onAction = onAction)
 
                 Text(
                     text = stringResource(id = R.string.modify_word_additional),
