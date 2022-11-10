@@ -46,7 +46,7 @@ data class ComposeState(
     val englishWordError: ValidateResult = ValidateResult(),
     val transcriptionWord: String = "",
     val descriptionWord: String = "",
-    // TODO here was audio
+    val soundFileName: String? = null,
     val priorityValue: String = DEFAULT_PRIORITY_VALUE.toString(),
     val priorityError: ValidateResult = ValidateResult(),
 
@@ -62,10 +62,24 @@ data class ComposeState(
     val isOpenAddNewListModal: Boolean = false,
     val editableWordId: Long? = null,
     val createdAt: Long? = null, // TODO подумати, може при завантаженні слова записати його кудись і потім звертатися
-    val isDeleteModalOpen: Boolean = false,
     val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD,
     val isOpenDeleteWordModal: Boolean = false,
 )
+
+data class RecordAudioState(
+    val isRecording: Boolean = false,
+    val isRecordExist: Boolean = false,
+    val isRecordPlaying: Boolean = false,
+    val existingRecordDuration: Int = 0,
+)
+
+sealed interface RecordAudioAction {
+    object StartRecording : RecordAudioAction
+    object StopRecording : RecordAudioAction
+    object ListenRecord : RecordAudioAction
+    object SaveRecord : RecordAudioAction
+    object DeleteRecord : RecordAudioAction
+}
 
 sealed interface ModifyWordAction {
     object ResetModalError : ModifyWordAction

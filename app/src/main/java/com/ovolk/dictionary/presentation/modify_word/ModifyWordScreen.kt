@@ -3,56 +3,47 @@ package com.ovolk.dictionary.presentation.modify_word
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.compose.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.compose.header.Header
-import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.getPreviewHints
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldEnglishWord
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldPriority
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldTranscription
+import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudio
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.*
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun ModifyWordScreen(
     state: ComposeState,
     languageState: Languages,
     translateState: Translates,
     hintState: Hints,
+    recordState: RecordAudioState,
+    onRecordAction: (RecordAudioAction) -> Unit,
     onAction: (ModifyWordAction) -> Unit,
     onTranslateAction: (ModifyWordTranslatesAction) -> Unit,
     onHintAction: (ModifyWordHintsAction) -> Unit,
@@ -127,9 +118,16 @@ fun ModifyWordScreen(
 
                 TranslatePart(translateState = translateState, onAction = onTranslateAction)
 
-                TextFieldDescription(descriptionWord = state.descriptionWord, onAction = onAction)
+                TextFieldDescription(
+                    descriptionWord = state.descriptionWord,
+                    onAction = onAction
+                )
 
-                // TODO audio
+                RecordAudio(
+                    word = state.englishWord,
+                    recordState = recordState,
+                    onAction = onRecordAction
+                )
 
                 TextFieldPriority(
                     priorityValue = state.priorityValue,
@@ -142,8 +140,8 @@ fun ModifyWordScreen(
                 Text(
                     text = stringResource(id = R.string.modify_word_additional),
                     modifier = Modifier
-                        .padding(bottom = 0.dp, top = 20.dp)
-                        .opacityClick(onClick = { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) }),
+                        .padding(bottom = 0.dp, top = 20.dp) // TODO remove isDisabled
+                        .opacityClick(isDisabled = false, onClick = { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) }),
                     color = colorResource(id = R.color.blue)
                 )
 
@@ -165,6 +163,7 @@ fun ModifyWordScreen(
             }
         }
     }
+//    }
 }
 
 
@@ -178,6 +177,8 @@ fun ModifyWordScreenPreview() {
             translates = getPreviewTranslates()
         ),
         hintState = Hints(hints = getPreviewHints()),
+        recordState = RecordAudioState(),
+        onRecordAction = {},
         onAction = {},
         onHintAction = {},
         onTranslateAction = {}

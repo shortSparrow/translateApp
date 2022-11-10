@@ -15,28 +15,33 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 
 enum class ButtonState { Pressed, Idle }
-fun Modifier.opacityClick(onClick: () -> Unit) = composed {
+
+fun Modifier.opacityClick(isDisabled: Boolean = false, onClick: () -> Unit) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val opacity by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.50f else 1f)
 
-    this
-        .graphicsLayer {
-            alpha = opacity
-        }
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = onClick
-        )
-        .pointerInput(buttonState) {
-            awaitPointerEventScope {
-                buttonState = if (buttonState == ButtonState.Pressed) {
-                    waitForUpOrCancellation()
-                    ButtonState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    ButtonState.Pressed
+    if (!isDisabled) {
+        this
+            .graphicsLayer {
+                alpha = opacity
+            }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .pointerInput(buttonState) {
+                awaitPointerEventScope {
+                    buttonState = if (buttonState == ButtonState.Pressed) {
+                        waitForUpOrCancellation()
+                        ButtonState.Idle
+                    } else {
+                        awaitFirstDown(false)
+                        ButtonState.Pressed
+                    }
                 }
             }
-        }
+    } else {
+        this
+    }
 }

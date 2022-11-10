@@ -31,6 +31,9 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         launchRightMode()
+        audioResolver = AudioPermissionResolver(requireActivity().activityResultRegistry, this)
+        lifecycle.addObserver(audioResolver)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,6 +44,9 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             val languageState = viewModel.languageState
             val translateState = viewModel.translateState
             val hintState = viewModel.hintState
+//            val recordState = viewModel.recordState
+            val recordState = viewModel.recordAudio.recordState
+
 
             if (viewModel.listener == null) {
                 viewModel.listener = listener()
@@ -52,12 +58,17 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
                     languageState = languageState,
                     translateState = translateState,
                     hintState = hintState,
+                    recordState=recordState,
+                    onRecordAction=viewModel::onRecordAction,
                     onAction = viewModel::onComposeAction,
                     onTranslateAction = viewModel::onTranslateAction,
                     onHintAction = viewModel::onHintAction
                 )
             }
         }
+        audioResolver.requestPermission(
+            requireContext()
+        )
     }
 
     fun listener() = object : ModifyWordViewModel.Listener {
@@ -73,7 +84,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
     }
 
     override fun onAudioGranted() {
-        openRecordBottomSheet()
+
     }
 
     override fun showMessage(text: String) {
@@ -94,32 +105,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
         }
     }
 
-//    private fun setupView() = with(binding) {
-//        recordEnglishPronunciation.setOnClickListener {
-//            audioResolver.requestPermission(
-//                requireContext()
-//            )
-//        }
-//
 
-
-    private fun openRecordBottomSheet() {
-//        val recordSheetDialog = RecordAudioBottomSheet()
-//        recordSheetDialog.arguments = Bundle().apply {
-//            putString(
-//                RecordAudioBottomSheet.MODIFIED_FILE_NAME,
-//                viewModel.getAudioFileName()
-//            )
-//            putString(
-//                RecordAudioBottomSheet.WORD,
-//                binding.inputTranslatedWord.englishWordInput.text.toString()
-//            )
-//        }
-//        recordSheetDialog.show(requireActivity().supportFragmentManager, RecordAudioBottomSheet.TAG)
-//        setRecordAudioBottomSheetClick(recordSheetDialog)
-    }
-
-//
 //    private fun setRecordAudioBottomSheetClick(recordSheetDialog: RecordAudioBottomSheet) {
 //        recordSheetDialog.callbackListener = object : RecordAudioBottomSheet.CallbackListener {
 //            override fun saveAudio(fileName: String?) {
