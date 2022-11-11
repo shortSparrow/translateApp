@@ -67,7 +67,9 @@ data class ComposeState(
 )
 
 data class RecordAudioState(
+    val isModalOpen: Boolean = false,
     val isRecording: Boolean = false,
+    val isTempRecordExist: Boolean = false,
     val isRecordExist: Boolean = false,
     val isRecordPlaying: Boolean = false,
     val existingRecordDuration: Int = 0,

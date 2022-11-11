@@ -27,6 +27,7 @@ import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.getPreviewHints
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudio
+import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.*
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
@@ -123,7 +124,7 @@ fun ModifyWordScreen(
                     onAction = onAction
                 )
 
-                RecordAudio(
+                RecordAudioWrapper(
                     word = state.englishWord,
                     recordState = recordState,
                     onAction = onRecordAction

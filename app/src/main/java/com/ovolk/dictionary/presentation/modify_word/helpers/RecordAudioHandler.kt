@@ -66,7 +66,7 @@ class RecordAudioHandler(
             setupPlayer()
             recordState = recordState.copy(
                 isRecording = false,
-                isRecordExist = true,
+                isTempRecordExist = true,
                 existingRecordDuration = player!!.duration
             )
         } catch (e: Exception) {
@@ -106,53 +106,60 @@ class RecordAudioHandler(
         }
     }
 
-    fun getFileToSave(): String? {
+    fun prepareToSave() {
         val saveableFileName = getSaveableFile()
-        tempFileName = null // clear tempFileName to avoid deleting one after closing bottomSheet
-        return saveableFileName
+        modifiedFileName = saveableFileName
+        listener?.saveAudio(saveableFileName)
+        resetStateToInitial()
     }
 
-    fun prepareForOpen(passedModifiedFileNamed: String?) {
+    fun prepareToOpen(passedModifiedFileNamed: String?) {
         modifiedFileName = passedModifiedFileNamed
-        tempFileName = if (passedModifiedFileNamed == null) {
-            generateFileName()
-        } else {
-            null
-        }
+        tempFileName = if (passedModifiedFileNamed == null) generateFileName() else null
+        resetStateToInitial()
+    }
 
-        passedModifiedFileNamed?.let { fileName ->
+    fun openBottomSheet() {
+        recordState = recordState.copy(isModalOpen = true)
+    }
+
+    fun onPressDelete() = deleteTempRecordingAndMarkToDeleteFile()
+
+    fun closeBottomSheet() {
+        deleteLastTempRecord()
+        resetStateToInitial()
+    }
+
+    private fun resetStateToInitial() {
+        tempFileName = null // clear tempFileName to avoid deleting one after closing bottomSheet
+        modifiedFileNameMarkDelete = false
+        modifiedFileName?.let { fileName ->
             val file = File(getAudioPath(application, fileName))
             val isRecordExist = file.exists()
             if (isRecordExist) {
                 setupPlayer()
-            } else {
-                listener?.soundMarkAsExistButIsNoTrue()
             }
             val existingRecordDuration = if (isRecordExist) player!!.duration else 0
             recordState =
                 RecordAudioState(
+                    isTempRecordExist = isRecordExist,
                     isRecordExist = isRecordExist,
-                    existingRecordDuration = existingRecordDuration
+                    existingRecordDuration = existingRecordDuration,
+                    isModalOpen = false
                 )
         } ?: run {
             recordState =
                 RecordAudioState(
+                    isTempRecordExist = false,
                     isRecordExist = false,
-                    existingRecordDuration = 0
+                    existingRecordDuration = 0,
+                    isModalOpen = false
                 )
-        }
-
-    }
-
-    // call on close bottomSheet to avoid useless audio file in phone storage
-    fun deleteLastTempRecord() {
-        tempFileName?.let {
-            deleteAudioFile(getAudioPath(application, it))
         }
     }
 
     // call when start record new audio and must delete old temp or mark to delete previous saved audio
-    fun deleteTempRecordingAndMarkToDeleteFile() {
+    private fun deleteTempRecordingAndMarkToDeleteFile() {
         try {
             clearRecording()
             if (tempFileName == null) {
@@ -164,6 +171,12 @@ class RecordAudioHandler(
         } catch (e: Exception) {
             Timber.e("Deletion failed. $e")
         }
+    }
+
+
+    // call on close bottomSheet to avoid useless audio file in phone storage
+    private fun deleteLastTempRecord() {
+        tempFileName?.let { deleteAudioFile(getAudioPath(application, it)) }
     }
 
     private fun getSaveableFile(): String? {
@@ -200,7 +213,11 @@ class RecordAudioHandler(
 
     private fun clearRecording() {
         recordState =
-            recordState.copy(isRecording = false, isRecordExist = false, existingRecordDuration = 0)
+            recordState.copy(
+                isRecording = false,
+                isTempRecordExist = false,
+                existingRecordDuration = 0
+            )
         recorder?.apply {
             stop()
         }
@@ -216,6 +233,7 @@ class RecordAudioHandler(
 
     interface RecordAudioListener {
         fun soundMarkAsExistButIsNoTrue()
+        fun saveAudio(savableFile: String?)
     }
 
 }

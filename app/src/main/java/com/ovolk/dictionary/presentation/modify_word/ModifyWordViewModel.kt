@@ -49,13 +49,13 @@ class ModifyWordViewModel @Inject constructor(
 
     fun onRecordAction(action: RecordAudioAction) {
         when (action) {
-            RecordAudioAction.DeleteRecord -> recordAudio.deleteTempRecordingAndMarkToDeleteFile()
+            RecordAudioAction.DeleteRecord -> recordAudio.onPressDelete()
             RecordAudioAction.ListenRecord -> recordAudio.startPlaying()
-            RecordAudioAction.SaveRecord -> updateAudio(recordAudio.getFileToSave())
+            RecordAudioAction.SaveRecord -> recordAudio.prepareToSave()
             RecordAudioAction.StartRecording -> recordAudio.startRecording()
             RecordAudioAction.StopRecording -> recordAudio.stopRecording()
-            RecordAudioAction.HideBottomSheet -> recordAudio.deleteLastTempRecord()
-            RecordAudioAction.OpenBottomSheet -> recordAudio.prepareForOpen(composeState.soundFileName)
+            RecordAudioAction.HideBottomSheet -> recordAudio.closeBottomSheet()
+            RecordAudioAction.OpenBottomSheet -> recordAudio.openBottomSheet()
         }
     }
 
@@ -76,6 +76,10 @@ class ModifyWordViewModel @Inject constructor(
             override fun soundMarkAsExistButIsNoTrue() {
                 // TODO add toast
                 updateAudio(null)
+            }
+
+            override fun saveAudio(savableFile: String?) {
+                updateAudio(savableFile)
             }
         }
     }
@@ -310,10 +314,8 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-
     // wordValue which selected and passed into app as intent
     fun launchAddMode(wordValue: String, listId: Long) {
-
         val langList = loadLanguages(langFromCode = null, langToCode = null)
         languageState = languageState.copy(
             languageFromList = langList["languageFrom"]
@@ -323,18 +325,13 @@ class ModifyWordViewModel @Inject constructor(
         composeState =
             composeState.copy(modifyMode = ModifyWordModes.MODE_ADD, englishWord = wordValue)
 
-
         if (listId != -1L) {
             prefillListIdFromArgs(listId)
         }
     }
 
     fun launchEditMode(wordId: Long) {
-        val id = if (wordId == -1L) {
-            error("wordId is null")
-        } else {
-            wordId
-        }
+        val id = if (wordId == -1L) error("wordId is null") else wordId
         getWordById(id)
     }
 
@@ -348,7 +345,9 @@ class ModifyWordViewModel @Inject constructor(
     private fun updateAudio(fileName: String?) {
         viewModelScope.launch {
             composeState.editableWordId?.let {
-                val sound = if (fileName == null) {null} else WordAudio(fileName = fileName)
+                val sound = if (fileName == null) {
+                    null
+                } else WordAudio(fileName = fileName)
                 modifyWordUseCase.modifyOnlySound(it, sound = sound)
             }
             composeState = composeState.copy(soundFileName = fileName)
@@ -359,13 +358,9 @@ class ModifyWordViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
             val langList = loadLanguages(langToCode = word.langTo, langFromCode = word.langFrom)
-            val wordListInfo = word.wordListId?.let {
-                getListsUseCase.getListById(word.wordListId)
-            }
+            val wordListInfo = word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
 
-//            word.sound?.let { sound ->
-//                recordAudio.setModifiedFileName(sound.fileName)
-//            }
+            word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
             composeState = composeState.copy(
                 englishWord = word.value,
                 transcriptionWord = word.transcription,
