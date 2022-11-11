@@ -41,6 +41,11 @@
     <string name="modify_word_language_picker_from">(language from)</string>
     <string name="modify_word_language_picker_to">(language to)</string>
     <string name="modify_word_validate_add_empty_field">this field is required, input translate and press add</string>
+    <string name="modify_word_record_listen">listen</string>
+    <string name="modify_word_record_delete_cd">Delete this record</string>
+    <string name="modify_word_record_cd">Recording button</string>
+    <string name="modify_word_add_new_record_cd">Add bew record button</string>
+    <string name="modify_word_change_record_cd">Change current record button</string>
 
 
 
@@ -142,6 +147,7 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     <string name="yes">Yes</string>
     <string name="ok">Ok</string>
     <string name="no">No</string>
