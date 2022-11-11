@@ -33,10 +33,7 @@ import com.ovolk.dictionary.presentation.modify_word.compose.translates.Translat
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 
 
-@OptIn(
-    ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class
-)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ModifyWordScreen(
     state: ComposeState,
@@ -53,10 +50,11 @@ fun ModifyWordScreen(
     val interactionSourceScreen = remember { MutableInteractionSource() }
 
     val headerTitle = if (state.modifyMode == ModifyWordModes.MODE_EDIT) {
-        state.englishWord
+        remember { state.englishWord }
     } else {
         stringResource(id = R.string.modify_word_add_new_word)
     }
+
     val firstRightIcon: (@Composable () -> Unit)? =
         if (state.modifyMode == ModifyWordModes.MODE_EDIT) {
             {
@@ -79,7 +77,6 @@ fun ModifyWordScreen(
             onAcceptClick = { onAction(ModifyWordAction.DeleteWord) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) })
     }
-
 
     // TODO add handler on back click (alert)
 
@@ -142,7 +139,9 @@ fun ModifyWordScreen(
                     text = stringResource(id = R.string.modify_word_additional),
                     modifier = Modifier
                         .padding(bottom = 0.dp, top = 20.dp) // TODO remove isDisabled
-                        .opacityClick(isDisabled = false, onClick = { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) }),
+                        .opacityClick(
+                            isDisabled = false,
+                            onClick = { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) }),
                     color = colorResource(id = R.color.blue)
                 )
 
@@ -164,7 +163,6 @@ fun ModifyWordScreen(
             }
         }
     }
-//    }
 }
 
 

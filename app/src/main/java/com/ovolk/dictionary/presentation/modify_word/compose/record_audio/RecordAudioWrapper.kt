@@ -39,14 +39,13 @@ fun RecordAudioWrapper(
             onAction(RecordAudioAction.HideBottomSheet)
             bottomSheetScaffoldState.collapse()
             isSlideUpComplete = false
-
         }
     }
 
     LaunchedEffect(recordState.isModalOpen) {
         if (recordState.isModalOpen) {
             coroutineScope.launch {
-                delay(100)
+                delay(10)
                 bottomSheetScaffoldState.expand()
                 isSlideUpComplete = true
             }
@@ -62,7 +61,7 @@ fun RecordAudioWrapper(
         if (recordState.isRecordExist) {
             Image(
                 painter = painterResource(id = R.drawable.mic_successful),
-                contentDescription = "change record",
+                contentDescription = stringResource(id = R.string.modify_word_change_record_cd),
                 modifier = Modifier
                     .size(60.dp)
                     .withoutEffectClick { onAction(RecordAudioAction.OpenBottomSheet) }
@@ -74,7 +73,7 @@ fun RecordAudioWrapper(
         } else {
             Icon(
                 painter = painterResource(id = R.drawable.mic_active),
-                contentDescription = "add record",
+                contentDescription = stringResource(id = R.string.modify_word_add_new_record_cd),
                 tint = colorResource(id = R.color.blue),
                 modifier = Modifier
                     .size(50.dp)
@@ -107,7 +106,6 @@ fun RecordAudioWrapper(
                             word = word,
                             recordState = recordState,
                             onAction = onAction,
-                            closeModal = ::closeModal
                         )
 
                     },

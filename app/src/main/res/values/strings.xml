@@ -44,6 +44,8 @@
     <string name="modify_word_record_listen">listen</string>
     <string name="modify_word_record_delete_cd">Delete this record</string>
     <string name="modify_word_record_cd">Recording button</string>
+    <string name="modify_word_add_new_record_cd">Add bew record button</string>
+    <string name="modify_word_change_record_cd">Change current record button</string>
 
 
 

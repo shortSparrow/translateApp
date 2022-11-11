@@ -9,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -34,7 +33,6 @@ fun RecordAudio(
     word: String,
     recordState: RecordAudioState,
     onAction: (RecordAudioAction) -> Unit,
-    closeModal: () -> Unit
 ) {
     val deleteIconColor =
         if (recordState.isTempRecordExist) colorResource(id = R.color.red) else colorResource(id = R.color.grey)
@@ -84,7 +82,7 @@ fun RecordAudio(
             .withoutEffectClick { },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(modifier = Modifier.padding(bottom = 20.dp), text = word)
+        Text(modifier = Modifier.padding(bottom = 30.dp, top = 20.dp), text = word)
 
         ConstraintLayout(Modifier.fillMaxWidth()) {
             val (timerRef, delete, listen, save, mic, lottieAnim) = createRefs()
@@ -128,31 +126,31 @@ fun RecordAudio(
 
             Surface(
                 shape = CircleShape,
-                modifier = Modifier.constrainAs(mic) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top, margin = 70.dp)
-                },
+                modifier = Modifier
+                    .constrainAs(mic) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top, margin = 60.dp)
+                    }
+                    .pointerInteropFilter {
+                        when (it.action) {
+                            MotionEvent.ACTION_DOWN -> onAction(RecordAudioAction.StartRecording)
+                            MotionEvent.ACTION_UP -> onAction(RecordAudioAction.StopRecording)
+                            MotionEvent.ACTION_CANCEL -> onAction(RecordAudioAction.StopRecording)
+                            else -> {}
+                        }
+                        true
+                    },
             ) {
                 Column(
                     modifier = Modifier
-                        .background(Color.Yellow)
+                        .background(colorResource(id = R.color.yellow))
                         .padding(20.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.mic_active),
                         contentDescription = stringResource(id = R.string.modify_word_record_cd),
-                        modifier = Modifier
-                            .size(50.dp)
-                            .pointerInteropFilter {
-                                when (it.action) {
-                                    MotionEvent.ACTION_DOWN -> onAction(RecordAudioAction.StartRecording)
-                                    MotionEvent.ACTION_UP -> onAction(RecordAudioAction.StopRecording)
-                                    MotionEvent.ACTION_CANCEL -> onAction(RecordAudioAction.StopRecording)
-                                    else -> {}
-                                }
-                                true
-                            },
+                        modifier = Modifier.size(50.dp),
                         tint = micIconColor
                     )
                 }
@@ -191,9 +189,8 @@ fun RecordAudio(
 @Composable
 fun RecordAudioPreview() {
     RecordAudio(
-        word = "Estimate",
+        word = "Word Example",
         recordState = RecordAudioState(),
         onAction = {},
-        closeModal = {}
     )
 }
