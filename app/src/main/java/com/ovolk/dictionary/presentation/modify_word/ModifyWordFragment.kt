@@ -44,9 +44,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             val languageState = viewModel.languageState
             val translateState = viewModel.translateState
             val hintState = viewModel.hintState
-//            val recordState = viewModel.recordState
             val recordState = viewModel.recordAudio.recordState
-
 
             if (viewModel.listener == null) {
                 viewModel.listener = listener()
