@@ -18,33 +18,23 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
-private val TAG = "RecordAudioHandler"
 
 class RecordAudioHandler(
     private val application: Application,
 ) {
+    var listener: RecordAudioListener? = null
     var recordState by mutableStateOf(RecordAudioState())
         private set
 
-    private var modifiedFileName: String? = null
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-    val fileName by lazy { modifiedFileName ?: generateFileName() }
-    private val audioPath by lazy { getAudioPath(application, fileName) }
-
-    private var tempPath: String? = null
-    private var savablePath: String? = null
+    private var modifiedFileName: String? = null
+    private var tempFileName: String? = null
+    private var modifiedFileNameMarkDelete: Boolean = false
 
     private var recorder: MediaRecorder? = null
     private var player: MediaPlayer? = null
-
-    fun setModifiedFileName(name: String) {
-        modifiedFileName = name
-        setupPlayer()
-        recordState =
-            recordState.copy(isRecordExist = true, existingRecordDuration = player!!.duration)
-    }
 
     fun startPlaying() {
         audioManager.setStreamVolume(
@@ -66,18 +56,6 @@ class RecordAudioHandler(
         }
     }
 
-    private fun setupPlayer() {
-        player = MediaPlayer().apply {
-            try {
-                reset()
-                setDataSource(audioPath)
-                prepare()
-            } catch (e: IOException) {
-                Timber.tag(TAG).e("prepare() failed $e")
-            }
-        }
-    }
-
     fun stopRecording() {
         try {
             recorder?.apply {
@@ -92,14 +70,16 @@ class RecordAudioHandler(
                 existingRecordDuration = player!!.duration
             )
         } catch (e: Exception) {
-            Timber.tag(TAG).e("Error endRecording $e")
+            Timber.e("Error endRecording $e")
             recorder = null
-            deleteRecording()
+            deleteTempRecordingAndMarkToDeleteFile()
         }
     }
 
     fun startRecording() {
-        val file = File(audioPath)
+        deleteTempRecordingAndMarkToDeleteFile()
+        tempFileName = generateFileName()
+        val file = File(getAudioPath(application, tempFileName!!))
         if (!file.exists()) {
             file.createNewFile()
         }
@@ -121,21 +101,100 @@ class RecordAudioHandler(
                     )
                 }
             } catch (e: IOException) {
-                Timber.tag(TAG).e("prepare() failed: $e")
+                Timber.e("prepare() failed: $e")
             }
         }
     }
 
-    // mark as delete on delete and remove on save
-    fun deleteTempRecord() {}
-    fun deleteSavedRecord() {}
+    fun getFileToSave(): String? {
+        val saveableFileName = getSaveableFile()
+        tempFileName = null // clear tempFileName to avoid deleting one after closing bottomSheet
+        return saveableFileName
+    }
 
-    fun deleteRecording() {
+    fun prepareForOpen(passedModifiedFileNamed: String?) {
+        modifiedFileName = passedModifiedFileNamed
+        tempFileName = if (passedModifiedFileNamed == null) {
+            generateFileName()
+        } else {
+            null
+        }
+
+        passedModifiedFileNamed?.let { fileName ->
+            val file = File(getAudioPath(application, fileName))
+            val isRecordExist = file.exists()
+            if (isRecordExist) {
+                setupPlayer()
+            } else {
+                listener?.soundMarkAsExistButIsNoTrue()
+            }
+            val existingRecordDuration = if (isRecordExist) player!!.duration else 0
+            recordState =
+                RecordAudioState(
+                    isRecordExist = isRecordExist,
+                    existingRecordDuration = existingRecordDuration
+                )
+        } ?: run {
+            recordState =
+                RecordAudioState(
+                    isRecordExist = false,
+                    existingRecordDuration = 0
+                )
+        }
+
+    }
+
+    // call on close bottomSheet to avoid useless audio file in phone storage
+    fun deleteLastTempRecord() {
+        tempFileName?.let {
+            deleteAudioFile(getAudioPath(application, it))
+        }
+    }
+
+    // call when start record new audio and must delete old temp or mark to delete previous saved audio
+    fun deleteTempRecordingAndMarkToDeleteFile() {
         try {
             clearRecording()
-            deleteAudioFile()
+            if (tempFileName == null) {
+                modifiedFileNameMarkDelete = true
+            } else {
+                deleteAudioFile(getAudioPath(application, tempFileName!!))
+            }
+            tempFileName = null
         } catch (e: Exception) {
-            Timber.tag(TAG).e("Deletion failed. $e")
+            Timber.e("Deletion failed. $e")
+        }
+    }
+
+    private fun getSaveableFile(): String? {
+        if (tempFileName != null) {
+            modifiedFileName?.let { deleteAudioFile(getAudioPath(application, it)) }
+            return tempFileName
+        }
+
+        if (!modifiedFileNameMarkDelete) {
+            return modifiedFileName
+        }
+
+        // there are not saveable file and existing file mark to delete. So delete one and return null for updating db
+        deleteAudioFile(getAudioPath(application, modifiedFileName!!))
+        return null
+    }
+
+    private fun setupPlayer() {
+        player = MediaPlayer().apply {
+            try {
+                reset()
+                if (tempFileName != null) {
+                    setDataSource(getAudioPath(application, tempFileName!!))
+                } else {
+                    setDataSource(getAudioPath(application, modifiedFileName!!))
+                }
+
+                prepare()
+            } catch (e: IOException) {
+                Timber.e("prepare() failed $e")
+            }
         }
     }
 
@@ -150,9 +209,13 @@ class RecordAudioHandler(
         player = null
     }
 
-    private fun deleteAudioFile() {
+    private fun deleteAudioFile(audioPath: String) {
         val file = File(audioPath)
         file.delete()
+    }
+
+    interface RecordAudioListener {
+        fun soundMarkAsExistButIsNoTrue()
     }
 
 }

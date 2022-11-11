@@ -1,13 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_word
 
 import android.app.Application
-import android.content.Context
-import android.media.AudioManager
-import android.media.MediaPlayer
-import android.media.MediaRecorder
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,15 +16,10 @@ import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.*
 import com.ovolk.dictionary.domain.use_case.settings_languages.GetSelectedLanguages
 import com.ovolk.dictionary.presentation.modify_word.helpers.*
-import com.ovolk.dictionary.util.helpers.generateFileName
-import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,14 +49,13 @@ class ModifyWordViewModel @Inject constructor(
 
     fun onRecordAction(action: RecordAudioAction) {
         when (action) {
-            RecordAudioAction.DeleteRecord -> {
-                recordAudio.deleteRecording()
-                updateAudio(null)
-            }
+            RecordAudioAction.DeleteRecord -> recordAudio.deleteTempRecordingAndMarkToDeleteFile()
             RecordAudioAction.ListenRecord -> recordAudio.startPlaying()
-            RecordAudioAction.SaveRecord -> updateAudio(recordAudio.fileName)
+            RecordAudioAction.SaveRecord -> updateAudio(recordAudio.getFileToSave())
             RecordAudioAction.StartRecording -> recordAudio.startRecording()
             RecordAudioAction.StopRecording -> recordAudio.stopRecording()
+            RecordAudioAction.HideBottomSheet -> recordAudio.deleteLastTempRecord()
+            RecordAudioAction.OpenBottomSheet -> recordAudio.prepareForOpen(composeState.soundFileName)
         }
     }
 
@@ -82,6 +69,13 @@ class ModifyWordViewModel @Inject constructor(
                         } else it
                     },
                 )
+            }
+        }
+
+        recordAudio.listener = object : RecordAudioHandler.RecordAudioListener {
+            override fun soundMarkAsExistButIsNoTrue() {
+                // TODO add toast
+                updateAudio(null)
             }
         }
     }
@@ -369,9 +363,9 @@ class ModifyWordViewModel @Inject constructor(
                 getListsUseCase.getListById(word.wordListId)
             }
 
-            word.sound?.let { sound ->
-                recordAudio.setModifiedFileName(sound.fileName)
-            }
+//            word.sound?.let { sound ->
+//                recordAudio.setModifiedFileName(sound.fileName)
+//            }
             composeState = composeState.copy(
                 englishWord = word.value,
                 transcriptionWord = word.transcription,

@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_word.compose.record_audio
 
+import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,7 @@ import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 import com.ovolk.dictionary.util.compose.click_effects.withoutEffectClick
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -42,10 +44,6 @@ fun RecordAudio(
     var timer by remember {
         mutableStateOf(0)
     }
-
-//    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-//        bottomSheetState = BottomSheetState(BottomSheetValue.Expanded)
-//    )
 
     val bottomSheetScaffoldState by remember {
         mutableStateOf(BottomSheetState(BottomSheetValue.Collapsed))
@@ -64,14 +62,11 @@ fun RecordAudio(
             bottomSheetScaffoldState.collapse()
             isOpenModal = false
             isSlideUpComplete = false
+            onAction(RecordAudioAction.HideBottomSheet)
         }
     }
 
     LaunchedEffect(recordState.isRecording) {
-//        if (recordState.isRecording) {
-//            recordDuration = 0
-//            timer = 0
-//        }
         while (recordState.isRecording) {
             delay(1000)
             recordDuration++
@@ -86,19 +81,11 @@ fun RecordAudio(
         timer = recordDuration
     }
 
-//    LaunchedEffect(recordState.isRecordExist) {
-//        if (!recordState.isRecordExist) {
-//            recordDuration = 0
-//            timer = 0
-//        }
-//    }
 
     LaunchedEffect(recordState.existingRecordDuration) {
         recordDuration = (recordState.existingRecordDuration / 1000).toInt()
         timer = recordDuration
-
     }
-
 
     LaunchedEffect(isOpenModal) {
         if (isOpenModal) {
@@ -111,8 +98,10 @@ fun RecordAudio(
     }
 
 
-
-    Button(onClick = { isOpenModal = true }) {
+    Button(onClick = {
+        onAction(RecordAudioAction.OpenBottomSheet)
+        isOpenModal = true
+    }) {
         Text(text = "Record")
     }
 
@@ -153,7 +142,6 @@ fun RecordAudio(
                             ConstraintLayout(
                                 Modifier
                                     .fillMaxWidth()
-//                                    .background(Color.Red)
                             ) {
                                 val (timerRef, delete, listen, save, mic, lottieAnim) = createRefs()
 
@@ -186,11 +174,23 @@ fun RecordAudio(
                                     colorResource(id = R.color.black)
                                 }
 
-                                val textColor =
-                                    if (recordState.isRecordExist && !recordState.isRecording) {
-                                        colorResource(id = R.color.blue)
-                                    } else {
+                                val listenIsDisabled =
+                                    !recordState.isRecordExist || recordState.isRecordPlaying
+                                val listenColor =
+                                    if (listenIsDisabled) {
                                         colorResource(id = R.color.grey)
+                                    } else {
+                                        colorResource(id = R.color.blue)
+
+                                    }
+
+                                val saveIsDisabled = recordState.isRecordPlaying
+                                val savedColor =
+                                    if (saveIsDisabled) {
+                                        colorResource(id = R.color.grey)
+                                    } else {
+                                        colorResource(id = R.color.blue)
+
                                     }
 
                                 val composition by rememberLottieComposition(
@@ -198,8 +198,6 @@ fun RecordAudio(
                                         R.raw.record_animation
                                     )
                                 )
-
-
 
 
 
@@ -244,9 +242,13 @@ fun RecordAudio(
                                                             onAction(RecordAudioAction.StartRecording)
                                                         }
                                                         MotionEvent.ACTION_UP -> {
+
                                                             onAction(RecordAudioAction.StopRecording)
                                                         }
-                                                        else -> false
+                                                        MotionEvent.ACTION_CANCEL -> {
+                                                            onAction(RecordAudioAction.StopRecording)
+                                                        }
+                                                        else -> {}
                                                     }
                                                     true
                                                 },
@@ -258,14 +260,14 @@ fun RecordAudio(
 
                                 Text(
                                     text = "LISTEN",
-                                    color = textColor,
+                                    color = listenColor,
                                     modifier = Modifier
                                         .constrainAs(listen) {
                                             top.linkTo(mic.top)
                                             bottom.linkTo(mic.bottom)
                                             start.linkTo(mic.end, margin = 30.dp)
                                         }
-                                        .opacityClick(isDisabled = !recordState.isRecordExist || recordState.isRecordPlaying) {
+                                        .opacityClick(isDisabled = listenIsDisabled) {
                                             onAction(
                                                 RecordAudioAction.ListenRecord
                                             )
@@ -273,14 +275,14 @@ fun RecordAudio(
 
                                 Text(
                                     text = "SAVE",
-                                    color = textColor,
+                                    color = savedColor,
                                     modifier = Modifier
                                         .constrainAs(save) {
                                             top.linkTo(mic.bottom, margin = 30.dp)
                                             start.linkTo(mic.start)
                                             end.linkTo(mic.end)
                                         }
-                                        .opacityClick(isDisabled = !recordState.isRecordExist || recordState.isRecordPlaying) {
+                                        .opacityClick(isDisabled = recordState.isRecordPlaying) {
                                             onAction(RecordAudioAction.SaveRecord)
                                             closeModal()
                                         })

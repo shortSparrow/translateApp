@@ -79,6 +79,8 @@ sealed interface RecordAudioAction {
     object ListenRecord : RecordAudioAction
     object SaveRecord : RecordAudioAction
     object DeleteRecord : RecordAudioAction
+    object HideBottomSheet : RecordAudioAction
+    object OpenBottomSheet : RecordAudioAction
 }
 
 sealed interface ModifyWordAction {
