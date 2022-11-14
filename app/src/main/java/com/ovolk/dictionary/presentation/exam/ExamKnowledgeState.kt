@@ -23,15 +23,16 @@ sealed interface ExamAction {
     object OnPressAddHiddenTranslate : ExamAction
     object OnLoadNextPageWords : ExamAction
     data class OnSelectActiveWord(val wordIndex: Int) : ExamAction
-    data class OnLongPressHiddenTranslate(val translateId: Long): ExamAction
-    object CloseTheEndExamModal: ExamAction
-    object OnNavigateToCreateFirstWord: ExamAction
+    data class OnLongPressHiddenTranslate(val translateId: Long) : ExamAction
+    object CloseTheEndExamModal : ExamAction
+    object OnNavigateToCreateFirstWord : ExamAction
+    data class LoadExamList(val listId: Long, val listName: String? = null) : ExamAction
 }
 
 
 @Stable
 data class ExamKnowledgeState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     var examWordList: List<ExamWord> = emptyList(),
     val isAllExamWordsLoaded: Boolean = false,
     val examListTotalCount: Int = 0,

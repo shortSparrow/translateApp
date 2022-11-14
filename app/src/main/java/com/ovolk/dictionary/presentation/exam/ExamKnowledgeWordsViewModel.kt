@@ -40,7 +40,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
     init {
-        loadWordsList(null, null)
+//        loadWordsList(null, null)
 //        viewModelScope.async {
 //            var wordCount = 1
 //            while (wordCount < 10) {
@@ -181,11 +181,15 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     )
                 }
             }
+            is ExamAction.LoadExamList -> {
+                val listId = if (action.listId == -1L) null else action.listId
+                loadWordsList(listId = listId, listName = action.listName)
+            }
         }
     }
 
 
-    fun loadWordsList(listId: Long?, listName: String? = null) {
+    private fun loadWordsList(listId: Long?, listName: String? = null) {
         composeState = composeState.copy(
             isLoading = true,
             listId = listId,

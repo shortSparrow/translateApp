@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.databinding.FragmentExamKnowledgeWordsBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
@@ -17,6 +18,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
     override val bindingInflater: BindingInflater<FragmentExamKnowledgeWordsBinding>
         get() = FragmentExamKnowledgeWordsBinding::inflate
 
+    private val args by navArgs<ExamKnowledgeWordsFragmentArgs>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,9 +27,10 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             val state = viewModel.composeState
             val onAction = viewModel::onAction
 
+
             // TODO temporary solution for updating exam list after create first word
             if (state.examWordList.isEmpty() && state.shouldLoadWordListAgain) {
-                viewModel.loadWordsList(null, null)
+                onAction(ExamAction.LoadExamList(listId = args.listId, listName = args.listName))
             }
 
             if (viewModel.listener == null) {
@@ -43,7 +46,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             }
 
             AppCompatTheme {
-                ExamScreen(state = state, onAction = onAction)
+                ExamScreen(state = state, onAction = onAction, args=args)
             }
         }
     }

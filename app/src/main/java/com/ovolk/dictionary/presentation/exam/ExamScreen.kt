@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,9 +37,14 @@ import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewExamListAl
 @Composable
 fun ExamScreen(
     state: ExamKnowledgeState,
+    args: ExamKnowledgeWordsFragmentArgs,
     onAction: (ExamAction) -> Unit
 ) {
     // TODO add UI on loading
+
+    LaunchedEffect(args) {
+        onAction(ExamAction.LoadExamList(listId = args.listId, listName = args.listName))
+    }
 
     if (state.isModeDialogOpen) {
         SelectExamMode(mode = state.mode, onAction = onAction)
@@ -163,6 +169,7 @@ fun ExamScreenPreview() {
             examWordList = getPreviewExamListAllStatus(),
             isAllExamWordsLoaded = true,
         ),
+        args = ExamKnowledgeWordsFragmentArgs(),
         onAction = {}
     )
 }
@@ -175,6 +182,7 @@ fun ExamScreenPreview2() {
             examWordList = emptyList(),
             isAllExamWordsLoaded = true,
         ),
+        args = ExamKnowledgeWordsFragmentArgs(),
         onAction = {}
     )
 }
