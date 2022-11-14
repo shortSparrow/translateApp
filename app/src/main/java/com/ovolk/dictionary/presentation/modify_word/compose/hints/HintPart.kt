@@ -7,6 +7,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.presentation.modify_word.Hints
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewHints
 
 @Composable
 fun HintPart(hintsState: Hints, onAction: (ModifyWordHintsAction) -> Unit) {

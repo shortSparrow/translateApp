@@ -24,9 +24,9 @@ class ExamModeDialog(context: Context, val viewModel: ExamKnowledgeWordsViewMode
         dialogBuilder.setCanceledOnTouchOutside(true)
 
         // update data in viewmodel if we close dialog by tap outside
-        dialogBuilder.setOnCancelListener {
-            viewModel.toggleOpenModeDialog(false)
-        }
+//        dialogBuilder.setOnCancelListener {
+//            viewModel.toggleOpenModeDialog(false)
+//        }
     }
 
      fun handleDialog(mode: ExamMode) {
@@ -40,10 +40,10 @@ class ExamModeDialog(context: Context, val viewModel: ExamKnowledgeWordsViewMode
         // invoke only after set default value
         dialogView.findViewById<RadioGroup>(R.id.exam_radio_group)
             .setOnCheckedChangeListener { _, checkedId ->
-                when (checkedId) {
-                    R.id.daily_mode_button -> viewModel.changeExamMode(mode = ExamMode.DAILY_MODE)
-                    R.id.infinity_mode_button -> viewModel.changeExamMode(mode = ExamMode.INFINITY_MODE)
-                }
+//                when (checkedId) {
+//                    R.id.daily_mode_button -> viewModel.changeExamMode(mode = ExamMode.DAILY_MODE)
+//                    R.id.infinity_mode_button -> viewModel.changeExamMode(mode = ExamMode.INFINITY_MODE)
+//                }
                 dialogBuilder.dismiss()
             }
     }

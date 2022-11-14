@@ -105,9 +105,9 @@ class WordMapper @Inject constructor() {
             value = wordDb.wordInfo.value,
             translates = wordDb.translates.map { translateDbToLocal(it) },
             hints = wordDb.hints.map { hintDbToLocal(it) },
-            priority = wordDb.wordInfo.priority,
-            status = ExamWordStatus.UNPROCESSED,
-            answerVariants = emptyList(),
+            initialPriority = wordDb.wordInfo.priority,
+            initialStatus = ExamWordStatus.UNPROCESSED,
+            answerVariants = mutableListOf(),
             isShowVariantsAvailable = isShowVariantsAvailable
         )
 

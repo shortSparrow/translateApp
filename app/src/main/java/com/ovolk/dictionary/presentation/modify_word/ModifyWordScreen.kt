@@ -24,13 +24,12 @@ import com.ovolk.dictionary.presentation.core.compose.header.Header
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
-import com.ovolk.dictionary.presentation.modify_word.compose.hints.getPreviewHints
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
-import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudio
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.*
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewHints
 
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
