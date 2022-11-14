@@ -27,12 +27,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExamKnowledgeWordsViewModel @Inject constructor(
-    val getExamWordListUseCase: GetExamWordListUseCase,
-    val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
+    private val getExamWordListUseCase: GetExamWordListUseCase,
+    private val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     private val modifyWordUseCase: ModifyWordUseCase,
-    val repository: TranslatedWordRepository,
-    val application: Application,
+    private val repository: TranslatedWordRepository,
+    private val application: Application,
 ) : ViewModel() {
+    var listener: Listener? = null
     var composeState by mutableStateOf(ExamKnowledgeState())
         private set
 
@@ -57,7 +58,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 //                    description = "",
 //                    sound = null,
 //                    langFrom = "EN",
-//                    langTo = "UA",
+//                    langTo = "UK",
 //                    hints = listOf(
 //                        HintItem(
 //                            localId = 1,
@@ -168,11 +169,29 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             ExamAction.OnPressAddHiddenTranslate -> addHiddenTranslate()
             is ExamAction.OnLongPressHiddenTranslate -> toggleIsHiddenTranslate(action.translateId)
             ExamAction.CloseTheEndExamModal -> composeState = composeState.copy(isExamEnd = false)
+            ExamAction.OnNavigateToCreateFirstWord -> {
+                listener?.onNavigateToCreateFirstWord()
+
+                // TODO temporary solution for updating exam list after create first word
+                viewModelScope.launch {
+                    delay(100L)
+                    composeState = composeState.copy(
+                        shouldLoadWordListAgain = true,
+                        isAllExamWordsLoaded = false
+                    )
+                }
+            }
         }
     }
 
-    private fun loadWordsList(listId: Long?, listName: String? = null) {
-        composeState = composeState.copy(isLoading = true, listId = listId, listName = listName)
+
+    fun loadWordsList(listId: Long?, listName: String? = null) {
+        composeState = composeState.copy(
+            isLoading = true,
+            listId = listId,
+            listName = listName,
+            shouldLoadWordListAgain = false
+        )
         viewModelScope.launch {
             val response = getExamWordListUseCase(
                 isInitialLoad = true,
@@ -180,7 +199,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 mode = composeState.mode
             )
             val list: List<ExamWord> = response.examWordList
-            list[0].status = ExamWordStatus.IN_PROCESS
+            if (list.isNotEmpty()) {
+                list[0].status = ExamWordStatus.IN_PROCESS
+            }
 
             composeState = ExamKnowledgeState(
                 mode = composeState.mode,
@@ -294,5 +315,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             isVariantsExpanded = false,
             isHintsExpanded = false
         )
+    }
+
+    interface Listener {
+        fun onNavigateToCreateFirstWord()
     }
 }

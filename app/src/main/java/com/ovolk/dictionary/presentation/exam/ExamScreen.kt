@@ -1,19 +1,25 @@
 package com.ovolk.dictionary.presentation.exam
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.presentation.core.compose.dialog.InfoDialog
@@ -22,6 +28,7 @@ import com.ovolk.dictionary.presentation.exam.components.ExamList
 import com.ovolk.dictionary.presentation.exam.components.InputWord
 import com.ovolk.dictionary.presentation.exam.components.NavigationPart
 import com.ovolk.dictionary.presentation.exam.components.WordIsCheckedPart
+import com.ovolk.dictionary.presentation.exam.components.empty_exam.EmptyExam
 import com.ovolk.dictionary.presentation.exam.components.modal.SelectExamMode
 import com.ovolk.dictionary.presentation.exam.components.variants_and_hints.VariantsAndHints
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewExamListAllStatus
@@ -31,7 +38,7 @@ fun ExamScreen(
     state: ExamKnowledgeState,
     onAction: (ExamAction) -> Unit
 ) {
-    // TODO add on empty list and loading
+    // TODO add UI on loading
 
     if (state.isModeDialogOpen) {
         SelectExamMode(mode = state.mode, onAction = onAction)
@@ -50,9 +57,11 @@ fun ExamScreen(
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(bottom = 10.dp)
     ) {
+
         Header(
             title = stringResource(id = R.string.exam_counter_toolbar_title_daily_mode),
             firstRightIcon = {
@@ -64,7 +73,8 @@ fun ExamScreen(
                         .height(34.dp)
                 )
             },
-            onFirstRightIconClick = { onAction(ExamAction.ToggleSelectModeModal(true)) }
+            onFirstRightIconClick = { onAction(ExamAction.ToggleSelectModeModal(true)) },
+            withBackButton = false
         )
 
         val currentWord = state.examWordList.getOrNull(state.activeWordPosition)
@@ -132,6 +142,16 @@ fun ExamScreen(
                 }
             }
         }
+
+        if (currentWord == null && !state.isLoading) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                EmptyExam(onAction = onAction)
+            }
+        }
     }
 }
 
@@ -141,6 +161,18 @@ fun ExamScreenPreview() {
     ExamScreen(
         state = ExamKnowledgeState(
             examWordList = getPreviewExamListAllStatus(),
+            isAllExamWordsLoaded = true,
+        ),
+        onAction = {}
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun ExamScreenPreview2() {
+    ExamScreen(
+        state = ExamKnowledgeState(
+            examWordList = emptyList(),
             isAllExamWordsLoaded = true,
         ),
         onAction = {}

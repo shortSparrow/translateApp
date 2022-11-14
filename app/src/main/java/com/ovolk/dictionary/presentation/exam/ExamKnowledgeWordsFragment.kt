@@ -2,14 +2,13 @@ package com.ovolk.dictionary.presentation.exam
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.fragment.findNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ovolk.dictionary.databinding.FragmentExamKnowledgeWordsBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,24 +16,6 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
 
     override val bindingInflater: BindingInflater<FragmentExamKnowledgeWordsBinding>
         get() = FragmentExamKnowledgeWordsBinding::inflate
-
-    private val args by navArgs<ExamKnowledgeWordsFragmentArgs>()
-    private val viewModel by viewModels<ExamKnowledgeWordsViewModel>()
-    private var bottomBar: BottomNavigationView? = null
-
-
-    private val modeDialog by lazy {
-        ExamModeDialog(
-            context = requireContext(),
-            viewModel = viewModel
-        )
-    }
-
-    private val examEndDialog by lazy {
-        ExamEndDialog(
-            context = requireContext(),
-        )
-    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,13 +25,26 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             val state = viewModel.composeState
             val onAction = viewModel::onAction
 
-//            // generateWordsList on every enter on screen. On rotation not invoked. Because we change configChanges in Manifest
-//            viewModel.generateWordsList(listId = if (args.listId == -1L) null else args.listId, listName = args.listName)
-//            bottomBar = requireActivity().findViewById(R.id.bottom_app_bar)
+            // TODO temporary solution for updating exam list after create first word
+            if (state.examWordList.isEmpty() && state.shouldLoadWordListAgain) {
+                viewModel.loadWordsList(null, null)
+            }
+
+            if (viewModel.listener == null) {
+                viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
+                    override fun onNavigateToCreateFirstWord() {
+                        findNavController().navigate(
+                            ExamKnowledgeWordsFragmentDirections.actionExamKnowledgeWordsFragmentToModifyWordFragment(
+                                mode = ModifyWordModes.MODE_ADD
+                            )
+                        )
+                    }
+                }
+            }
+
             AppCompatTheme {
                 ExamScreen(state = state, onAction = onAction)
             }
         }
     }
-
 }

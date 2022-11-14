@@ -3,7 +3,6 @@ package com.ovolk.dictionary.presentation.exam
 import androidx.compose.runtime.Stable
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
-import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 
 
 enum class NavigateButtons { NEXT, PREVIOUS }
@@ -26,6 +25,7 @@ sealed interface ExamAction {
     data class OnSelectActiveWord(val wordIndex: Int) : ExamAction
     data class OnLongPressHiddenTranslate(val translateId: Long): ExamAction
     object CloseTheEndExamModal: ExamAction
+    object OnNavigateToCreateFirstWord: ExamAction
 }
 
 
@@ -51,5 +51,7 @@ data class ExamKnowledgeState(
     val isExamEnd: Boolean = false,
     val isModeDialogOpen: Boolean = false,
     val isExamEndDialogOpen: Boolean = false,
+
+    val shouldLoadWordListAgain: Boolean = false, // needed for update list when list is empty and user press "create first word", create one and go back
 )
 

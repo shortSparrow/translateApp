@@ -85,21 +85,6 @@ fun ExamList(
                     }
                 }
 
-//                if (i == examWordList.size - 1 && isAllExamWordsLoaded) {
-//
-//                } else {
-//                    dots.map {
-//                        Text(
-//                            text = ".",
-//                            fontSize=20.sp,
-//                            style = TextStyle(
-//                                baselineShift= BaselineShift(0.5f)
-//                            ),
-//                            modifier = Modifier.padding(horizontal = 1.dp)
-//                        )
-//                    }
-//                }
-
                 if (i != examWordList.size - 1 || !isAllExamWordsLoaded) {
                     dots.map {
                         Text(

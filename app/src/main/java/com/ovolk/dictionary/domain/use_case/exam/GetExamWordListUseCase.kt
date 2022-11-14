@@ -43,11 +43,7 @@ class GetExamWordListUseCase @Inject constructor(
         coroutineScope {
             isLoadingNextPage = true
             if (isInitialLoad) {
-                when (mode) {
-                    DAILY_MODE -> totalCount = EXAM_WORD_LIST_COUNT
-                    INFINITY_MODE -> loadTotalCount(listId)
-                }
-
+                loadTotalCount(listId, mode)
                 getExamWordListCurrentPage = 0
             }
             val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
@@ -93,12 +89,17 @@ class GetExamWordListUseCase @Inject constructor(
                 .apply { isLoadingNextPage = false }
         }
 
-    private fun loadTotalCount(listId: Long?) {
+    private fun loadTotalCount(listId: Long?, mode: ExamMode) {
         CoroutineScope(Dispatchers.IO).launch {
-            totalCount = if (listId == null) {
+            val tempTotalCount = if (listId == null) {
                 repository.getExamWordListSize()
             } else {
                 repository.getExamWordListSizeForOneList(listId)
+            }
+
+            totalCount = when(mode) {
+                DAILY_MODE -> minOf(tempTotalCount, EXAM_WORD_LIST_COUNT)
+                INFINITY_MODE -> tempTotalCount
             }
         }
     }
