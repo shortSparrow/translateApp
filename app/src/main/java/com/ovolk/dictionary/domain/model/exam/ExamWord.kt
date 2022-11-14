@@ -8,15 +8,16 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 class ExamWord(
     val id: Long,
     val value: String,
-    var translates: List<Translate>, // TODO make mutable
     val hints: List<HintItem>,
+    val langTo: String,
+    var answerVariants: MutableList<ExamAnswerVariant>,
+    initialTranslates: List<Translate>,
     initialPriority: Int,
     initialStatus: ExamWordStatus = ExamWordStatus.UNPROCESSED,
-    var answerVariants: MutableList<ExamAnswerVariant>,
-    val isShowVariantsAvailable: Boolean = false, // needed fro disabling "show variants" feature for unavailable languages (for now except UA)
 ) {
     var status by mutableStateOf(initialStatus)
     var givenAnswer by mutableStateOf("")
     var priority by mutableStateOf(initialPriority)
+    var translates by mutableStateOf<List<Translate>>(initialTranslates)
 }
 

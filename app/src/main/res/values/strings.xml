@@ -70,8 +70,11 @@
     <string name="exam_show_variants_unavailable">Show variants currently is unavailable for this language</string>
     <string name="exam_add_hidden_translate">add hidden translate</string>
     <string name="exam_hidden_translate_description_title">*What is this hidden translate?</string>
+    <string name="exam_daily_mode">Daily mode</string>
+    <string name="exam_infinity_mode">Infinity mode</string>
     <string name="exam_next_word_button_cd">Next word</string>
     <string name="exam_prev_word_button_cd">Previous word</string>
+    <string name="exam_select_exam_daily_mode_cd">Select daily exam mode button</string>
 
     <!-- Settings fragment -->
     <string name="settings_language_item_title">language</string>

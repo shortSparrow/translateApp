@@ -40,11 +40,14 @@ fun VariantsAndHints(
                 if (isHintsExpanded) stringResource(id = R.string.exam_hide_hints) else stringResource(
                     id = R.string.exam_show_hints
                 )
-            OutlinedButton(onClick = { onAction(ExamAction.ToggleShowVariants) }) {
-                Text(
-                    text = variantsText.uppercase(),
-                    color = colorResource(id = R.color.blue)
-                )
+
+            if (answerVariants.isNotEmpty()) {
+                OutlinedButton(onClick = { onAction(ExamAction.ToggleShowVariants) }) {
+                    Text(
+                        text = variantsText.uppercase(),
+                        color = colorResource(id = R.color.blue)
+                    )
+                }
             }
 
             if (hints.isNotEmpty()) {
@@ -57,8 +60,9 @@ fun VariantsAndHints(
             }
         }
 
-        // TODO show only if language is available
-        Variants(answerVariants = answerVariants, onAction = onAction)
+        if (isVariantsExpanded && answerVariants.isNotEmpty()) {
+            Variants(answerVariants = answerVariants, onAction = onAction)
+        }
 
         if (isHintsExpanded && hints.isNotEmpty()) {
             Hints(hints = hints)

@@ -19,7 +19,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
-import com.ovolk.dictionary.util.compose.click_effects.withoutEffectClick
+import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -64,7 +64,7 @@ fun RecordAudioWrapper(
                 contentDescription = stringResource(id = R.string.modify_word_change_record_cd),
                 modifier = Modifier
                     .size(60.dp)
-                    .withoutEffectClick { onAction(RecordAudioAction.OpenBottomSheet) }
+                    .clickWithoutFeedback { onAction(RecordAudioAction.OpenBottomSheet) }
             )
             Text(
                 text = stringResource(id = R.string.audio_has_been_added),
@@ -77,7 +77,7 @@ fun RecordAudioWrapper(
                 tint = colorResource(id = R.color.blue),
                 modifier = Modifier
                     .size(50.dp)
-                    .withoutEffectClick { onAction(RecordAudioAction.OpenBottomSheet) },
+                    .clickWithoutFeedback { onAction(RecordAudioAction.OpenBottomSheet) },
                 )
         }
     }
@@ -91,7 +91,7 @@ fun RecordAudioWrapper(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .withoutEffectClick { closeModal() },
+                    .clickWithoutFeedback { closeModal() },
             ) {
                 BottomSheetScaffold(
                     backgroundColor = Color.Transparent,

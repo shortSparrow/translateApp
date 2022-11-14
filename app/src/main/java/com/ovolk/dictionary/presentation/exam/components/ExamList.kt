@@ -28,7 +28,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.*
 import com.ovolk.dictionary.presentation.exam.ExamAction
-import com.ovolk.dictionary.util.compose.click_effects.withoutEffectClick
+import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewExamListAllStatus
 import kotlinx.coroutines.launch
 
@@ -78,16 +78,29 @@ fun ExamList(
                                     UNPROCESSED -> colorResource(id = R.color.grey)
                                 }
                             )
-                            .withoutEffectClick { onAction(ExamAction.OnSelectActiveWord(i)) },
+                            .clickWithoutFeedback { onAction(ExamAction.OnSelectActiveWord(i)) },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = i.toString())
+                        Text(text = (i + 1).toString())
                     }
                 }
 
-                if (i == examWordList.size - 1 && isAllExamWordsLoaded) {
+//                if (i == examWordList.size - 1 && isAllExamWordsLoaded) {
+//
+//                } else {
+//                    dots.map {
+//                        Text(
+//                            text = ".",
+//                            fontSize=20.sp,
+//                            style = TextStyle(
+//                                baselineShift= BaselineShift(0.5f)
+//                            ),
+//                            modifier = Modifier.padding(horizontal = 1.dp)
+//                        )
+//                    }
+//                }
 
-                } else {
+                if (i != examWordList.size - 1 || !isAllExamWordsLoaded) {
                     dots.map {
                         Text(
                             text = ".",

@@ -4,11 +4,14 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
+import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
+import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
@@ -16,6 +19,8 @@ import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,7 +42,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         loadWordsList(null, null)
 //        viewModelScope.async {
 //            var wordCount = 1
-//            while (wordCount < 10_000) {
+//            while (wordCount < 10) {
 //                val word = ModifyWord(
 //                    value = wordCount.toString(),
 //                    translates = listOf(
@@ -110,7 +115,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
             is ExamAction.OnSelectVariant -> {
                 composeState = composeState.copy(answerValue = action.variant.value)
-                // TODO mayve do it locally in compose
+                // TODO maybe do it locally in compose
                 getCurrentWord().answerVariants.forEach {
                     it.isSelected = it.id == action.variant.id
                 }
@@ -137,12 +142,16 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 if (!composeState.isAllExamWordsLoaded) {
                     viewModelScope.launch {
                         val response =
-                            getExamWordListUseCase.loadNextPage(composeState.listId)
+                            getExamWordListUseCase.loadNextPage(
+                                composeState.listId,
+                                mode = composeState.mode
+                            )
                                 ?: return@launch
                         val newList = composeState.examWordList.plus(response.examWordList)
                         composeState = composeState.copy(
                             examWordList = newList,
-                            isAllExamWordsLoaded = response.isReachEnd
+                            isAllExamWordsLoaded = response.totalCount == newList.size,
+                            examListTotalCount = response.totalCount
                         )
                     }
                 }
@@ -157,6 +166,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     composeState.copy(isTranslateExpanded = !composeState.isTranslateExpanded)
             }
             ExamAction.OnPressAddHiddenTranslate -> addHiddenTranslate()
+            is ExamAction.OnLongPressHiddenTranslate -> toggleIsHiddenTranslate(action.translateId)
+            ExamAction.CloseTheEndExamModal -> composeState = composeState.copy(isExamEnd = false)
         }
     }
 
@@ -165,15 +176,18 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         viewModelScope.launch {
             val response = getExamWordListUseCase(
                 isInitialLoad = true,
-                listId = listId
+                listId = listId,
+                mode = composeState.mode
             )
             val list: List<ExamWord> = response.examWordList
             list[0].status = ExamWordStatus.IN_PROCESS
 
             composeState = ExamKnowledgeState(
+                mode = composeState.mode,
                 examWordList = list,
-                isAllExamWordsLoaded = response.isReachEnd,
-                isLoading = false
+                isAllExamWordsLoaded = response.totalCount == list.size,
+                examListTotalCount = response.totalCount,
+                isLoading = false,
             )
         }
     }
@@ -201,41 +215,31 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 translates = listOf(hiddenTranslate),
                 priority = currentWord.priority.minus(1),
             ).apply {
-                currentWord.translates = currentWord.translates.plus(hiddenTranslate.copy(id = this.first()))
+                currentWord.translates =
+                    currentWord.translates.plus(hiddenTranslate.copy(id = this.first()))
                 currentWord.status = ExamWordStatus.SUCCESS
+                composeState = composeState.copy(answerValue = "")
             }
         }
 
     }
 
 
-//    fun toggleIsHiddenTranslate(item: Translate) {
-//        state.currentWord?.let { currentWord ->
-//            if (!currentWord.isFreeze) return // forbidden add/modify word translates if user don't answer yet
-//
-//            val updatedTranslate = item.copy(isHidden = !item.isHidden)
-//            val translates =
-//                currentWord.translates.map { if (it.id == item.id) return@map updatedTranslate else return@map it }
-//
-//            val updatedList = state.examWordList.map {
-//                if (it.id == currentWord.id) return@map it.copy(translates = translates) else return@map it
-//            }
-//
-//            state = state.copy(
-//                currentWord = currentWord.copy(translates = translates),
-//                examWordList = updatedList
-//            )
-//            _uiState.value =
-//                ExamKnowledgeUiState.UpdateHiddenTranslates(translates = translates)
-//
-//            viewModelScope.launch {
-//                modifyWordUseCase.modifyTranslates(
-//                    wordId = currentWord.id,
-//                    translates = listOf(updatedTranslate)
-//                )
-//            }
-//        }
-//    }
+    private fun toggleIsHiddenTranslate(translateId: Long) {
+        val currentWord = getCurrentWord()
+
+        currentWord.translates = currentWord.translates.map {
+            if (it.id == translateId) it.copy(isHidden = !it.isHidden)
+            else it
+        }
+
+        viewModelScope.launch {
+            modifyWordUseCase.modifyTranslates(
+                wordId = currentWord.id,
+                translates = currentWord.translates
+            )
+        }
+    }
 
     private fun checkAnswer(answer: String) {
         val answerQuery = answer.lowercase()
@@ -264,10 +268,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
         val isExamEnd =
             composeState.examWordList.none { word -> word.status == ExamWordStatus.UNPROCESSED || word.status == ExamWordStatus.IN_PROCESS }
-
-        composeState = composeState.copy(
-            isExamEnd = isExamEnd,
-        )
+        composeState = composeState.copy(isExamEnd = isExamEnd)
     }
 
     private fun handleNavigation(newActiveWordPosition: Int) {

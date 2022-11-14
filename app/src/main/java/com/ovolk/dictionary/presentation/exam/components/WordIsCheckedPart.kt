@@ -1,5 +1,8 @@
 package com.ovolk.dictionary.presentation.exam.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +11,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -21,6 +25,7 @@ import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WordIsCheckedPart(
     status: ExamWordStatus,
@@ -66,7 +71,19 @@ fun WordIsCheckedPart(
             if (isTranslateExpanded) {
                 FlowRow {
                     translates.forEach { translate ->
-                        Box(modifier = Modifier.padding(dimensionResource(id = R.dimen.small_gutter))) {
+                        Box(
+                            modifier =
+                            Modifier
+                                .padding(dimensionResource(id = R.dimen.small_gutter))
+                                .combinedClickable(
+                                    onLongClick = {
+                                        onAction(ExamAction.OnLongPressHiddenTranslate(translate.id))
+                                    },
+                                    onClick = { },
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                )
+                        ) {
                             TranslateChipItem(
                                 title = translate.value,
                                 isHidden = translate.isHidden

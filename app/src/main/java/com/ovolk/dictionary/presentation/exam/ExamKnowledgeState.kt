@@ -3,6 +3,7 @@ package com.ovolk.dictionary.presentation.exam
 import androidx.compose.runtime.Stable
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
+import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 
 
 enum class NavigateButtons { NEXT, PREVIOUS }
@@ -23,6 +24,8 @@ sealed interface ExamAction {
     object OnPressAddHiddenTranslate : ExamAction
     object OnLoadNextPageWords : ExamAction
     data class OnSelectActiveWord(val wordIndex: Int) : ExamAction
+    data class OnLongPressHiddenTranslate(val translateId: Long): ExamAction
+    object CloseTheEndExamModal: ExamAction
 }
 
 
@@ -31,6 +34,7 @@ data class ExamKnowledgeState(
     val isLoading: Boolean = false,
     var examWordList: List<ExamWord> = emptyList(),
     val isAllExamWordsLoaded: Boolean = false,
+    val examListTotalCount: Int = 0,
     val answerValue: String = "",
     val activeWordPosition: Int = 0,
     val mode: ExamMode = ExamMode.DAILY_MODE,
