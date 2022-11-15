@@ -48,8 +48,7 @@ class ModifyWordUseCase @Inject constructor(
         async {
             val oldWord = repository.getWordById(id)
             val word = oldWord.copy(sound = sound)
-            // must rewrite all word, because on replace only word deleted translations and hints
-            repository.modifyWord(word, mapper)
+            repository.modifyWordInfo(mapper.modifyWordToWordInfoDb(word))
         }
     }.await()
 

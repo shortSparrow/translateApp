@@ -1,124 +1,120 @@
 package com.ovolk.dictionary.presentation.modify_word
 
-import androidx.compose.runtime.Stable
+import android.view.View
 import com.ovolk.dictionary.domain.SimpleError
+import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
 
+sealed interface ModifyWordUiState {
+    data class IsWordLoading(
+        val isLoading: Boolean
+    ) : ModifyWordUiState
+
+    data class EditFieldError(
+        val wordValueError: String? = null,
+        val translatesError: String? = null,
+        val priorityValidation: String? = null,
+        val hintWordError: String? = null,
+    ) : ModifyWordUiState
+
+    data class PreScreen(
+        val wordValue: String,
+        val transcription: String,
+        val priority: Int,
+        val description: String,
+        val translates: List<Translate>,
+        val editableTranslate: Translate? = null,
+        val hints: List<HintItem>,
+        val editableHint: HintItem? = null,
+        val langFrom: String?,
+        val soundFileName: String?,
+        val isAdditionalFieldVisible: Int,
+        val wordValueError: String? = null,
+        val translatesError: String? = null,
+        val screenIsRestored: Boolean? = false,
+        val isDeleteModalOpen: Boolean = false,
+        val hintWordError: String? = null,
+    ) : ModifyWordUiState
+
+    data class ShowAdditionalFields(val isVisible: Int) : ModifyWordUiState
+    data class ShowResultModify(val isSuccess: Boolean) : ModifyWordUiState
+
+    data class StartModifyTranslate(val value: String) : ModifyWordUiState
+    data class CompleteModifyTranslate(val translates: List<Translate>) : ModifyWordUiState
+
+    data class StartModifyHint(val value: String) : ModifyWordUiState
+    data class CompleteModifyHint(val hints: List<HintItem>) : ModifyWordUiState
+
+    data class DeleteTranslates(val translates: List<Translate>) : ModifyWordUiState
+    data class DeleteHints(val hints: List<HintItem>) : ModifyWordUiState
+
+    data class UpdateSoundFile(val name: String?) : ModifyWordUiState
+    data class ToggleOpenedDeleteModel(val isOpened: Boolean) : ModifyWordUiState
+}
+
+
+data class ModifyWordState(
+    val wordValue: String = "",
+    val transcription: String = "",
+    val description: String = "",
+    val translates: List<Translate> = emptyList(),
+    val hints: List<HintItem> = emptyList(),
+    val editableHint: HintItem? = null,
+    val editableTranslate: Translate? = null,
+    val langFrom: String? = null,
+    val langTo: String? = null,
+    val selectableLanguage: String? = null,
+    val soundFileName: String? = null,
+    val priority: Int = ModifyWord.DEFAULT_PRIORITY,
+    val translatesError: String? = null,
+    val wordValueError: String? = null,
+    val hintWordError: String? = null,
+    val priorityValidation: String? = null,
+    val isAdditionalFieldVisible: Int = View.GONE,
+    val savedWordResult: Boolean = false,
+    val editableWordId: Long? = null,
+    val createdAt: Long? = null,
+    val isDeleteModalOpen: Boolean = false,
+    val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD
+)
 
 data class AddNewLangModal(
     val isOpen: Boolean = false,
     val type: LanguagesType? = null
 )
 
-@Stable
-data class Translates(
-    val translates: List<Translate> = emptyList(),
-    val translationWord: String = "",
-    val error: ValidateResult = ValidateResult(),
-    val editableTranslate: Translate? = null,
-)
-
-@Stable
-data class Hints(
-    val hints: List<HintItem> = emptyList(),
-    val hintWord: String = "",
-    val error: ValidateResult = ValidateResult(),
-    val editableHint: HintItem? = null
-)
-
-@Stable
-data class Languages(
-    val languageFromList: List<SelectLanguage> = emptyList(),
-    val languageToList: List<SelectLanguage> = emptyList(),
-    val selectLanguageFromError: ValidateResult = ValidateResult(),
-    val selectLanguageToError: ValidateResult = ValidateResult(),
-    val addNewLangModal: AddNewLangModal = AddNewLangModal(),
-)
-
 data class ComposeState(
-    val englishWord: String = "",
-    val englishWordError: ValidateResult = ValidateResult(),
-    val transcriptionWord: String = "",
-    val descriptionWord: String = "",
-    val soundFileName: String? = null,
-    val priorityValue: String = DEFAULT_PRIORITY_VALUE.toString(),
-    val priorityError: ValidateResult = ValidateResult(),
-
     val wordListInfo: ModifyWordListItem? = null,
-    @Stable
     val wordLists: List<ModifyWordListItem> = emptyList(),
-    val isAdditionalFieldVisible: Boolean = false,
     val modalError: SimpleError = SimpleError(
         isError = false,
         text = ""
     ),
     val isOpenSelectModal: Boolean = false,
     val isOpenAddNewListModal: Boolean = false,
-    val editableWordId: Long? = null,
-    val createdAt: Long? = null, // TODO подумати, може при завантаженні слова записати його кудись і потім звертатися
-    val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD,
-    val isOpenDeleteWordModal: Boolean = false,
+
+    val languageFromList: List<SelectLanguage> = emptyList(),
+    val languageToList: List<SelectLanguage> = emptyList(),
+
+    val selectLanguageFromError: ValidateResult = ValidateResult(),
+    val selectLanguageToError: ValidateResult = ValidateResult(),
+
+    val addNewLangModal: AddNewLangModal = AddNewLangModal(),
 )
 
-data class RecordAudioState(
-    val isModalOpen: Boolean = false,
-    val isRecording: Boolean = false,
-    val isTempRecordExist: Boolean = false,
-    val isRecordExist: Boolean = false,
-    val isRecordPlaying: Boolean = false,
-    val existingRecordDuration: Int = 0,
-)
-
-sealed interface RecordAudioAction {
-    object StartRecording : RecordAudioAction
-    object StopRecording : RecordAudioAction
-    object ListenRecord : RecordAudioAction
-    object SaveRecord : RecordAudioAction
-    object DeleteRecord : RecordAudioAction
-    object HideBottomSheet : RecordAudioAction
-    object OpenBottomSheet : RecordAudioAction
-}
-
-sealed interface ModifyWordAction {
-    object ResetModalError : ModifyWordAction
-    data class HandleAddNewListModal(val isOpen: Boolean) : ModifyWordAction
-    data class HandleSelectModal(val isOpen: Boolean) : ModifyWordAction
+sealed class ModifyWordAction {
+    object ResetModalError : ModifyWordAction()
+    data class HandleAddNewListModal(val isOpen: Boolean) : ModifyWordAction()
+    data class HandleSelectModal(val isOpen: Boolean) : ModifyWordAction()
     data class OnSelectLanguage(val type: LanguagesType, val language: SelectLanguage) :
-        ModifyWordAction
+        ModifyWordAction()
 
-    data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction
-    object CloseAddNewLanguageModal : ModifyWordAction
-    data class OnChangeEnglishWord(val value: String) : ModifyWordAction
-    data class OnChangeEnglishTranscription(val value: String) : ModifyWordAction
-    data class OnChangeDescription(val value: String) : ModifyWordAction
-    data class OnChangePriority(val value: String) : ModifyWordAction
-    data class AddNewList(val title: String) : ModifyWordAction
-    data class OnSelectList(val listId: Long) : ModifyWordAction
-    object ToggleVisibleAdditionalPart : ModifyWordAction
-    object OnPressSaveWord : ModifyWordAction
-    object ToggleDeleteModalOpen : ModifyWordAction
-    object DeleteWord : ModifyWordAction
-}
-
-sealed interface ModifyWordHintsAction {
-    object CancelEditHint : ModifyWordHintsAction
-    object OnPressAddHint : ModifyWordHintsAction
-    data class OnChangeHint(val value: String) : ModifyWordHintsAction
-    data class OnPressEditHint(val hint: HintItem) : ModifyWordHintsAction
-    data class OnDeleteHint(val hintLocalId: Long) : ModifyWordHintsAction
-}
-
-sealed interface ModifyWordTranslatesAction {
-    object CancelEditTranslate : ModifyWordTranslatesAction
-    object OnPressAddTranslate : ModifyWordTranslatesAction
-    data class OnChangeTranslate(val value: String) : ModifyWordTranslatesAction
-    data class OnPressEditTranslate(val translate: Translate) : ModifyWordTranslatesAction
-    data class OnPressDeleteTranslate(val translateLocalId: Long) : ModifyWordTranslatesAction
-    data class OnLongPressTranslate(val translateLocalId: Long) : ModifyWordTranslatesAction
+    data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction()
+    object CloseAddNewLanguageModal : ModifyWordAction()
 }

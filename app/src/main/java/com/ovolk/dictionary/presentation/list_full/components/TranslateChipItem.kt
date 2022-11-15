@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.core.compose.chip
+package com.ovolk.dictionary.presentation.list_full.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column

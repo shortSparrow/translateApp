@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose.alerts
+package com.ovolk.dictionary.presentation.modify_word.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -85,7 +85,6 @@ fun AddNewLangBottomSheet(
                 },
                 sheetPeekHeight = 0.dp
             ) {
-                // TODO change on Coulmn and make slide
                 Box {
                 }
             }

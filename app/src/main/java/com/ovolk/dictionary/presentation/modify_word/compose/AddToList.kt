@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose.alerts
+package com.ovolk.dictionary.presentation.modify_word.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -20,11 +20,12 @@ import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
-import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
 
 @Composable
 fun AddToList(
     state: ComposeState,
+    addNewList: (title: String) -> Unit,
+    onSelectList: (id: Long) -> Unit,
     onAction: (ModifyWordAction) -> Unit,
 ) {
     var newListName by remember {
@@ -59,7 +60,7 @@ fun AddToList(
                     }
                     OutlinedButton(
                         onClick = {
-                            onAction(ModifyWordAction.AddNewList(newListName))
+                            addNewList(newListName)
                             newListName = ""
                         },
                         Modifier
@@ -78,7 +79,7 @@ fun AddToList(
         DialogSelectList(
             list = state.wordLists,
             onDismissRequest = { onAction(ModifyWordAction.HandleSelectModal(false)) },
-            onItemsPress = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
+            onItemsPress = { id: Long -> onSelectList(id) },
             onAddNewItemPress = { onAction(ModifyWordAction.HandleAddNewListModal(true)) }
         )
     }
@@ -126,6 +127,8 @@ fun ComposablePreviewAddToList() {
             ),
             wordLists = emptyList(),
         ),
+        addNewList = {},
+        onSelectList = {},
         onAction = {}
     )
 }
@@ -138,6 +141,8 @@ fun ComposablePreviewAddToList2() {
             wordListInfo = null,
             wordLists = emptyList()
         ),
+        addNewList = {},
+        onSelectList = {},
         onAction = {}
     )
 }
@@ -156,6 +161,8 @@ fun ComposablePreviewAddToList3() {
             isOpenAddNewListModal = true,
             isOpenSelectModal = false,
         ),
+        addNewList = {},
+        onSelectList = {},
         onAction = {}
     )
 }
@@ -174,6 +181,8 @@ fun ComposablePreviewAddToList4() {
             isOpenAddNewListModal = false,
             isOpenSelectModal = true,
         ),
+        addNewList = {},
+        onSelectList = {},
         onAction = {}
     )
 }

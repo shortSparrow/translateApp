@@ -36,6 +36,8 @@ class ListsFullViewModel @Inject constructor(
     private val player = MediaPlayer()
     var listener: Listener? = null
 
+    var initialMount = false
+
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 

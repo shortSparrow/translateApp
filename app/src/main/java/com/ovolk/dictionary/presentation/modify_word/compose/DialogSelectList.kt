@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose.alerts
+package com.ovolk.dictionary.presentation.modify_word.compose
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
-import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
