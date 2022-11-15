@@ -3,11 +3,12 @@ package com.ovolk.dictionary.presentation.modify_word
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -21,15 +22,18 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.compose.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.compose.header.Header
-import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.*
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldEnglishWord
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldPriority
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldTranscription
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewHints
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)

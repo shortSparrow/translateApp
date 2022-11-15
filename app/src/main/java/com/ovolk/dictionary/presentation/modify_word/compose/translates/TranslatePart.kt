@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
-import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
 import com.ovolk.dictionary.presentation.modify_word.Translates
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 
 @Composable
 fun TranslatePart(translateState: Translates, onAction: (ModifyWordTranslatesAction) -> Unit) {

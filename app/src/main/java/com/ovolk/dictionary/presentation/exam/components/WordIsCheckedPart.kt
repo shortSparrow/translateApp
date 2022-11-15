@@ -23,7 +23,7 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.chip.TranslateChipItem
 import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.exam.ExamAction
-import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -30,7 +30,7 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.SearchBar
 import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
 import com.ovolk.dictionary.presentation.list_full.components.Header
-import com.ovolk.dictionary.presentation.list_full.components.WordItem
+import com.ovolk.dictionary.presentation.core.compose.word_item.WordItem
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
@@ -92,7 +92,7 @@ fun ListFullScreen(
             }
 
             if (state.loadingStatusWordList == LoadingState.SUCCESS) {
-                Box(Modifier.padding(horizontal = 20.dp)) {
+                Box(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
                     SearchBar(
                         onSearch = { query -> onAction(ListFullAction.SearchWord(query)) },
                         onPressCross = { onAction(ListFullAction.SearchWord("")) })
@@ -135,7 +135,21 @@ fun ListFullScreen(
                             contentPadding = PaddingValues(bottom = 70.dp)
                         ) {
                             items(state.wordList) { word ->
-                                WordItem(word = word, onAction = onAction)
+                                WordItem(
+                                    word = word,
+                                    onWordClick = { wordId ->
+                                        onAction(ListFullAction.PressOnWord(wordId = wordId))
+                                    },
+                                    onPlayAudioClick = { onStartListener, wordItem, onCompletionListener ->
+                                        onAction(
+                                            ListFullAction.PlayAudio(
+                                                onStartListener = onStartListener,
+                                                word = wordItem,
+                                                onCompletionListener = onCompletionListener
+                                            )
+                                        )
+                                    }
+                                )
                             }
                         }
                     }

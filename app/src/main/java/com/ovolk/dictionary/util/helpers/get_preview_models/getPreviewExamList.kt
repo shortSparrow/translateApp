@@ -3,7 +3,6 @@ package com.ovolk.dictionary.util.helpers.get_preview_models
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
-import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
 
 fun getPreviewExamListAllStatus() = listOf(
     ExamWord(

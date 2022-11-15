@@ -11,7 +11,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.dimensionResource
@@ -23,9 +22,8 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.chip.TranslateChipItem
 import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
-import com.ovolk.dictionary.presentation.list_full.components.getPreviewTranslates
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
