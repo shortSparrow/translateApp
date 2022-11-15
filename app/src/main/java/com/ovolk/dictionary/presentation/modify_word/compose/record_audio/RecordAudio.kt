@@ -24,7 +24,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
-import com.ovolk.dictionary.util.compose.click_effects.withoutEffectClick
+import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -79,7 +79,7 @@ fun RecordAudio(
         Modifier
             .fillMaxWidth()
             .height(300.dp)
-            .withoutEffectClick { },
+            .clickWithoutFeedback { },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(modifier = Modifier.padding(bottom = 30.dp, top = 20.dp), text = word)

@@ -47,14 +47,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
 
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
         return translatedWordDao.getExamWordList(count = count, skip = skip)
-            .map { word ->
-                mapper.wordFullDbToExamWord(
-                    word,
-                    isShowVariantsAvailable = getAvailableLangList().contains(
-                        word.wordInfo.langTo.uppercase()
-                    )
-                )
-            }
+            .map { word -> mapper.wordFullDbToExamWord( word ) }
     }
 
     override suspend fun getExamWordListFromOneList(
@@ -68,13 +61,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             skip = skip,
             listId = listId
         )
-            .map { word ->
-                mapper.wordFullDbToExamWord(
-                    word, isShowVariantsAvailable = getAvailableLangList().contains(
-                        word.wordInfo.langTo
-                    )
-                )
-            }
+            .map { word -> mapper.wordFullDbToExamWord(word) }
     }
 
     override suspend fun getExamWordListSize(): Int {

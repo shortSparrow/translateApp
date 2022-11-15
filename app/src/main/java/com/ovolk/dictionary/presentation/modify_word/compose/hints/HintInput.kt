@@ -16,12 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
-import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.presentation.core.compose.text_field.MaxErrorLines
 import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.modify_word.Hints
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewHints
 
 @Composable
 fun HintInput(
@@ -73,29 +72,6 @@ fun HintInput(
 }
 
 
-fun getPreviewHints(): List<HintItem> = listOf(
-    HintItem(
-        id = 0L,
-        localId = 0L,
-        createdAt = System.currentTimeMillis(),
-        updatedAt = System.currentTimeMillis(),
-        value = "a fruit",
-    ),
-    HintItem(
-        id = 1L,
-        localId = 1L,
-        createdAt = System.currentTimeMillis(),
-        updatedAt = System.currentTimeMillis(),
-        value = "has red color",
-    ),
-    HintItem(
-        id = 2L,
-        localId = 2L,
-        createdAt = System.currentTimeMillis(),
-        updatedAt = System.currentTimeMillis(),
-        value = "many people like it",
-    )
-)
 
 @Preview(showBackground = true)
 @Composable

@@ -49,7 +49,6 @@
 
 
 
-
     <!-- Exam -->
     <string name="exam_counter_toolbar_title_daily_mode">Daily exam</string>
     <string name="exam_counter_toolbar_title_infinity_mode">Infinity exam</string>
@@ -58,7 +57,7 @@
     <string name="exam_hide_hints">hide hints</string>
     <string name="exam_show_variants">show variants</string>
     <string name="exam_hide_variants">hide variants</string>
-    <string name="exam_your_answer">Your answer:</string>
+    <string name="exam_your_answer">Your answer: %s</string>
     <string name="exam_correct_answer">Great, your answer is correct :)</string>
     <string name="exam_hidden_translate_description">If you think answer is correct you can add this word like "hidden translate". Hidden translate this is special translates which does not visible on main page list, but taken into account on exam.\n\nHidden translates has different background color. You can change hidden status by long tab on translate</string>
     <string name="exam_show_current_translates">show current translates</string>
@@ -69,6 +68,13 @@
     <string name="exam_complete_infinity_exam">Congratulations, you complete infinity exam</string>
     <string name="exam_list_name">(%s)</string>
     <string name="exam_show_variants_unavailable">Show variants currently is unavailable for this language</string>
+    <string name="exam_add_hidden_translate">add hidden translate</string>
+    <string name="exam_hidden_translate_description_title">*What is this hidden translate?</string>
+    <string name="exam_daily_mode">Daily mode</string>
+    <string name="exam_infinity_mode">Infinity mode</string>
+    <string name="exam_next_word_button_cd">Next word</string>
+    <string name="exam_prev_word_button_cd">Previous word</string>
+    <string name="exam_select_exam_daily_mode_cd">Select daily exam mode button</string>
 
     <!-- Settings fragment -->
     <string name="settings_language_item_title">language</string>
