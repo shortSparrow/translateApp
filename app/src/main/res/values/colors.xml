@@ -10,7 +10,9 @@
 
     <color name="white_opacity_80">#CCFFFFFF</color>
 
+    <color name="yellow">#FFEB3B</color>
     <color name="green">#8BC34A</color>
+    <color name="green_2">#59B6A4</color>
     <color name="blue">#2196F3</color>
     <color name="blue_3">#2196F3</color>
     <color name="blue_2">#56CCF2</color>

@@ -11,7 +11,6 @@ class GetListsUseCase @Inject constructor(
     suspend fun getAllLists(): Flow<List<ListItem>> = repository.getAllLists()
     suspend fun getAllListsForModifyWord(): Flow<List<ModifyWordListItem>> =
         repository.getAllListsForModifyWord()
-
     suspend fun getListById(id: Long): ModifyWordListItem? = repository.getListById(id)
     suspend fun searchWordListByListId(listId: Long, query: String) =
         repository.searchWordListByListId(listId = listId, query = query)

@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose
+package com.ovolk.dictionary.presentation.modify_word.compose.lists
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

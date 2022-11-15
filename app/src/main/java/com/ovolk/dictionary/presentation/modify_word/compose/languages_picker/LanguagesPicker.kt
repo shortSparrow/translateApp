@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose
+package com.ovolk.dictionary.presentation.modify_word.compose.languages_picker
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -12,18 +12,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.modify_word.ComposeState
+import com.ovolk.dictionary.presentation.modify_word.Languages
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddNewLangBottomSheet
 
 @Composable
 fun LanguagesPicker(
-    state: ComposeState,
+    state: Languages,
     onAction: (ModifyWordAction) -> Unit,
 ) {
-
     if (state.addNewLangModal.isOpen) {
         AddNewLangBottomSheet(state = state.addNewLangModal, onAction = onAction)
     }
@@ -31,6 +30,7 @@ fun LanguagesPicker(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Row(
             modifier = Modifier
                 .width(selectLanguagePickerWidth * 2 + (40 + 20).dp)
@@ -58,8 +58,6 @@ fun LanguagesPicker(
                 .width(selectLanguagePickerWidth * 2 + (40 + 20).dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-
-
             SelectLanguagePicker(
                 state.languageFromList,
                 onSelect = { lang ->
@@ -97,29 +95,56 @@ fun LanguagesPicker(
                 error = state.selectLanguageToError,
                 onAddNewLangPress = { onAction(ModifyWordAction.PressAddNewLanguage(LanguagesType.LANG_TO)) }
             )
-
         }
     }
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 fun LanguagesPickerPreview() {
     LanguagesPicker(
-        state = ComposeState(
-            wordListInfo = ModifyWordListItem(
-                title = "My List",
-                count = 10,
-                id = 1L
-            ),
-            wordLists = emptyList(),
-            isOpenAddNewListModal = true,
-            isOpenSelectModal = false,
+        state = Languages(
             languageFromList = listOf(
-                SelectLanguage(langCode = "EN", name = "English", nativeName = "English")
+                SelectLanguage(
+                    langCode = "EN",
+                    name = "English",
+                    nativeName = "English",
+                    isChecked = true
+                )
             ),
             languageToList = listOf(
-                SelectLanguage(langCode = "UA", name = "ukrainian", nativeName = "Українська")
+                SelectLanguage(
+                    langCode = "UA",
+                    name = "ukrainian",
+                    nativeName = "Українська",
+                    isChecked = true
+                )
+            )
+        ),
+        onAction = {}
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun LanguagesPickerPreview2() {
+    LanguagesPicker(
+        state = Languages(
+            languageFromList = listOf(
+                SelectLanguage(
+                    langCode = "EN",
+                    name = "English",
+                    nativeName = "English",
+                    isChecked = false
+                )
+            ),
+            languageToList = listOf(
+                SelectLanguage(
+                    langCode = "UA",
+                    name = "ukrainian",
+                    nativeName = "Українська",
+                    isChecked = false
+                )
             )
         ),
         onAction = {}
