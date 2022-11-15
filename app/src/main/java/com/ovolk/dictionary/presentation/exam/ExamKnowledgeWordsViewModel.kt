@@ -43,7 +43,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 //        loadWordsList(null, null)
 //        viewModelScope.async {
 //            var wordCount = 1
-//            while (wordCount < 10) {
+//            while (wordCount < 10_000) {
 //                val word = ModifyWord(
 //                    value = wordCount.toString(),
 //                    translates = listOf(
@@ -298,6 +298,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     private fun handleNavigation(newActiveWordPosition: Int) {
         val oldActivePosition = composeState.activeWordPosition
+        if (oldActivePosition == newActiveWordPosition) return
+
         composeState.examWordList[newActiveWordPosition].let {
             if (it.status != ExamWordStatus.SUCCESS && it.status !== ExamWordStatus.FAIL) {
                 it.status = ExamWordStatus.IN_PROCESS

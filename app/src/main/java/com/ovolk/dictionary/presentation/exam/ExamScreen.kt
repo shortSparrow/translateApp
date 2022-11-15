@@ -1,26 +1,22 @@
 package com.ovolk.dictionary.presentation.exam
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.presentation.core.compose.dialog.InfoDialog
@@ -40,7 +36,9 @@ fun ExamScreen(
     args: ExamKnowledgeWordsFragmentArgs,
     onAction: (ExamAction) -> Unit
 ) {
-    // TODO add UI on loading
+    val listNameText = if (args.listName?.isNotEmpty() == true) {
+        stringResource(id = R.string.exam_list_name, args.listName!!)
+    } else ""
 
     LaunchedEffect(args) {
         onAction(ExamAction.LoadExamList(listId = args.listId, listName = args.listName))
@@ -61,13 +59,22 @@ fun ExamScreen(
         )
     }
 
+    if (state.isLoading) {
+        Column(
+            modifier = Modifier.fillMaxSize(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(color = colorResource(id = R.color.blue))
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(bottom = 10.dp)
     ) {
-
         Header(
             title = stringResource(id = R.string.exam_counter_toolbar_title_daily_mode),
             firstRightIcon = {
@@ -82,6 +89,11 @@ fun ExamScreen(
             onFirstRightIconClick = { onAction(ExamAction.ToggleSelectModeModal(true)) },
             withBackButton = false
         )
+        Text(
+            text = listNameText,
+            modifier = Modifier.fillMaxWidth(1f),
+            textAlign = TextAlign.Center
+        )
 
         val currentWord = state.examWordList.getOrNull(state.activeWordPosition)
         currentWord?.let {
@@ -94,7 +106,7 @@ fun ExamScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.medium_gutter))
+                    .padding(top = dimensionResource(id = R.dimen.gutter))
             ) {
                 Text(
                     text = stringResource(
@@ -181,6 +193,7 @@ fun ExamScreenPreview2() {
         state = ExamKnowledgeState(
             examWordList = emptyList(),
             isAllExamWordsLoaded = true,
+            isLoading = false
         ),
         args = ExamKnowledgeWordsFragmentArgs(),
         onAction = {}

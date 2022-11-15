@@ -2,10 +2,7 @@ package com.ovolk.dictionary.presentation.exam.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -18,6 +15,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.BaselineShift
@@ -30,9 +29,11 @@ import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.*
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewExamListAllStatus
+import com.ovolk.dictionary.util.px
 import kotlinx.coroutines.launch
 
 val dots = listOf(1, 2, 3, 4, 5, 6, 7)
+const val circleSize = + 30 + 10 + 6 // 30 - size round; 10 - padding; 6 - internal text padding
 
 @Composable
 fun ExamList(
@@ -43,10 +44,14 @@ fun ExamList(
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val configuration = LocalConfiguration.current
 
     LaunchedEffect(activeWordPosition) {
         coroutineScope.launch {
-            listState.animateScrollToItem(activeWordPosition)
+            listState.animateScrollToItem(
+                activeWordPosition,
+                -configuration.screenWidthDp.px / 2 + circleSize
+            )
         }
     }
 
@@ -68,7 +73,7 @@ fun ExamList(
                     Box(
                         modifier = Modifier
                             .padding(5.dp)
-                            .size(30.dp)
+                            .sizeIn(30.dp, 30.dp)
                             .clip(CircleShape)
                             .background(
                                 when (word.status) {
@@ -81,7 +86,7 @@ fun ExamList(
                             .clickWithoutFeedback { onAction(ExamAction.OnSelectActiveWord(i)) },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = (i + 1).toString())
+                        Text(text = (i + 1).toString(), modifier = Modifier.padding(3.dp))
                     }
                 }
 
@@ -89,9 +94,9 @@ fun ExamList(
                     dots.map {
                         Text(
                             text = ".",
-                            fontSize=20.sp,
+                            fontSize = 20.sp,
                             style = TextStyle(
-                                baselineShift= BaselineShift(0.5f)
+                                baselineShift = BaselineShift(0.5f)
                             ),
                             modifier = Modifier.padding(horizontal = 1.dp)
                         )
@@ -111,24 +116,3 @@ fun ExamListPreview() {
         onAction = {}
     )
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun ExamListPreview2() {
-//    ExamList(
-//        examWordList = getPreviewExamListAllStatus().mapIndexed { i, item ->
-//            if (i == 0) {
-//                item.status = UNPROCESSED
-//            }
-//            if (i == 1) {
-//                item.status = IN_PROCESS
-//                item
-//            }
-//            item
-//        },
-//        isAllExamWordsLoaded = true,
-//        activeWordPosition = 1,
-//        onAction = {}
-//    )
-//}
-
