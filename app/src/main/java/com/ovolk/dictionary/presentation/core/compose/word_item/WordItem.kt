@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.list_full.components
+package com.ovolk.dictionary.presentation.core.compose.word_item
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,11 +27,17 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.chip.TranslateChipItem
 import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.list_full.ListFullAction
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 
 @Composable
 fun WordItem(
     word: WordRV,
-    onAction: (ListFullAction) -> Unit
+    onWordClick: (wordId: Long) -> Unit,
+    onPlayAudioClick: (
+        onStartListener: () -> Unit,
+        word: WordRV,
+        onCompletionListener: () -> Unit,
+    ) -> Unit
 ) {
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -50,12 +56,11 @@ fun WordItem(
     val showMoreLess =
         if (isExpanded) stringResource(id = R.string.show_less) else stringResource(id = R.string.show_more)
 
-
     Column {
         Card(
             modifier = Modifier
                 .padding(16.dp)
-                .clickable { onAction(ListFullAction.PressOnWord(wordId = word.id)) },
+                .clickable { onWordClick(word.id) },
             elevation = 3.dp,
 
             ) {
@@ -99,11 +104,10 @@ fun WordItem(
                                         .fillMaxSize()
                                         .padding(top = dimensionResource(id = R.dimen.small_gutter))
                                         .clickable {
-                                            onAction(
-                                                ListFullAction.PlayAudio(
-                                                    onStartListener = { isAudioPlay = true },
-                                                    word = word,
-                                                    onCompletionListener = { isAudioPlay = false })
+                                            onPlayAudioClick(
+                                                { isAudioPlay = true },
+                                                word,
+                                                { isAudioPlay = false }
                                             )
                                         }
                                 )
@@ -163,57 +167,12 @@ fun WordItem(
 }
 
 
-fun getPreviewTranslates() = listOf(
-    Translate(
-        id = 1L,
-        localId = 1L,
-        createdAt = 13313131L,
-        updatedAt = 13343131L,
-        value = "Єдиноріг",
-        isHidden = false
-    ),
-    Translate(
-        id = 2L,
-        localId = 2L,
-        createdAt = 23313131L,
-        updatedAt = 23343131L,
-        value = "Коняка",
-        isHidden = true
-    ),
-
-    Translate(
-        id = 2L,
-        localId = 2L,
-        createdAt = 23313131L,
-        updatedAt = 23343131L,
-        value = "Коняка",
-        isHidden = true
-    ),
-    Translate(
-        id = 2L,
-        localId = 2L,
-        createdAt = 23313131L,
-        updatedAt = 23343131L,
-        value = "Коняка",
-        isHidden = true
-    ),
-
-    Translate(
-        id = 1L,
-        localId = 1L,
-        createdAt = 13313131L,
-        updatedAt = 13343131L,
-        value = "Єдиноріг",
-        isHidden = false
-    ),
-)
-
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewListFullScreen1() {
-
     WordItem(
-        onAction = {},
+        onWordClick = {},
+        onPlayAudioClick = { start, word, end -> {} },
         word = WordRV(
             id = 1L,
             langFrom = "EN",
@@ -231,7 +190,8 @@ fun PreviewListFullScreen1() {
 @Composable
 fun PreviewListFullScreen2() {
     WordItem(
-        onAction = {},
+        onWordClick = {},
+        onPlayAudioClick = { start, word, end -> {} },
         word = WordRV(
             id = 1L,
             langFrom = "EN",

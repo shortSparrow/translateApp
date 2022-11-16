@@ -6,7 +6,6 @@ import com.ovolk.dictionary.data.database.ListsDao
 import com.ovolk.dictionary.data.database.TranslatedWordDao
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
 import com.ovolk.dictionary.data.in_memory_storage.LocalCache
-import com.ovolk.dictionary.presentation.word_list.adapter.WordListAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,10 +38,5 @@ object AppModule {
     @Singleton
     fun providesInMemoryStorage(): InMemoryStorage = LocalCache()
 
-    @Provides
-    @Singleton
-    fun providesWordListAdapter(context: Application): WordListAdapter {
-        return WordListAdapter(context)
-    }
 }
 
