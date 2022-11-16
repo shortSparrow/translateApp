@@ -21,9 +21,12 @@ import com.ovolk.dictionary.R
 
 @Composable
 fun SearchBar(
-    onSearch: (query:String) -> Unit,
+    onSearch: (query: String) -> Unit,
     onPressCross: () -> Unit,
+    searchedValue: String? = null
 ) {
+    // TODO remove uncontrollable if. Use only controllable
+    val isControlled = searchedValue != null
     var text by remember {
         mutableStateOf("")
     }
@@ -37,7 +40,7 @@ fun SearchBar(
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = text,
+                value = searchedValue ?: text,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     cursorColor = Color.Black,
@@ -46,15 +49,19 @@ fun SearchBar(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 onValueChange = {
-                    text = it
+                    if (!isControlled) {
+                        text = it
+                    }
                     onSearch(it)
                 },
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
                 trailingIcon = {
-                    if (text.isNotEmpty()) {
+                    if ((!isControlled && text.isNotEmpty()) || (isControlled && searchedValue?.isNotEmpty() == true)) {
                         IconButton(onClick = {
-                            text = ""
+                            if (!isControlled) {
+                                text = ""
+                            }
                             onPressCross()
                         }) {
                             Icon(
