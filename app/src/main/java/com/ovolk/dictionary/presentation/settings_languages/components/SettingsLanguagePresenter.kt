@@ -39,16 +39,6 @@ fun SettingsLanguagePresenter(
         )
     }
 
-    // on focus load lang
-    OnLifecycleEvent { _, event ->
-        when (event) {
-            Lifecycle.Event.ON_RESUME -> {
-                onAction(SettingsLanguagesAction.OnFocusScreen)
-            }
-            else -> {}
-        }
-    }
-
     Column {
         Header(
             title = stringResource(id = R.string.settings_languages_title),
