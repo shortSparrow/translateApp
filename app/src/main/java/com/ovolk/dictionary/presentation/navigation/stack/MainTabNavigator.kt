@@ -23,7 +23,8 @@ import com.ovolk.dictionary.presentation.navigation.graph.MainTabNavGraph
 @Composable
 fun MainTabNavigator(navController: NavHostController = rememberNavController()) {
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController) },
+
     ) { innerPadding ->
         MainTabNavGraph(navController = navController, modifier = Modifier.padding(innerPadding))
     }

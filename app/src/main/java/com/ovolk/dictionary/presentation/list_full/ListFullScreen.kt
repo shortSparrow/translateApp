@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.presentation.list_full.components.ListFullPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
@@ -13,10 +14,6 @@ import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 fun ListFullScreen(navController: NavHostController, listId: Long, listName: String) {
 
     fun listener() = object : ListsFullViewModel.Listener {
-        override fun goBack() {
-            navController.popBackStack()
-        }
-
         override fun navigateToExam(listId: Long, listName: String) {
             navController.navigate("${MainTabRotes.EXAM}?listName=${listName}&listId=${listId}")
         }
@@ -26,8 +23,6 @@ fun ListFullScreen(navController: NavHostController, listId: Long, listName: Str
         }
 
         override fun navigateToAddWord(listId: Long) {
-            // here
-//            navController.navigate("${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
             navController.navigate("${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
         }
     }
@@ -37,12 +32,11 @@ fun ListFullScreen(navController: NavHostController, listId: Long, listName: Str
         viewModel.listener = listener()
         viewModel.onAction(ListFullAction.InitialLoadData(listId = listId, listName = listName))
     }
-
     val state = viewModel.state
 
-    AppCompatTheme {
-        ListFullPresenter(state = state, onAction = viewModel::onAction)
-    }
-
+    ListFullPresenter(
+        state = state,
+        onAction = viewModel::onAction,
+        goBack = { navController.popBackStack() })
 
 }

@@ -22,10 +22,8 @@ fun ListsScreen(navController: NavHostController) {
         }
     }
 
-    AppCompatTheme {
-        ListsPresenter(
-            state = state,
-            onAction = viewModel::onAction,
-        )
-    }
+    ListsPresenter(
+        state = state,
+        onAction = viewModel::onAction,
+    )
 }

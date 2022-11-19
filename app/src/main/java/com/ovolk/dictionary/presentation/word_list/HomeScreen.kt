@@ -5,6 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
+import com.ovolk.dictionary.presentation.word_list.components.WordList
 
 @Composable
 fun HomeScreen(navController: NavHostController) {

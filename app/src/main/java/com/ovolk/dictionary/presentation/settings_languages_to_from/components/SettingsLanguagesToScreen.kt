@@ -1,16 +1,17 @@
-package com.ovolk.dictionary.presentation.settings_languages_to_from
+package com.ovolk.dictionary.presentation.settings_languages_to_from.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.compose.header.Header
-import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToFromPresenter
+import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromViewModel
 
 @Composable
-fun SettingsLanguagesToScreen() {
+fun SettingsLanguagesToScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<SettingsLanguagesToFromViewModel>()
     viewModel.setCurrentType(LanguagesType.LANG_TO)
     val state = viewModel.state
@@ -18,12 +19,12 @@ fun SettingsLanguagesToScreen() {
     Column {
         Header(
             title = stringResource(id = R.string.settings_languages_to_title),
-            withBackButton = true
+            withBackButton = true,
+            onBackButtonClick = { navController.popBackStack() }
         )
         SettingsLanguagesToFromPresenter(
             state = state,
-            onAction = viewModel::onAction
+            onAction = viewModel::onAction,
         )
     }
-
 }

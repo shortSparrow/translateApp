@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.exam
+package com.ovolk.dictionary.presentation.exam.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -20,10 +20,8 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.presentation.core.compose.dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.compose.header.Header
-import com.ovolk.dictionary.presentation.exam.components.ExamList
-import com.ovolk.dictionary.presentation.exam.components.InputWord
-import com.ovolk.dictionary.presentation.exam.components.NavigationPart
-import com.ovolk.dictionary.presentation.exam.components.WordIsCheckedPart
+import com.ovolk.dictionary.presentation.exam.ExamAction
+import com.ovolk.dictionary.presentation.exam.ExamKnowledgeState
 import com.ovolk.dictionary.presentation.exam.components.empty_exam.EmptyExam
 import com.ovolk.dictionary.presentation.exam.components.modal.SelectExamMode
 import com.ovolk.dictionary.presentation.exam.components.variants_and_hints.VariantsAndHints

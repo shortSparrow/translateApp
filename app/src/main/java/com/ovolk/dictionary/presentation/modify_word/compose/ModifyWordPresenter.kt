@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word
+package com.ovolk.dictionary.presentation.modify_word.compose
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.compose.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.compose.header.Header
+import com.ovolk.dictionary.presentation.modify_word.*
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
@@ -95,6 +96,7 @@ fun ModifyWordPresenter(
             Header(
                 title = headerTitle,
                 withBackButton = true,
+                onBackButtonClick = { onAction(ModifyWordAction.GoBack) },
                 firstRightIcon = firstRightIcon,
                 onFirstRightIconClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) },
             )
@@ -183,6 +185,6 @@ fun ModifyWordScreenPreview() {
         onRecordAction = {},
         onAction = {},
         onHintAction = {},
-        onTranslateAction = {}
+        onTranslateAction = {},
     )
 }

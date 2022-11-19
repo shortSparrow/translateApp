@@ -31,5 +31,8 @@ fun SettingsLanguagesScreen(navController: NavHostController) {
         viewModel.listener = listener()
     }
 
-    SettingsLanguagePresenter(state = state, onAction = viewModel::onAction)
+    SettingsLanguagePresenter(
+        state = state,
+        onAction = viewModel::onAction,
+        onBack = { navController.popBackStack() })
 }

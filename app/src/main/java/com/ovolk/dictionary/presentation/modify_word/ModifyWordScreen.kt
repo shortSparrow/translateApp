@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.modify_word.compose.ModifyWordPresenter
 
 @Composable
 fun ModifyWordScreen(navController: NavHostController) {
@@ -33,6 +34,10 @@ fun ModifyWordScreen(navController: NavHostController) {
                 DictionaryApp.applicationContext()
                     .getString(R.string.modify_word_saved_word_success)
             )
+            navController.popBackStack()
+        }
+
+        override fun goBack() {
             navController.popBackStack()
         }
     }

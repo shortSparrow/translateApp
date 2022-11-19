@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.list_full
+package com.ovolk.dictionary.presentation.list_full.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,15 +30,19 @@ import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.core.compose.SearchBar
 import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
-import com.ovolk.dictionary.presentation.list_full.components.Header
+import com.ovolk.dictionary.presentation.core.compose.header.Header
 import com.ovolk.dictionary.presentation.core.compose.word_item.WordItem
+import com.ovolk.dictionary.presentation.list_full.ListFullAction
+import com.ovolk.dictionary.presentation.list_full.ListFullState
+import com.ovolk.dictionary.presentation.list_full.LoadingState
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListFullPresenter(
     state: ListFullState,
-    onAction: (ListFullAction) -> Unit
+    onAction: (ListFullAction) -> Unit,
+    goBack: () -> Unit,
 ) {
 //    val activity = LocalContext.current.getActivity<MainActivity>()
 //    if (state.wordList.isEmpty() && !state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
@@ -57,7 +62,22 @@ fun ListFullPresenter(
         }
     ) {
         Column {
-            Header(onAction = onAction, listName = state.listName)
+            Header(
+                title = state.listName,
+                withBackButton = true,
+                onBackButtonClick = goBack,
+                firstRightIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.exam),
+                        stringResource(id = R.string.lists_screen_cd_rename_selected_list),
+                        tint = colorResource(R.color.grey),
+                        modifier = Modifier
+                            .width(24.dp)
+                            .height(24.dp)
+                    )
+                },
+                onFirstRightIconClick = { onAction(ListFullAction.TakeExam) }
+            )
 
             if (state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
                 LazyColumn(
@@ -246,6 +266,7 @@ fun PreviewListFullScreen() {
             ),
             loadingStatusWordList = LoadingState.SUCCESS
         ),
+        goBack={}
     )
 }
 
@@ -258,6 +279,7 @@ fun PreviewListFullScreenEmpty() {
             wordList = emptyList(),
             noAnyWords = true,
         ),
+        goBack={}
     )
 }
 
@@ -271,5 +293,6 @@ fun PreviewListFullScreenNoMath() {
             noAnyWords = false,
             loadingStatusWordList = LoadingState.SUCCESS
         ),
+        goBack={}
     )
 }

@@ -25,7 +25,11 @@ import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminder
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
 
 @Composable
-fun ExamReminderPresenter(state: SettingsReminderExamState, onAction: (OnExamReminderAction) -> Unit) {
+fun ExamReminderPresenter(
+    state: SettingsReminderExamState,
+    onAction: (OnExamReminderAction) -> Unit,
+    goBack: () -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val paddingVertical = dimensionResource(id = R.dimen.small_gutter)
     val timePickerDialog = TimePickerDialog(
@@ -36,7 +40,11 @@ fun ExamReminderPresenter(state: SettingsReminderExamState, onAction: (OnExamRem
     )
 
     Column {
-        Header(title = stringResource(id = R.string.settings_exam_reminder_screen_title), withBackButton = true)
+        Header(
+            title = stringResource(id = R.string.settings_exam_reminder_screen_title),
+            withBackButton = true,
+            onBackButtonClick = goBack
+        )
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
             Column(
                 modifier = Modifier
@@ -133,6 +141,7 @@ fun ExamReminderPresenterPreview() {
             leftTimeToNextExam = "22:00",
             reminderTime = "10:00"
         ),
-        onAction = {}
+        onAction = {},
+        goBack={}
     )
 }

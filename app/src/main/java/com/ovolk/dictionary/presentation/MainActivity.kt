@@ -2,14 +2,18 @@ package com.ovolk.dictionary.presentation
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
@@ -56,6 +60,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+//    companion object {
+//        private var myNavController: NavHostController? = null
+//
+//        fun getNavHostController(): NavHostController {
+//            return myNavController!!
+//        }
+//    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)

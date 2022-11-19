@@ -34,13 +34,13 @@ fun SelectLanguagesToFrom(
     title: String,
     state: LanguageToFromState,
     onAction: (LanguagesToFromActions) -> Unit,
-    navController: NavHostController
+    goBack: () -> Unit,
 ) {
     Column {
         Header(
             title = title,
             withBackButton = state.headerWithBackButton,
-            navController = navController,
+            onBackButtonClick = goBack,
             titleHorizontalOffset = if (state.headerWithBackButton) OneButtonOffset else ZeroButtonOffset
         )
 
@@ -146,7 +146,7 @@ fun SelectLanguagesToFromPreview() {
                 ),
             )
         ),
-        navController = rememberNavController(),
+        goBack = {},
         onAction = {}
     )
 }

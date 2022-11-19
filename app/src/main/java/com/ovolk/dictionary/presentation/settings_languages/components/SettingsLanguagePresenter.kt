@@ -26,7 +26,8 @@ import com.ovolk.dictionary.util.compose.OnLifecycleEvent
 @Composable
 fun SettingsLanguagePresenter(
     state: SettingsLanguagesState,
-    onAction: (SettingsLanguagesAction) -> Unit
+    onAction: (SettingsLanguagesAction) -> Unit,
+    onBack: () -> Unit
 ) {
     val padding = Modifier.padding(
         horizontal = 4.dp
@@ -49,7 +50,11 @@ fun SettingsLanguagePresenter(
     }
 
     Column {
-        Header(title = stringResource(id = R.string.settings_languages_title), withBackButton = true)
+        Header(
+            title = stringResource(id = R.string.settings_languages_title),
+            withBackButton = true,
+            onBackButtonClick = onBack
+        )
         Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
 
             Divider(modifier = Modifier.padding(vertical = 10.dp))
@@ -125,6 +130,7 @@ fun SettingsLanguageScreenPreview() {
                 Language(langCode = "EN", name = "English", nativeName = "English"),
             ),
         ),
-        onAction = {}
+        onAction = {},
+        onBack = {}
     )
 }

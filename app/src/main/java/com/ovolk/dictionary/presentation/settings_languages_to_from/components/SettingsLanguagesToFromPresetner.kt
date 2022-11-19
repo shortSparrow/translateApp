@@ -21,7 +21,7 @@ import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLang
 @Composable
 fun SettingsLanguagesToFromPresenter(
     state: SettingsLanguagesToFromState,
-    onAction: (SettingsLanguagesToFromActions) -> Unit
+    onAction: (SettingsLanguagesToFromActions) -> Unit,
 ) {
     Column {
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
@@ -123,6 +123,6 @@ fun SettingsLanguagesToScreenPreview() {
 
                 )
         ),
-        onAction = {}
+        onAction = {},
     )
 }

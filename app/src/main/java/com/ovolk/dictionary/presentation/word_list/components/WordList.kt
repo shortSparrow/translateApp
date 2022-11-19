@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.word_list
+package com.ovolk.dictionary.presentation.word_list.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +16,8 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.compose.SearchBar
 import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
 import com.ovolk.dictionary.presentation.core.compose.word_item.WordItem
-import com.ovolk.dictionary.presentation.word_list.components.EmptyDictionary
-import com.ovolk.dictionary.presentation.word_list.components.NothingFound
+import com.ovolk.dictionary.presentation.word_list.WordListAction
+import com.ovolk.dictionary.presentation.word_list.WordListState
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewWordList
 
 

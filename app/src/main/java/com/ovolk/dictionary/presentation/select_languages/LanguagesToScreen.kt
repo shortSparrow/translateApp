@@ -30,6 +30,6 @@ fun LanguagesToScreen(navController: NavHostController) {
         title = stringResource(id = R.string.select_languages_translate_language_to),
         state = state,
         onAction = viewModel::onAction,
-        navController=navController,
+        goBack = { navController.popBackStack() },
     )
 }

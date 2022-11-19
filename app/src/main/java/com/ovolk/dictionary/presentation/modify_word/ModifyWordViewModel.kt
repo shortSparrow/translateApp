@@ -213,6 +213,10 @@ class ModifyWordViewModel @Inject constructor(
                     }
                 }
             }
+            ModifyWordAction.GoBack -> {
+                // TODO add validation
+                listener?.goBack()
+            }
         }
     }
 
@@ -426,5 +430,6 @@ class ModifyWordViewModel @Inject constructor(
     interface Listener {
         fun onDeleteWord()
         fun onSaveWord()
+        fun goBack()
     }
 }

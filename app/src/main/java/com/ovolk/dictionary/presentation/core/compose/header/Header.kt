@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.presentation.MainActivity
 
 val ZeroButtonOffset = 0.dp
 val OneButtonOffset = 45.dp
@@ -66,10 +67,8 @@ fun Header(
     onFirstRightIconClick: (() -> Unit)? = null,
     secondRightIcon: (@Composable () -> Unit)? = null,
     onSecondRightIconClick: (() -> Unit)? = null,
-    navController: NavHostController? = null,
-    titleHorizontalOffset:Dp = 90.dp
+    titleHorizontalOffset:Dp = OneButtonOffset
 ) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -79,7 +78,7 @@ fun Header(
     ) {
         Box(modifier = Modifier.width(titleHorizontalOffset)) {
             if (withBackButton) {
-                BackButton(onClick = { onBackButtonClick ?: navController!!.popBackStack() })
+                BackButton(onClick = onBackButtonClick!!)
             }
         }
 
@@ -92,7 +91,6 @@ fun Header(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-
 
         Row(modifier = Modifier.width(titleHorizontalOffset), horizontalArrangement = Arrangement.End) {
             if (firstRightIcon != null && onFirstRightIconClick != null) {
@@ -117,7 +115,6 @@ fun HeaderPreview() {
         title = "Language to translate from",
         withBackButton = true,
         onBackButtonClick = {},
-        navController = rememberNavController(),
         titleHorizontalOffset = 45.dp
     )
 }
@@ -140,7 +137,6 @@ fun HeaderPreview2() {
             )
         },
         onFirstRightIconClick = {},
-        navController = rememberNavController()
     )
 }
 
@@ -173,6 +169,5 @@ fun HeaderPreview3() {
             )
         },
         onSecondRightIconClick = {},
-        navController = rememberNavController()
     )
 }

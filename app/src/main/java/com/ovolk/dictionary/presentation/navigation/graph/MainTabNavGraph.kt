@@ -14,13 +14,15 @@ import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
 import com.ovolk.dictionary.presentation.settings.SettingsScreen
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesScreen
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromScreen
-import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToScreen
+import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.presentation.word_list.HomeScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 
+
 @Composable
 fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
+
     NavHost(
         navController = navController,
         route = Graph.MAIN_TAB_BAR,
@@ -157,13 +159,13 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
         }
 
         composable(route = CommonScreen.SettingsLanguagesFrom.route) {
-            SettingsLanguagesFromScreen()
+            SettingsLanguagesFromScreen(navController=navController)
         }
         composable(route = CommonScreen.SettingsLanguagesTo.route) {
-            SettingsLanguagesToScreen()
+            SettingsLanguagesToScreen(navController=navController)
         }
         composable(route = CommonScreen.ExamReminder.route) {
-            ExamReminderScreen()
+            ExamReminderScreen(navController=navController)
         }
     }
 }

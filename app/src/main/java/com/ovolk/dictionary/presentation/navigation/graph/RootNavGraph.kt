@@ -11,6 +11,7 @@ import com.ovolk.dictionary.presentation.navigation.stack.MainTabNavigator
 import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 
+
 @Composable
 fun RootNavigationGraph(navController: NavHostController) {
 
@@ -30,6 +31,7 @@ fun RootNavigationGraph(navController: NavHostController) {
     } else {
         Graph.SELECT_LANGUAGES
     }
+
 
     NavHost(
         navController = navController,

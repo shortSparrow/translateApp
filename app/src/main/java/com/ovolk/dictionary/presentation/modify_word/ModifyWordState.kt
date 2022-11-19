@@ -10,6 +10,7 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
 
+enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
 
 data class AddNewLangModal(
     val isOpen: Boolean = false,
@@ -104,6 +105,7 @@ sealed interface ModifyWordAction {
     object OnPressSaveWord : ModifyWordAction
     object ToggleDeleteModalOpen : ModifyWordAction
     object DeleteWord : ModifyWordAction
+    object GoBack : ModifyWordAction
 }
 
 sealed interface ModifyWordHintsAction {
