@@ -7,7 +7,7 @@ import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.databinding.FragmentExamReminderBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
-import com.ovolk.dictionary.presentation.settings_reminder_exam.components.ExamReminderScreen
+import com.ovolk.dictionary.presentation.settings_reminder_exam.components.ExamReminderPresenter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +25,7 @@ class ExamReminderFragment : BaseFragment<FragmentExamReminderBinding>() {
             val state = viewModel.state
 
             AppCompatTheme {
-                ExamReminderScreen(state, onAction=viewModel::onAction)
+                ExamReminderPresenter(state, onAction=viewModel::onAction)
             }
         }
     }

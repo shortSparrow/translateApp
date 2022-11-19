@@ -5,7 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.navigation.HomeRotes
+import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
 
 @Composable
 fun ExamScreen(navController: NavHostController, listName: String, listId: Long) {

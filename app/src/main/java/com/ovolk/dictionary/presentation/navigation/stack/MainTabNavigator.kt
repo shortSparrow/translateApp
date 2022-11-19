@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation
+package com.ovolk.dictionary.presentation.navigation.stack
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
@@ -17,8 +17,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.navigation.MainTabBottomBar
-import com.ovolk.dictionary.presentation.navigation.MainTabNavGraph
+import com.ovolk.dictionary.presentation.navigation.graph.MainTabBottomBar
+import com.ovolk.dictionary.presentation.navigation.graph.MainTabNavGraph
 
 @Composable
 fun MainTabNavigator(navController: NavHostController = rememberNavController()) {
@@ -49,6 +49,16 @@ fun BottomBar(navController: NavHostController) {
                 route = MainTabBottomBar.Exam,
                 text = stringResource(id = R.string.exam),
                 icon = painterResource(id = R.drawable.exam)
+            ),
+            BottomBarItem(
+                route = MainTabBottomBar.Lists,
+                text = stringResource(id = R.string.lists),
+                icon = painterResource(id = R.drawable.list)
+            ),
+            BottomBarItem(
+                route = MainTabBottomBar.Settings,
+                text = stringResource(id = R.string.settings),
+                icon = painterResource(id = R.drawable.settings)
             )
         )
         val navBackStackEntry by navController.currentBackStackEntryAsState()

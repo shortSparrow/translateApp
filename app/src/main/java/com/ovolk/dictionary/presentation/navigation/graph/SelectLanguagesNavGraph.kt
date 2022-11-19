@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.navigation
+package com.ovolk.dictionary.presentation.navigation.graph
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

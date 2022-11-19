@@ -1,14 +1,13 @@
-package com.ovolk.dictionary.presentation.navigation
+package com.ovolk.dictionary.presentation.navigation.graph
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ovolk.dictionary.presentation.DictionaryApp
-import com.ovolk.dictionary.presentation.MainTabNavigator
+import com.ovolk.dictionary.presentation.navigation.stack.MainTabNavigator
 import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 
@@ -49,4 +48,5 @@ object Graph {
     const val SELECT_LANGUAGES = "select_languages"
     const val MAIN_TAB_BAR = "main_tab_bar"
     const val HOME_TAB_NAVIGATOR = "home_tab_navigator"
+    const val COMMON = "common"
 }

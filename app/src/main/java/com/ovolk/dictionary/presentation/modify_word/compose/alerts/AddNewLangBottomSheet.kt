@@ -19,7 +19,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.modify_word.AddNewLangModal
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromViewModel
-import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
+import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToFromPresenter
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
@@ -76,7 +76,7 @@ fun AddNewLangBottomSheet(
 
 
                         Box(modifier = Modifier.padding(top = 25.dp)) {
-                            SettingsLanguagesToScreen(
+                            SettingsLanguagesToFromPresenter(
                                 state = languageState,
                                 onAction = viewModel::onAction
                             )

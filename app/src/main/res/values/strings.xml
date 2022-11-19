@@ -4,11 +4,10 @@
 
 
     <!--  Routes  -->
-    <string name="lang_from">lang from</string>
-    <string name="lang_to">lang to</string>
-    <string name="home">home</string>
-    <string name="exam">exam</string>
-    <string name="modify_word">ModifyWord</string>
+    <string name="home">Home</string>
+    <string name="exam">Exam</string>
+    <string name="lists">Lists</string>
+    <string name="settings">Settings</string>
 
     <!--WordList fragment -->
     <string name="word_list_empty_dictionary">You don\'t have any words</string>

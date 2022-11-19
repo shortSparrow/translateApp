@@ -12,7 +12,7 @@ import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
 import com.ovolk.dictionary.presentation.core.compose.header.Header
-import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
+import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToFromPresenter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,7 +36,7 @@ class SettingsLanguagesFromFragment : BaseFragment<FragmentSettingsLanguagesFrom
                         title = stringResource(id = R.string.settings_languages_from_title),
                         withBackButton = true
                     )
-                    SettingsLanguagesToScreen(state = state, onAction = viewModel::onAction)
+                    SettingsLanguagesToFromPresenter(state = state, onAction = viewModel::onAction)
                 }
             }
         }

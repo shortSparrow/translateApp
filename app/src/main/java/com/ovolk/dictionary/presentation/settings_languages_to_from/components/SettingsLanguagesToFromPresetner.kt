@@ -19,7 +19,7 @@ import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLang
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromState
 
 @Composable
-fun SettingsLanguagesToScreen(
+fun SettingsLanguagesToFromPresenter(
     state: SettingsLanguagesToFromState,
     onAction: (SettingsLanguagesToFromActions) -> Unit
 ) {
@@ -78,7 +78,7 @@ fun SettingsLanguagesToScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SettingsLanguagesToScreenPreview() {
-    SettingsLanguagesToScreen(
+    SettingsLanguagesToFromPresenter(
         state = SettingsLanguagesToFromState(
             filteredLanguageList = listOf(
                 Language(

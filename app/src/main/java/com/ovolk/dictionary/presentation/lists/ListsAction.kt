@@ -16,6 +16,5 @@ sealed class ListsAction {
     data class OnListItemPress(
         val listId: Long,
         val listName: String,
-        val navController: NavController
     ) : ListsAction()
 }

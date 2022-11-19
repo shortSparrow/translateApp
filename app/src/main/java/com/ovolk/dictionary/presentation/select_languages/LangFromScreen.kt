@@ -6,7 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.navigation.SelectLanguagesScreens
+import com.ovolk.dictionary.presentation.navigation.graph.SelectLanguagesScreens
 import com.ovolk.dictionary.presentation.select_languages.components.SelectLanguagesToFrom
 
 @Composable

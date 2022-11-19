@@ -9,7 +9,7 @@ import com.ovolk.dictionary.databinding.FragmentSettingsLanguagesBinding
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
-import com.ovolk.dictionary.presentation.settings_languages.components.SettingsLanguageScreen
+import com.ovolk.dictionary.presentation.settings_languages.components.SettingsLanguagePresenter
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -31,7 +31,7 @@ class SettingsLanguagesFragment : BaseFragment<FragmentSettingsLanguagesBinding>
             }
 
             AppCompatTheme {
-                SettingsLanguageScreen(state = state, onAction = viewModel::onAction)
+                SettingsLanguagePresenter(state = state, onAction = viewModel::onAction)
             }
         }
     }

@@ -24,7 +24,7 @@ import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesSta
 import com.ovolk.dictionary.util.compose.OnLifecycleEvent
 
 @Composable
-fun SettingsLanguageScreen(
+fun SettingsLanguagePresenter(
     state: SettingsLanguagesState,
     onAction: (SettingsLanguagesAction) -> Unit
 ) {
@@ -115,7 +115,7 @@ fun SettingsLanguageScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun SettingsLanguageScreenPreview() {
-    SettingsLanguageScreen(
+    SettingsLanguagePresenter(
         state = SettingsLanguagesState(
             languagesTo = listOf(
                 Language(langCode = "UA", name = "Ukrainian", nativeName = "Українська"),

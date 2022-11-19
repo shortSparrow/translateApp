@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.navigation
+package com.ovolk.dictionary.presentation.navigation.graph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,8 +7,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.ovolk.dictionary.presentation.exam.ExamScreen
+import com.ovolk.dictionary.presentation.list_full.ListFullScreen
+import com.ovolk.dictionary.presentation.lists.ListsScreen
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
+import com.ovolk.dictionary.presentation.settings.SettingsScreen
+import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesScreen
+import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromScreen
+import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToScreen
+import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.presentation.word_list.HomeScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 
@@ -33,6 +40,7 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
         ) {
             HomeScreen(navController)
         }
+
         composable(
             route = MainTabBottomBar.Exam.route,
             arguments = listOf(
@@ -52,14 +60,30 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
             ExamScreen(navController = navController, listName = listName, listId = listId)
         }
 
+        composable(route = MainTabBottomBar.Lists.route) {
+            ListsScreen(navController = navController)
+        }
+
+
+        composable(route = MainTabBottomBar.Lists.route) {
+            ListsScreen(navController = navController)
+        }
+        composable(route = MainTabBottomBar.Settings.route) {
+            SettingsScreen(navController = navController)
+        }
+
+
         homeNavGraph(navController)
+        commonNavGraph(navController)
     }
 }
 
-enum class MainTabRotes { EXAM, HOME }
+enum class MainTabRotes { EXAM, HOME, LISTS, SETTINGS }
 sealed class MainTabBottomBar(val route: String) {
     object Home : MainTabBottomBar("${MainTabRotes.HOME}?searchedWord={searchedWord}")
     object Exam : MainTabBottomBar("${MainTabRotes.EXAM}?listName={listName}&listId={listId}")
+    object Lists : MainTabBottomBar("${MainTabRotes.LISTS}")
+    object Settings : MainTabBottomBar("${MainTabRotes.SETTINGS}")
 }
 
 
@@ -102,3 +126,55 @@ sealed class HomeScreens(val route: String) {
     object ModifyWord :
         HomeScreens("${HomeRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}")
 }
+
+
+fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
+    navigation(
+        route = Graph.COMMON,
+        startDestination = CommonScreen.FullList.route,
+    ) {
+        composable(
+            route = CommonScreen.FullList.route,
+            arguments = listOf(
+                navArgument("listName") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("listId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            ),
+        ) { backStackEntry ->
+            val listName = backStackEntry.arguments?.getString("listName") ?: ""
+            val listId = backStackEntry.arguments?.getLong("listId") ?: -1L
+            ListFullScreen(navController = navController, listName = listName, listId = listId)
+        }
+
+        composable(route = CommonScreen.SettingsLanguages.route) {
+            SettingsLanguagesScreen(navController = navController)
+        }
+
+        composable(route = CommonScreen.SettingsLanguagesFrom.route) {
+            SettingsLanguagesFromScreen()
+        }
+        composable(route = CommonScreen.SettingsLanguagesTo.route) {
+            SettingsLanguagesToScreen()
+        }
+        composable(route = CommonScreen.ExamReminder.route) {
+            ExamReminderScreen()
+        }
+    }
+}
+
+enum class CommonRotes { FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LANGUAGES_FROM, SETTINGS_LANGUAGES_TO, EXAM_REMINDER }
+sealed class CommonScreen(val route: String) {
+    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}&listName={listName}")
+    object SettingsLanguages : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES}")
+    object SettingsLanguagesFrom : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_FROM}")
+    object SettingsLanguagesTo : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_TO}")
+    object ExamReminder : CommonScreen("${CommonRotes.EXAM_REMINDER}")
+}
+
+

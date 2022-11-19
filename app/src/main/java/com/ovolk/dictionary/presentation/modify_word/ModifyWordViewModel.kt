@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -359,9 +360,13 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun prefillListIdFromArgs(listId: Long) {
+
         viewModelScope.launch(Dispatchers.IO) {
             val res = getListsUseCase.getListById(listId)
-            composeState = composeState.copy(wordListInfo = res)
+
+            withContext(Dispatchers.Main) {
+                composeState = composeState.copy(wordListInfo = res)
+            }
         }
     }
 
@@ -378,31 +383,33 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun getWordById(id: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
             val langList = loadLanguages(langToCode = word.langTo, langFromCode = word.langFrom)
             val wordListInfo = word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
 
             word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
-            composeState = composeState.copy(
-                englishWord = word.value,
-                transcriptionWord = word.transcription,
-                descriptionWord = word.description,
-                soundFileName = word.sound?.fileName,
-                editableWordId = word.id,
-                createdAt = word.createdAt,
-                priorityValue = word.priority.toString(),
-                wordListInfo = wordListInfo,
-                modifyMode = ModifyWordModes.MODE_EDIT
-            )
+            withContext(Dispatchers.Main) {
+                composeState = composeState.copy(
+                    englishWord = word.value,
+                    transcriptionWord = word.transcription,
+                    descriptionWord = word.description,
+                    soundFileName = word.sound?.fileName,
+                    editableWordId = word.id,
+                    createdAt = word.createdAt,
+                    priorityValue = word.priority.toString(),
+                    wordListInfo = wordListInfo,
+                    modifyMode = ModifyWordModes.MODE_EDIT
+                )
 
-            translateState = translateState.copy(translates = word.translates)
-            hintState = hintState.copy(hints = word.hints)
+                translateState = translateState.copy(translates = word.translates)
+                hintState = hintState.copy(hints = word.hints)
 
-            languageState = languageState.copy(
-                languageToList = langList["languageTo"] ?: emptyList(),
-                languageFromList = langList["languageFrom"] ?: emptyList(),
-            )
+                languageState = languageState.copy(
+                    languageToList = langList["languageTo"] ?: emptyList(),
+                    languageFromList = langList["languageFrom"] ?: emptyList(),
+                )
+            }
         }
     }
 

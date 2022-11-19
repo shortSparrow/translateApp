@@ -32,7 +32,7 @@ class ListFullFragment :
             val state = viewModel.state
 
             AppCompatTheme {
-                ListFullScreen(state = state, onAction = viewModel::onAction)
+                ListFullPresenter(state = state, onAction = viewModel::onAction)
             }
         }
     }

@@ -14,9 +14,9 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.presentation.exam.ExamReminder
-import com.ovolk.dictionary.presentation.navigation.HomeRotes
-import com.ovolk.dictionary.presentation.navigation.MainTabRotes
-import com.ovolk.dictionary.presentation.navigation.RootNavigationGraph
+import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
+import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
+import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES

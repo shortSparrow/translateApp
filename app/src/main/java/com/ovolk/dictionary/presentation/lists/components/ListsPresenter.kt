@@ -29,10 +29,9 @@ import com.ovolk.dictionary.presentation.lists.ListsState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ListsScreen(
+fun ListsPresenter(
     state: ListsState,
     onAction: (ListsAction) -> Unit,
-    getNavController: () -> NavController
 ) {
     val selectedLists = state.list.groupBy { it.isSelected }[true]
     val atLeastOneListSelected = selectedLists != null
@@ -126,7 +125,6 @@ fun ListsScreen(
                                         ListsAction.OnListItemPress(
                                             listId,
                                             listName,
-                                            getNavController()
                                         )
                                     )
                                 },
@@ -144,20 +142,19 @@ fun ListsScreen(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewListsScreenPending() {
-    ListsScreen(
+    ListsPresenter(
         state = ListsState(
             list = listOf(),
             isLoadingList = LoadingState.PENDING
         ),
         onAction = {},
-        getNavController = { NavController(null as Context) }
     )
 }
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewListsScreenSuccess() {
-    ListsScreen(
+    ListsPresenter(
         state = ListsState(
             list = listOf(
                 com.ovolk.dictionary.domain.model.lists.ListItem(
@@ -180,19 +177,17 @@ fun PreviewListsScreenSuccess() {
             isLoadingList = LoadingState.SUCCESS
         ),
         onAction = {},
-        getNavController = { NavController(null as Context) }
     )
 }
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
 @Composable
 fun PreviewListsScreenEmpty() {
-    ListsScreen(
+    ListsPresenter(
         state = ListsState(
             list = listOf(),
             isLoadingList = LoadingState.SUCCESS
         ),
         onAction = {},
-        getNavController = { NavController(null as Context) }
     )
 }

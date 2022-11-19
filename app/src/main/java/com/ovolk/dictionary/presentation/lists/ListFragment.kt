@@ -9,7 +9,7 @@ import com.ovolk.dictionary.databinding.FragmentListBinding
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
 import com.google.accompanist.appcompattheme.AppCompatTheme
-import com.ovolk.dictionary.presentation.lists.components.ListsScreen
+import com.ovolk.dictionary.presentation.lists.components.ListsPresenter
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -31,10 +31,9 @@ class ListFragment :
             val state = viewModel.state
 
             AppCompatTheme {
-                ListsScreen(
+                ListsPresenter(
                     state = state,
                     onAction = viewModel::onAction,
-                    getNavController = { getNavController() }
                 )
             }
         }
