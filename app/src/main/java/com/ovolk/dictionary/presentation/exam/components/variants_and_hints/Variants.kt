@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
-import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
+import com.ovolk.dictionary.presentation.core.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewAnswerVariants
 

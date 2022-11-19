@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.compose.header.Header
+import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.settings_reminder_exam.OnExamReminderAction
 import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminderExamState
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH

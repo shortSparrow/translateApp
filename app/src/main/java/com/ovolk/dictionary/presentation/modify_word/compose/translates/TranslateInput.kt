@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
-import com.ovolk.dictionary.presentation.core.compose.text_field.MaxErrorLines
-import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
+import com.ovolk.dictionary.presentation.core.text_field.MaxErrorLines
+import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
 import com.ovolk.dictionary.presentation.modify_word.Translates
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates

@@ -1,6 +1,5 @@
 package com.ovolk.dictionary.presentation.lists.components
 
-import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,10 +18,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.compose.dialog.ConfirmDialog
-import com.ovolk.dictionary.presentation.core.compose.floating.AddButton
+import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.list_full.LoadingState
 import com.ovolk.dictionary.presentation.lists.ListsAction
 import com.ovolk.dictionary.presentation.lists.ListsState

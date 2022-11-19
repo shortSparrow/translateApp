@@ -12,6 +12,14 @@ import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 
 
+object Graph {
+    const val ROOT = "root_graph"
+    const val SELECT_LANGUAGES = "select_languages"
+    const val MAIN_TAB_BAR = "main_tab_bar"
+    const val HOME_TAB_NAVIGATOR = "home_tab_navigator"
+    const val COMMON = "common"
+}
+
 @Composable
 fun RootNavigationGraph(navController: NavHostController) {
 
@@ -43,12 +51,4 @@ fun RootNavigationGraph(navController: NavHostController) {
             MainTabNavigator()
         }
     }
-}
-
-object Graph {
-    const val ROOT = "root_graph"
-    const val SELECT_LANGUAGES = "select_languages"
-    const val MAIN_TAB_BAR = "main_tab_bar"
-    const val HOME_TAB_NAVIGATOR = "home_tab_navigator"
-    const val COMMON = "common"
 }

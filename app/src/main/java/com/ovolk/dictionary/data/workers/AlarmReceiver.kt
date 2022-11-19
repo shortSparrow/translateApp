@@ -33,31 +33,31 @@ class AlarmReceiver : BroadcastReceiver() {
             ) as NotificationManager
             createNotificationChannel(notificationManager)
 
-            val pendingIntent = NavDeepLinkBuilder(context)
-                .setComponentName(MainActivity::class.java)
-                .setGraph(R.navigation.app_navigation)
-                .setDestination(R.id.examKnowledgeWordsFragment)
-                .createPendingIntent()
+//            val pendingIntent = NavDeepLinkBuilder(context)
+//                .setComponentName(MainActivity::class.java)
+//                .setGraph(R.navigation.app_navigation)
+//                .setDestination(R.id.examKnowledgeWordsFragment)
+//                .createPendingIntent()
 
-            val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle(context.getString(R.string.reminder_push_exam_title))
-                .setContentText(context.getString(R.string.reminder_push_exam_description))
-                .setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(context.getString(R.string.reminder_push_exam_description))
-                )
-                .setSmallIcon(R.drawable.ic_notification_round)
-                .setColor(context.getColor(R.color.light_blue))
-                .setAutoCancel(true)
-                .setSound(soundUri)
-                .setVibrate(longArrayOf(0, 500, 100))
-                .setContentIntent(pendingIntent)
-                .build()
+//            val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+//                .setContentTitle(context.getString(R.string.reminder_push_exam_title))
+//                .setContentText(context.getString(R.string.reminder_push_exam_description))
+//                .setStyle(
+//                    NotificationCompat.BigTextStyle()
+//                        .bigText(context.getString(R.string.reminder_push_exam_description))
+//                )
+//                .setSmallIcon(R.drawable.ic_notification_round)
+//                .setColor(context.getColor(R.color.light_blue))
+//                .setAutoCancel(true)
+//                .setSound(soundUri)
+//                .setVibrate(longArrayOf(0, 500, 100))
+//                .setContentIntent(pendingIntent)
+//                .build()
+//
+//            notificationManager.notify(NOTIFICATION_ID, notification)
 
-            notificationManager.notify(NOTIFICATION_ID, notification)
-
-            // TODO maybe change on default repeat method
-            examReminder.repeatReminder()
+//            // TODO maybe change on default repeat method
+//            examReminder.repeatReminder()
         }
     }
 

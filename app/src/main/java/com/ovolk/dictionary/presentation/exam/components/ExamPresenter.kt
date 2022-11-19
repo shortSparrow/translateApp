@@ -18,8 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
-import com.ovolk.dictionary.presentation.core.compose.dialog.InfoDialog
-import com.ovolk.dictionary.presentation.core.compose.header.Header
+import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
+import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeState
 import com.ovolk.dictionary.presentation.exam.components.empty_exam.EmptyExam

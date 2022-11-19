@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.compose.text_field.OutlinedErrableTextField
+import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.exam.ExamAction
 
 @Composable

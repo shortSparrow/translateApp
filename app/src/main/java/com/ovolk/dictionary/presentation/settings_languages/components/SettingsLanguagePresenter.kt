@@ -14,14 +14,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.core.compose.header.Header
+import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesAction
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesState
-import com.ovolk.dictionary.util.compose.OnLifecycleEvent
 
 @Composable
 fun SettingsLanguagePresenter(
