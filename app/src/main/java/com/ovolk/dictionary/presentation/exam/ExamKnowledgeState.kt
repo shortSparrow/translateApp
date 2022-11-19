@@ -46,7 +46,7 @@ data class ExamKnowledgeState(
     val isHintsExpanded: Boolean = false,
 
     val listId: Long? = null, // when show words only from this list
-    val listName: String? = null,
+    val listName: String = "",
 
     // modal
     val isExamEnd: Boolean = false,

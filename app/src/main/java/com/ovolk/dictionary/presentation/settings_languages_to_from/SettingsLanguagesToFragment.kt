@@ -11,7 +11,7 @@ import com.ovolk.dictionary.databinding.FragmentSettingsLanguagesToBinding
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.BaseFragment
 import com.ovolk.dictionary.presentation.core.BindingInflater
-import com.ovolk.dictionary.presentation.select_languages.components.Header
+import com.ovolk.dictionary.presentation.core.compose.header.Header
 import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +34,7 @@ class SettingsLanguagesToFragment : BaseFragment<FragmentSettingsLanguagesToBind
                 Column {
                     Header(
                         title = stringResource(id = R.string.settings_languages_to_title),
-                        wiBackButton = true
+                        withBackButton = true
                     )
                     SettingsLanguagesToScreen(
                         state = state,

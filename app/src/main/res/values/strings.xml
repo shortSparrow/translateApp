@@ -3,6 +3,13 @@
     <!-- cd - content description  -->
 
 
+    <!--  Routes  -->
+    <string name="lang_from">lang from</string>
+    <string name="lang_to">lang to</string>
+    <string name="home">home</string>
+    <string name="exam">exam</string>
+    <string name="modify_word">ModifyWord</string>
+
     <!--WordList fragment -->
     <string name="word_list_empty_dictionary">You don\'t have any words</string>
     <string name="word_list_add_first_word">Add first word</string>
@@ -46,7 +53,6 @@
     <string name="modify_word_record_cd">Recording button</string>
     <string name="modify_word_add_new_record_cd">Add bew record button</string>
     <string name="modify_word_change_record_cd">Change current record button</string>
-
 
 
     <!-- Exam -->

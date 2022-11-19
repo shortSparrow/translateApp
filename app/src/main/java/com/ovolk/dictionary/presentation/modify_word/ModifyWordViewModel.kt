@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.SimpleError
@@ -32,7 +33,8 @@ class ModifyWordViewModel @Inject constructor(
     private val getSelectedLanguages: GetSelectedLanguages,
     private val addChipUseCase: AddChipUseCase,
     private val selectLanguageUseCase: SelectLanguageUseCase,
-    application: Application
+    application: Application,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var listener: Listener? = null
 
@@ -47,6 +49,7 @@ class ModifyWordViewModel @Inject constructor(
     val recordAudio = RecordAudioHandler(application = application)
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
+
     fun onRecordAction(action: RecordAudioAction) {
         when (action) {
             RecordAudioAction.DeleteRecord -> recordAudio.onPressDelete()
@@ -60,6 +63,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     init {
+        launchRightMode()
         viewModelScope.launch {
             getListsUseCase.getAllListsForModifyWord().collectLatest { list ->
                 composeState = composeState.copy(
@@ -81,6 +85,25 @@ class ModifyWordViewModel @Inject constructor(
             override fun saveAudio(savableFile: String?) {
                 updateAudio(savableFile)
             }
+        }
+    }
+
+
+    private fun launchRightMode() {
+        val mode = checkNotNull(savedStateHandle.get<String>("mode"))
+
+        if (ModifyWordModes.valueOf(mode) == ModifyWordModes.MODE_EDIT) {
+            val wordId = checkNotNull(savedStateHandle.get<Long>("wordId"))
+            launchEditMode(wordId)
+        }
+
+        if (ModifyWordModes.valueOf(mode) == ModifyWordModes.MODE_ADD) {
+            val wordValue = savedStateHandle.get<String>("wordValue") ?: ""
+            val listId = savedStateHandle.get<Long>("listId") ?: -1L
+            launchAddMode(
+                wordValue = wordValue,
+                listId = listId // when open fragment from word list fragment
+            )
         }
     }
 
@@ -355,7 +378,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun getWordById(id: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val word = getWordItemUseCase(id)
             val langList = loadLanguages(langToCode = word.langTo, langFromCode = word.langFrom)
             val wordListInfo = word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }

@@ -22,7 +22,7 @@ import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewWordList
 
 
 @Composable
-fun WordListScreen(state: WordListState, onAction: (WordListAction) -> Unit) {
+fun WordList(state: WordListState, onAction: (WordListAction) -> Unit) {
     Scaffold(
         floatingActionButton = {
             if (!state.isLoading && state.totalWordListSize != 0) {
@@ -82,7 +82,7 @@ fun WordListScreen(state: WordListState, onAction: (WordListAction) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun WordListScreenPreview() {
-    WordListScreen(
+    WordList(
         state = WordListState(
             filteredWordList = getPreviewWordList(),
             isLoading = false,
@@ -95,7 +95,7 @@ fun WordListScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun WordListScreenPreview2() {
-    WordListScreen(
+    WordList(
         state = WordListState(
             filteredWordList = emptyList(),
             isLoading = false,
@@ -109,7 +109,7 @@ fun WordListScreenPreview2() {
 @Preview(showBackground = true)
 @Composable
 fun WordListScreenPreview3() {
-    WordListScreen(
+    WordList(
         state = WordListState(
             filteredWordList = emptyList(),
             isLoading = false,

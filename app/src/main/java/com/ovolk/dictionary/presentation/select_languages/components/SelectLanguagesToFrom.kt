@@ -14,10 +14,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.core.compose.SearchBar
+import com.ovolk.dictionary.presentation.core.compose.header.Header
+import com.ovolk.dictionary.presentation.core.compose.header.OneButtonOffset
+import com.ovolk.dictionary.presentation.core.compose.header.TwoButtonOffset
+import com.ovolk.dictionary.presentation.core.compose.header.ZeroButtonOffset
 import com.ovolk.dictionary.presentation.core.compose.languages.PreferredLanguages
 import com.ovolk.dictionary.presentation.select_languages.LanguageToFromState
 import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
@@ -26,10 +33,16 @@ import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
 fun SelectLanguagesToFrom(
     title: String,
     state: LanguageToFromState,
-    onAction: (LanguagesToFromActions) -> Unit
+    onAction: (LanguagesToFromActions) -> Unit,
+    navController: NavHostController
 ) {
     Column {
-        Header(title = title, wiBackButton = state.headerWithBackButton)
+        Header(
+            title = title,
+            withBackButton = state.headerWithBackButton,
+            navController = navController,
+            titleHorizontalOffset = if (state.headerWithBackButton) OneButtonOffset else ZeroButtonOffset
+        )
 
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
             SearchBar(
@@ -133,6 +146,7 @@ fun SelectLanguagesToFromPreview() {
                 ),
             )
         ),
+        navController = rememberNavController(),
         onAction = {}
     )
 }

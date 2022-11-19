@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
@@ -26,7 +27,8 @@ import javax.inject.Inject
 class WordListViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
     private val deleteWordUseCase: DeleteWordUseCase,
-    private val application: Application
+    private val application: Application,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var listener: Listener? = null
     var state by mutableStateOf(WordListState())
@@ -38,8 +40,13 @@ class WordListViewModel @Inject constructor(
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
+
     init {
-        searchDebounced("")
+        val searchedWord: String? = savedStateHandle["searchedWord"]
+        if (searchedWord != null) {
+            state = state.copy(searchValue =searchedWord)
+        }
+        searchDebounced(searchedWord ?: "")
     }
 
 //    fun deleteWord(wordId: Long?) {

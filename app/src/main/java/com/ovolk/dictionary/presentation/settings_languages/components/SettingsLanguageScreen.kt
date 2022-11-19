@@ -18,7 +18,7 @@ import androidx.lifecycle.Lifecycle
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.select_languages.components.Header
+import com.ovolk.dictionary.presentation.core.compose.header.Header
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesAction
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesState
 import com.ovolk.dictionary.util.compose.OnLifecycleEvent
@@ -49,7 +49,7 @@ fun SettingsLanguageScreen(
     }
 
     Column {
-        Header(title = stringResource(id = R.string.settings_languages_title), wiBackButton = true)
+        Header(title = stringResource(id = R.string.settings_languages_title), withBackButton = true)
         Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
 
             Divider(modifier = Modifier.padding(vertical = 10.dp))

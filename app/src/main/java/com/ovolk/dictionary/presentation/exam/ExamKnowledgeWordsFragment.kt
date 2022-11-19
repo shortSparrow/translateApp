@@ -46,7 +46,7 @@ class ExamKnowledgeWordsFragment : BaseFragment<FragmentExamKnowledgeWordsBindin
             }
 
             AppCompatTheme {
-                ExamScreen(state = state, onAction = onAction, args=args)
+                ExamPresenter(state = state, onAction = onAction, )
             }
         }
     }

@@ -51,7 +51,7 @@ class ModifyWordFragment : BaseFragment<FragmentModifyWordBinding>(),
             }
 
             AppCompatTheme {
-                ModifyWordScreen(
+                ModifyWordPresenter(
                     state = state,
                     languageState = languageState,
                     translateState = translateState,

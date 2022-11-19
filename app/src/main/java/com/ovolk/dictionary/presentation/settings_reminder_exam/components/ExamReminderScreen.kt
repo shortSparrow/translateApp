@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.select_languages.components.Header
+import com.ovolk.dictionary.presentation.core.compose.header.Header
 import com.ovolk.dictionary.presentation.settings_reminder_exam.OnExamReminderAction
 import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminderExamState
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
@@ -36,7 +36,7 @@ fun ExamReminderScreen(state: SettingsReminderExamState, onAction: (OnExamRemind
     )
 
     Column {
-        Header(title = stringResource(id = R.string.settings_exam_reminder_screen_title), wiBackButton = true)
+        Header(title = stringResource(id = R.string.settings_exam_reminder_screen_title), withBackButton = true)
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
             Column(
                 modifier = Modifier

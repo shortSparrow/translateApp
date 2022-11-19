@@ -40,7 +40,7 @@ class WordListFragment : BaseFragment<FragmentWordListBinding>() {
             }
 
             AppCompatTheme {
-                WordListScreen(state = state, onAction = viewModel::onAction)
+                WordList(state = state, onAction = viewModel::onAction)
             }
         }
     }
