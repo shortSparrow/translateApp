@@ -17,9 +17,10 @@ import com.ovolk.dictionary.util.helpers.getAudioPath
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import javax.inject.Inject
 
 
-class RecordAudioHandler(
+class RecordAudioHandler @Inject constructor(
     private val application: Application,
 ) {
     var listener: RecordAudioListener? = null
@@ -120,6 +121,7 @@ class RecordAudioHandler(
     }
 
     fun openBottomSheet() {
+        // TODO make request
         recordState = recordState.copy(isModalOpen = true)
     }
 

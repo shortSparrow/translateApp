@@ -34,7 +34,7 @@
     <string name="modify_word_toolbar_title_add">Add new word</string>
     <string name="modify_word_toolbar_title_edit">Edit word</string>
     <string name="modify_word_confirm_delete_title">Are you sure you want to delete this word?</string>
-    <string name="modify_word_enable_audio_permission">Your audio permission is disabled, please, go to settings and enable one</string>
+    <string name="modify_word_enable_audio_permission">Your Microphone permission is disabled, you must go to settings and enable one</string>
     <string name="modify_word_cd_selected_mark">selected mark</string>
     <string name="modify_word_select_lists_dialog_title">Select List</string>
     <string name="modify_word_select_lists_dialog_description">"There isn't lists. Press Add New List for adding one"</string>

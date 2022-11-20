@@ -19,7 +19,6 @@ fun ModifyWordScreen(navController: NavHostController) {
         ).show()
     }
 
-
     fun listener() = object : ModifyWordViewModel.Listener {
         override fun onDeleteWord() {
             showMessage(
@@ -41,7 +40,6 @@ fun ModifyWordScreen(navController: NavHostController) {
             navController.popBackStack()
         }
     }
-
 
     val viewModel = hiltViewModel<ModifyWordViewModel>()
     val state = viewModel.composeState
@@ -66,8 +64,4 @@ fun ModifyWordScreen(navController: NavHostController) {
         onTranslateAction = viewModel::onTranslateAction,
         onHintAction = viewModel::onHintAction
     )
-    // TODO add
-//        audioResolver.requestPermission(
-//            requireContext()
-//        )
 }

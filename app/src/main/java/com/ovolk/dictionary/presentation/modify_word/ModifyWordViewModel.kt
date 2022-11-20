@@ -48,20 +48,9 @@ class ModifyWordViewModel @Inject constructor(
     var hintState by mutableStateOf(Hints())
         private set
     val recordAudio = RecordAudioHandler(application = application)
+
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
-
-    fun onRecordAction(action: RecordAudioAction) {
-        when (action) {
-            RecordAudioAction.DeleteRecord -> recordAudio.onPressDelete()
-            RecordAudioAction.ListenRecord -> recordAudio.startPlaying()
-            RecordAudioAction.SaveRecord -> recordAudio.prepareToSave()
-            RecordAudioAction.StartRecording -> recordAudio.startRecording()
-            RecordAudioAction.StopRecording -> recordAudio.stopRecording()
-            RecordAudioAction.HideBottomSheet -> recordAudio.closeBottomSheet()
-            RecordAudioAction.OpenBottomSheet -> recordAudio.openBottomSheet()
-        }
-    }
 
     init {
         launchRightMode()
@@ -114,6 +103,19 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
+    fun onRecordAction(action: RecordAudioAction) {
+        when (action) {
+            RecordAudioAction.DeleteRecord -> recordAudio.onPressDelete()
+            RecordAudioAction.ListenRecord -> recordAudio.startPlaying()
+            RecordAudioAction.SaveRecord -> recordAudio.prepareToSave()
+            RecordAudioAction.StartRecording -> recordAudio.startRecording()
+            RecordAudioAction.StopRecording -> recordAudio.stopRecording()
+            RecordAudioAction.HideBottomSheet -> recordAudio.closeBottomSheet()
+            RecordAudioAction.OpenBottomSheet -> recordAudio.openBottomSheet()
+        }
+    }
+
+    // TODO make like onRecordAction
     fun onComposeAction(action: ModifyWordAction) {
         when (action) {
             ModifyWordAction.ResetModalError -> resetModalError()
@@ -358,7 +360,7 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    fun launchEditMode(wordId: Long) {
+    private fun launchEditMode(wordId: Long) {
         val id = if (wordId == -1L) error("wordId is null") else wordId
         getWordById(id)
     }

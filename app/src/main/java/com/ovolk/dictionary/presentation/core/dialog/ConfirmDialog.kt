@@ -3,6 +3,7 @@ package com.ovolk.dictionary.presentation.core.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -19,7 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialogType.*
 
+enum class ConfirmDialogType {OK_BUTTON_RED, NO_BUTTON_RED, NO_RED}
 
 @Composable
 fun ConfirmDialog(
@@ -27,7 +30,22 @@ fun ConfirmDialog(
     question: String,
     onAcceptClick: () -> Unit,
     onDeclineClick: () -> Unit,
+    confirmButtonText: String? = null,
+    declineButtonText: String? = null,
+    type: ConfirmDialogType = OK_BUTTON_RED
 ) {
+    val okButtonColor = when(type) {
+        OK_BUTTON_RED -> colorResource(id = R.color.red)
+        NO_BUTTON_RED -> colorResource(id = R.color.blue)
+        NO_RED -> colorResource(id = R.color.blue)
+    }
+
+    val noButtonColor = when(type) {
+        OK_BUTTON_RED -> colorResource(id = R.color.blue)
+        NO_BUTTON_RED -> colorResource(id = R.color.red)
+        NO_RED -> colorResource(id = R.color.blue)
+    }
+
     Dialog(
         onDismissRequest = {
             if (onDismissRequest != null) {
@@ -60,14 +78,14 @@ fun ConfirmDialog(
                 ) {
                     OutlinedButton(onClick = onDeclineClick) {
                         Text(
-                            text = stringResource(id = R.string.no),
-                            color = colorResource(id = R.color.blue)
+                            text = declineButtonText ?: stringResource(id = R.string.no),
+                            color = noButtonColor
                         )
                     }
                     OutlinedButton(onClick = onAcceptClick) {
                         Text(
-                            text = stringResource(id = R.string.yes),
-                            color = colorResource(id = R.color.red)
+                            text = confirmButtonText ?: stringResource(id = R.string.yes),
+                            color = okButtonColor
                         )
                     }
                 }
