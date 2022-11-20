@@ -32,3 +32,6 @@ const val EXAM_REMINDER_INTENT_CODE = 101
 const val DEFAULT_PRIORITY_VALUE = 5
 
 val MAX_BUTTON_WIDTH = 300.dp
+
+// TODO change on real deeplink, also see at Manifest
+const val DEEP_LINK_BASE = "https://www.example.com"

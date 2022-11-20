@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
@@ -14,9 +15,11 @@ import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -26,7 +29,8 @@ import javax.inject.Inject
 class WordListViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
     private val deleteWordUseCase: DeleteWordUseCase,
-    private val application: Application
+    private val application: Application,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var listener: Listener? = null
     var state by mutableStateOf(WordListState())
@@ -38,8 +42,13 @@ class WordListViewModel @Inject constructor(
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
+
     init {
-        searchDebounced("")
+        val searchedWord: String? = savedStateHandle["searchedWord"]
+        if (searchedWord != null) {
+            state = state.copy(searchValue = searchedWord)
+        }
+        searchDebounced(searchedWord ?: "")
     }
 
 //    fun deleteWord(wordId: Long?) {
@@ -116,18 +125,21 @@ class WordListViewModel @Inject constructor(
                         if (searchValue.isEmpty()) this else this.sortedWith(compareBy { l -> l.value.length })
                     }
 
+                withContext(Dispatchers.Main) {
+                    state = state.copy(
+                        filteredWordList = list,
+                        totalWordListSize = it.total,
+                        isLoading = false
+                    )
+                }
 
-                state = state.copy(
-                    filteredWordList = list,
-                    totalWordListSize = it.total,
-                    isLoading = false
-                )
+
             }
     }
 
     private fun searchDebounced(searchText: String) {
         searchJob?.cancel()
-        searchJob = viewModelScope.launch {
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
             searchWord(searchText)
         }
     }

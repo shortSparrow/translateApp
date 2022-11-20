@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
-import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
+import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
 
 @OptIn(ExperimentalFoundationApi::class)

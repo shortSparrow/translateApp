@@ -32,7 +32,7 @@ fun Hints(hints: List<HintItem>) {
         visibleHints.add(hints[visibleHints.size])
     }
 
-    Column() {
+    Column {
         visibleHints.forEachIndexed { index, hint ->
             Row(
                 modifier = Modifier

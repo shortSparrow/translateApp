@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
-import com.ovolk.dictionary.presentation.core.compose.chip.HintChipItem
+import com.ovolk.dictionary.presentation.core.chip.HintChipItem
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewHints
 
@@ -28,7 +28,7 @@ fun HintList(
     focusRequesterTranslates: FocusRequester,
     onAction: (ModifyWordHintsAction) -> Unit
 ) {
-    Column() {
+    Column {
         hints.map { hint ->
             var expanded by remember { mutableStateOf(false) }
             fun onPressEditTranslate() {

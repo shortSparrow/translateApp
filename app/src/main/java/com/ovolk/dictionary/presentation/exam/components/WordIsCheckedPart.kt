@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
-import com.ovolk.dictionary.presentation.core.compose.chip.TranslateChipItem
-import com.ovolk.dictionary.presentation.core.compose.flow_row.FlowRow
+import com.ovolk.dictionary.presentation.core.chip.TranslateChipItem
+import com.ovolk.dictionary.presentation.core.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 

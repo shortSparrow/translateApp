@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.SimpleError
@@ -20,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +34,8 @@ class ModifyWordViewModel @Inject constructor(
     private val getSelectedLanguages: GetSelectedLanguages,
     private val addChipUseCase: AddChipUseCase,
     private val selectLanguageUseCase: SelectLanguageUseCase,
-    application: Application
+    application: Application,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var listener: Listener? = null
 
@@ -47,6 +50,7 @@ class ModifyWordViewModel @Inject constructor(
     val recordAudio = RecordAudioHandler(application = application)
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
+
     fun onRecordAction(action: RecordAudioAction) {
         when (action) {
             RecordAudioAction.DeleteRecord -> recordAudio.onPressDelete()
@@ -60,6 +64,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     init {
+        launchRightMode()
         viewModelScope.launch {
             getListsUseCase.getAllListsForModifyWord().collectLatest { list ->
                 composeState = composeState.copy(
@@ -81,6 +86,25 @@ class ModifyWordViewModel @Inject constructor(
             override fun saveAudio(savableFile: String?) {
                 updateAudio(savableFile)
             }
+        }
+    }
+
+
+    private fun launchRightMode() {
+        val mode = checkNotNull(savedStateHandle.get<String>("mode"))
+
+        if (ModifyWordModes.valueOf(mode) == ModifyWordModes.MODE_EDIT) {
+            val wordId = checkNotNull(savedStateHandle.get<Long>("wordId"))
+            launchEditMode(wordId)
+        }
+
+        if (ModifyWordModes.valueOf(mode) == ModifyWordModes.MODE_ADD) {
+            val wordValue = savedStateHandle.get<String>("wordValue") ?: ""
+            val listId = savedStateHandle.get<Long>("listId") ?: -1L
+            launchAddMode(
+                wordValue = wordValue,
+                listId = listId // when open fragment from word list fragment
+            )
         }
     }
 
@@ -188,6 +212,10 @@ class ModifyWordViewModel @Inject constructor(
                         listener?.onDeleteWord()
                     }
                 }
+            }
+            ModifyWordAction.GoBack -> {
+                // TODO add validation
+                listener?.goBack()
             }
         }
     }
@@ -336,9 +364,13 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun prefillListIdFromArgs(listId: Long) {
+
         viewModelScope.launch(Dispatchers.IO) {
             val res = getListsUseCase.getListById(listId)
-            composeState = composeState.copy(wordListInfo = res)
+
+            withContext(Dispatchers.Main) {
+                composeState = composeState.copy(wordListInfo = res)
+            }
         }
     }
 
@@ -361,25 +393,27 @@ class ModifyWordViewModel @Inject constructor(
             val wordListInfo = word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
 
             word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
-            composeState = composeState.copy(
-                englishWord = word.value,
-                transcriptionWord = word.transcription,
-                descriptionWord = word.description,
-                soundFileName = word.sound?.fileName,
-                editableWordId = word.id,
-                createdAt = word.createdAt,
-                priorityValue = word.priority.toString(),
-                wordListInfo = wordListInfo,
-                modifyMode = ModifyWordModes.MODE_EDIT
-            )
+            withContext(Dispatchers.Main) {
+                composeState = composeState.copy(
+                    englishWord = word.value,
+                    transcriptionWord = word.transcription,
+                    descriptionWord = word.description,
+                    soundFileName = word.sound?.fileName,
+                    editableWordId = word.id,
+                    createdAt = word.createdAt,
+                    priorityValue = word.priority.toString(),
+                    wordListInfo = wordListInfo,
+                    modifyMode = ModifyWordModes.MODE_EDIT
+                )
 
-            translateState = translateState.copy(translates = word.translates)
-            hintState = hintState.copy(hints = word.hints)
+                translateState = translateState.copy(translates = word.translates)
+                hintState = hintState.copy(hints = word.hints)
 
-            languageState = languageState.copy(
-                languageToList = langList["languageTo"] ?: emptyList(),
-                languageFromList = langList["languageFrom"] ?: emptyList(),
-            )
+                languageState = languageState.copy(
+                    languageToList = langList["languageTo"] ?: emptyList(),
+                    languageFromList = langList["languageFrom"] ?: emptyList(),
+                )
+            }
         }
     }
 
@@ -396,5 +430,6 @@ class ModifyWordViewModel @Inject constructor(
     interface Listener {
         fun onDeleteWord()
         fun onSaveWord()
+        fun goBack()
     }
 }

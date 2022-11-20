@@ -32,8 +32,8 @@ data class SettingsReminderExamState(
 
 }
 
-sealed class OnExamReminderAction {
-    data class OnChangeFrequency(val frequency: FrequencyItem): OnExamReminderAction()
-    data class OnChangeTime(val hours: Int, val minutes: Int): OnExamReminderAction()
-    object SaveChanges: OnExamReminderAction()
+sealed interface OnExamReminderAction {
+    data class OnChangeFrequency(val frequency: FrequencyItem): OnExamReminderAction
+    data class OnChangeTime(val hours: Int, val minutes: Int): OnExamReminderAction
+    object SaveChanges: OnExamReminderAction
 }

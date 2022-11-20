@@ -17,8 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.core.compose.SearchBar
-import com.ovolk.dictionary.presentation.core.compose.languages.PreferredLanguages
+import com.ovolk.dictionary.presentation.core.SearchBar
+import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.header.OneButtonOffset
+import com.ovolk.dictionary.presentation.core.header.ZeroButtonOffset
+import com.ovolk.dictionary.presentation.core.languages.PreferredLanguages
 import com.ovolk.dictionary.presentation.select_languages.LanguageToFromState
 import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
 
@@ -26,10 +29,16 @@ import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
 fun SelectLanguagesToFrom(
     title: String,
     state: LanguageToFromState,
-    onAction: (LanguagesToFromActions) -> Unit
+    onAction: (LanguagesToFromActions) -> Unit,
+    goBack: () -> Unit,
 ) {
     Column {
-        Header(title = title, wiBackButton = state.headerWithBackButton)
+        Header(
+            title = title,
+            withBackButton = state.headerWithBackButton,
+            onBackButtonClick = goBack,
+            titleHorizontalOffset = if (state.headerWithBackButton) OneButtonOffset else ZeroButtonOffset
+        )
 
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
             SearchBar(
@@ -133,6 +142,7 @@ fun SelectLanguagesToFromPreview() {
                 ),
             )
         ),
+        goBack = {},
         onAction = {}
     )
 }

@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
@@ -32,6 +34,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private val modifyWordUseCase: ModifyWordUseCase,
     private val repository: TranslatedWordRepository,
     private val application: Application,
+//    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var listener: Listener? = null
     var composeState by mutableStateOf(ExamKnowledgeState())
@@ -40,6 +43,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
     init {
+//        val listName = savedStateHandle.get<String>("listName")
+//        val listId = checkNotNull(savedStateHandle.get<Long>("listId"))
+//
+//        onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
+
 //        loadWordsList(null, null)
 //        viewModelScope.async {
 //            var wordCount = 1
@@ -190,10 +198,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
 
     private fun loadWordsList(listId: Long?, listName: String? = null) {
+        val correctListName = listName?.let { application.getString(R.string.exam_list_name, it) } ?: ""
         composeState = composeState.copy(
             isLoading = true,
             listId = listId,
-            listName = listName,
+            listName = correctListName,
             shouldLoadWordListAgain = false
         )
         viewModelScope.launch {
