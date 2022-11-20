@@ -51,7 +51,6 @@ class ModifyWordViewModel @Inject constructor(
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
-
     init {
         launchRightMode()
         viewModelScope.launch {
@@ -77,7 +76,6 @@ class ModifyWordViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun launchRightMode() {
         val mode = checkNotNull(savedStateHandle.get<String>("mode"))
@@ -217,6 +215,7 @@ class ModifyWordViewModel @Inject constructor(
             }
             ModifyWordAction.GoBack -> {
                 // TODO add validation
+                val isTheSame =
                 listener?.goBack()
             }
         }
@@ -345,7 +344,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     // wordValue which selected and passed into app as intent
-    fun launchAddMode(wordValue: String, listId: Long) {
+    private fun launchAddMode(wordValue: String, listId: Long) {
         val langList = loadLanguages(langFromCode = null, langToCode = null)
         languageState = languageState.copy(
             languageFromList = langList["languageFrom"]

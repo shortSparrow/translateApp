@@ -91,8 +91,9 @@ fun RecordAudioWrapper(
 
     fun closeBottomSheetModal() {
         coroutineScope.launch {
-            onAction(RecordAudioAction.HideBottomSheet)
             bottomSheetScaffoldState.collapse()
+            delay(100) // time for slide down bottomSheet
+            onAction(RecordAudioAction.HideBottomSheet)
             isSlideUpComplete = false
         }
     }
