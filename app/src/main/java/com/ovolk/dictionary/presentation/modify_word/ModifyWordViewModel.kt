@@ -24,6 +24,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+data class InitialState(
+    val composeState: ComposeState = ComposeState(),
+    val languageState: Languages = Languages(),
+    val translateState: Translates = Translates(),
+    val hintState: Hints = Hints(),
+    val recordAudio: RecordAudioHandler
+)
+
 @HiltViewModel
 class ModifyWordViewModel @Inject constructor(
     private val modifyWordUseCase: ModifyWordUseCase,
@@ -48,6 +56,19 @@ class ModifyWordViewModel @Inject constructor(
     var hintState by mutableStateOf(Hints())
         private set
     val recordAudio = RecordAudioHandler(application = application)
+
+
+    private var initialState by mutableStateOf(InitialState(recordAudio = recordAudio))
+
+    private fun setInitialState() {
+        initialState = InitialState(
+            composeState = composeState,
+            languageState = languageState,
+            translateState = translateState,
+            hintState = hintState,
+            recordAudio = recordAudio
+        )
+    }
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
@@ -213,10 +234,28 @@ class ModifyWordViewModel @Inject constructor(
                     }
                 }
             }
-            ModifyWordAction.GoBack -> {
-                // TODO add validation
-                val isTheSame =
-                listener?.goBack()
+            is ModifyWordAction.GoBack -> {
+                if (action.withValidateUnsavedChanges) {
+                    val isTheSame =
+                        initialState.composeState == composeState &&
+                                initialState.hintState == hintState &&
+                                initialState.languageState == languageState &&
+                                initialState.translateState == translateState &&
+                                initialState.recordAudio == recordAudio
+
+                    if (isTheSame) {
+                        listener?.goBack()
+                    } else {
+                        composeState = composeState.copy(isOpenUnsavedChanges = true)
+                    }
+                } else {
+                    composeState = composeState.copy(isOpenUnsavedChanges = false)
+                    listener?.goBack()
+                }
+            }
+            ModifyWordAction.ToggleUnsavedChanges -> {
+                composeState =
+                    composeState.copy(isOpenUnsavedChanges = !composeState.isOpenUnsavedChanges)
             }
         }
     }
@@ -357,6 +396,7 @@ class ModifyWordViewModel @Inject constructor(
         if (listId != -1L) {
             prefillListIdFromArgs(listId)
         }
+        setInitialState()
     }
 
     private fun launchEditMode(wordId: Long) {
@@ -414,6 +454,8 @@ class ModifyWordViewModel @Inject constructor(
                     languageToList = langList["languageTo"] ?: emptyList(),
                     languageFromList = langList["languageFrom"] ?: emptyList(),
                 )
+
+                setInitialState()
             }
         }
     }

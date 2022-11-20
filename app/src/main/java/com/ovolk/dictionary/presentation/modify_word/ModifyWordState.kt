@@ -61,6 +61,7 @@ data class ComposeState(
     ),
     val isOpenSelectModal: Boolean = false,
     val isOpenAddNewListModal: Boolean = false,
+    val isOpenUnsavedChanges: Boolean = false,
     val editableWordId: Long? = null,
     val createdAt: Long? = null, // TODO подумати, може при завантаженні слова записати його кудись і потім звертатися
     val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD,
@@ -105,7 +106,8 @@ sealed interface ModifyWordAction {
     object OnPressSaveWord : ModifyWordAction
     object ToggleDeleteModalOpen : ModifyWordAction
     object DeleteWord : ModifyWordAction
-    object GoBack : ModifyWordAction
+    data class GoBack(val withValidateUnsavedChanges: Boolean = true) : ModifyWordAction
+    object ToggleUnsavedChanges : ModifyWordAction
 }
 
 sealed interface ModifyWordHintsAction {

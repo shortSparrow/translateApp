@@ -82,6 +82,13 @@ fun ModifyWordPresenter(
             onDeclineClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) })
     }
 
+    if (state.isOpenUnsavedChanges) {
+        ConfirmDialog(
+            question = stringResource(id = R.string.modify_word_unsaved_changes),
+            onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
+            onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
+    }
+
     // TODO add handler on back click (alert)
 
     CompositionLocalProvider(
@@ -96,7 +103,7 @@ fun ModifyWordPresenter(
             Header(
                 title = headerTitle,
                 withBackButton = true,
-                onBackButtonClick = { onAction(ModifyWordAction.GoBack) },
+                onBackButtonClick = { onAction(ModifyWordAction.GoBack()) },
                 firstRightIcon = firstRightIcon,
                 onFirstRightIconClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) },
             )
