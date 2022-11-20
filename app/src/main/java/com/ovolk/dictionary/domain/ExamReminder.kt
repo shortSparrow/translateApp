@@ -1,22 +1,18 @@
-package com.ovolk.dictionary.presentation.exam
+package com.ovolk.dictionary.domain
 
 import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.ovolk.dictionary.data.workers.AlarmReceiver
+import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.util.*
-import com.google.gson.Gson
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-
-data class ReminderTime(
-    val hours: Int,
-    val minutes: Int,
-)
 
 
 class ExamReminder @Inject constructor(
@@ -62,7 +58,6 @@ class ExamReminder @Inject constructor(
                 application,
                 EXAM_REMINDER_INTENT_CODE,
                 intent,
-//                PendingIntent.FLAG_IMMUTABLE
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
@@ -82,7 +77,6 @@ class ExamReminder @Inject constructor(
                 application,
                 EXAM_REMINDER_INTENT_CODE,
                 intent,
-//                PendingIntent.FLAG_IMMUTABLE
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         pendingIntent.cancel()

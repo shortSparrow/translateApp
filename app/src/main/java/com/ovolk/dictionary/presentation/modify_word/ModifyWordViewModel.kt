@@ -24,13 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-data class InitialState(
-    val composeState: ComposeState = ComposeState(),
-    val languageState: Languages = Languages(),
-    val translateState: Translates = Translates(),
-    val hintState: Hints = Hints(),
-    val recordAudio: RecordAudioHandler
-)
 
 @HiltViewModel
 class ModifyWordViewModel @Inject constructor(
@@ -56,19 +49,7 @@ class ModifyWordViewModel @Inject constructor(
     var hintState by mutableStateOf(Hints())
         private set
     val recordAudio = RecordAudioHandler(application = application)
-
-
     private var initialState by mutableStateOf(InitialState(recordAudio = recordAudio))
-
-    private fun setInitialState() {
-        initialState = InitialState(
-            composeState = composeState,
-            languageState = languageState,
-            translateState = translateState,
-            hintState = hintState,
-            recordAudio = recordAudio
-        )
-    }
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
@@ -134,15 +115,12 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    // TODO make like onRecordAction
     fun onComposeAction(action: ModifyWordAction) {
         when (action) {
             ModifyWordAction.ResetModalError -> resetModalError()
             is ModifyWordAction.HandleAddNewListModal -> {
                 composeState = composeState.copy(isOpenAddNewListModal = action.isOpen)
-                if (!action.isOpen) {
-                    resetModalError()
-                }
+                if (!action.isOpen) resetModalError()
             }
             is ModifyWordAction.HandleSelectModal -> {
                 composeState = composeState.copy(isOpenSelectModal = action.isOpen)
@@ -156,30 +134,10 @@ class ModifyWordViewModel @Inject constructor(
             }
             is ModifyWordAction.PressAddNewLanguage -> {
                 languageState = languageState.copy(
-                    addNewLangModal = AddNewLangModal(
-                        isOpen = true,
-                        type = action.type
-                    )
+                    addNewLangModal = AddNewLangModal(isOpen = true, type = action.type)
                 )
             }
-            ModifyWordAction.CloseAddNewLanguageModal -> {
-                val langList = when (composeState.modifyMode) {
-                    ModifyWordModes.MODE_ADD -> loadLanguages(
-                        langFromCode = null,
-                        langToCode = null
-                    )
-                    ModifyWordModes.MODE_EDIT -> loadLanguages(
-                        langFromCode = languageState.languageFromList.find { it.isChecked }?.langCode,
-                        langToCode = languageState.languageToList.find { it.isChecked }?.langCode,
-                    )
-                }
-
-                languageState = languageState.copy(
-                    addNewLangModal = AddNewLangModal(isOpen = false, type = null),
-                    languageFromList = langList["languageFrom"] ?: emptyList(),
-                    languageToList = langList["languageTo"] ?: emptyList(),
-                )
-            }
+            ModifyWordAction.CloseAddNewLanguageModal -> closeAddNewLanguageModal()
             is ModifyWordAction.AddNewList -> {
                 viewModelScope.launch {
                     val validationResult = addNewListUseCase.addNewList(action.title)
@@ -201,21 +159,7 @@ class ModifyWordViewModel @Inject constructor(
             is ModifyWordAction.OnChangePriority -> {
                 composeState = composeState.copy(priorityValue = action.value)
             }
-            is ModifyWordAction.OnSelectList -> {
-                val newList = composeState.wordLists.map {
-                    if (it.id == action.listId) it.copy(isSelected = !it.isSelected) else it.copy(
-                        isSelected = false
-                    )
-                }
-
-                val pressableList =
-                    newList.find { it.id == action.listId }.takeIf { it?.isSelected == true }
-
-                composeState = composeState.copy(
-                    wordLists = newList,
-                    wordListInfo = pressableList
-                )
-            }
+            is ModifyWordAction.OnSelectList -> onSelectList(action.listId)
             ModifyWordAction.ToggleVisibleAdditionalPart -> {
                 composeState =
                     composeState.copy(isAdditionalFieldVisible = !composeState.isAdditionalFieldVisible)
@@ -234,25 +178,7 @@ class ModifyWordViewModel @Inject constructor(
                     }
                 }
             }
-            is ModifyWordAction.GoBack -> {
-                if (action.withValidateUnsavedChanges) {
-                    val isTheSame =
-                        initialState.composeState == composeState &&
-                                initialState.hintState == hintState &&
-                                initialState.languageState == languageState &&
-                                initialState.translateState == translateState &&
-                                initialState.recordAudio == recordAudio
-
-                    if (isTheSame) {
-                        listener?.goBack()
-                    } else {
-                        composeState = composeState.copy(isOpenUnsavedChanges = true)
-                    }
-                } else {
-                    composeState = composeState.copy(isOpenUnsavedChanges = false)
-                    listener?.goBack()
-                }
-            }
+            is ModifyWordAction.GoBack -> handlePressGoBack(action.withValidateUnsavedChanges)
             ModifyWordAction.ToggleUnsavedChanges -> {
                 composeState =
                     composeState.copy(isOpenUnsavedChanges = !composeState.isOpenUnsavedChanges)
@@ -325,6 +251,61 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
+    private fun closeAddNewLanguageModal() {
+        val langList = when (composeState.modifyMode) {
+            ModifyWordModes.MODE_ADD -> loadLanguages(
+                langFromCode = null,
+                langToCode = null
+            )
+            ModifyWordModes.MODE_EDIT -> loadLanguages(
+                langFromCode = languageState.languageFromList.find { it.isChecked }?.langCode,
+                langToCode = languageState.languageToList.find { it.isChecked }?.langCode,
+            )
+        }
+
+        languageState = languageState.copy(
+            addNewLangModal = AddNewLangModal(isOpen = false, type = null),
+            languageFromList = langList["languageFrom"] ?: emptyList(),
+            languageToList = langList["languageTo"] ?: emptyList(),
+        )
+    }
+
+    private fun onSelectList(listId: Long) {
+        val newList = composeState.wordLists.map {
+            if (it.id == listId) it.copy(isSelected = !it.isSelected) else it.copy(
+                isSelected = false
+            )
+        }
+
+        val pressableList =
+            newList.find { it.id == listId }.takeIf { it?.isSelected == true }
+
+        composeState = composeState.copy(
+            wordLists = newList,
+            wordListInfo = pressableList
+        )
+    }
+
+    private fun handlePressGoBack(withValidateUnsavedChanges: Boolean) {
+        if (withValidateUnsavedChanges) {
+            val isTheSame =
+                initialState.composeState == composeState &&
+                        initialState.hintState == hintState &&
+                        initialState.languageState == languageState &&
+                        initialState.translateState == translateState &&
+                        initialState.recordAudio == recordAudio
+
+            if (isTheSame) {
+                listener?.goBack()
+            } else {
+                composeState = composeState.copy(isOpenUnsavedChanges = true)
+            }
+        } else {
+            composeState = composeState.copy(isOpenUnsavedChanges = false)
+            listener?.goBack()
+        }
+    }
+
     private fun saveWord() {
         val wordValidation = validateWordValue(composeState.englishWord)
         val priorityValidation = validationPriority(composeState.priorityValue)
@@ -343,7 +324,6 @@ class ModifyWordViewModel @Inject constructor(
                 selectLanguageFromValidation
             ).any { !it.successful }
 
-        // FIXME replace to usecase
         if (hasError) {
             composeState = composeState.copy(
                 englishWordError = wordValidation,
@@ -405,7 +385,6 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun prefillListIdFromArgs(listId: Long) {
-
         viewModelScope.launch(Dispatchers.IO) {
             val res = getListsUseCase.getListById(listId)
 
@@ -467,6 +446,17 @@ class ModifyWordViewModel @Inject constructor(
         return getSelectedLanguages.getLanguagesForSelect(
             savedLangToCode = langToCode,
             savedLangFromCode = langFromCode
+        )
+    }
+
+    // state for track changes and show alert on goBack press if has unsaved changes
+    private fun setInitialState() {
+        initialState = InitialState(
+            composeState = composeState,
+            languageState = languageState,
+            translateState = translateState,
+            hintState = hintState,
+            recordAudio = recordAudio
         )
     }
 

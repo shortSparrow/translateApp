@@ -8,6 +8,7 @@ import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
+import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
@@ -15,6 +16,14 @@ enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
 data class AddNewLangModal(
     val isOpen: Boolean = false,
     val type: LanguagesType? = null
+)
+
+data class InitialState(
+    val composeState: ComposeState = ComposeState(),
+    val languageState: Languages = Languages(),
+    val translateState: Translates = Translates(),
+    val hintState: Hints = Hints(),
+    val recordAudio: RecordAudioHandler
 )
 
 @Stable

@@ -2,22 +2,18 @@ package com.ovolk.dictionary.presentation
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.LaunchedEffect
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
-import com.ovolk.dictionary.presentation.exam.ExamReminder
+import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
@@ -38,8 +34,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var getSearchedWordListUseCase: GetSearchedWordListUseCase
 
-    // TODO migrate navigation to compose
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -53,20 +47,11 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val navController = rememberNavController()
-
             AppCompatTheme {
                 RootNavigationGraph(navController = navController)
             }
         }
     }
-
-//    companion object {
-//        private var myNavController: NavHostController? = null
-//
-//        fun getNavHostController(): NavHostController {
-//            return myNavController!!
-//        }
-//    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -75,7 +60,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNavigation() {
-
         // should invoke only for onCreate, but not for onNewIntent
         if (!getIsChosenLanguage()) {
             // TODO check and maybe add deep link navigation here

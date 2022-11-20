@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
-import com.ovolk.dictionary.presentation.exam.ExamReminder
+import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

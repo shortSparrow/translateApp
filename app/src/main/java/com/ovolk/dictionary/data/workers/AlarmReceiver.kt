@@ -14,11 +14,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
-import androidx.navigation.NavDeepLinkBuilder
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.MainActivity
-import com.ovolk.dictionary.presentation.exam.ExamReminder
-import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
+import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import dagger.hilt.android.AndroidEntryPoint
