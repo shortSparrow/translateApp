@@ -127,7 +127,7 @@ fun RecordAudioWrapper(
     LaunchedEffect(recordState.isModalOpen) {
         if (recordState.isModalOpen) {
             coroutineScope.launch {
-                delay(10)
+                delay(100)
                 bottomSheetScaffoldState.expand()
                 isSlideUpComplete = true
             }
@@ -140,7 +140,7 @@ fun RecordAudioWrapper(
             onAcceptClick = ::goToSettings,
             onDismissRequest = ::closePermissionDeniedDialog,
             onDeclineClick = ::closePermissionDeniedDialog,
-            confirmButtonText = "GO TO SETTINGS",
+            confirmButtonText = stringResource(id = R.string.modify_word_enable_audio_go_to_settings),
             type = ConfirmDialogType.NO_RED
         )
     }

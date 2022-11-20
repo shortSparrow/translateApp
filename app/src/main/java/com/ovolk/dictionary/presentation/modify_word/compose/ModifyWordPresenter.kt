@@ -89,8 +89,6 @@ fun ModifyWordPresenter(
             onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
     }
 
-    // TODO add handler on back click (alert)
-
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
     ) {
