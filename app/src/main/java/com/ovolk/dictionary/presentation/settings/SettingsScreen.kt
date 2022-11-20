@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
-import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.presentation.settings.components.SettingsList
 
 

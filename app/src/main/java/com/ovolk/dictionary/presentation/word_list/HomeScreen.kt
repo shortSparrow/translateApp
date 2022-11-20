@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.presentation.word_list.components.WordList
 
 @Composable
@@ -12,11 +12,11 @@ fun HomeScreen(navController: NavHostController) {
 
     fun listener() = object : WordListViewModel.Listener {
         override fun navigateToCreateNewWord() {
-            navController.navigate( "${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}")
+            navController.navigate( "${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}")
         }
 
         override fun navigateToExistingWord(wordId: Long) {
-            navController.navigate( "${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_EDIT}?wordId=${wordId}")
+            navController.navigate( "${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_EDIT}?wordId=${wordId}")
         }
     }
 

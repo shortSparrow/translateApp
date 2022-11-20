@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.navigation.graph.Graph
+import com.ovolk.dictionary.presentation.navigation.graph.SelectLanguagesScreens
 import com.ovolk.dictionary.presentation.select_languages.components.SelectLanguagesToFrom
 
 
@@ -14,8 +15,9 @@ import com.ovolk.dictionary.presentation.select_languages.components.SelectLangu
 fun LanguagesToScreen(navController: NavHostController) {
     fun listener() = object : LanguagesToFromViewModel.ListenerLanguageTo {
         override fun navigateToHome() {
-            navController.popBackStack()
-            navController.navigate(Graph.MAIN_TAB_BAR)
+            navController.navigate(Graph.MAIN_TAB_BAR) {
+                popUpTo(SelectLanguagesScreens.LangFrom.route) { inclusive = true }
+            }
         }
     }
 

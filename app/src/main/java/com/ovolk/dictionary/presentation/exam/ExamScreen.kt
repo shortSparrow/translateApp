@@ -6,7 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.presentation.exam.components.ExamPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 
 @Composable
 fun ExamScreen(navController: NavHostController, listName: String, listId: Long) {
@@ -29,7 +29,7 @@ fun ExamScreen(navController: NavHostController, listName: String, listId: Long)
     if (viewModel.listener == null) {
         viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
             override fun onNavigateToCreateFirstWord() {
-                navController.navigate("${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}")
+                navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}")
             }
         }
     }

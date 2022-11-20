@@ -3,11 +3,10 @@ package com.ovolk.dictionary.presentation.list_full
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.presentation.list_full.components.ListFullPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 
 
 @Composable
@@ -19,11 +18,11 @@ fun ListFullScreen(navController: NavHostController, listId: Long, listName: Str
         }
 
         override fun navigateToEditWord(wordId: Long) {
-            navController.navigate("${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_EDIT}?wordId=${wordId}")
+            navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_EDIT}?wordId=${wordId}")
         }
 
         override fun navigateToAddWord(listId: Long) {
-            navController.navigate("${HomeRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
+            navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
         }
     }
 

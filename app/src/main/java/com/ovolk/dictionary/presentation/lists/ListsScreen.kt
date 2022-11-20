@@ -3,10 +3,8 @@ package com.ovolk.dictionary.presentation.lists
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.presentation.lists.components.ListsPresenter
-import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
-import com.ovolk.dictionary.presentation.navigation.graph.CommonScreen
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 
 
 @Composable

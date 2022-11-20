@@ -11,7 +11,6 @@ object Graph {
     const val ROOT = "root_graph"
     const val SELECT_LANGUAGES = "select_languages"
     const val MAIN_TAB_BAR = "main_tab_bar"
-    const val HOME_TAB_NAVIGATOR = "home_tab_navigator"
     const val COMMON = "common"
 }
 
