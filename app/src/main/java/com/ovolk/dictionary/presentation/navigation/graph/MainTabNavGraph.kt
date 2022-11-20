@@ -45,6 +45,9 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
 
         composable(
             route = MainTabBottomBar.Exam.route,
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "${DEEP_LINK_BASE}/${MainTabRotes.EXAM}?listName={listName}&listId={listId}"
+            }),
             arguments = listOf(
                 navArgument("listName") {
                     type = NavType.StringType
@@ -161,10 +164,12 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
         composable(route = CommonScreen.SettingsLanguagesFrom.route) {
             SettingsLanguagesFromScreen(navController=navController)
         }
+
         composable(route = CommonScreen.SettingsLanguagesTo.route) {
             SettingsLanguagesToScreen(navController=navController)
         }
-        composable(route = CommonScreen.ExamReminder.route) {
+
+        composable(route = CommonScreen.ExamReminder.route,) {
             ExamReminderScreen(navController=navController)
         }
     }

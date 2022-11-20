@@ -29,45 +29,42 @@ data class MainBottomBarItem(
 
 @Composable
 fun MainBottomBar(navController: NavHostController) {
-    // TODO programmatically hide
-    BottomNavigation {
-        val screens = listOf(
-            MainBottomBarItem(
-                route = MainTabBottomBar.Home,
-                text = stringResource(id = R.string.home),
-                icon = painterResource(id = R.drawable.home)
-            ),
-            MainBottomBarItem(
-                route = MainTabBottomBar.Exam,
-                text = stringResource(id = R.string.exam),
-                icon = painterResource(id = R.drawable.exam)
-            ),
-            MainBottomBarItem(
-                route = MainTabBottomBar.Lists,
-                text = stringResource(id = R.string.lists),
-                icon = painterResource(id = R.drawable.list)
-            ),
-            MainBottomBarItem(
-                route = MainTabBottomBar.Settings,
-                text = stringResource(id = R.string.settings),
-                icon = painterResource(id = R.drawable.settings)
-            )
+    val screens = listOf(
+        MainBottomBarItem(
+            route = MainTabBottomBar.Home,
+            text = stringResource(id = R.string.home),
+            icon = painterResource(id = R.drawable.home)
+        ),
+        MainBottomBarItem(
+            route = MainTabBottomBar.Exam,
+            text = stringResource(id = R.string.exam),
+            icon = painterResource(id = R.drawable.exam)
+        ),
+        MainBottomBarItem(
+            route = MainTabBottomBar.Lists,
+            text = stringResource(id = R.string.lists),
+            icon = painterResource(id = R.drawable.list)
+        ),
+        MainBottomBarItem(
+            route = MainTabBottomBar.Settings,
+            text = stringResource(id = R.string.settings),
+            icon = painterResource(id = R.drawable.settings)
         )
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-        val bottomBarDestination = screens.any { it.route.route == currentDestination?.route }
+    )
 
-        if (bottomBarDestination) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val bottomBarDestination = screens.any { it.route.route == currentDestination?.route }
+
+    if (bottomBarDestination) {
+        BottomNavigation {
             screens.forEach { screen ->
                 val selected =
                     currentDestination?.hierarchy?.any { it.route == screen.route.route } == true
 
-                val color =
-                    if (selected) colorResource(id = R.color.blue) else colorResource(id = R.color.grey)
-
                 BottomNavigationItem(
-                    icon = { Icon(screen.icon, contentDescription = null, tint = color) },
-                    label = { Text(screen.text, color = color) },
+                    icon = { Icon(screen.icon, contentDescription = null) },
+                    label = { Text(screen.text) },
                     selected = selected,
                     onClick = {
                         navController.navigate(screen.route.route) {
@@ -81,7 +78,7 @@ fun MainBottomBar(navController: NavHostController) {
                             // reselecting the same item
                             launchSingleTop = true
                             // Restore state when reselecting a previously selected item
-                            restoreState = true
+                            restoreState = false
                         }
                     },
                     selectedContentColor = colorResource(id = R.color.blue),
@@ -91,36 +88,5 @@ fun MainBottomBar(navController: NavHostController) {
             }
         }
 
-//        screens.forEach { screen ->
-//            val selected =
-//                currentDestination?.hierarchy?.any { it.route == screen.route.route } == true
-//
-//            val color =
-//                if (selected) colorResource(id = R.color.blue) else colorResource(id = R.color.grey)
-//
-//            BottomNavigationItem(
-//                icon = { Icon(screen.icon, contentDescription = null, tint = color) },
-//                label = { Text(screen.text, color = color) },
-//                selected = selected,
-//                onClick = {
-//                    navController.navigate(screen.route.route) {
-//                        // Pop up to the start destination of the graph to
-//                        // avoid building up a large stack of destinations
-//                        // on the back stack as users select items
-//                        popUpTo(navController.graph.findStartDestination().id) {
-//                            saveState = true
-//                        }
-//                        // Avoid multiple copies of the same destination when
-//                        // reselecting the same item
-//                        launchSingleTop = true
-//                        // Restore state when reselecting a previously selected item
-//                        restoreState = true
-//                    }
-//                },
-//                selectedContentColor = colorResource(id = R.color.blue),
-//                unselectedContentColor = colorResource(id = R.color.grey),
-//                modifier = Modifier.background(Color.White),
-//            )
-//        }
     }
 }
