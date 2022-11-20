@@ -12,8 +12,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
-import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.domain.ExamReminder
+import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.presentation.navigation.graph.HomeRotes
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-
         setupNavigation()
 
         lifecycleScope.launch {
@@ -48,7 +47,10 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val navController = rememberNavController()
             AppCompatTheme {
-                RootNavigationGraph(navController = navController)
+                RootNavigationGraph(
+                    navController = navController,
+                    getIsChosenLanguage = ::getIsChosenLanguage
+                )
             }
         }
     }
@@ -61,13 +63,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation() {
         // should invoke only for onCreate, but not for onNewIntent
-        if (!getIsChosenLanguage()) {
-            // TODO check and maybe add deep link navigation here
-//            navController.navigate(WordListFragmentDirections.actionWordListFragmentToLanguagesFromFragment())
-        }
         setupInitialDestination(intent)
     }
-
 
     private fun getIsChosenLanguage(): Boolean {
         val userStatePreferences: SharedPreferences = application.getSharedPreferences(
@@ -80,7 +77,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupInitialDestination(intent: Intent?) {
-
         // get text from selected items
         val text = intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
         val context = DictionaryApp.applicationContext()
@@ -97,13 +93,12 @@ class MainActivity : AppCompatActivity() {
                         context,
                         MainActivity::class.java
                     )
-
                     val deepLinkPendingIntent: PendingIntent? =
                         TaskStackBuilder.create(context).run {
                             addNextIntentWithParentStack(deepLinkIntent)
-                            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                            getPendingIntent(10, PendingIntent.FLAG_UPDATE_CURRENT)
                         }
-//                deepLinkPendingIntent?.send()
+                    deepLinkPendingIntent?.send()
                 } else {
                     val deepLinkIntent = Intent(
                         Intent.ACTION_VIEW,
@@ -111,16 +106,15 @@ class MainActivity : AppCompatActivity() {
                         context,
                         MainActivity::class.java
                     )
-
                     val deepLinkPendingIntent: PendingIntent? =
                         TaskStackBuilder.create(context).run {
                             addNextIntentWithParentStack(deepLinkIntent)
-                            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                            getPendingIntent(10, PendingIntent.FLAG_UPDATE_CURRENT)
                         }
-//                deepLinkPendingIntent?.send()
+
+                    deepLinkPendingIntent?.send()
                 }
             }
         }
     }
-
 }

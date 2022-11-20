@@ -1,15 +1,10 @@
 package com.ovolk.dictionary.presentation.navigation.graph
 
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.navigation.stack.MainTabNavigator
-import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
-import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 
 
 object Graph {
@@ -21,25 +16,13 @@ object Graph {
 }
 
 @Composable
-fun RootNavigationGraph(navController: NavHostController) {
-
-    fun getIsChosenLanguage(): Boolean {
-        val userStatePreferences: SharedPreferences =
-            DictionaryApp.applicationContext().getSharedPreferences(
-                USER_STATE_PREFERENCES,
-                AppCompatActivity.MODE_PRIVATE
-            )
-
-        return userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
-    }
-
+fun RootNavigationGraph(navController: NavHostController, getIsChosenLanguage: ()-> Boolean) {
 
     val startDestination = if (getIsChosenLanguage()) {
         Graph.MAIN_TAB_BAR
     } else {
         Graph.SELECT_LANGUAGES
     }
-
 
     NavHost(
         navController = navController,
