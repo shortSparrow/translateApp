@@ -28,7 +28,7 @@ fun HintList(
     focusRequesterTranslates: FocusRequester,
     onAction: (ModifyWordHintsAction) -> Unit
 ) {
-    Column() {
+    Column {
         hints.map { hint ->
             var expanded by remember { mutableStateOf(false) }
             fun onPressEditTranslate() {

@@ -49,7 +49,7 @@ fun TranslateList(
                 }
 
                 fun onPressRemoveTranslate() {
-                    expanded = false;
+                    expanded = false
                     onAction(ModifyWordTranslatesAction.OnPressDeleteTranslate(translate.localId))
                 }
 
@@ -95,7 +95,7 @@ fun TranslateList(
 @Preview(showBackground = true)
 @Composable
 fun TranslateListPreview() {
-    Column() {
+    Column {
         TranslateList(
             translates = getPreviewTranslates(),
             onAction = {},

@@ -15,9 +15,11 @@ import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -44,7 +46,7 @@ class WordListViewModel @Inject constructor(
     init {
         val searchedWord: String? = savedStateHandle["searchedWord"]
         if (searchedWord != null) {
-            state = state.copy(searchValue =searchedWord)
+            state = state.copy(searchValue = searchedWord)
         }
         searchDebounced(searchedWord ?: "")
     }
@@ -123,18 +125,21 @@ class WordListViewModel @Inject constructor(
                         if (searchValue.isEmpty()) this else this.sortedWith(compareBy { l -> l.value.length })
                     }
 
+                withContext(Dispatchers.Main) {
+                    state = state.copy(
+                        filteredWordList = list,
+                        totalWordListSize = it.total,
+                        isLoading = false
+                    )
+                }
 
-                state = state.copy(
-                    filteredWordList = list,
-                    totalWordListSize = it.total,
-                    isLoading = false
-                )
+
             }
     }
 
     private fun searchDebounced(searchText: String) {
         searchJob?.cancel()
-        searchJob = viewModelScope.launch {
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
             searchWord(searchText)
         }
     }

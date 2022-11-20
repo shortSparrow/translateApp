@@ -25,6 +25,7 @@ import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.presentation.core.chip.TranslateChipItem
 import com.ovolk.dictionary.presentation.core.flow_row.FlowRow
+import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 
 @Composable
@@ -41,9 +42,7 @@ fun WordItem(
         mutableStateOf(false)
     }
 
-    val isShowMoreExist by rememberSaveable {
-        mutableStateOf(word.description.isNotEmpty())
-    }
+    val isShowMoreExist =word.description.isNotEmpty()
 
     var isAudioPlay by rememberSaveable {
         mutableStateOf(false)
@@ -65,26 +64,23 @@ fun WordItem(
             Surface(modifier = Modifier.padding(8.dp)) {
                 Column {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(text = word.langFrom)
+                        Text(text = word.langFrom.uppercase())
 
                         Row(
                             Modifier
                                 .weight(1f)
                                 .padding(
-                                    top = dimensionResource(id = R.dimen.small_gutter),
                                     start = dimensionResource(id = R.dimen.gutter),
                                     end = dimensionResource(id = R.dimen.small_gutter)
                                 )
                         ) {
                             Text(
                                 text = word.value,
-                                Modifier
-                                    .weight(7f)
+                                Modifier.weight(7f)
                             )
                             Text(
                                 text = word.transcription,
-                                Modifier
-                                    .weight(3f)
+                                Modifier.weight(3f)
                             )
                         }
 
@@ -100,7 +96,6 @@ fun WordItem(
                                     tint = iconColor,
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(top = dimensionResource(id = R.dimen.small_gutter))
                                         .clickable {
                                             onPlayAudioClick(
                                                 { isAudioPlay = true },
@@ -113,18 +108,17 @@ fun WordItem(
                         }
                     }
 
-                    Row(
-                        Modifier
-                            .padding(top = dimensionResource(id = R.dimen.large_gutter))
-                    ) {
-                        Text(
-                            text = word.langTo,
-                        )
+                    Row(Modifier.padding(top = dimensionResource(id = R.dimen.large_gutter))) {
+                        Text(text = word.langTo.uppercase())
 
                         FlowRow {
                             word.translates.forEach { translate ->
                                 Surface(
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(
+                                        start =  dimensionResource(id = R.dimen.gutter),
+                                        end = 8.dp,
+                                        bottom = 8.dp
+                                    )
                                 ) {
                                     TranslateChipItem(title = translate.value)
                                 }
@@ -153,8 +147,8 @@ fun WordItem(
                             text = showMoreLess,
                             Modifier
                                 .align(Alignment.End)
-                                .clickable { isExpanded = !isExpanded },
-                            colorResource(id = R.color.purple_700)
+                                .opacityClick { isExpanded = !isExpanded },
+                            colorResource(id = R.color.blue)
                         )
                     }
                 }

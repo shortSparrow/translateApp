@@ -113,7 +113,7 @@ fun OutlinedErrableTextField(
 @Preview(showBackground = true)
 @Composable
 fun CustomTextFieldPreview() {
-    Column() {
+    Column {
         OutlinedErrableTextField(
             value = "Слава Україні!",
             label = { Text(text = "label") },
