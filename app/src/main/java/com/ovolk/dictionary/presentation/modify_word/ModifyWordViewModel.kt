@@ -289,11 +289,18 @@ class ModifyWordViewModel @Inject constructor(
     private fun handlePressGoBack(withValidateUnsavedChanges: Boolean) {
         if (withValidateUnsavedChanges) {
             val isTheSame =
-                initialState.composeState == composeState &&
+                initialState.composeState.descriptionWord == composeState.descriptionWord &&
+                        initialState.composeState.englishWord == composeState.englishWord &&
+                        initialState.composeState.priorityValue == composeState.priorityValue &&
+                        initialState.composeState.soundFileName == composeState.soundFileName &&
+                        initialState.composeState.transcriptionWord == composeState.transcriptionWord &&
+                        initialState.composeState.wordListInfo == composeState.wordListInfo &&
+
                         initialState.hintState == hintState &&
-                        initialState.languageState == languageState &&
                         initialState.translateState == translateState &&
-                        initialState.recordAudio == recordAudio
+
+                        initialState.languageState.languageFromList.find { it.isChecked } == languageState.languageFromList.find { it.isChecked } &&
+                        initialState.languageState.languageToList.find { it.isChecked } == languageState.languageToList.find { it.isChecked }
 
             if (isTheSame) {
                 listener?.goBack()

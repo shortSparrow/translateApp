@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.modify_word.compose.ModifyWordPresenter
+import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
 fun ModifyWordScreen(navController: NavHostController) {
@@ -51,6 +52,10 @@ fun ModifyWordScreen(navController: NavHostController) {
 
     if (viewModel.listener == null) {
         viewModel.listener = listener()
+    }
+
+    BackHandler {
+        viewModel.onComposeAction(ModifyWordAction.GoBack())
     }
 
     ModifyWordPresenter(

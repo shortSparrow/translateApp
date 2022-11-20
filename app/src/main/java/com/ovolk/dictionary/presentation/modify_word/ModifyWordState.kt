@@ -59,7 +59,6 @@ data class ComposeState(
     val soundFileName: String? = null,
     val priorityValue: String = DEFAULT_PRIORITY_VALUE.toString(),
     val priorityError: ValidateResult = ValidateResult(),
-
     val wordListInfo: ModifyWordListItem? = null,
     @Stable
     val wordLists: List<ModifyWordListItem> = emptyList(),
