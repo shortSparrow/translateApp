@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -20,6 +20,9 @@ import com.ovolk.dictionary.presentation.modify_word.AddNewLangModal
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromViewModel
 import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToFromPresenter
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
@@ -30,20 +33,35 @@ fun AddNewLangBottomSheet(
 ) {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(
-            BottomSheetValue.Expanded,
+            BottomSheetValue.Collapsed,
         ),
     )
+    var initialOpen by remember {
+        mutableStateOf(false)
+    }
+    val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<SettingsLanguagesToFromViewModel>()
 
-    fun closeModal(){
-        onAction(ModifyWordAction.CloseAddNewLanguageModal)
-        viewModel.clearCurrentType()
+    fun closeModal() {
+        scope.launch {
+            bottomSheetScaffoldState.bottomSheetState.collapse()
+            delay(100)
+            onAction(ModifyWordAction.CloseAddNewLanguageModal)
+            viewModel.clearCurrentType()
+        }
     }
 
+    LaunchedEffect(Unit) {
+        scope.launch {
+            delay(100)
+            bottomSheetScaffoldState.bottomSheetState.expand()
+            initialOpen = true
+        }
+    }
 
     Dialog(
         onDismissRequest = { closeModal() },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Column(
             modifier = Modifier
@@ -58,9 +76,8 @@ fun AddNewLangBottomSheet(
 
                     viewModel.setCurrentType(state.type)
                     val languageState = viewModel.state
-                    Timber.d("type: ${state.type}")
 
-                    if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
+                    if (bottomSheetScaffoldState.bottomSheetState.isCollapsed && initialOpen) {
                         closeModal()
                     }
 

@@ -69,7 +69,6 @@ class ModifyWordViewModel @Inject constructor(
 
         recordAudio.listener = object : RecordAudioHandler.RecordAudioListener {
             override fun soundMarkAsExistButIsNoTrue() {
-                // TODO add toast
                 updateAudio(null)
             }
 
@@ -296,8 +295,11 @@ class ModifyWordViewModel @Inject constructor(
                         initialState.composeState.transcriptionWord == composeState.transcriptionWord &&
                         initialState.composeState.wordListInfo == composeState.wordListInfo &&
 
-                        initialState.hintState == hintState &&
-                        initialState.translateState == translateState &&
+                        initialState.hintState.hints == hintState.hints &&
+                        initialState.hintState.hintWord == hintState.hintWord &&
+
+                        initialState.translateState.translates == translateState.translates &&
+                        initialState.translateState.translationWord == translateState.translationWord &&
 
                         initialState.languageState.languageFromList.find { it.isChecked } == languageState.languageFromList.find { it.isChecked } &&
                         initialState.languageState.languageToList.find { it.isChecked } == languageState.languageToList.find { it.isChecked }

@@ -120,7 +120,9 @@ fun ComposableListItemPreview() {
         item = ListItem(
             id = 0L,
             title = "Sport",
-            isSelected = true
+            isSelected = true,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         ),
         onItemClick = {_: Long, _: String ->  },
         onAction = {},
@@ -135,7 +137,9 @@ fun ComposableListItemPreview2() {
         item = ListItem(
             id = 0L,
             title = "Sport",
-            isSelected = false
+            isSelected = false,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         ),
         onItemClick = {_: Long, _: String ->  },
         onAction = {},

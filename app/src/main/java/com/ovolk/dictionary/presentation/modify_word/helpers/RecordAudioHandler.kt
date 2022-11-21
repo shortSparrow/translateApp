@@ -121,7 +121,6 @@ class RecordAudioHandler @Inject constructor(
     }
 
     fun openBottomSheet() {
-        // TODO make request
         recordState = recordState.copy(isModalOpen = true)
     }
 

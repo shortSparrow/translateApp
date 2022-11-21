@@ -9,8 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
 import com.ovolk.dictionary.domain.ExamReminder
+import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
 import com.ovolk.dictionary.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -108,25 +108,12 @@ class ExamReminderViewModel @Inject constructor(
             sharedPref.getLong(TIME_TO_NEXT_REMINDER, -1L)
         if (getNotificationPref == -1L) {
             viewModelScope.launch {
-                // delay is needed for prevent override two uiState, which goe one by one
-//                delay(500) // TODO maybe delete
                 state = state.copy(leftTimeToNextExam = "")
             }
             return
         }
 
         val millis = getNotificationPref - Calendar.getInstance().timeInMillis
-
-        // FIXME maybe replace it to main activity
-//        if (millis < 0) {
-//            if (sharedPref.getInt(
-//                    EXAM_REMINDER_FREQUENCY,
-//                    PushFrequency.ONCE_AT_DAY
-//                ) != PushFrequency.NONE
-//            ) {
-//                Toast.makeText(application, "restart PUSH notification", Toast.LENGTH_LONG).show()
-//            }
-//        }
 
         if (millis > 0) {
             timer = object : CountDownTimer(millis, 1000) {

@@ -6,7 +6,7 @@ import java.util.*
 
 fun getAudioPath(context: Context, fileName: String): String {
     val dirName =
-        context.getExternalFilesDir(null)?.absolutePath  // FIXME save into internal storage and then sync with Firebase storage
+        context.getExternalFilesDir(null)?.absolutePath
 
     return "$dirName/$fileName"
 }

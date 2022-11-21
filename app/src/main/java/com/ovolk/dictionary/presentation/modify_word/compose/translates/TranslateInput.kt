@@ -91,8 +91,8 @@ fun TranslateInput(
                 .width(85.dp)
         ) {
             Text(
-                text = translatesState.editableTranslate?.let { "EDIT" }
-                    ?: "ADD", // TODO add sstringResource
+                text = translatesState.editableTranslate?.let { stringResource(id = R.string.edit).uppercase() }
+                    ?: stringResource(id = R.string.add).uppercase(),
                 color = colorResource(id = R.color.white),
                 modifier = Modifier.padding(vertical = 9.dp)
             )

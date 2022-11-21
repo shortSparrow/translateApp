@@ -67,6 +67,10 @@ fun MainBottomBar(navController: NavHostController) {
                     label = { Text(screen.text) },
                     selected = selected,
                     onClick = {
+                        // ignoring navigation if current tab equals selected
+                        if(currentDestination?.route == screen.route.route) {
+                            return@BottomNavigationItem
+                        }
                         navController.navigate(screen.route.route) {
                             // Pop up to the start destination of the graph to
                             // avoid building up a large stack of destinations

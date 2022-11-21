@@ -71,7 +71,7 @@ data class ComposeState(
     val isOpenAddNewListModal: Boolean = false,
     val isOpenUnsavedChanges: Boolean = false,
     val editableWordId: Long? = null,
-    val createdAt: Long? = null, // TODO подумати, може при завантаженні слова записати його кудись і потім звертатися
+    val createdAt: Long? = null,
     val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD,
     val isOpenDeleteWordModal: Boolean = false,
 )

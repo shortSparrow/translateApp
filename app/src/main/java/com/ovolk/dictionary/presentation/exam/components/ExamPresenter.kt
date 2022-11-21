@@ -130,6 +130,7 @@ fun ExamPresenter(
                     onAction = onAction
                 )
                 WordIsCheckedPart(
+                    currentInputValue = state.answerValue,
                     status = currentWord.status,
                     currentWordFreeze = currentWordFreeze,
                     isTranslateExpanded = state.isTranslateExpanded,

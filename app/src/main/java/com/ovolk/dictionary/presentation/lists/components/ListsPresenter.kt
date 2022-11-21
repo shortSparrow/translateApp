@@ -34,7 +34,6 @@ fun ListsPresenter(
     val selectedLists = state.list.groupBy { it.isSelected }[true]
     val atLeastOneListSelected = selectedLists != null
 
-
     if (state.modalList.isOpen) {
         DialogAddNewList(
             modalListState = state.modalList,
@@ -159,17 +158,23 @@ fun PreviewListsScreenSuccess() {
                     title = "Sport",
                     count = 0,
                     id = 1L,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
                 ),
                 com.ovolk.dictionary.domain.model.lists.ListItem(
                     title = "Politics",
                     count = 10,
                     id = 2L,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
                 ),
                 com.ovolk.dictionary.domain.model.lists.ListItem(
                     title = "LolKek",
                     count = 4,
                     id = 3L,
-                    isSelected = true
+                    isSelected = true,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
                 ),
             ),
             isLoadingList = LoadingState.SUCCESS

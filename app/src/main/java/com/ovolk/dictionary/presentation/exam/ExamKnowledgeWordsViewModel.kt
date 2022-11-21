@@ -32,9 +32,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private val getExamWordListUseCase: GetExamWordListUseCase,
     private val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     private val modifyWordUseCase: ModifyWordUseCase,
-    private val repository: TranslatedWordRepository,
     private val application: Application,
-//    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var listener: Listener? = null
     var composeState by mutableStateOf(ExamKnowledgeState())
@@ -124,7 +122,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
             is ExamAction.OnSelectVariant -> {
                 composeState = composeState.copy(answerValue = action.variant.value)
-                // TODO maybe do it locally in compose
                 getCurrentWord().answerVariants.forEach {
                     it.isSelected = it.id == action.variant.id
                 }
@@ -180,7 +177,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             ExamAction.OnNavigateToCreateFirstWord -> {
                 listener?.onNavigateToCreateFirstWord()
 
-                // TODO temporary solution for updating exam list after create first word
+                // temporary solution for updating exam list after create first word
                 viewModelScope.launch {
                     delay(100L)
                     composeState = composeState.copy(
@@ -228,7 +225,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     private fun addHiddenTranslate() {
         val value = composeState.answerValue
-        // TODO add UI validation
         if (value.isEmpty()) return
 
         val hiddenTranslate = Translate(
@@ -239,7 +235,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             value = value,
             isHidden = true
         )
-
 
         val currentWord = getCurrentWord()
         viewModelScope.launch {

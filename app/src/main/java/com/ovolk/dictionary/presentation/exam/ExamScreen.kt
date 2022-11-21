@@ -11,25 +11,26 @@ import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 @Composable
 fun ExamScreen(navController: NavHostController, listName: String, listId: Long) {
 
-
     val viewModel = hiltViewModel<ExamKnowledgeWordsViewModel>()
     val state = viewModel.composeState
     val onAction = viewModel::onAction
 
 
-//    // TODO temporary solution for updating exam list after create first word
-    if (state.examWordList.isEmpty() && state.shouldLoadWordListAgain) {
-        onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
+    // temporary solution for updating exam list after create first word
+    LaunchedEffect(state.shouldLoadWordListAgain){
+        if (state.examWordList.isEmpty() && state.shouldLoadWordListAgain) {
+            onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
+        }
     }
 
-    LaunchedEffect(listName,listId) {
+    LaunchedEffect(listName, listId) {
         onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
     }
 
     if (viewModel.listener == null) {
         viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
             override fun onNavigateToCreateFirstWord() {
-                navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}")
+                navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
             }
         }
     }

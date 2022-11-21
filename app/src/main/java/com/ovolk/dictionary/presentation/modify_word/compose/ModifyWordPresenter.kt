@@ -148,7 +148,7 @@ fun ModifyWordPresenter(
                 Text(
                     text = stringResource(id = R.string.modify_word_additional),
                     modifier = Modifier
-                        .padding(bottom = 0.dp, top = 20.dp) // TODO remove isDisabled
+                        .padding(bottom = 0.dp, top = 20.dp)
                         .opacityClick(
                             isDisabled = false,
                             onClick = { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) }),

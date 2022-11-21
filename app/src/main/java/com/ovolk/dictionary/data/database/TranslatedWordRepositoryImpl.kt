@@ -31,20 +31,6 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     private val application: Application
 ) : TranslatedWordRepository, InMemoryStorage by inMemoryStorage {
 
-    // show variants feature for now available only for Ukrainian language
-    private fun getAvailableLangList(): List<String> {
-        val sharedPref: SharedPreferences =
-            application.getSharedPreferences(
-                USER_STATE_PREFERENCES, // TODO change on new pref
-                AppCompatActivity.MODE_PRIVATE
-            )
-        val availableLangListString =
-            sharedPref.getString(SHOW_VARIANTS_EXAM_AVAILABLE_LANGUAGES, "")
-        val languageListType: Type = object : TypeToken<List<String>>() {}.type
-
-        return Gson().fromJson(availableLangListString, languageListType)
-    }
-
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
         return translatedWordDao.getExamWordList(count = count, skip = skip)
             .map { word -> mapper.wordFullDbToExamWord( word ) }
@@ -86,9 +72,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         } else {
             res
         }
-
     }
-
 
     override suspend fun searchWordListSize(): Flow<Int> {
         return translatedWordDao.searchWordListSize()
@@ -133,7 +117,6 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     override suspend fun modifyWord(word: ModifyWord, mapper: WordMapper): Long {
         return translatedWordDao.modifyWord(word, mapper)
     }
-
 
     companion object {
         private const val WORD_IS_NOT_FOUND = -1

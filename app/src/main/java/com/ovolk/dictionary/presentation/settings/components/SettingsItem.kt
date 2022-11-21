@@ -27,8 +27,8 @@ import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 @Composable
 fun SettingsItem(item: SettingsItem, onClick: (item: SettingsItem) -> Unit) {
     Surface(
-        border = BorderStroke(2.dp, color = colorResource(id = R.color.light_grey)), // or maybe blue_2
-        shape = RoundedCornerShape(3.dp),
+        border = BorderStroke(1.dp, color = colorResource(id = R.color.light_grey)), // or maybe blue_2
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = dimensionResource(id = R.dimen.gutter))

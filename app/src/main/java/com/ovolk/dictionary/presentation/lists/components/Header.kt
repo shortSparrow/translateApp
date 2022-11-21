@@ -73,8 +73,8 @@ fun Header(
                                         .clickable {
                                             onAction(
                                                 ListsAction.OpenModalRenameList(
-                                                    currentName=selectedLists[0].title,
-                                                    listId=selectedLists[0].id
+                                                    currentName = selectedLists[0].title,
+                                                    listId = selectedLists[0].id
                                                 )
                                             )
                                         },
@@ -129,6 +129,15 @@ fun Header(
 @Composable
 fun ComposablePreviewHeader() {
     Header(
-        selectedLists = listOf(ListItem(id = 0L, count = 1, title = "sport", isSelected = true)),
+        selectedLists = listOf(
+            ListItem(
+                id = 0L,
+                count = 1,
+                title = "sport",
+                isSelected = true,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+        ),
         onAction = {})
 }

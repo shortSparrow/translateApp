@@ -28,6 +28,7 @@ import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WordIsCheckedPart(
+    currentInputValue:String,
     status: ExamWordStatus,
     currentWordFreeze: Boolean,
     isTranslateExpanded: Boolean,
@@ -46,6 +47,7 @@ fun WordIsCheckedPart(
     ) {
         if (status == ExamWordStatus.FAIL) {
             OutlinedButton(
+                enabled=currentInputValue.isNotEmpty(),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(bottom = dimensionResource(id = R.dimen.gutter)),
@@ -101,6 +103,7 @@ fun WordIsCheckedPart(
 @Composable
 fun WordIsCheckedPartPreview() {
     WordIsCheckedPart(
+        currentInputValue = "",
         status = ExamWordStatus.SUCCESS,
         currentWordFreeze = true,
         isTranslateExpanded = false,
@@ -114,6 +117,7 @@ fun WordIsCheckedPartPreview() {
 @Composable
 fun WordIsCheckedPartPreview2() {
     WordIsCheckedPart(
+        currentInputValue = "",
         status = ExamWordStatus.FAIL,
         currentWordFreeze = true,
         isTranslateExpanded = false,
@@ -127,6 +131,7 @@ fun WordIsCheckedPartPreview2() {
 @Composable
 fun WordIsCheckedPartPreview3() {
     WordIsCheckedPart(
+        currentInputValue = "",
         status = ExamWordStatus.FAIL,
         currentWordFreeze = true,
         isTranslateExpanded = true,

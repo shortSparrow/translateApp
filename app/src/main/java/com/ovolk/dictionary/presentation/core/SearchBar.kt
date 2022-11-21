@@ -25,7 +25,6 @@ fun SearchBar(
     onPressCross: () -> Unit,
     searchedValue: String? = null
 ) {
-    // TODO remove uncontrollable if. Use only controllable
     val isControlled = searchedValue != null
     var text by remember {
         mutableStateOf("")
