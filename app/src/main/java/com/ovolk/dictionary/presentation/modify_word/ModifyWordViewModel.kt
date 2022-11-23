@@ -182,6 +182,13 @@ class ModifyWordViewModel @Inject constructor(
                 composeState =
                     composeState.copy(isOpenUnsavedChanges = !composeState.isOpenUnsavedChanges)
             }
+            is ModifyWordAction.ToggleFieldDescribeModalOpen -> {
+                composeState =
+                    composeState.copy(
+                        isFieldDescribeModalOpen = !composeState.isFieldDescribeModalOpen,
+                        fieldDescribeModalQuestion = action.question
+                    )
+            }
         }
     }
 

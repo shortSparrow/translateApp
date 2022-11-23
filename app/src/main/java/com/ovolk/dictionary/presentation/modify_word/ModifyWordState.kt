@@ -74,6 +74,8 @@ data class ComposeState(
     val createdAt: Long? = null,
     val modifyMode: ModifyWordModes = ModifyWordModes.MODE_ADD,
     val isOpenDeleteWordModal: Boolean = false,
+    val isFieldDescribeModalOpen: Boolean = false,
+    val fieldDescribeModalQuestion: String = "",
 )
 
 data class RecordAudioState(
@@ -116,6 +118,7 @@ sealed interface ModifyWordAction {
     object DeleteWord : ModifyWordAction
     data class GoBack(val withValidateUnsavedChanges: Boolean = true) : ModifyWordAction
     object ToggleUnsavedChanges : ModifyWordAction
+    data class ToggleFieldDescribeModalOpen(val question:String) : ModifyWordAction
 }
 
 sealed interface ModifyWordHintsAction {

@@ -17,15 +17,20 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.modify_word.*
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
+import com.ovolk.dictionary.presentation.modify_word.compose.question_wrapper.QuestionWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldEnglishWord
@@ -89,6 +94,17 @@ fun ModifyWordPresenter(
             onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
     }
 
+    if (state.isFieldDescribeModalOpen) {
+        InfoDialog(
+            onDismissRequest = { onAction(ModifyWordAction.ToggleFieldDescribeModalOpen("")) },
+            message = state.fieldDescribeModalQuestion,
+            onClick = { onAction(ModifyWordAction.ToggleFieldDescribeModalOpen("")) },
+            buttonText = stringResource(id = R.string.ok).uppercase(),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+        )
+    }
+
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
     ) {
@@ -124,7 +140,11 @@ fun ModifyWordPresenter(
                     onAction = onAction
                 )
 
-                TranslatePart(translateState = translateState, onAction = onTranslateAction)
+                val describeTranslateField =
+                    stringResource(id = R.string.modify_word_field_describe_translation)
+                QuestionWrapper(onAction = onAction, question = describeTranslateField) {
+                    TranslatePart(translateState = translateState, onAction = onTranslateAction)
+                }
 
                 TextFieldDescription(
                     descriptionWord = state.descriptionWord,
@@ -137,18 +157,30 @@ fun ModifyWordPresenter(
                     onAction = onRecordAction
                 )
 
-                TextFieldPriority(
-                    priorityValue = state.priorityValue,
-                    priorityError = state.priorityError,
-                    onAction = onAction
-                )
+                val describePriorityField =
+                    stringResource(id = R.string.modify_word_field_describe_priority)
+                QuestionWrapper(onAction = onAction, question = describePriorityField) {
+                    TextFieldPriority(
+                        priorityValue = state.priorityValue,
+                        priorityError = state.priorityError,
+                        onAction = onAction
+                    )
+                }
 
-                AddToList(state = state, onAction = onAction)
+                val describeListsField =
+                    stringResource(id = R.string.modify_word_field_describe_lists)
+                QuestionWrapper(
+                    onAction = onAction,
+                    absolutePosition = false,
+                    question = describeListsField
+                ) {
+                    AddToList(state = state, onAction = onAction)
+                }
 
                 Text(
                     text = stringResource(id = R.string.modify_word_additional),
                     modifier = Modifier
-                        .padding(bottom = 0.dp, top = 20.dp)
+                        .padding(bottom = 10.dp, top = 20.dp)
                         .opacityClick(
                             isDisabled = false,
                             onClick = { onAction(ModifyWordAction.ToggleVisibleAdditionalPart) }),
@@ -156,7 +188,11 @@ fun ModifyWordPresenter(
                 )
 
                 if (state.isAdditionalFieldVisible) {
-                    HintPart(hintsState = hintState, onAction = onHintAction)
+                    val describeHintField =
+                        stringResource(id = R.string.modify_word_field_describe_hint)
+                    QuestionWrapper(onAction = onAction, question = describeHintField) {
+                        HintPart(hintsState = hintState, onAction = onHintAction)
+                    }
                 }
 
                 Button(

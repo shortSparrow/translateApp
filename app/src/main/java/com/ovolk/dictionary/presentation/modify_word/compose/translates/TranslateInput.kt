@@ -70,7 +70,7 @@ fun TranslateInput(
                         )
                     )
                 },
-                label = { Text(text = stringResource(id = R.string.modify_word_transcription)) },
+                label = { Text(text = stringResource(id = R.string.modify_word_input_translate)) },
                 isError = !translatesState.error.successful,
                 errorMessage = translatesState.error.errorMessage,
                 maxErrorLines = maxErrorLines,
