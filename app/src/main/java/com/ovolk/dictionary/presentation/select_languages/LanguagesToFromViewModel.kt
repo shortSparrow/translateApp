@@ -23,7 +23,8 @@ class LanguagesToFromViewModel @Inject constructor(
     var state by mutableStateOf(LanguageToFromState())
         private set
 
-    var listener: Listener? = null
+    var listenerLanguageFrom: ListenerLanguageFrom? = null
+    var listenerLanguageTo: ListenerLanguageTo? = null
 
     fun setCurrentType(type: LanguagesType) {
         if (state.type == null) {
@@ -49,13 +50,14 @@ class LanguagesToFromViewModel @Inject constructor(
                 when (state.type) {
                     LanguagesType.LANG_TO -> {
                         updateTranslatableLanguages.saveLanguagesTo(list = state.languageList)
+                        listenerLanguageTo?.navigateToHome()
                     }
                     LanguagesType.LANG_FROM -> {
                         updateTranslatableLanguages.saveLanguagesFrom(list = state.languageList)
+                        listenerLanguageFrom?.navigateToLanguageTo()
                     }
                     null -> {}
                 }
-                listener?.navigate(state.type)
             }
             is LanguagesToFromActions.OnSearchLanguagesTo -> {
                 state = state.copy(
@@ -90,7 +92,11 @@ class LanguagesToFromViewModel @Inject constructor(
         }
     }
 
-    interface Listener {
-        fun navigate(lang: LanguagesType?)
+    interface ListenerLanguageFrom {
+        fun navigateToLanguageTo()
+    }
+
+    interface ListenerLanguageTo {
+        fun navigateToHome()
     }
 }

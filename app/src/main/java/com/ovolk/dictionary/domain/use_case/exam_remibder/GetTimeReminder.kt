@@ -2,7 +2,7 @@ package com.ovolk.dictionary.domain.use_case.exam_remibder
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.ovolk.dictionary.presentation.exam.ReminderTime
+import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
 import com.ovolk.dictionary.util.EXAM_REMINDER_TIME
 import com.ovolk.dictionary.util.PushFrequency
 import javax.inject.Inject

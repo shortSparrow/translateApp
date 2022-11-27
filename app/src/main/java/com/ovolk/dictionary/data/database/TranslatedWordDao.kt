@@ -33,7 +33,6 @@ interface TranslatedWordDao {
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME  WHERE word_list_id=:listId")
     suspend fun getExamWordListSizeForOneList(listId: Long): Int
 
-
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb
 

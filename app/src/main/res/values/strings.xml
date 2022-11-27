@@ -3,6 +3,12 @@
     <!-- cd - content description  -->
 
 
+    <!--  Routes  -->
+    <string name="home">Home</string>
+    <string name="exam">Exam</string>
+    <string name="lists">Lists</string>
+    <string name="settings">Settings</string>
+
     <!--WordList fragment -->
     <string name="word_list_empty_dictionary">You don\'t have any words</string>
     <string name="word_list_add_first_word">Add first word</string>
@@ -28,7 +34,8 @@
     <string name="modify_word_toolbar_title_add">Add new word</string>
     <string name="modify_word_toolbar_title_edit">Edit word</string>
     <string name="modify_word_confirm_delete_title">Are you sure you want to delete this word?</string>
-    <string name="modify_word_enable_audio_permission">Your audio permission is disabled, please, go to settings and enable one</string>
+    <string name="modify_word_enable_audio_permission">Your Microphone permission is disabled, you must go to settings and enable one</string>
+    <string name="modify_word_enable_audio_go_to_settings">GO TO SETTINGS</string>
     <string name="modify_word_cd_selected_mark">selected mark</string>
     <string name="modify_word_select_lists_dialog_title">Select List</string>
     <string name="modify_word_select_lists_dialog_description">"There isn't lists. Press Add New List for adding one"</string>
@@ -41,8 +48,27 @@
     <string name="modify_word_language_picker_from">(language from)</string>
     <string name="modify_word_language_picker_to">(language to)</string>
     <string name="modify_word_validate_add_empty_field">this field is required, input translate and press add</string>
-
-
+    <string name="modify_word_record_listen">listen</string>
+    <string name="modify_word_unsaved_changes">If you go back you lose unsaved changes</string>
+    <string name="modify_word_field_describe_translation">
+        You can add multiple translations for a word. Also, if you long press on a translation you will add/remove it from the hidden translations.
+        \n\nHidden translations are translations that are marked in dark color and are not visible on the main screen, but they are taken into account during the exam.
+        \n\nUseful for languages that have different endings for cases or genders (English "pretty" can be translated into Ukrainian as: "гарний", "гарна", "гарна")
+    </string>
+    <string name="modify_word_field_describe_priority">
+        The priority affects how often you will see the word during the exam, the higher it is - the more often the word appears in the exam. Each time you answer correctly the priority decreases by 1, when you answer incorrectly it increases by 1.
+    </string>
+    <string name="modify_word_field_describe_lists">
+        You can add a word to a special list, for example the Sport list, in which you put all words related to sports
+    </string>
+    <string name="modify_word_field_describe_hint">
+        Hints are special sentences that will help you during the exam if you need them. For example, for the word "Suite", a hint could be "clothes worn by businessmen"
+    </string>
+    <string name="modify_word_record_delete_cd">Delete this record</string>
+    <string name="modify_word_record_cd">Recording button</string>
+    <string name="modify_word_add_new_record_cd">Add bew record button</string>
+    <string name="modify_word_change_record_cd">Change current record button</string>
+    <string name="modify_word_field_describe_cd">field describe</string>
 
 
     <!-- Exam -->
@@ -53,7 +79,7 @@
     <string name="exam_hide_hints">hide hints</string>
     <string name="exam_show_variants">show variants</string>
     <string name="exam_hide_variants">hide variants</string>
-    <string name="exam_your_answer">Your answer:</string>
+    <string name="exam_your_answer">Your answer: %s</string>
     <string name="exam_correct_answer">Great, your answer is correct :)</string>
     <string name="exam_hidden_translate_description">If you think answer is correct you can add this word like "hidden translate". Hidden translate this is special translates which does not visible on main page list, but taken into account on exam.\n\nHidden translates has different background color. You can change hidden status by long tab on translate</string>
     <string name="exam_show_current_translates">show current translates</string>
@@ -64,6 +90,13 @@
     <string name="exam_complete_infinity_exam">Congratulations, you complete infinity exam</string>
     <string name="exam_list_name">(%s)</string>
     <string name="exam_show_variants_unavailable">Show variants currently is unavailable for this language</string>
+    <string name="exam_add_hidden_translate">add hidden translate</string>
+    <string name="exam_hidden_translate_description_title">*What is this hidden translate?</string>
+    <string name="exam_daily_mode">Daily mode</string>
+    <string name="exam_infinity_mode">Infinity mode</string>
+    <string name="exam_next_word_button_cd">Next word</string>
+    <string name="exam_prev_word_button_cd">Previous word</string>
+    <string name="exam_select_exam_daily_mode_cd">Select daily exam mode button</string>
 
     <!-- Settings fragment -->
     <string name="settings_language_item_title">language</string>
@@ -142,6 +175,7 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     <string name="yes">Yes</string>
     <string name="ok">Ok</string>
     <string name="no">No</string>

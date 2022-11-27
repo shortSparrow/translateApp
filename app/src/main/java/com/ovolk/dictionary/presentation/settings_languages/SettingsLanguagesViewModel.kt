@@ -21,6 +21,9 @@ class SettingsLanguagesViewModel @Inject constructor(
 
     var listener: Listener? = null
 
+    init {
+        getLanguages()
+    }
 
     private fun getLanguages() {
         viewModelScope.launch {

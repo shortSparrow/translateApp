@@ -5,7 +5,10 @@ import com.ovolk.dictionary.domain.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
+import com.ovolk.dictionary.presentation.exam.ExamMode
+import com.ovolk.dictionary.presentation.exam.ExamMode.*
 import com.ovolk.dictionary.util.EXAM_WORD_ANSWER_LIST_SIZE
+import com.ovolk.dictionary.util.showVariantsAvailableLanguages
 import com.ovolk.dictionary.util.temporarryAnswerList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +17,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.random.nextInt
+
+data class ExamWordListUseCaseResponse(
+    val examWordList: List<ExamWord>,
+    val totalCount: Int
+)
 
 class GetExamWordListUseCase @Inject constructor(
     private val repository: TranslatedWordRepository,
@@ -24,67 +32,76 @@ class GetExamWordListUseCase @Inject constructor(
     private var isLoadingNextPage: Boolean = false
     private var totalCount: Int = 0
 
-    fun getTotalCountExamList() = totalCount
-
-
-    fun resetExamWordListCurrentPage() {
-        getExamWordListCurrentPage = 0
-    }
-
     suspend fun searchWordListSize() = coroutineScope { repository.searchWordListSize() }
 
-    suspend fun loadNextPage(listId: Long?): List<ExamWord>? {
+    suspend fun loadNextPage(listId: Long?, mode: ExamMode): ExamWordListUseCaseResponse? {
         if (isLoadingNextPage) return null
-        return invoke(listId = listId)
+        return invoke(listId = listId, mode = mode)
     }
 
-    private fun loadTotalCount(listId: Long?) {
+    suspend operator fun invoke(isInitialLoad: Boolean = false, listId: Long?, mode: ExamMode) =
+        coroutineScope {
+            isLoadingNextPage = true
+            if (isInitialLoad) {
+                loadTotalCount(listId, mode)
+                getExamWordListCurrentPage = 0
+            }
+            val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
+            getExamWordListCurrentPage += 1
+
+            val answerList = getExamAnswerVariants(EXAM_WORD_LIST_COUNT)
+
+            val request = if (listId != null) {
+                repository.getExamWordListFromOneList(
+                    count = EXAM_WORD_LIST_COUNT,
+                    skip = skip,
+                    listId = listId
+                )
+            } else {
+                repository.getExamWordList(
+                    count = EXAM_WORD_LIST_COUNT,
+                    skip = skip,
+                )
+            }
+
+            val examWordList = request.mapIndexed { index, examWord ->
+                val from = index * EXAM_WORD_ANSWER_LIST_SIZE
+                val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
+
+                val randomWordTranslateIndex =
+                    Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
+
+                // only for available languages for this feature
+                if (showVariantsAvailableLanguages.contains(examWord.langTo.uppercase())) {
+                    examWord.answerVariants = answerList.slice(from until to)
+                        .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
+                        .shuffled()
+                        .toMutableList()
+                }
+
+                examWord
+            }
+
+            ExamWordListUseCaseResponse(
+                examWordList,
+                totalCount,
+            )
+                .apply { isLoadingNextPage = false }
+        }
+
+    private fun loadTotalCount(listId: Long?, mode: ExamMode) {
         CoroutineScope(Dispatchers.IO).launch {
-            totalCount = if (listId == null) {
+            val tempTotalCount = if (listId == null) {
                 repository.getExamWordListSize()
             } else {
                 repository.getExamWordListSizeForOneList(listId)
             }
 
+            totalCount = when(mode) {
+                DAILY_MODE -> minOf(tempTotalCount, EXAM_WORD_LIST_COUNT)
+                INFINITY_MODE -> tempTotalCount
+            }
         }
-    }
-
-    suspend operator fun invoke(isInitialLoad: Boolean = false, listId: Long?) = coroutineScope {
-        isLoadingNextPage = true
-        val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
-        getExamWordListCurrentPage += 1
-
-        if (isInitialLoad) {
-            loadTotalCount(listId)
-        }
-        val answerList = getExamAnswerVariants(EXAM_WORD_LIST_COUNT)
-
-        val request = if (listId != null) {
-            repository.getExamWordListFromOneList(
-                count = EXAM_WORD_LIST_COUNT,
-                skip = skip,
-                listId = listId
-            )
-        } else {
-            repository.getExamWordList(
-                count = EXAM_WORD_LIST_COUNT,
-                skip = skip,
-            )
-        }
-
-        request.mapIndexed { index, examWord ->
-            val from = index * EXAM_WORD_ANSWER_LIST_SIZE
-            val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
-
-            val randomWordTranslateIndex =
-                Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
-            examWord.copy(
-                answerVariants = answerList.slice(from until to)// FIXME ME FROM TO
-                    .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
-                    .shuffled()
-            )
-        }
-            .apply { isLoadingNextPage = false }
     }
 
     // get 60 random Answer Variants

@@ -37,6 +37,7 @@ class ListsViewModel @Inject constructor(
     private val renameListUseCase: RenameListUseCase,
     private val application: Application
 ) : ViewModel() {
+    var listener: Listener? = null
     var state by mutableStateOf(ListsState())
         private set
 
@@ -128,12 +129,7 @@ class ListsViewModel @Inject constructor(
                 isOpenConfirmDeleteListDialog(false)
             }
             is ListsAction.OnListItemPress -> {
-                action.navController.navigate(
-                    ListFragmentDirections.actionListFragmentToListFull(
-                        listId = action.listId,
-                        listName = action.listName
-                    )
-                )
+                listener?.navigateToFullList(listId = action.listId, listName = action.listName)
             }
             ListsAction.CloseModal -> {
                 closeModalList()
@@ -179,5 +175,10 @@ class ListsViewModel @Inject constructor(
                 resetModalError()
             }
         }
+    }
+
+
+    interface Listener {
+        fun navigateToFullList(listId: Long, listName: String)
     }
 }

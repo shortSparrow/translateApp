@@ -99,16 +99,16 @@ class WordMapper @Inject constructor() {
         wordListId = modifyWord.wordListId
     )
 
-    fun wordFullDbToExamWord(wordDb: WordFullDb, isShowVariantsAvailable: Boolean): ExamWord =
+    fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord =
         ExamWord(
             id = wordDb.wordInfo.id,
             value = wordDb.wordInfo.value,
-            translates = wordDb.translates.map { translateDbToLocal(it) },
+            initialTranslates = wordDb.translates.map { translateDbToLocal(it) },
             hints = wordDb.hints.map { hintDbToLocal(it) },
-            priority = wordDb.wordInfo.priority,
-            status = ExamWordStatus.UNPROCESSED,
-            answerVariants = emptyList(),
-            isShowVariantsAvailable = isShowVariantsAvailable
+            langTo = wordDb.wordInfo.langTo,
+            initialPriority = wordDb.wordInfo.priority,
+            initialStatus = ExamWordStatus.UNPROCESSED,
+            answerVariants = mutableListOf(),
         )
 
 
@@ -150,6 +150,5 @@ class WordMapper @Inject constructor() {
         title = listItem.title,
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
-
-        )
+    )
 }
