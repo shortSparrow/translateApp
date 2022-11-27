@@ -1,5 +1,7 @@
 package com.ovolk.dictionary.presentation.select_languages.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -8,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -17,19 +20,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.core.compose.SearchBar
-import com.ovolk.dictionary.presentation.core.compose.languages.PreferredLanguages
+import com.ovolk.dictionary.presentation.core.SearchBar
+import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.header.OneButtonOffset
+import com.ovolk.dictionary.presentation.core.header.ZeroButtonOffset
+import com.ovolk.dictionary.presentation.core.languages.PreferredLanguages
 import com.ovolk.dictionary.presentation.select_languages.LanguageToFromState
 import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromActions
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectLanguagesToFrom(
     title: String,
     state: LanguageToFromState,
-    onAction: (LanguagesToFromActions) -> Unit
+    onAction: (LanguagesToFromActions) -> Unit,
+    goBack: () -> Unit,
 ) {
     Column {
-        Header(title = title, wiBackButton = state.headerWithBackButton)
+        Header(
+            title = title,
+            withBackButton = state.headerWithBackButton,
+            onBackButtonClick = goBack,
+            titleHorizontalOffset = if (state.headerWithBackButton) OneButtonOffset else ZeroButtonOffset
+        )
 
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
             SearchBar(
@@ -38,27 +51,37 @@ fun SelectLanguagesToFrom(
             )
         }
 
-        LazyColumn(
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(id = R.dimen.small_gutter)
-            ),
-            modifier = Modifier.weight(1f)
+        CompositionLocalProvider(
+            LocalOverscrollConfiguration provides null
         ) {
-            if (state.type == LanguagesType.LANG_TO && state.preferredLanguages.isNotEmpty()) {
-                item {
-                    PreferredLanguages(
-                        languages = state.preferredLanguages,
-                        onCheck = { language -> onAction(LanguagesToFromActions.ToggleCheck(language)) },
-                        title = stringResource(id = R.string.settings_languages_from_to_preferred_lang)
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    horizontal = dimensionResource(id = R.dimen.small_gutter)
+                ),
+                modifier = Modifier.weight(1f)
+            ) {
+                if (state.type == LanguagesType.LANG_TO && state.preferredLanguages.isNotEmpty()) {
+                    item {
+                        PreferredLanguages(
+                            languages = state.preferredLanguages,
+                            onCheck = { language ->
+                                onAction(
+                                    LanguagesToFromActions.ToggleCheck(
+                                        language
+                                    )
+                                )
+                            },
+                            title = stringResource(id = R.string.settings_languages_from_to_preferred_lang)
+                        )
+                    }
+                }
+
+                items(state.filteredLanguageList) { language ->
+                    LanguageCheckBox(
+                        language = language,
+                        onCheck = { lang -> onAction(LanguagesToFromActions.ToggleCheck(lang)) }
                     )
                 }
-            }
-
-            items(state.filteredLanguageList) { language ->
-                LanguageCheckBox(
-                    language = language,
-                    onCheck = { lang -> onAction(LanguagesToFromActions.ToggleCheck(lang)) }
-                )
             }
         }
         Button(
@@ -66,11 +89,7 @@ fun SelectLanguagesToFrom(
             enabled = state.languageList.find { it.isChecked } != null,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(
-                    bottom = dimensionResource(
-                        id = R.dimen.small_gutter
-                    )
-                )
+                .padding(bottom = dimensionResource(id = R.dimen.small_gutter))
         ) {
             Text(
                 text = stringResource(id = R.string.next).uppercase(),
@@ -133,6 +152,7 @@ fun SelectLanguagesToFromPreview() {
                 ),
             )
         ),
+        goBack = {},
         onAction = {}
     )
 }

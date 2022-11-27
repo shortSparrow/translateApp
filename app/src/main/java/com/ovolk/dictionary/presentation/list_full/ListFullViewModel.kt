@@ -9,11 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -35,8 +32,6 @@ class ListsFullViewModel @Inject constructor(
     private var searchJob: Job? = null
     private val player = MediaPlayer()
     var listener: Listener? = null
-
-    var initialMount = false
 
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
@@ -93,9 +88,6 @@ class ListsFullViewModel @Inject constructor(
 
     fun onAction(action: ListFullAction) {
         when (action) {
-            ListFullAction.GoBack -> {
-                listener?.goBack()
-            }
             is ListFullAction.SearchWord -> {
                 searchDebounced(action.query)
             }
@@ -131,7 +123,6 @@ class ListsFullViewModel @Inject constructor(
 
 
     interface Listener {
-        fun goBack()
         fun navigateToExam(listId: Long, listName: String)
         fun navigateToEditWord(wordId: Long)
         fun navigateToAddWord(listId: Long)
