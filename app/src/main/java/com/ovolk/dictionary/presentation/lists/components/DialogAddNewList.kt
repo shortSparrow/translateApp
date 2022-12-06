@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +53,10 @@ fun DialogAddNewList(
                 label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                isError = modalError.isError
+                isError = modalError.isError,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = colorResource(id = R.color.white)
+                )
             )
             Box(Modifier.fillMaxWidth()) {
                 if (modalError.isError) {
