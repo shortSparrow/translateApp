@@ -90,7 +90,7 @@ fun OutlinedErrableTextField(
             colors = colors,
         )
 
-        val height = if (maxErrorLines == MaxErrorLines.ONE) 15.dp else  30.dp
+        val height = if (maxErrorLines == MaxErrorLines.ONE) 15.dp else  40.dp
         Column(modifier = Modifier.height(height)) {
             if (errorMessage != null) {
                 Text(
