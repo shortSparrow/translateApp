@@ -46,7 +46,6 @@ fun OutlinedErrableTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = RoundedCornerShape(4.dp),
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(
-        textColor = Color.Gray,
         disabledTextColor = Color.Transparent,
         backgroundColor = Color.Transparent,
         focusedIndicatorColor = colorResource(id = com.ovolk.dictionary.R.color.blue),
@@ -91,11 +90,7 @@ fun OutlinedErrableTextField(
             colors = colors,
         )
 
-        val height = if (maxErrorLines == MaxErrorLines.ONE) {
-            15.dp
-        } else {
-            30.dp
-        }
+        val height = if (maxErrorLines == MaxErrorLines.ONE) 15.dp else  30.dp
         Column(modifier = Modifier.height(height)) {
             if (errorMessage != null) {
                 Text(

@@ -42,7 +42,6 @@ fun HintList(
                     HintChipItem(
                         title = hint.value,
                         onHintPress = { expanded = !expanded },
-                        onDeleteHintPress = { onAction(ModifyWordHintsAction.OnDeleteHint(hint.localId)) }
                     )
                 }
 
@@ -54,6 +53,12 @@ fun HintList(
                     DropdownMenuItem(onClick = ::onPressEditTranslate) {
                         Text(
                             stringResource(id = R.string.edit),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    DropdownMenuItem(onClick = { onAction(ModifyWordHintsAction.OnDeleteHint(hint.localId)) }) {
+                        Text(
+                            stringResource(id = R.string.delete),
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }

@@ -1,13 +1,11 @@
 package com.ovolk.dictionary.presentation.modify_word.compose.alerts
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +44,10 @@ fun AddToList(
                     },
                     label = { Text(stringResource(id = R.string.modify_word_dialog_add_new_list_placeholder)) },
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    isError = state.modalError.isError
+                    isError = state.modalError.isError,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = colorResource(id = R.color.white)
+                    )
                 )
                 Box(Modifier.fillMaxWidth()) {
                     if (state.modalError.isError) {

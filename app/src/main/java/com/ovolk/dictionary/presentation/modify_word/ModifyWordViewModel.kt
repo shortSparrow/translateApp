@@ -153,7 +153,10 @@ class ModifyWordViewModel @Inject constructor(
                 composeState = composeState.copy(transcriptionWord = action.value)
             }
             is ModifyWordAction.OnChangeEnglishWord -> {
-                composeState = composeState.copy(englishWord = action.value)
+                composeState = composeState.copy(
+                    englishWord = action.value,
+                    englishWordError = ValidateResult()
+                )
             }
             is ModifyWordAction.OnChangePriority -> {
                 composeState = composeState.copy(priorityValue = action.value)
@@ -219,7 +222,7 @@ class ModifyWordViewModel @Inject constructor(
             }
             ModifyWordTranslatesAction.OnPressAddTranslate -> {
                 translateState = addChipUseCase.addTranslate(
-                    translateValue = translateState.translationWord,
+                    translateValue = translateState.translationWord.trim(),
                     translateState = translateState
                 )
             }
@@ -247,7 +250,7 @@ class ModifyWordViewModel @Inject constructor(
             }
             ModifyWordHintsAction.OnPressAddHint -> {
                 hintState = addChipUseCase.addHint(
-                    hintValue = hintState.hintWord,
+                    hintValue = hintState.hintWord.trim(),
                     hintState = hintState
                 )
             }
@@ -294,13 +297,25 @@ class ModifyWordViewModel @Inject constructor(
 
     private fun handlePressGoBack(withValidateUnsavedChanges: Boolean) {
         if (withValidateUnsavedChanges) {
+
+            // when user got to modifyWord screen from list screen we automatically apply wordListInfo.
+            // In this case we should ignore it and go back without popup
+            fun isWordListInfoTheSame(): Boolean {
+                val passedListId = savedStateHandle.get<Long>("listId") ?: -1L
+                if (passedListId != -1L) {
+                    return true
+                }
+                return initialState.composeState.wordListInfo == composeState.wordListInfo
+            }
+
             val isTheSame =
                 initialState.composeState.descriptionWord == composeState.descriptionWord &&
                         initialState.composeState.englishWord == composeState.englishWord &&
                         initialState.composeState.priorityValue == composeState.priorityValue &&
                         initialState.composeState.soundFileName == composeState.soundFileName &&
                         initialState.composeState.transcriptionWord == composeState.transcriptionWord &&
-                        initialState.composeState.wordListInfo == composeState.wordListInfo &&
+
+                        isWordListInfoTheSame() &&
 
                         initialState.hintState.hints == hintState.hints &&
                         initialState.hintState.hintWord == hintState.hintWord &&
