@@ -136,6 +136,8 @@
     <!--  Select Languages -->
     <string name="select_languages_translate_language_to">Language to translate into</string>
     <string name="select_languages_translate_language_from">Language to translate from</string>
+    <string name="select_languages_searchbar_placeholder">Search a language...</string>
+
 
     <!-- Lists Screen  -->
     <string name="lists_screen_add_new_list_label">Name of new list</string>

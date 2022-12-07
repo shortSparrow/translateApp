@@ -47,7 +47,8 @@ fun SelectLanguagesToFrom(
         Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.small_gutter))) {
             SearchBar(
                 onSearch = { query -> onAction(LanguagesToFromActions.OnSearchLanguagesTo(query)) },
-                onPressCross = { onAction(LanguagesToFromActions.OnSearchLanguagesTo("")) }
+                onPressCross = { onAction(LanguagesToFromActions.OnSearchLanguagesTo("")) },
+                placeholderTextId = { Text(text = stringResource(id = R.string.select_languages_searchbar_placeholder)) }
             )
         }
 
