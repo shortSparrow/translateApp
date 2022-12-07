@@ -9,11 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.util.getAudioPath
+import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -33,16 +31,10 @@ class ListsFullViewModel @Inject constructor(
 
     private var searchJob: Job? = null
     private val player = MediaPlayer()
-    private var navController: NavController? = null
-
-    var initialMount = false
+    var listener: Listener? = null
 
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
 
 
     private fun searchDebounced(searchText: String) {
@@ -96,35 +88,19 @@ class ListsFullViewModel @Inject constructor(
 
     fun onAction(action: ListFullAction) {
         when (action) {
-            ListFullAction.GoBack -> {
-                navController?.popBackStack()
-            }
             is ListFullAction.SearchWord -> {
                 searchDebounced(action.query)
             }
             ListFullAction.TakeExam -> {
-                navController?.navigate(
-                    ListFullFragmentDirections.actionListFullFragmentToExamKnowledgeWordsFragment(
-                        listId = state.listId,
-                        listName = state.listName
-                    )
-                )
+                listener?.navigateToExam(listId = state.listId, listName = state.listName)
             }
             is ListFullAction.PressOnWord -> {
-                navController?.navigate(
-                    ListFullFragmentDirections.actionListFullFragmentToModifyWordFragment(
-                        mode = ModifyWordModes.MODE_EDIT,
-                        wordId = action.wordId
-                    )
+                listener?.navigateToEditWord(
+                    wordId = action.wordId
                 )
             }
             ListFullAction.AddNewWord -> {
-                navController?.navigate(
-                    ListFullFragmentDirections.actionListFullFragmentToModifyWordFragment(
-                        mode = ModifyWordModes.MODE_ADD,
-                        listId = state.listId
-                    )
-                )
+                listener?.navigateToAddWord(listId = state.listId)
             }
             is ListFullAction.InitialLoadData -> {
                 state =
@@ -143,5 +119,12 @@ class ListsFullViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+
+    interface Listener {
+        fun navigateToExam(listId: Long, listName: String)
+        fun navigateToEditWord(wordId: Long)
+        fun navigateToAddWord(listId: Long)
     }
 }

@@ -15,6 +15,9 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :query ORDER BY created_at DESC")
     fun searchWordList(query: String): Flow<List<WordFullDb>>
 
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :query")
+    suspend fun searchExactWord(query: String): WordFullDb?
+
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
     fun searchWordListSize(): Flow<Int>
 
@@ -29,7 +32,6 @@ interface TranslatedWordDao {
 
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME  WHERE word_list_id=:listId")
     suspend fun getExamWordListSizeForOneList(listId: Long): Int
-
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb

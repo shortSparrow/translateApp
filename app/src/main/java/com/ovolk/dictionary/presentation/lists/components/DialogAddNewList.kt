@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.SimpleError
-import com.ovolk.dictionary.presentation.core.compose.dialog.MyDialog
+import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.lists.ListsAction
 import com.ovolk.dictionary.presentation.lists.ModalListState
 import com.ovolk.dictionary.presentation.lists.ModalType
@@ -52,7 +53,10 @@ fun DialogAddNewList(
                 label = { Text(stringResource(id = R.string.lists_screen_add_new_list_label)) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                isError = modalError.isError
+                isError = modalError.isError,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = colorResource(id = R.color.white)
+                )
             )
             Box(Modifier.fillMaxWidth()) {
                 if (modalError.isError) {

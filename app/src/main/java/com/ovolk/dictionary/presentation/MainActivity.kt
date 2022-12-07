@@ -1,23 +1,28 @@
 package com.ovolk.dictionary.presentation
 
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkBuilder
-import androidx.navigation.fragment.NavHostFragment
-import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.exam.ExamReminder
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.word_list.WordListFragmentDirections
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.ovolk.dictionary.domain.ExamReminder
+import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
+import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
+import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
+import com.ovolk.dictionary.util.DEEP_LINK_BASE
+import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
+import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
+import com.ovolk.dictionary.util.helpers.setShowVariantsExamAvailableLanguagesIdNeeded
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -25,128 +30,91 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var examReminder: ExamReminder
-    lateinit var listener: NavController.OnDestinationChangedListener
-    private lateinit var bottomBar: BottomNavigationView
+
+    @Inject
+    lateinit var getSearchedWordListUseCase: GetSearchedWordListUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
         setupNavigation()
 
         lifecycleScope.launch {
+            setShowVariantsExamAvailableLanguagesIdNeeded(application)
             examReminder.setInitialReminderIfNeeded()
         }
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-
-        // get text from selected items
-        val text = intent
-            .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
-        if (text != null) {
-            navController.navigate(
-                WordListFragmentDirections.actionWordListFragmentToModifyWordFragment(
-                    mode = ModifyWordModes.MODE_ADD, wordValue = text.toString()
+        setContent {
+            val navController = rememberNavController()
+            AppCompatTheme {
+                RootNavigationGraph(
+                    navController = navController,
+                    getIsChosenLanguage = ::getIsChosenLanguage
                 )
-            )
+            }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        NavDeepLinkBuilder(this)
-            .setComponentName(MainActivity::class.java)
-            .setGraph(R.navigation.app_navigation)
-            .setDestination(R.id.wordListFragment)
-            .createPendingIntent()
-
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        // when open app from intent and app already active (in background fro example)
+        setupInitialDestination(intent)
     }
-
 
     private fun setupNavigation() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        // should invoke only for onCreate, but not for onNewIntent
+        setupInitialDestination(intent)
+    }
 
-        bottomBar = findViewById(R.id.bottom_app_bar)
-
-        val navigationList = mutableMapOf(
-            "Home" to listOf("WordListFragment", "ModifyWordFragment"),
-            "Exam" to listOf("ExamKnowledgeWordsFragment"),
-            "Lists" to listOf("ListFragment", "ListFullFragment"),
-            "Settings" to listOf("SettingsFragment"),
+    private fun getIsChosenLanguage(): Boolean {
+        val userStatePreferences: SharedPreferences = application.getSharedPreferences(
+            USER_STATE_PREFERENCES,
+            MODE_PRIVATE
         )
 
-        bottomBar.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.wordListFragment -> {
-                    navController.navigate(R.id.wordListFragment)
-                    true
-                }
-                R.id.examKnowledgeWordsFragment -> {
-                    navController.navigate(R.id.examKnowledgeWordsFragment)
-                    true
-                }
-                R.id.listFragment -> {
-                    navController.navigate(R.id.listFragment)
-                    true
-                }
-                R.id.settingsFragment -> {
-                    navController.navigate(R.id.settingsFragment)
-                    true
-                }
-                else -> false
-            }
-        }
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-//            Timber.d("destination: ${destination.id} ${destination.label}")
-
-            when (destination.id) {
-                R.id.wordListFragment -> showBottomNav()
-                R.id.examKnowledgeWordsFragment -> showBottomNav()
-                R.id.settingsFragment -> showBottomNav()
-                R.id.listFragment -> showBottomNav()
-                else -> hideBottomNav()
-            }
-
-            bottomBar.menu.forEach { item ->
-//                Timber.d("TITLE: ${item.title} ${navigationList[item.title]} ${destination.label}")
-                if (navigationList[item.title]?.any { it == destination.label } == true) {
-                    item.isChecked = true
-                }
-            }
-        }
-
-        bottomBar.setOnItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.wordListFragment -> {
-                    true
-                }
-                R.id.examKnowledgeWordsFragment -> {
-                    true
-                }
-                R.id.listFragment -> {
-                    true
-                }
-                R.id.settingsFragment -> {
-                    true
-                }
-                else -> false
-            }
-        }
-
+        return userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
     }
 
-    private fun showBottomNav() {
-        bottomBar.visibility = View.VISIBLE
-    }
 
-    private fun hideBottomNav() {
-        bottomBar.visibility = View.GONE
+    private fun setupInitialDestination(intent: Intent?) {
+        // get text from selected items
+        val text = intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
+        val context = DictionaryApp.applicationContext()
+
+        if (text != null && getIsChosenLanguage()) {
+            lifecycleScope.launch {
+                val searchedValue =
+                    getSearchedWordListUseCase.getExactSearchedWord(text.toString())
+
+                if (searchedValue == null) {
+                    val deepLinkIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        "${DEEP_LINK_BASE}/${CommonRotes.MODIFY_WORD}/wordValue=$text".toUri(),
+                        context,
+                        MainActivity::class.java
+                    )
+                    val deepLinkPendingIntent: PendingIntent? =
+                        TaskStackBuilder.create(context).run {
+                            addNextIntentWithParentStack(deepLinkIntent)
+                            getPendingIntent(10, PendingIntent.FLAG_UPDATE_CURRENT)
+                        }
+                    deepLinkPendingIntent?.send()
+                } else {
+                    val deepLinkIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        "${DEEP_LINK_BASE}/${MainTabRotes.HOME}/searchedWord=$text".toUri(),
+                        context,
+                        MainActivity::class.java
+                    )
+                    val deepLinkPendingIntent: PendingIntent? =
+                        TaskStackBuilder.create(context).run {
+                            addNextIntentWithParentStack(deepLinkIntent)
+                            getPendingIntent(10, PendingIntent.FLAG_UPDATE_CURRENT)
+                        }
+
+                    deepLinkPendingIntent?.send()
+                }
+            }
+        }
     }
 }

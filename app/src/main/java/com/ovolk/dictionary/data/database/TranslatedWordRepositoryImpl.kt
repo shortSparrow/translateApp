@@ -1,16 +1,24 @@
 package com.ovolk.dictionary.data.database
 
+import android.app.Application
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.data.model.HintDb
 import com.ovolk.dictionary.data.model.TranslateDb
 import com.ovolk.dictionary.data.model.WordInfoDb
 import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.domain.model.exam.ExamWord
+import com.ovolk.dictionary.util.SHOW_VARIANTS_EXAM_AVAILABLE_LANGUAGES
+import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 
@@ -20,11 +28,12 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     private val translatedWordDao: TranslatedWordDao,
     private val mapper: WordMapper,
     private val inMemoryStorage: InMemoryStorage,
+    private val application: Application
 ) : TranslatedWordRepository, InMemoryStorage by inMemoryStorage {
 
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
         return translatedWordDao.getExamWordList(count = count, skip = skip)
-            .map { mapper.wordFullDbToExamWord(it) }
+            .map { word -> mapper.wordFullDbToExamWord( word ) }
     }
 
     override suspend fun getExamWordListFromOneList(
@@ -32,12 +41,13 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         skip: Int,
         listId: Long
     ): List<ExamWord> {
+
         return translatedWordDao.getExamWordListFromOneList(
             count = count,
             skip = skip,
             listId = listId
         )
-            .map { mapper.wordFullDbToExamWord(it) }
+            .map { word -> mapper.wordFullDbToExamWord(word) }
     }
 
     override suspend fun getExamWordListSize(): Int {
@@ -53,6 +63,15 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             .map { list ->
                 mapper.wordListDbToWordList(list)
             }
+    }
+
+    override suspend fun searchExactWordList(query: String): WordRV? {
+        val res = translatedWordDao.searchExactWord(query = query)
+        return if (res != null) {
+            mapper.wordFullDbToWordRv(res)
+        } else {
+            res
+        }
     }
 
     override suspend fun searchWordListSize(): Flow<Int> {
@@ -98,7 +117,6 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     override suspend fun modifyWord(word: ModifyWord, mapper: WordMapper): Long {
         return translatedWordDao.modifyWord(word, mapper)
     }
-
 
     companion object {
         private const val WORD_IS_NOT_FOUND = -1

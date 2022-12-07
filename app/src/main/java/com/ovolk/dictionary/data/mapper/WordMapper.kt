@@ -58,7 +58,7 @@ class WordMapper @Inject constructor() {
         )
 
 
-    private fun wordFullDbToWordRv(wordDb: WordFullDb): WordRV = WordRV(
+    fun wordFullDbToWordRv(wordDb: WordFullDb): WordRV = WordRV(
         id = wordDb.wordInfo.id,
         value = wordDb.wordInfo.value,
         translates = wordDb.translates.map { translateDbToLocal(it) },
@@ -99,15 +99,17 @@ class WordMapper @Inject constructor() {
         wordListId = modifyWord.wordListId
     )
 
-    fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord = ExamWord(
-        id = wordDb.wordInfo.id,
-        value = wordDb.wordInfo.value,
-        translates = wordDb.translates.map { translateDbToLocal(it) },
-        hints = wordDb.hints.map { hintDbToLocal(it) },
-        priority = wordDb.wordInfo.priority,
-        status = ExamWordStatus.UNPROCESSED,
-        answerVariants = emptyList(),
-    )
+    fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord =
+        ExamWord(
+            id = wordDb.wordInfo.id,
+            value = wordDb.wordInfo.value,
+            initialTranslates = wordDb.translates.map { translateDbToLocal(it) },
+            hints = wordDb.hints.map { hintDbToLocal(it) },
+            langTo = wordDb.wordInfo.langTo,
+            initialPriority = wordDb.wordInfo.priority,
+            initialStatus = ExamWordStatus.UNPROCESSED,
+            answerVariants = mutableListOf(),
+        )
 
 
     fun examAnswerToExamAnswerDb(examAnswer: ExamAnswerVariant) = PotentialExamAnswerDb(
@@ -148,6 +150,5 @@ class WordMapper @Inject constructor() {
         title = listItem.title,
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
-
     )
 }

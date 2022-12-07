@@ -2,6 +2,8 @@ package com.ovolk.dictionary.data.workers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,10 +13,12 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.navigation.NavDeepLinkBuilder
+import androidx.core.net.toUri
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.MainActivity
-import com.ovolk.dictionary.presentation.exam.ExamReminder
+import com.ovolk.dictionary.domain.ExamReminder
+import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
+import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -33,11 +37,16 @@ class AlarmReceiver : BroadcastReceiver() {
             ) as NotificationManager
             createNotificationChannel(notificationManager)
 
-            val pendingIntent = NavDeepLinkBuilder(context)
-                .setComponentName(MainActivity::class.java)
-                .setGraph(R.navigation.app_navigation)
-                .setDestination(R.id.examKnowledgeWordsFragment)
-                .createPendingIntent()
+            val deepLinkIntent = Intent(
+                Intent.ACTION_VIEW,
+                "${DEEP_LINK_BASE}/${MainTabRotes.EXAM}".toUri(),
+                context,
+                MainActivity::class.java
+            )
+            val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+                addNextIntentWithParentStack(deepLinkIntent)
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
 
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.reminder_push_exam_title))
