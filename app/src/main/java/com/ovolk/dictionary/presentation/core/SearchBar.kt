@@ -23,7 +23,8 @@ import com.ovolk.dictionary.R
 fun SearchBar(
     onSearch: (query: String) -> Unit,
     onPressCross: () -> Unit,
-    searchedValue: String? = null
+    searchedValue: String? = null,
+    placeholderTextId: @Composable () -> Unit = { Text(text = stringResource(id = R.string.search_word_placeholder)) }
 ) {
     val isControlled = searchedValue != null
     var text by remember {
@@ -77,14 +78,14 @@ fun SearchBar(
                         tint = colorResource(id = R.color.grey),
                     )
                 },
-                placeholder = { Text(text = stringResource(id = R.string.search_word_placeholder)) }
+                placeholder = placeholderTextId
             )
         }
     }
 }
 
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Preview(showBackground = true)
 @Composable
 fun PreviewSearchBar() {
     SearchBar(onSearch = {}, onPressCross = {})
