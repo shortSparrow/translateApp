@@ -53,7 +53,7 @@
     <string name="modify_word_field_describe_translation">
         You can add multiple translations for a word. Also, if you long press on a translation you will add/remove it from the hidden translations.
         \n\nHidden translations are translations that are marked in dark color and are not visible on the main screen, but they are taken into account during the exam.
-        \n\nUseful for languages that have different endings for cases or genders (English "pretty" can be translated into Ukrainian as: "гарний", "гарна", "гарна")
+        \n\nUseful for languages that have different endings for cases or genders (English "pretty" can be translated into Ukrainian as: "гарний", "гарна", "гарне")
     </string>
     <string name="modify_word_field_describe_priority">
         The priority affects how often you will see the word during the exam, the higher it is - the more often the word appears in the exam. Each time you answer correctly the priority decreases by 1, when you answer incorrectly it increases by 1.
