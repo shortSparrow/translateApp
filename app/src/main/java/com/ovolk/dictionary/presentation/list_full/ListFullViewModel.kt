@@ -13,9 +13,11 @@ import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -106,9 +108,16 @@ class ListsFullViewModel @Inject constructor(
                 state =
                     state.copy(
                         listId = action.listId,
-                        listName = action.listName,
                         loadingStatusWordList = LoadingState.PENDING
                     )
+                viewModelScope.launch(Dispatchers.IO) {
+                    val title = getListsUseCase.getListById(action.listId)?.title ?: ""
+                    withContext(Dispatchers.Main) {
+                        state = state.copy(
+                            listName = title
+                        )
+                    }
+                }
                 searchDebounced("")
             }
             is ListFullAction.PlayAudio -> {

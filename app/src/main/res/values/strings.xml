@@ -17,7 +17,7 @@
 
     <!--Modify word fragment -->
     <string name="modify_word_select_translated_language">Select translated language</string>
-    <string name="modify_word_english_word_hint">English word</string>
+    <string name="modify_word_word_hint">Word</string>
     <string name="modify_word_input_translate">Enter translation</string>
     <string name="modify_word_description">Description</string>
     <string name="modify_word_transcription">Word transcription</string>
@@ -45,8 +45,8 @@
     <string name="modify_word_dialog_add_new_list_placeholder">Name of the list</string>
     <string name="modify_word_dialog_add_new_list_title">Add new List</string>
     <string name="modify_word_saved_word_success">Word safe successfully</string>
-    <string name="modify_word_language_picker_from">(language from)</string>
-    <string name="modify_word_language_picker_to">(language to)</string>
+    <string name="modify_word_language_picker_from">from</string>
+    <string name="modify_word_language_picker_to">to</string>
     <string name="modify_word_validate_add_empty_field">this field is required, input translate and press add</string>
     <string name="modify_word_record_listen">listen</string>
     <string name="modify_word_unsaved_changes">If you go back you lose unsaved changes</string>
@@ -129,7 +129,7 @@
     <!--  Settings Languages -->
     <string name="settings_languages_title">Select translation languages</string>
     <string name="settings_languages_select_language">Select languages</string>
-    <string name="settings_languages_translate_language_to">Choose the languages of translation:</string>
+    <string name="settings_languages_translate_language_to">Choose the languages to translate into:</string>
     <string name="settings_languages_translate_language_from">Choose the languages from which to translate:</string>
 
 

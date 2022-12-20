@@ -10,7 +10,7 @@ import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 
 
 @Composable
-fun ListFullScreen(navController: NavHostController, listId: Long, listName: String) {
+fun ListFullScreen(navController: NavHostController, listId: Long) {
 
     fun listener() = object : ListsFullViewModel.Listener {
         override fun navigateToExam(listId: Long, listName: String) {
@@ -29,7 +29,7 @@ fun ListFullScreen(navController: NavHostController, listId: Long, listName: Str
     val viewModel = hiltViewModel<ListsFullViewModel>()
     if (viewModel.listener == null) {
         viewModel.listener = listener()
-        viewModel.onAction(ListFullAction.InitialLoadData(listId = listId, listName = listName))
+        viewModel.onAction(ListFullAction.InitialLoadData(listId = listId))
     }
     val state = viewModel.state
 

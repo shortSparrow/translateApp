@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -54,16 +55,19 @@ fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMar
                     )
                     .padding(vertical = 16.dp, horizontal = 25.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = wordListInfo.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = wordListInfo.count.toString(),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 25.dp)
                 )
             }
         }
@@ -89,12 +93,26 @@ fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMar
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Preview(showBackground = true)
 @Composable
 fun ComposableListItemPreview() {
     ListItem(
         wordListInfo = ModifyWordListItem(
             title = "My List",
+            count = 10,
+            id = 1L
+        ),
+        onItemsPress = {},
+        withMark = false,
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ComposableListItemPreview2() {
+    ListItem(
+        wordListInfo = ModifyWordListItem(
+            title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
             count = 10,
             id = 1L
         ),

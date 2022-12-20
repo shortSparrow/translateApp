@@ -15,7 +15,7 @@ fun ListsScreen(navController: NavHostController) {
     if (viewModel.listener == null) {
         viewModel.listener = object : ListsViewModel.Listener {
             override fun navigateToFullList(listId: Long, listName: String) {
-                navController.navigate("${CommonRotes.FULL_LIST}?listId=${listId}&listName=${listName}")
+                navController.navigate("${CommonRotes.FULL_LIST}?listId=${listId}")
             }
         }
     }

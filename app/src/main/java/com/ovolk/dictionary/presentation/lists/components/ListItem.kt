@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -21,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.lists.ListItem
 import com.ovolk.dictionary.presentation.lists.ListsAction
@@ -41,14 +41,11 @@ fun ListItem(
         Modifier
             .padding(bottom = 20.dp)
     ) {
-        val (dd, mark) = createRefs()
+        val (wrapper, mark) = createRefs()
         Surface(
             Modifier
-                .constrainAs(dd) {
-                    start.linkTo(parent.start, margin = 40.dp)
-                    end.linkTo(parent.end, margin = 40.dp)
-                    width = Dimension.matchParent
-                },
+                .padding(horizontal = 40.dp)
+                .constrainAs(wrapper) {},
             shape = RoundedCornerShape(10.dp)
         ) {
             Row(
@@ -78,37 +75,35 @@ fun ListItem(
                     )
                     .padding(vertical = 16.dp, horizontal = 25.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = item.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = item.count.toString(),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
         }
 
         if (item.isSelected) {
             Image(
-                painter = painterResource(
-                    id = R.drawable.check_mark,
-
-                    ),
+                painter = painterResource(id = R.drawable.check_mark),
                 contentDescription = stringResource(id = R.string.lists_screen_cd_mark),
                 Modifier
                     .constrainAs(mark) {
-                        start.linkTo(dd.end)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(dd.bottom)
-                        top.linkTo(dd.top)
+                        end.linkTo(parent.end, margin = 10.dp)
+                        bottom.linkTo(wrapper.bottom)
+                        top.linkTo(wrapper.top)
                     }
                     .width(20.dp),
             )
-
         }
     }
 }
@@ -124,7 +119,7 @@ fun ComposableListItemPreview() {
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         ),
-        onItemClick = {_: Long, _: String ->  },
+        onItemClick = { _: Long, _: String -> },
         onAction = {},
         atLeastOneListSelected = false,
     )
@@ -141,7 +136,7 @@ fun ComposableListItemPreview2() {
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         ),
-        onItemClick = {_: Long, _: String ->  },
+        onItemClick = { _: Long, _: String -> },
         onAction = {},
         atLeastOneListSelected = false,
     )

@@ -271,7 +271,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     private fun checkAnswer(answer: String) {
-        val answerQuery = answer.lowercase()
+        val answerQuery = answer.lowercase().trim()
 
         val matchedAnswer = getCurrentWord().translates.find { translate ->
             answerQuery == translate.value.lowercase().trim()

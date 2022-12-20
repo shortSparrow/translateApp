@@ -56,7 +56,8 @@ fun DialogAddNewList(
                 isError = modalError.isError,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = colorResource(id = R.color.white)
-                )
+                ),
+                maxLines = 1
             )
             Box(Modifier.fillMaxWidth()) {
                 if (modalError.isError) {

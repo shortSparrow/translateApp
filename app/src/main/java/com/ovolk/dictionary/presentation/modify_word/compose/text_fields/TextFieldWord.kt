@@ -18,7 +18,7 @@ import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextFiel
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 
 @Composable
-fun TextFieldEnglishWord(
+fun TextFieldWord(
     englishWord: String,
     englishWordError: ValidateResult,
     onAction: (ModifyWordAction) -> Unit
@@ -28,8 +28,8 @@ fun TextFieldEnglishWord(
     OutlinedErrableTextField(
         modifier = Modifier.padding(top = dimensionResource(id = R.dimen.gutter)),
         value = englishWord,
-        onValueChange = { value -> onAction(ModifyWordAction.OnChangeEnglishWord(value)) },
-        label = { Text(text = stringResource(id = R.string.modify_word_english_word_hint)) },
+        onValueChange = { value -> onAction(ModifyWordAction.OnChangeWord(value)) },
+        label = { Text(text = stringResource(id = R.string.modify_word_word_hint)) },
         errorMessage = englishWordError.errorMessage,
         isError = !englishWordError.successful,
         keyboardOptions = KeyboardOptions(
@@ -45,6 +45,6 @@ fun TextFieldEnglishWord(
 
 @Composable
 @Preview(showBackground = true)
-fun TextFieldEnglishWordPreview() {
-    TextFieldEnglishWord(englishWord = "", englishWordError = ValidateResult(), onAction = {})
+fun TextFieldWordPreview() {
+    TextFieldWord(englishWord = "", englishWordError = ValidateResult(), onAction = {})
 }
