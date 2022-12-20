@@ -68,7 +68,7 @@ class RecordAudioHandler @Inject constructor(
             recordState = recordState.copy(
                 isRecording = false,
                 isTempRecordExist = true,
-                existingRecordDuration = player!!.duration
+                existingRecordDuration = player!!.duration,
             )
         } catch (e: Exception) {
             Timber.e("Error endRecording $e")
@@ -146,7 +146,8 @@ class RecordAudioHandler @Inject constructor(
                     isTempRecordExist = isRecordExist,
                     isRecordExist = isRecordExist,
                     existingRecordDuration = existingRecordDuration,
-                    isModalOpen = false
+                    isModalOpen = false,
+                    isChangesExist = false
                 )
         } ?: run {
             recordState =
@@ -154,7 +155,8 @@ class RecordAudioHandler @Inject constructor(
                     isTempRecordExist = false,
                     isRecordExist = false,
                     existingRecordDuration = 0,
-                    isModalOpen = false
+                    isModalOpen = false,
+                    isChangesExist = false
                 )
         }
     }
@@ -217,7 +219,8 @@ class RecordAudioHandler @Inject constructor(
             recordState.copy(
                 isRecording = false,
                 isTempRecordExist = false,
-                existingRecordDuration = 0
+                existingRecordDuration = 0,
+                isChangesExist = true
             )
         recorder?.apply {
             stop()

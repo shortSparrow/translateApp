@@ -2,6 +2,7 @@ package com.ovolk.dictionary.util
 
 import android.content.res.Resources
 import android.view.View
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -11,8 +12,6 @@ import android.view.View
  */
 fun <T> lazySimple(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
 
-
-fun View.t(resourceId: Int) = this.context.getString(resourceId)
 
 val Int.dp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()

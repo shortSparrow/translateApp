@@ -152,9 +152,9 @@ class ModifyWordViewModel @Inject constructor(
             is ModifyWordAction.OnChangeEnglishTranscription -> {
                 composeState = composeState.copy(transcriptionWord = action.value)
             }
-            is ModifyWordAction.OnChangeEnglishWord -> {
+            is ModifyWordAction.OnChangeWord -> {
                 composeState = composeState.copy(
-                    englishWord = action.value,
+                    word = action.value,
                     englishWordError = ValidateResult()
                 )
             }
@@ -310,7 +310,7 @@ class ModifyWordViewModel @Inject constructor(
 
             val isTheSame =
                 initialState.composeState.descriptionWord == composeState.descriptionWord &&
-                        initialState.composeState.englishWord == composeState.englishWord &&
+                        initialState.composeState.word == composeState.word &&
                         initialState.composeState.priorityValue == composeState.priorityValue &&
                         initialState.composeState.soundFileName == composeState.soundFileName &&
                         initialState.composeState.transcriptionWord == composeState.transcriptionWord &&
@@ -338,7 +338,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun saveWord() {
-        val wordValidation = validateWordValue(composeState.englishWord)
+        val wordValidation = validateWordValue(composeState.word)
         val priorityValidation = validationPriority(composeState.priorityValue)
         val translatesValidation = validateTranslates(translateState.translates)
         val selectLanguageToValidation =
@@ -373,7 +373,7 @@ class ModifyWordViewModel @Inject constructor(
         val word = ModifyWord(
             id = composeState.editableWordId ?: 0L,
             priority = composeState.priorityValue.toInt(),
-            value = composeState.englishWord.trim(),
+            value = composeState.word.trim(),
             translates = translateState.translates,
             description = composeState.descriptionWord.trim(),
             sound = sound,
@@ -402,7 +402,7 @@ class ModifyWordViewModel @Inject constructor(
             languageToList = langList["languageTo"] ?: emptyList(),
         )
         composeState =
-            composeState.copy(modifyMode = ModifyWordModes.MODE_ADD, englishWord = wordValue)
+            composeState.copy(modifyMode = ModifyWordModes.MODE_ADD, word = wordValue)
 
         if (listId != -1L) {
             prefillListIdFromArgs(listId)
@@ -443,10 +443,10 @@ class ModifyWordViewModel @Inject constructor(
             val langList = loadLanguages(langToCode = word.langTo, langFromCode = word.langFrom)
             val wordListInfo = word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
 
-            word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
             withContext(Dispatchers.Main) {
+                word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
                 composeState = composeState.copy(
-                    englishWord = word.value,
+                    word = word.value,
                     transcriptionWord = word.transcription,
                     descriptionWord = word.description,
                     soundFileName = word.sound?.fileName,
