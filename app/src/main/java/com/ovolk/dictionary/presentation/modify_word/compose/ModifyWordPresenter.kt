@@ -81,14 +81,14 @@ fun ModifyWordPresenter(
 
     if (state.isOpenDeleteWordModal) {
         ConfirmDialog(
-            question = stringResource(id = R.string.modify_word_confirm_delete_title),
+            message = stringResource(id = R.string.modify_word_confirm_delete_title),
             onAcceptClick = { onAction(ModifyWordAction.DeleteWord) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) })
     }
 
     if (state.isOpenUnsavedChanges) {
         ConfirmDialog(
-            question = stringResource(id = R.string.modify_word_unsaved_changes),
+            message = stringResource(id = R.string.modify_word_unsaved_changes),
             onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
     }

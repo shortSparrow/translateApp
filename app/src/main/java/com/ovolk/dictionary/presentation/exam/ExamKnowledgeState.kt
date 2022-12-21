@@ -7,6 +7,7 @@ import com.ovolk.dictionary.domain.model.exam.ExamWord
 
 enum class NavigateButtons { NEXT, PREVIOUS }
 enum class ExamMode { DAILY_MODE, INFINITY_MODE }
+enum class CompleteAlertBehavior { STAY_HERE, GO_HOME }
 
 
 sealed interface ExamAction {
@@ -24,7 +25,7 @@ sealed interface ExamAction {
     object OnLoadNextPageWords : ExamAction
     data class OnSelectActiveWord(val wordIndex: Int) : ExamAction
     data class OnLongPressHiddenTranslate(val translateId: Long) : ExamAction
-    object CloseTheEndExamModal : ExamAction
+    data class CloseTheEndExamModal(val behavior: CompleteAlertBehavior) : ExamAction
     object OnNavigateToCreateFirstWord : ExamAction
     data class LoadExamList(val listId: Long, val listName: String? = null) : ExamAction
 }

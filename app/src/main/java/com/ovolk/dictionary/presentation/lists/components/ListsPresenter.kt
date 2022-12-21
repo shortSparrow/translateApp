@@ -44,7 +44,7 @@ fun ListsPresenter(
 
     if (state.isOpenDeleteListModal) {
         ConfirmDialog(
-            question = stringResource(id = R.string.lists_screen_confirm_delete_list),
+            message = stringResource(id = R.string.lists_screen_confirm_delete_list),
             onAcceptClick = { onAction(ListsAction.ConfirmDeleteSelectedLists) },
             onDeclineClick = { onAction(ListsAction.DeclineDeleteSelectedLists) })
     }

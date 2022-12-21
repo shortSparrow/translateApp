@@ -37,30 +37,18 @@ fun InfoDialog(
 ) {
     val buttonText = buttonText ?: stringResource(id = R.string.yes)
 
-    Dialog(
-        onDismissRequest = { onDismissRequest() },
-    ) {
-        Surface(shape = RoundedCornerShape(15.dp)) {
-            Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
-                    .padding(vertical = 20.dp, horizontal = 15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = message,
-                    modifier = Modifier.padding(bottom = 20.dp),
-                    fontWeight = fontWeight,
-                    fontSize = fontSize,
-                    textAlign = textAlign,
-                    color = colorResource(id = R.color.grey),
-                )
+    BaseDialog(onDismissRequest = onDismissRequest) {
+        Text(
+            text = message,
+            modifier = Modifier.padding(bottom = 20.dp),
+            fontWeight = fontWeight,
+            fontSize = fontSize,
+            textAlign = textAlign,
+            color = colorResource(id = R.color.grey),
+        )
 
-                OutlinedButton(onClick = onClick) {
-                    Text(text = buttonText)
-                }
-            }
+        OutlinedButton(onClick = onClick) {
+            Text(text = buttonText)
         }
     }
 }
