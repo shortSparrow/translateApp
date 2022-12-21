@@ -136,7 +136,7 @@ fun RecordAudioWrapper(
 
     if (isPermissionDeniedDialog) {
         ConfirmDialog(
-            question = stringResource(id = R.string.modify_word_enable_audio_permission),
+            message = stringResource(id = R.string.modify_word_enable_audio_permission),
             onAcceptClick = ::goToSettings,
             onDismissRequest = ::closePermissionDeniedDialog,
             onDeclineClick = ::closePermissionDeniedDialog,

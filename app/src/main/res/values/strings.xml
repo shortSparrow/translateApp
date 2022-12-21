@@ -94,6 +94,8 @@
     <string name="exam_hidden_translate_description_title">*What is this hidden translate?</string>
     <string name="exam_daily_mode">Daily mode</string>
     <string name="exam_infinity_mode">Infinity mode</string>
+    <string name="exam_complete_alert_go_home">Go to home</string>
+    <string name="exam_complete_alert_stay_here">I stay here</string>
     <string name="exam_next_word_button_cd">Next word</string>
     <string name="exam_prev_word_button_cd">Previous word</string>
     <string name="exam_select_exam_daily_mode_cd">Select daily exam mode button</string>

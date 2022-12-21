@@ -4,16 +4,11 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
-import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
@@ -21,7 +16,6 @@ import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -173,7 +167,12 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
             ExamAction.OnPressAddHiddenTranslate -> addHiddenTranslate()
             is ExamAction.OnLongPressHiddenTranslate -> toggleIsHiddenTranslate(action.translateId)
-            ExamAction.CloseTheEndExamModal -> composeState = composeState.copy(isExamEnd = false)
+            is ExamAction.CloseTheEndExamModal -> {
+                composeState = composeState.copy(isExamEnd = false)
+                if (action.behavior == CompleteAlertBehavior.GO_HOME) {
+                    listener?.onNavigateToHome()
+                }
+            }
             ExamAction.OnNavigateToCreateFirstWord -> {
                 listener?.onNavigateToCreateFirstWord()
 
@@ -195,7 +194,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
 
     private fun loadWordsList(listId: Long?, listName: String? = null) {
-        val correctListName = listName?.let { application.getString(R.string.exam_list_name, it) } ?: ""
+        val correctListName =
+            listName?.let { application.getString(R.string.exam_list_name, it) } ?: ""
         composeState = composeState.copy(
             isLoading = true,
             listId = listId,
@@ -329,5 +329,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     interface Listener {
         fun onNavigateToCreateFirstWord()
+        fun onNavigateToHome()
     }
 }

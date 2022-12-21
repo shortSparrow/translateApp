@@ -32,9 +32,7 @@ fun MyDialog(
     title: String
 ) {
 
-    Dialog(
-        onDismissRequest = { onDismissRequest() },
-    ) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
