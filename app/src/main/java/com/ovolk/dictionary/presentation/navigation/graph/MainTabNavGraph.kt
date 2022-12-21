@@ -2,21 +2,16 @@ package com.ovolk.dictionary.presentation.navigation.graph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.*
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.ovolk.dictionary.presentation.exam.ExamScreen
-import com.ovolk.dictionary.presentation.list_full.ListFullScreen
 import com.ovolk.dictionary.presentation.lists.ListsScreen
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
 import com.ovolk.dictionary.presentation.navigation.stack.commonNavGraph
 import com.ovolk.dictionary.presentation.settings.SettingsScreen
-import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesScreen
-import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromScreen
-import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
-import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.presentation.word_list.HomeScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 

@@ -18,7 +18,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +32,7 @@ import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.La
 import com.ovolk.dictionary.presentation.modify_word.compose.question_wrapper.QuestionWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldEnglishWord
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldWord
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldPriority
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldTranscription
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
@@ -59,7 +58,7 @@ fun ModifyWordPresenter(
     val interactionSourceScreen = remember { MutableInteractionSource() }
 
     val headerTitle = if (state.modifyMode == ModifyWordModes.MODE_EDIT) {
-        remember { state.englishWord }
+        remember { state.word }
     } else {
         stringResource(id = R.string.modify_word_add_new_word)
     }
@@ -82,14 +81,14 @@ fun ModifyWordPresenter(
 
     if (state.isOpenDeleteWordModal) {
         ConfirmDialog(
-            question = stringResource(id = R.string.modify_word_confirm_delete_title),
+            message = stringResource(id = R.string.modify_word_confirm_delete_title),
             onAcceptClick = { onAction(ModifyWordAction.DeleteWord) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) })
     }
 
     if (state.isOpenUnsavedChanges) {
         ConfirmDialog(
-            question = stringResource(id = R.string.modify_word_unsaved_changes),
+            message = stringResource(id = R.string.modify_word_unsaved_changes),
             onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
     }
@@ -130,8 +129,8 @@ fun ModifyWordPresenter(
                     LanguagesPicker(state = languageState, onAction = onAction)
                 }
 
-                TextFieldEnglishWord(
-                    englishWord = state.englishWord,
+                TextFieldWord(
+                    englishWord = state.word,
                     englishWordError = state.englishWordError,
                     onAction = onAction
                 )
@@ -152,7 +151,7 @@ fun ModifyWordPresenter(
                 )
 
                 RecordAudioWrapper(
-                    word = state.englishWord,
+                    word = state.word,
                     recordState = recordState,
                     onAction = onRecordAction
                 )

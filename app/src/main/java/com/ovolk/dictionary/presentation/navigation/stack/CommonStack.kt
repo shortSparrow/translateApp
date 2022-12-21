@@ -17,7 +17,7 @@ enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LA
 sealed class CommonScreen(val route: String) {
     object ModifyWord :
         CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}")
-    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}&listName={listName}")
+    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}")
     object SettingsLanguages : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES}")
     object SettingsLanguagesFrom : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_FROM}")
     object SettingsLanguagesTo : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_TO}")
@@ -60,20 +60,14 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
         composable(
             route = CommonScreen.FullList.route,
             arguments = listOf(
-                navArgument("listName") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                },
                 navArgument("listId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             ),
         ) { backStackEntry ->
-            val listName = backStackEntry.arguments?.getString("listName") ?: ""
             val listId = backStackEntry.arguments?.getLong("listId") ?: -1L
-            ListFullScreen(navController = navController, listName = listName, listId = listId)
+            ListFullScreen(navController = navController, listId = listId)
         }
 
         composable(route = CommonScreen.SettingsLanguages.route) {

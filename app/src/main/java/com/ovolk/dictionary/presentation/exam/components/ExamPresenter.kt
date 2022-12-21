@@ -1,27 +1,35 @@
 package com.ovolk.dictionary.presentation.exam.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
-import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
+import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
+import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialogType
 import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.exam.CompleteAlertBehavior
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeState
+import com.ovolk.dictionary.presentation.exam.ExamMode
 import com.ovolk.dictionary.presentation.exam.components.empty_exam.EmptyExam
 import com.ovolk.dictionary.presentation.exam.components.modal.SelectExamMode
 import com.ovolk.dictionary.presentation.exam.components.variants_and_hints.VariantsAndHints
@@ -38,14 +46,49 @@ fun ExamPresenter(
     }
 
     if (state.isExamEnd) {
-        InfoDialog(
-            onDismissRequest = { onAction(ExamAction.CloseTheEndExamModal) },
-            message = stringResource(
-                id = R.string.exam_alert_complete_daily_exam_description
-            ),
-            onClick = { onAction(ExamAction.CloseTheEndExamModal) },
-            buttonText = stringResource(id = R.string.ok)
-        )
+        val message =
+            if (state.mode == ExamMode.DAILY_MODE)
+                stringResource(id = R.string.exam_alert_complete_daily_exam_description)
+            else stringResource(id = R.string.exam_complete_infinity_exam)
+
+
+        BaseDialog(
+            onDismissRequest = { onAction(ExamAction.CloseTheEndExamModal(CompleteAlertBehavior.STAY_HERE)) },
+        ) {
+
+            Text(
+                text = message,
+                Modifier.align(Alignment.CenterHorizontally),
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
+            ) {
+                OutlinedButton(onClick = {
+                    onAction(
+                        ExamAction.CloseTheEndExamModal(
+                            CompleteAlertBehavior.STAY_HERE
+                        )
+                    )
+                }) {
+                    Text(
+                        text = stringResource(id = R.string.exam_complete_alert_stay_here),
+                        color = colorResource(id = R.color.blue)
+                    )
+                }
+                Button(onClick = { onAction(ExamAction.CloseTheEndExamModal(CompleteAlertBehavior.GO_HOME)) }) {
+                    Text(
+                        text = stringResource(id = R.string.exam_complete_alert_go_home),
+                        color = colorResource(id = R.color.white)
+                    )
+                }
+            }
+        }
     }
 
     if (state.isLoading) {

@@ -23,9 +23,10 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
-import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
+import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -46,9 +47,13 @@ fun RecordAudio(
         if (listenIsDisabled) colorResource(id = R.color.grey) else colorResource(id = R.color.blue)
 
     val saveIsDisabled =
-        recordState.isRecordPlaying || recordState.isRecording || (!recordState.isRecordExist && !recordState.isTempRecordExist)
+        recordState.isRecordPlaying || recordState.isRecording || (!recordState.isRecordExist && !recordState.isTempRecordExist) || !recordState.isChangesExist
     val savedColor =
         if (saveIsDisabled) colorResource(id = R.color.grey) else colorResource(id = R.color.blue)
+
+    val timerColor =
+        if (recordState.isChangesExist && !recordState.isRecording && recordState.isTempRecordExist)
+            colorResource(id = R.color.blue) else colorResource(id = R.color.grey)
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.record_animation))
 
@@ -75,6 +80,16 @@ fun RecordAudio(
         timer = recordDuration
     }
 
+    fun convertToTime(): String {
+        val t = (timer * 1000).toLong()
+        return String.format(
+            "%02d:%02d",
+            TimeUnit.MILLISECONDS.toMinutes(t),
+            TimeUnit.MILLISECONDS.toSeconds(t) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(t))
+        )
+    }
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -87,12 +102,13 @@ fun RecordAudio(
         ConstraintLayout(Modifier.fillMaxWidth()) {
             val (timerRef, delete, listen, save, mic, lottieAnim) = createRefs()
             Text(
-                text = timer.toString(),
+                text = convertToTime(),
                 modifier = Modifier.constrainAs(timerRef) {
                     start.linkTo(mic.start)
                     end.linkTo(mic.end)
                     top.linkTo(parent.top)
                 },
+                color = timerColor
             )
             Icon(
                 painter = painterResource(id = R.drawable.delete_active),
@@ -180,7 +196,8 @@ fun RecordAudio(
                     }
                     .opacityClick(isDisabled = saveIsDisabled) {
                         onAction(RecordAudioAction.SaveRecord)
-                    })
+                    }
+            )
         }
     }
 }

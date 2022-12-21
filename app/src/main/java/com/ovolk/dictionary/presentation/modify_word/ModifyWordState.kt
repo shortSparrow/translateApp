@@ -52,7 +52,7 @@ data class Languages(
 )
 
 data class ComposeState(
-    val englishWord: String = "",
+    val word: String = "",
     val englishWordError: ValidateResult = ValidateResult(),
     val transcriptionWord: String = "",
     val descriptionWord: String = "",
@@ -85,6 +85,7 @@ data class RecordAudioState(
     val isRecordExist: Boolean = false,
     val isRecordPlaying: Boolean = false,
     val existingRecordDuration: Int = 0,
+    val isChangesExist: Boolean = false
 )
 
 sealed interface RecordAudioAction {
@@ -106,7 +107,7 @@ sealed interface ModifyWordAction {
 
     data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction
     object CloseAddNewLanguageModal : ModifyWordAction
-    data class OnChangeEnglishWord(val value: String) : ModifyWordAction
+    data class OnChangeWord(val value: String) : ModifyWordAction
     data class OnChangeEnglishTranscription(val value: String) : ModifyWordAction
     data class OnChangeDescription(val value: String) : ModifyWordAction
     data class OnChangePriority(val value: String) : ModifyWordAction
