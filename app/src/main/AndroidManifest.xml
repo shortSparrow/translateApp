@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ovolk.dictionary">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -39,6 +40,12 @@
             </intent-filter>
         </activity>
         <receiver android:name=".data.workers.AlarmReceiver" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="androidx.work.WorkManagerInitializer"
+            tools:node="remove"
+            tools:replace="android:authorities" />
     </application>
 
 </manifest>

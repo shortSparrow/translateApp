@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.di
 
 import android.app.Application
+import com.ovolk.dictionary.data.database.AppDatabase
 import com.ovolk.dictionary.data.database.ExamWordAnswerDao
 import com.ovolk.dictionary.data.database.ListsDao
 import com.ovolk.dictionary.data.database.TranslatedWordDao
@@ -19,19 +20,19 @@ object AppModule {
     @Provides
     @Singleton
     fun provideListDao(context: Application): ListsDao {
-        return com.ovolk.dictionary.data.database.AppDatabase.getInstance(context).listsDao()
+        return AppDatabase.getInstance(context).listsDao()
     }
 
     @Provides
     @Singleton
     fun providesTranslatedWordDao(context: Application): TranslatedWordDao {
-        return com.ovolk.dictionary.data.database.AppDatabase.getInstance(context).translatedWordDao()
+        return AppDatabase.getInstance(context).translatedWordDao()
     }
 
     @Provides
     @Singleton
     fun providesExamWordAnswerDao(context: Application): ExamWordAnswerDao {
-        return com.ovolk.dictionary.data.database.AppDatabase.getInstance(context).examWordAnswerDao()
+        return AppDatabase.getInstance(context).examWordAnswerDao()
     }
 
     @Provides

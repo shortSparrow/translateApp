@@ -10,7 +10,11 @@ import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 
 @Composable
-fun ExamScreen(navController: NavHostController, listName: String, listId: Long) {
+fun ExamScreen(
+    navController: NavHostController,
+    listName: String,
+    listId: Long,
+) {
 
     val viewModel = hiltViewModel<ExamKnowledgeWordsViewModel>()
     val state = viewModel.composeState
@@ -18,7 +22,7 @@ fun ExamScreen(navController: NavHostController, listName: String, listId: Long)
 
 
     // temporary solution for updating exam list after create first word
-    LaunchedEffect(state.shouldLoadWordListAgain){
+    LaunchedEffect(state.shouldLoadWordListAgain) {
         if (state.examWordList.isEmpty() && state.shouldLoadWordListAgain) {
             onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
         }

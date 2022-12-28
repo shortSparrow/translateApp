@@ -7,6 +7,7 @@ const val TRANSLATED_WORDS_TABLE_NAME = "translated_words"
 const val TRANSLATED_WORDS_TRANSLATIONS = "word_translations"
 const val TRANSLATED_WORDS_HINTS = "word_hints"
 const val TRANSLATED_WORDS_LISTS = "word_lists"
+const val DELAYED_UPDATE_WORDS_PRIORITY = "delayed_updated_words_priority"
 
 const val EXAM_WORD_ANSWERS_TABLE_NAME = "exam_word_answers"
 

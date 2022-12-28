@@ -27,20 +27,6 @@ class ModifyWordUseCase @Inject constructor(
         )
     })
 
-    suspend fun modifyTranslateWithUpdatePriority(
-        wordId: Long,
-        translates: List<Translate>, priority: Int
-    ) = repository.addHiddenTranslateWithUpdatePriority(
-        translates = translates.map {
-            mapper.translateLocalToDb(
-                wordId = wordId,
-                translate = it
-            )
-        },
-        wordId = wordId,
-        priority = priority
-    )
-
     suspend fun modifyOnlySound(
         id: Long,
         sound: WordAudio?, // english sound
