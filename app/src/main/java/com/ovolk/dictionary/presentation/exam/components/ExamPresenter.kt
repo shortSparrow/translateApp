@@ -1,16 +1,16 @@
 package com.ovolk.dictionary.presentation.exam.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -19,12 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialogType
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.exam.CompleteAlertBehavior
 import com.ovolk.dictionary.presentation.exam.ExamAction
@@ -101,6 +98,11 @@ fun ExamPresenter(
         }
     }
 
+    val title = when (state.mode) {
+        ExamMode.DAILY_MODE -> stringResource(id = R.string.exam_counter_toolbar_title_daily_mode)
+        ExamMode.INFINITY_MODE -> stringResource(id = R.string.exam_counter_toolbar_title_infinity_mode)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,7 +110,7 @@ fun ExamPresenter(
             .padding(bottom = 10.dp)
     ) {
         Header(
-            title = stringResource(id = R.string.exam_counter_toolbar_title_daily_mode),
+            title = title,
             firstRightIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.exam_mode),
@@ -160,7 +162,8 @@ fun ExamPresenter(
                 InputWord(
                     word = currentWord.value,
                     answerValue = state.answerValue,
-                    onAction = onAction
+                    onAction = onAction,
+                    currentWordFreeze=currentWordFreeze
                 )
 
                 NavigationPart(
