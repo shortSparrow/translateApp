@@ -161,7 +161,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
     private fun loadWordsList(listId: Long?, listName: String? = null) {
         val correctListName =
-            listName?.let { application.getString(R.string.exam_list_name, it) } ?: ""
+            listName?.let {
+                if (it.isEmpty()) return@let ""
+                application.getString(R.string.exam_list_name, it)
+            } ?: ""
+
         composeState = composeState.copy(
             isLoading = true,
             listId = listId,
@@ -262,7 +266,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         getCurrentWord().status = newStatus
         getCurrentWord().givenAnswer = answer
 
-//        // TODO Sve in shared pref that we need to updated words
         viewModelScope.launch {
             updateWordPriorityUseCase.addWordForUpdatePriority(
                 UpdatePriority(
