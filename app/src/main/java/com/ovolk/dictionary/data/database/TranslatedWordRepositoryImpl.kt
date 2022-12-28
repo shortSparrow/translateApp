@@ -1,24 +1,15 @@
 package com.ovolk.dictionary.data.database
 
 import android.app.Application
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
 import com.ovolk.dictionary.data.mapper.WordMapper
-import com.ovolk.dictionary.data.model.HintDb
-import com.ovolk.dictionary.data.model.TranslateDb
-import com.ovolk.dictionary.data.model.WordInfoDb
+import com.ovolk.dictionary.data.model.*
 import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.util.SHOW_VARIANTS_EXAM_AVAILABLE_LANGUAGES
-import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 
@@ -33,7 +24,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
 
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
         return translatedWordDao.getExamWordList(count = count, skip = skip)
-            .map { word -> mapper.wordFullDbToExamWord( word ) }
+            .map { word -> mapper.wordFullDbToExamWord(word) }
     }
 
     override suspend fun getExamWordListFromOneList(
@@ -86,8 +77,21 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return translatedWordDao.deleteWord(id) != WORD_IS_NOT_FOUND
     }
 
+    override suspend fun getWordsForDelayedUpdatePriority(): List<UpdatePriority> {
+        return translatedWordDao.getWordsForDelayedUpdatePriority()
+            .map { mapper.updatePriorityDbToUpdatePriority(it) }
+    }
+
+    override suspend fun addWordForDelayedUpdatePriority(word: UpdatePriorityDb): Boolean {
+        return translatedWordDao.addWordForDelayedUpdatePriority(word) != WORD_IS_NOT_FOUND.toLong()
+    }
+
     override suspend fun updatePriorityById(priority: Int, id: Long): Boolean {
         return translatedWordDao.updatePriorityById(priority, id) != WORD_IS_NOT_FOUND
+    }
+
+    override suspend fun updateWordsPriority(words: List<UpdatePriorityDb>) {
+        translatedWordDao.updateWordsForDelayedUpdatePriority(words)
     }
 
     override suspend fun addHiddenTranslateWithUpdatePriority(

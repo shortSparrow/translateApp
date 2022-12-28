@@ -6,7 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.data.model.UpdatePriority
+import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
@@ -32,54 +36,16 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     var composeState by mutableStateOf(ExamKnowledgeState())
         private set
 
-    private fun getTimestamp(): Long = System.currentTimeMillis()
-
-    init {
-//        val listName = savedStateHandle.get<String>("listName")
-//        val listId = checkNotNull(savedStateHandle.get<Long>("listId"))
-//
-//        onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
-
-//        loadWordsList(null, null)
-//        viewModelScope.async {
-//            var wordCount = 1
-//            while (wordCount < 10_000) {
-//                val word = ModifyWord(
-//                    value = wordCount.toString(),
-//                    translates = listOf(
-//                        Translate(
-//                            localId = 1,
-//                            updatedAt = getTimestamp(),
-//                            createdAt = getTimestamp(),
-//                            value = "translate_$wordCount",
-//                            isHidden = false,
-//                        )
-//                    ),
-//                    description = "",
-//                    sound = null,
-//                    langFrom = "EN",
-//                    langTo = "UK",
-//                    hints = listOf(
-//                        HintItem(
-//                            localId = 1,
-//                            updatedAt = getTimestamp(),
-//                            createdAt = getTimestamp(),
-//                            value = "translate_$wordCount",
-//                        )
-//                    ),
-//                    createdAt = getTimestamp(),
-//                    updatedAt = getTimestamp(),
-//                    transcription = ""
-//                )
-//                val d = viewModelScope.async {
-//                    modifyWordUseCase(word = word)
-//                }
-//                d.await()
-//                delay(1)
-//                wordCount++
-//            }
-//        }
+    override fun onCleared() {
+        updateAnsweredWords() // handle close screen. If user kill app, data will be updated after next opening app (see DictionaryApp)
+        super.onCleared()
     }
+
+//    init {
+//        GenerateFakeWords(modifyWordUseCase).generateFakeWords()
+//    }
+
+    private fun getTimestamp(): Long = System.currentTimeMillis()
 
     private fun getCurrentWord() = composeState.examWordList[composeState.activeWordPosition]
 
@@ -148,6 +114,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                             )
                                 ?: return@launch
                         val newList = composeState.examWordList.plus(response.examWordList)
+
                         composeState = composeState.copy(
                             examWordList = newList,
                             isAllExamWordsLoaded = response.totalCount == newList.size,
@@ -191,7 +158,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun loadWordsList(listId: Long?, listName: String? = null) {
         val correctListName =
@@ -239,20 +205,25 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         val currentWord = getCurrentWord()
         viewModelScope.launch {
             // add translate and return priority to old value, and mark answer as success
-            modifyWordUseCase.modifyTranslateWithUpdatePriority(
+            modifyWordUseCase.modifyTranslates(
                 wordId = currentWord.id,
                 translates = listOf(hiddenTranslate),
-                priority = currentWord.priority.minus(1),
             ).apply {
                 currentWord.translates =
                     currentWord.translates.plus(hiddenTranslate.copy(id = this.first()))
                 currentWord.status = ExamWordStatus.SUCCESS
                 composeState = composeState.copy(answerValue = "")
             }
+
+            updateWordPriorityUseCase.addWordForUpdatePriority(
+                UpdatePriority(
+                    priority = currentWord.priority.minus(1),
+                    wordId = getCurrentWord().id
+                )
+            )
         }
 
     }
-
 
     private fun toggleIsHiddenTranslate(translateId: Long) {
         val currentWord = getCurrentWord()
@@ -291,8 +262,14 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         getCurrentWord().status = newStatus
         getCurrentWord().givenAnswer = answer
 
+//        // TODO Sve in shared pref that we need to updated words
         viewModelScope.launch {
-            updateWordPriorityUseCase(priority = newPriority, id = getCurrentWord().id)
+            updateWordPriorityUseCase.addWordForUpdatePriority(
+                UpdatePriority(
+                    priority = newPriority,
+                    wordId = getCurrentWord().id
+                )
+            )
         }
 
         val isExamEnd =
@@ -324,6 +301,21 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             isHiddenTranslateDescriptionExpanded = false,
             isVariantsExpanded = false,
             isHintsExpanded = false
+        )
+    }
+
+    /**
+     * We can't update priority during exam, because update priority change word position in DB, and we load words by bunch (10 words
+     * per bunch for example). If we make update during the exam some words appears twice, and some never. For avoid this we add words to
+     * temporary table during the exam and after end/cancel exam worker go to the temporary table, get data and update main table, and clear
+     * temporary table. If crash happens, or user kill app, worker also runs every times on app launch, so data will be updated anyway
+     * **/
+    private fun updateAnsweredWords() {
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniqueWork(
+            UpdateWordsPriorityWorker.DELAY_UPDATE_WORDS_PRIORITY_NAME,
+            ExistingWorkPolicy.APPEND_OR_REPLACE, // Що робити, якщо worker з таким імям вже існує
+            UpdateWordsPriorityWorker.invokeDelayUpdateIfNeeded()
         )
     }
 
