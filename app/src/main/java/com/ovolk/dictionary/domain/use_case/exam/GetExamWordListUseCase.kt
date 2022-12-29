@@ -5,6 +5,7 @@ import com.ovolk.dictionary.domain.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
+import com.ovolk.dictionary.domain.use_case.daily_exam_settings.HandleDailyExamSettingsUseCase
 import com.ovolk.dictionary.presentation.exam.ExamMode
 import com.ovolk.dictionary.presentation.exam.ExamMode.*
 import com.ovolk.dictionary.util.EXAM_WORD_ANSWER_LIST_SIZE
@@ -26,11 +27,14 @@ data class ExamWordListUseCaseResponse(
 class GetExamWordListUseCase @Inject constructor(
     private val repository: TranslatedWordRepository,
     private val examWordAnswerRepository: ExamWordAnswerRepository,
+    handleDailyExamSettingsUseCase: HandleDailyExamSettingsUseCase,
     val mapper: WordMapper,
 ) {
     private var getExamWordListCurrentPage: Int = 0
     private var isLoadingNextPage: Boolean = false
     private var totalCount: Int = 0
+    private val dailyExamWordsCount =
+        handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords.toInt()
 
     suspend fun searchWordListSize() = coroutineScope { repository.searchWordListSize() }
 
@@ -46,20 +50,20 @@ class GetExamWordListUseCase @Inject constructor(
                 loadTotalCount(listId, mode)
                 getExamWordListCurrentPage = 0
             }
-            val skip = getExamWordListCurrentPage * EXAM_WORD_LIST_COUNT
+            val skip = getExamWordListCurrentPage * dailyExamWordsCount
             getExamWordListCurrentPage += 1
 
-            val answerList = getExamAnswerVariants(EXAM_WORD_LIST_COUNT)
+            val answerList = getExamAnswerVariants(dailyExamWordsCount)
 
             val request = if (listId != null) {
                 repository.getExamWordListFromOneList(
-                    count = EXAM_WORD_LIST_COUNT,
+                    count = dailyExamWordsCount,
                     skip = skip,
                     listId = listId
                 )
             } else {
                 repository.getExamWordList(
-                    count = EXAM_WORD_LIST_COUNT,
+                    count = dailyExamWordsCount,
                     skip = skip,
                 )
             }
@@ -97,8 +101,8 @@ class GetExamWordListUseCase @Inject constructor(
                 repository.getExamWordListSizeForOneList(listId)
             }
 
-            totalCount = when(mode) {
-                DAILY_MODE -> minOf(tempTotalCount, EXAM_WORD_LIST_COUNT)
+            totalCount = when (mode) {
+                DAILY_MODE -> minOf(tempTotalCount, dailyExamWordsCount)
                 INFINITY_MODE -> tempTotalCount
             }
         }
@@ -130,7 +134,4 @@ class GetExamWordListUseCase @Inject constructor(
         examWordAnswerRepository.setWordAnswerList(newList)
     }
 
-    companion object {
-        private const val EXAM_WORD_LIST_COUNT = 10
-    }
 }

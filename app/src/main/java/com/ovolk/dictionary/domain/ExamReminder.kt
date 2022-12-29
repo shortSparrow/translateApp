@@ -20,7 +20,7 @@ class ExamReminder @Inject constructor(
     private val getExamWordListUseCase: GetExamWordListUseCase
 ) {
     private val sharedPref: SharedPreferences = application.getSharedPreferences(
-        MY_PREFERENCES,
+        SETTINGS_PREFERENCES,
         AppCompatActivity.MODE_PRIVATE
     )
 

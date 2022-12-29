@@ -23,6 +23,14 @@ data class SettingsState(
             iconId = R.drawable.exam_reminder,
             navigateTo = SettingsNavigation.EXAM_REMINDER_SETTINGS
         ),
+        SettingsItem(
+            title = DictionaryApp.applicationContext()
+                .getString(R.string.settings_dality_exam_item_title),
+            contentDescription = DictionaryApp.applicationContext()
+                .getString(R.string.settings_dality_exam_cd_item_title),
+            iconId = R.drawable.exam,
+            navigateTo = SettingsNavigation.EXAM_DAILY_SETTINGS
+        ),
     )
 )
 

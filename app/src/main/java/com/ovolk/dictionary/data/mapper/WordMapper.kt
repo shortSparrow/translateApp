@@ -151,4 +151,14 @@ class WordMapper @Inject constructor() {
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
     )
+
+    fun updatePriorityToUpdatePriorityDb(updatePriority: UpdatePriority) = UpdatePriorityDb(
+        wordId = updatePriority.wordId,
+        priority = updatePriority.priority
+    )
+
+    fun updatePriorityDbToUpdatePriority(updatePriorityDb: UpdatePriorityDb) = UpdatePriority(
+        wordId = updatePriorityDb.wordId,
+        priority = updatePriorityDb.priority
+    )
 }

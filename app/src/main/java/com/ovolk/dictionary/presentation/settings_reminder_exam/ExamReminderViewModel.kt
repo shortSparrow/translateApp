@@ -33,7 +33,7 @@ class ExamReminderViewModel @Inject constructor(
 
     private val sharedPref: SharedPreferences =
         application.getSharedPreferences(
-            MY_PREFERENCES,
+            SETTINGS_PREFERENCES,
             AppCompatActivity.MODE_PRIVATE
         )
 

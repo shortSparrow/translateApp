@@ -19,10 +19,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.exam_reminder.FrequencyItem
+import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.settings_reminder_exam.OnExamReminderAction
 import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminderExamState
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
+import com.ovolk.dictionary.util.PushFrequency
 
 @Composable
 fun ExamReminderPresenter(
@@ -139,9 +142,19 @@ fun ExamReminderPresenterPreview() {
     ExamReminderPresenter(
         state = SettingsReminderExamState(
             leftTimeToNextExam = "22:00",
-            reminderTime = "10:00"
+            reminderTime = "10:00",
+            frequencyList = listOf(
+                FrequencyItem(
+                    title = stringResource(R.string.settings_exam_reminder_frequency_once_a_day),
+                    PushFrequency.ONCE_AT_DAY
+                ),
+            ),
+            selectedFrequency = FrequencyItem(
+                title = stringResource(id = R.string.settings_exam_reminder_frequency_once_a_day),
+                PushFrequency.ONCE_AT_DAY
+            ),
         ),
         onAction = {},
-        goBack={}
+        goBack = {}
     )
 }
