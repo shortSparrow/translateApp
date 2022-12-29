@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.exam
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +24,16 @@ fun ExamScreen(
     val viewModel = hiltViewModel<ExamKnowledgeWordsViewModel>()
     val state = viewModel.composeState
     val onAction = viewModel::onAction
+    val currentDestination = navController.currentDestination
+
+    LaunchedEffect(currentDestination) {
+        currentDestination?.route?.let {
+            if (!it.startsWith(MainTabRotes.EXAM.name)) {
+                // leave Exam tab
+                viewModel.updateAnsweredWords()
+            }
+        }
+    }
 
 
     // temporary solution for updating exam list after create first word

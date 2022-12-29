@@ -19,7 +19,6 @@ import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
-import com.ovolk.dictionary.presentation.exam.helpers.GenerateFakeWords
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,11 +35,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     var listener: Listener? = null
     var composeState by mutableStateOf(ExamKnowledgeState())
         private set
-
-    override fun onCleared() {
-        updateAnsweredWords() // handle close screen. If user kill app, data will be updated after next opening app (see DictionaryApp)
-        super.onCleared()
-    }
 
 //    init {
 //        GenerateFakeWords(modifyWordUseCase).generateFakeWords()
@@ -314,7 +308,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
      * temporary table during the exam and after end/cancel exam worker go to the temporary table, get data and update main table, and clear
      * temporary table. If crash happens, or user kill app, worker also runs every times on app launch, so data will be updated anyway
      * **/
-    private fun updateAnsweredWords() {
+     fun updateAnsweredWords() {
         val workManager = WorkManager.getInstance(application)
         workManager.enqueueUniqueWork(
             UpdateWordsPriorityWorker.DELAY_UPDATE_WORDS_PRIORITY_NAME,
