@@ -53,7 +53,7 @@ fun SettingsExamDailyScreen(
                     .weight(1f)
                     .fillMaxWidth(1f),
             ) {
-                FlowRow() {
+                FlowRow {
                     Text(
                         text = stringResource(id = R.string.settings_daily_exam_words_count_description),
                         modifier = Modifier.padding(top = 20.dp, end = 20.dp)
@@ -73,7 +73,6 @@ fun SettingsExamDailyScreen(
                         ),
                     )
                 }
-
             }
 
             Box(
