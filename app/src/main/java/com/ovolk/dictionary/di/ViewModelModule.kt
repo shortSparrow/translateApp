@@ -5,6 +5,7 @@ import com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsViewModel
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordViewModel
 import com.ovolk.dictionary.presentation.select_languages.LanguagesToFromViewModel
 import com.ovolk.dictionary.presentation.settings.SettingsViewModel
+import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyViewModel
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesToFromViewModel
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderViewModel
 import com.ovolk.dictionary.presentation.word_list.WordListViewModel
@@ -62,5 +63,11 @@ interface ViewModelModule {
     @Binds
     @ViewModelScoped
     fun bindLanguagesToFromViewModel(impl: LanguagesToFromViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(SettingsExamDailyViewModel::class)
+    @Binds
+    @ViewModelScoped
+    fun bindSettingsExamDailyViewModel(impl: SettingsExamDailyViewModel): ViewModel
 
 }

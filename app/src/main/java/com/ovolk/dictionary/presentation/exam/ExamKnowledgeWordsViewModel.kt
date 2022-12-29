@@ -19,6 +19,7 @@ import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
+import com.ovolk.dictionary.presentation.exam.helpers.GenerateFakeWords
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

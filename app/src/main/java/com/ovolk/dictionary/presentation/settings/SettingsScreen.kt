@@ -20,6 +20,9 @@ fun SettingsScreen(navController: NavHostController) {
                 SettingsNavigation.EXAM_REMINDER_SETTINGS -> {
                     navController.navigate("${CommonRotes.EXAM_REMINDER}")
                 }
+                SettingsNavigation.EXAM_DAILY_SETTINGS -> {
+                    navController.navigate("${CommonRotes.EXAM_DAILY}")
+                }
             }
         }
     }
