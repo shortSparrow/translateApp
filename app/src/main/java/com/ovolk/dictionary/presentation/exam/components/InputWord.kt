@@ -72,7 +72,7 @@ fun InputWord(
 @Preview(showBackground = true)
 @Composable
 fun InputWordPreview() {
-    Column() {
+    Column {
         InputWord(
             word = "Green",
             answerValue = "Зелений",
