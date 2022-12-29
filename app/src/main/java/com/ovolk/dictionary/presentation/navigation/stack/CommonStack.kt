@@ -7,13 +7,14 @@ import com.ovolk.dictionary.presentation.list_full.ListFullScreen
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
 import com.ovolk.dictionary.presentation.navigation.graph.Graph
+import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyScreen
 import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesScreen
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromScreen
 import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 
-enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LANGUAGES_FROM, SETTINGS_LANGUAGES_TO, EXAM_REMINDER }
+enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LANGUAGES_FROM, SETTINGS_LANGUAGES_TO, EXAM_REMINDER, EXAM_DAILY }
 sealed class CommonScreen(val route: String) {
     object ModifyWord :
         CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}")
@@ -22,6 +23,7 @@ sealed class CommonScreen(val route: String) {
     object SettingsLanguagesFrom : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_FROM}")
     object SettingsLanguagesTo : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_TO}")
     object ExamReminder : CommonScreen("${CommonRotes.EXAM_REMINDER}")
+    object ExamDaily: CommonScreen("${CommonRotes.EXAM_DAILY}")
 }
 
 
@@ -84,6 +86,10 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
 
         composable(route = CommonScreen.ExamReminder.route) {
             ExamReminderScreen(navController = navController)
+        }
+
+        composable(route = CommonScreen.ExamDaily.route) {
+            SettingsExamDailyScreen(navController = navController)
         }
     }
 }

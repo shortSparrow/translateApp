@@ -106,6 +106,9 @@
     <string name="settings_exam_reminder_item_title">exam reminder</string>
     <string name="settings_exam_reminder_cd_item_title">go to the exam reminder settings</string>
 
+    <string name="settings_dality_exam_item_title">Daily exam</string>
+    <string name="settings_dality_exam_cd_item_title">go to the daily exam settings</string>
+
     <!-- Settings exam reminder fragment -->
     <string name="settings_exam_reminder_screen_title">Exam Reminder Settings</string>
     <string name="settings_exam_reminder_label">Exam frequency</string>
@@ -133,6 +136,11 @@
     <string name="settings_languages_select_language">Select languages</string>
     <string name="settings_languages_translate_language_to">Choose the languages to translate into:</string>
     <string name="settings_languages_translate_language_from">Choose the languages from which to translate:</string>
+
+    <!-- Settings daily exam fragment -->
+    <string name="settings_daily_exam_screen_title">Daily Exam Settings</string>
+    <string name="settings_daily_exam_words_count_description">Set quantity of words for daily exam</string>
+    <string name="settings_daily_exam_words_count_label">Count of words</string>
 
 
     <!--  Select Languages -->
