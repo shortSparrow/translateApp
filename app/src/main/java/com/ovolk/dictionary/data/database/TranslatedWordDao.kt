@@ -4,6 +4,7 @@ import androidx.room.*
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.data.model.*
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
+import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
 import com.ovolk.dictionary.util.DELAYED_UPDATE_WORDS_PRIORITY
 import com.ovolk.dictionary.util.TRANSLATED_WORDS_TABLE_NAME
 import kotlinx.coroutines.async
@@ -20,6 +21,9 @@ interface TranslatedWordDao {
 
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
     fun searchWordListSize(): Flow<Int>
+
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE updated_at <= :beforeUpdatedAt AND priority < $DEFAULT_PRIORITY_VALUE ORDER BY priority DESC, updated_at DESC LIMIT :count")
+    suspend fun getWordsForSilentUpdatePriority(beforeUpdatedAt: Long, count: Int): List<WordFullDb>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
     suspend fun getExamWordList(count: Int, skip: Int): List<WordFullDb>
@@ -49,7 +53,7 @@ interface TranslatedWordDao {
 
 
     @Query("SELECT * FROM $DELAYED_UPDATE_WORDS_PRIORITY")
-    suspend fun getWordsForDelayedUpdatePriority():List<UpdatePriorityDb>
+    suspend fun getWordsForDelayedUpdatePriority(): List<UpdatePriorityDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addWordForDelayedUpdatePriority(word: UpdatePriorityDb): Long

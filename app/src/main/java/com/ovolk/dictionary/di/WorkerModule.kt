@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.di
 
 import androidx.work.*
-import com.ovolk.dictionary.data.workers.DictionaryAppWorkerFactory
+import com.ovolk.dictionary.data.workers.DictionaryAppDelegateWorkerFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,10 +15,10 @@ object WorkerModule {
     @Singleton
     @Provides
     fun provideWorkManagerConfiguration(
-        dictionaryAppWorkerFactory: DictionaryAppWorkerFactory
+        dictionaryAppDelegateWorkerFactory: DictionaryAppDelegateWorkerFactory
     ): Configuration {
         return Configuration.Builder()
-            .setWorkerFactory(dictionaryAppWorkerFactory)
+            .setWorkerFactory(dictionaryAppDelegateWorkerFactory)
             .build()
     }
 }

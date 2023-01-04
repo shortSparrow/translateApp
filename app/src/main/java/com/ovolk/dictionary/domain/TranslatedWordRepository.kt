@@ -37,4 +37,6 @@ interface TranslatedWordRepository : InMemoryStorage {
     suspend fun modifyWordHints(hints: List<HintDb>): List<Long>
     suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long
 
+    // update words which not updated a lot of time, and hase priority less than default
+    suspend fun getWordsForSilentUpdatePriority(beforeUpdatedAt: Long, count: Int): List<UpdatePriority>
 }

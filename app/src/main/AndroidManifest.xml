@@ -43,9 +43,9 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="androidx.work.WorkManagerInitializer"
-            tools:node="remove"
-            tools:replace="android:authorities" />
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove">
+        </provider>
     </application>
 
 </manifest>
