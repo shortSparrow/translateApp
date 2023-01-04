@@ -20,9 +20,7 @@ class UpdateWordPriorityUseCase @Inject constructor(
 
     suspend fun addWordForUpdatePriority(updatePriority: UpdatePriority): Boolean {
         return repository.addWordForDelayedUpdatePriority(
-            mapper.updatePriorityToUpdatePriorityDb(
-                updatePriority
-            )
+            mapper.updatePriorityToUpdatePriorityDb(updatePriority)
         )
     }
 

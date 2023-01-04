@@ -313,7 +313,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         workManager.enqueueUniqueWork(
             UpdateWordsPriorityWorker.DELAY_UPDATE_WORDS_PRIORITY_NAME,
             ExistingWorkPolicy.APPEND_OR_REPLACE, // Що робити, якщо worker з таким імям вже існує
-            UpdateWordsPriorityWorker.invokeDelayUpdateIfNeeded()
+            UpdateWordsPriorityWorker.getWorker()
         )
     }
 

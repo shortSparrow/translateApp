@@ -21,6 +21,16 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     private val inMemoryStorage: InMemoryStorage,
     private val application: Application
 ) : TranslatedWordRepository, InMemoryStorage by inMemoryStorage {
+    override suspend fun getWordsForSilentUpdatePriority(
+        beforeUpdatedAt: Long,
+        count: Int
+    ): List<UpdatePriority> {
+        return translatedWordDao.getWordsForSilentUpdatePriority(
+            beforeUpdatedAt = beforeUpdatedAt,
+            count = count
+        )
+            .map { word -> mapper.wordFullDbToUpdatePriority(word) }
+    }
 
     override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
         return translatedWordDao.getExamWordList(count = count, skip = skip)
