@@ -155,16 +155,10 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     private fun loadWordsList(listId: Long?, listName: String? = null) {
-        val correctListName =
-            listName?.let {
-                if (it.isEmpty()) return@let ""
-                application.getString(R.string.exam_list_name, it)
-            } ?: ""
-
         composeState = composeState.copy(
             isLoading = true,
             listId = listId,
-            listName = correctListName,
+            listName = listName ?: "",
             shouldLoadWordListAgain = false
         )
         viewModelScope.launch {
@@ -178,8 +172,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 list[0].status = ExamWordStatus.IN_PROCESS
             }
 
-            composeState = ExamKnowledgeState(
-                mode = composeState.mode,
+            composeState = composeState.copy(
                 examWordList = list,
                 isAllExamWordsLoaded = response.totalCount == list.size,
                 examListTotalCount = response.totalCount,

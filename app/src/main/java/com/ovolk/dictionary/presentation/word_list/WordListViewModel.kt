@@ -11,8 +11,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
-import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.wokers.HandleOldWordsPriority
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.util.helpers.getAudioPath

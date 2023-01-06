@@ -116,6 +116,7 @@
     <string name="settings_exam_reminder_time_push_notification">Select push notification time:</string>
     <string name="settings_exam_reminder_frequency_disable">disable</string>
     <string name="settings_exam_reminder_frequency_once_a_day">once a day</string>
+    <string name="settings_exam_reminder_frequency_once_every_2_days">once every 2 days</string>
     <string name="settings_exam_reminder_frequency_once_every_3_days">once every 3 days</string>
     <string name="settings_exam_reminder_frequency_once_every_6_days">once every 6 days</string>
 
