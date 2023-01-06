@@ -123,8 +123,12 @@ fun ExamPresenter(
             onFirstRightIconClick = { onAction(ExamAction.ToggleSelectModeModal(true)) },
             withBackButton = false
         )
+
+        val listName =
+            if (state.listName.isEmpty()) "" else stringResource(id = R.string.exam_list_name, state.listName)
+
         Text(
-            text = state.listName,
+            text = listName,
             modifier = Modifier.fillMaxWidth(1f),
             textAlign = TextAlign.Center
         )
@@ -163,7 +167,7 @@ fun ExamPresenter(
                     word = currentWord.value,
                     answerValue = state.answerValue,
                     onAction = onAction,
-                    currentWordFreeze=currentWordFreeze
+                    currentWordFreeze = currentWordFreeze
                 )
 
                 NavigationPart(

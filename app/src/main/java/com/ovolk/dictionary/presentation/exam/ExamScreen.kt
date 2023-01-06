@@ -1,17 +1,13 @@
 package com.ovolk.dictionary.presentation.exam
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import com.ovolk.dictionary.presentation.exam.components.ExamPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
-import com.ovolk.dictionary.presentation.navigation.graph.Graph
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabBottomBar
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
-import com.ovolk.dictionary.presentation.navigation.graph.SelectLanguagesScreens
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 
 @Composable
