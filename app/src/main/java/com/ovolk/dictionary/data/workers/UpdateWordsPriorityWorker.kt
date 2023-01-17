@@ -1,8 +1,10 @@
 package com.ovolk.dictionary.data.workers
 
 import android.content.Context
-import android.util.Log
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkerParameters
 import com.ovolk.dictionary.domain.use_case.exam.GetWordsForDelayedUpdatePriorityUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
 import kotlinx.coroutines.Dispatchers

@@ -1,12 +1,7 @@
 package com.ovolk.dictionary.data.workers
 
 import android.content.Context
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
-import com.ovolk.dictionary.domain.use_case.wokers.HandleOldWordsPriority
-import com.ovolk.dictionary.util.SETTINGS_PREFERENCES
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 

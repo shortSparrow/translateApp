@@ -60,7 +60,7 @@ class ExamReminder @Inject constructor(
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
     }
 
     private fun resetReminder() {
