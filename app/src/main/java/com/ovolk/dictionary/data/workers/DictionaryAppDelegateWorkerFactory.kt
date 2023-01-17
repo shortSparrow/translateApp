@@ -1,14 +1,12 @@
 package com.ovolk.dictionary.data.workers
 
 import android.content.Context
-import android.util.Log
 import androidx.work.DelegatingWorkerFactory
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.ovolk.dictionary.domain.use_case.exam.GetWordsForDelayedUpdatePriorityUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
-import com.ovolk.dictionary.domain.use_case.wokers.HandleOldWordsPriority
 import javax.inject.Inject
 import javax.inject.Singleton
 

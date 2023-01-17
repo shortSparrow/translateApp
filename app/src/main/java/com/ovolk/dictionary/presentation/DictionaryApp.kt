@@ -2,7 +2,6 @@ package com.ovolk.dictionary.presentation
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.ktx.BuildConfig
 import androidx.work.Configuration

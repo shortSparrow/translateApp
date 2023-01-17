@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.domain.use_case.wokers
+package com.ovolk.dictionary.data.workers
 
 import com.ovolk.dictionary.data.model.UpdatePriority
 import com.ovolk.dictionary.domain.TranslatedWordRepository

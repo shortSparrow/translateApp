@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.model.UpdatePriority
 import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
 import com.ovolk.dictionary.domain.model.exam.ExamWord

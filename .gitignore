@@ -10,3 +10,4 @@ local.properties
 *.jks
 app/release
 release.properties
+.vscode
