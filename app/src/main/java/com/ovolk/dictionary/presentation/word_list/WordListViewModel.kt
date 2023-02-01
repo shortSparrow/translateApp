@@ -43,7 +43,6 @@ class WordListViewModel @Inject constructor(
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
 
-    // TODO implement infinity worker with 7 days delay for example
     init {
 //        viewModelScope.launch {
 //            handleOldWordsPriority.updatePriorityForBunchOldWords()
