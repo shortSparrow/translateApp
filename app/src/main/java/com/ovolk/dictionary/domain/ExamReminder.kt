@@ -20,7 +20,7 @@ class ExamReminder @Inject constructor(
     private val getExamWordListUseCase: GetExamWordListUseCase
 ) {
     private val sharedPref: SharedPreferences = application.getSharedPreferences(
-        MY_PREFERENCES,
+        SETTINGS_PREFERENCES,
         AppCompatActivity.MODE_PRIVATE
     )
 
@@ -60,7 +60,7 @@ class ExamReminder @Inject constructor(
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, delay, pendingIntent)
     }
 
     private fun resetReminder() {

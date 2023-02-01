@@ -6,7 +6,8 @@ class PushFrequency {
     companion object {
         const val NONE = 0
         const val ONCE_AT_DAY = 86_400_000
-        const val ONCE_AT_THREE_DAYS = 86_400_000 * 2
+        const val ONCE_AT_TWO_DAYS = 86_400_000 * 2
+        const val ONCE_AT_THREE_DAYS = 86_400_000 * 3
         const val ONCE_AT_SIX_DAYS = 86_400_000 * 5
 
         const val DEFAULT_HOURS = 10

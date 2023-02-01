@@ -85,6 +85,11 @@ class WordMapper @Inject constructor() {
         wordListId = wordDb.wordInfo.wordListId,
     )
 
+    fun wordFullDbToUpdatePriority(wordDb: WordFullDb): UpdatePriority = UpdatePriority(
+        wordId = wordDb.wordInfo.id,
+        priority = wordDb.wordInfo.priority,
+    )
+
     fun modifyWordToWordInfoDb(modifyWord: ModifyWord) = WordInfoDb(
         id = modifyWord.id,
         priority = modifyWord.priority,
@@ -150,5 +155,15 @@ class WordMapper @Inject constructor() {
         title = listItem.title,
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
+    )
+
+    fun updatePriorityToUpdatePriorityDb(updatePriority: UpdatePriority) = UpdatePriorityDb(
+        wordId = updatePriority.wordId,
+        priority = updatePriority.priority
+    )
+
+    fun updatePriorityDbToUpdatePriority(updatePriorityDb: UpdatePriorityDb) = UpdatePriority(
+        wordId = updatePriorityDb.wordId,
+        priority = updatePriorityDb.priority
     )
 }

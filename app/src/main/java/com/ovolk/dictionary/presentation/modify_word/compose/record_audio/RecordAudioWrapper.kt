@@ -121,7 +121,7 @@ fun RecordAudioWrapper(
         val uri: Uri =
             Uri.fromParts("package", DictionaryApp.applicationContext().packageName, null)
         intent.data = uri
-        DictionaryApp.applicationContext().startActivity(intent);
+        DictionaryApp.applicationContext().startActivity(intent)
     }
 
     LaunchedEffect(recordState.isModalOpen) {

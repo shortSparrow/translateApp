@@ -15,6 +15,7 @@ data class SettingsReminderExamState(
     val frequencyList: List<FrequencyItem> = listOf(
         FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_disable), PushFrequency.NONE),
         FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_once_a_day), PushFrequency.ONCE_AT_DAY),
+        FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_once_every_2_days), PushFrequency.ONCE_AT_TWO_DAYS),
         FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_once_every_3_days), PushFrequency.ONCE_AT_THREE_DAYS),
         FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_once_every_6_days), PushFrequency.ONCE_AT_SIX_DAYS),
     ),

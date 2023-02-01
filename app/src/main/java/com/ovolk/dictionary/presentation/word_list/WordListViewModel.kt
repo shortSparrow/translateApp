@@ -11,7 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
+import com.ovolk.dictionary.data.workers.HandleOldWordsPriority
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,9 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class WordListViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
-    private val deleteWordUseCase: DeleteWordUseCase,
     private val application: Application,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
+    private val handleOldWordsPriority: HandleOldWordsPriority
 ) : ViewModel() {
     var listener: Listener? = null
     var state by mutableStateOf(WordListState())
@@ -43,28 +43,17 @@ class WordListViewModel @Inject constructor(
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
 
+    // TODO implement infinity worker with 7 days delay for example
     init {
+//        viewModelScope.launch {
+//            handleOldWordsPriority.updatePriorityForBunchOldWords()
+//        }
         val searchedWord: String? = savedStateHandle["searchedWord"]
         if (searchedWord != null) {
             state = state.copy(searchValue = searchedWord)
         }
         searchDebounced(searchedWord ?: "")
     }
-
-//    fun deleteWord(wordId: Long?) {
-//        if (wordId != null) {
-//            viewModelScope.launch {
-//                val deleteSuccess = deleteWordUseCase(wordId)
-//                if (deleteSuccess) {
-//                    Toast.makeText(
-//                        application,
-//                        application.getString(R.string.modify_word_success_delete_word),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        }
-//    }
 
     fun onAction(action: WordListAction) {
         when (action) {
