@@ -25,7 +25,7 @@ class IncreasePriorityForOldWordsWorker(
 
         fun getWorker(): PeriodicWorkRequest {
             return PeriodicWorkRequestBuilder<IncreasePriorityForOldWordsWorker>(
-                3,
+                15,
                 TimeUnit.DAYS
             )
                 .build()
