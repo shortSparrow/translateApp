@@ -17,8 +17,6 @@ class GetTimeReminder @Inject constructor() {
             )
         )
         val examReminderTime = sharedPref.getString(EXAM_REMINDER_TIME, defaultValue).toString()
-
         return gson.fromJson(examReminderTime, ReminderTime::class.java)
     }
-
 }

@@ -5,18 +5,21 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
+import android.content.ContentResolver.SCHEME_ANDROID_RESOURCE
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.media.AudioAttributes
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.MainActivity
 import com.ovolk.dictionary.domain.ExamReminder
+import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.MainActivity
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +30,9 @@ import javax.inject.Inject
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var examReminder: ExamReminder
-    private val soundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+    private var soundUri =
+        Uri.parse("$SCHEME_ANDROID_RESOURCE://${DictionaryApp.applicationContext().packageName}/${R.raw.reminder_sound}");
 
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
@@ -45,7 +50,7 @@ class AlarmReceiver : BroadcastReceiver() {
             )
             val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
                 addNextIntentWithParentStack(deepLinkIntent)
-                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
             }
 
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -59,14 +64,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setColor(context.getColor(R.color.light_blue))
                 .setAutoCancel(true)
                 .setSound(soundUri)
-                .setVibrate(longArrayOf(0, 500, 100))
+                .setLights(Color.MAGENTA, 5000, 5000)
                 .setContentIntent(pendingIntent)
                 .build()
 
             notificationManager.notify(NOTIFICATION_ID, notification)
-
-            // TODO maybe change on default repeat method
-            examReminder.repeatReminder()
         }
     }
 
@@ -78,10 +80,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_HIGH
             )
             val audioAttributes = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build()
 
+            notificationChanel.enableLights(true);
             notificationChanel.setSound(soundUri, audioAttributes)
             notificationManager.createNotificationChannel(notificationChanel)
         }

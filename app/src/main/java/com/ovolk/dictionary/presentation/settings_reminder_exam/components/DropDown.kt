@@ -20,7 +20,6 @@ fun DropDown(
 ) {
     val width = 210.dp
     var expanded by remember { mutableStateOf(false) }
-//    var selectedOptionText by remember { mutableStateOf(state.selectedFrequency.title) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -71,7 +70,6 @@ fun DropDown(
 fun DropDownPreview() {
     DropDown(
         state = SettingsReminderExamState(
-            leftTimeToNextExam = "22:00",
             reminderTime = "10:00"
         ),
         onChange = {}
