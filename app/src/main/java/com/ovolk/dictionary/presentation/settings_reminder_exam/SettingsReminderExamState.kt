@@ -9,9 +9,7 @@ import com.ovolk.dictionary.util.PushFrequency
 data class SettingsReminderExamState(
     val timeHours: Int = PushFrequency.DEFAULT_HOURS,
     val timeMinutes: Int = PushFrequency.DEFAULT_MINUTES,
-
     val reminderTime: String = "",
-    val leftTimeToNextExam: String = "",
     val frequencyList: List<FrequencyItem> = listOf(
         FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_disable), PushFrequency.NONE),
         FrequencyItem(title = readString(R.string.settings_exam_reminder_frequency_once_a_day), PushFrequency.ONCE_AT_DAY),

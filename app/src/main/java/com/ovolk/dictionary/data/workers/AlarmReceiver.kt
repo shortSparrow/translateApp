@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
@@ -68,9 +69,6 @@ class AlarmReceiver : BroadcastReceiver() {
                 .build()
 
             notificationManager.notify(NOTIFICATION_ID, notification)
-
-            // TODO maybe change on default repeat method
-            examReminder.repeatReminder()
         }
     }
 
