@@ -8,7 +8,7 @@ on:
 
 jobs:
   signed:
-    name: build signed APK
+    name: build release signed APK
     runs-on: ubuntu-latest
     if: github.ref_name == 'main'
     steps:
@@ -59,7 +59,7 @@ jobs:
           file: app/build/outputs/apk/release/app-release.apk
 
   un_signed:
-    name: build unsigned APK
+    name: build debug signed APK
     runs-on: ubuntu-latest
     if: github.ref_name == 'qa'
     steps:
