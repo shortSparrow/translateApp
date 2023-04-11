@@ -36,7 +36,7 @@ fun migrateFrom2To3(database: SupportSQLiteDatabase) {
     )
 
     // fill new tables (translates and hints)
-    val c: Cursor = database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME", null)
+    val c: Cursor = database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME", emptyArray())
     if (c.moveToFirst()) {
         do {
             val wordId: Long = c.getLong(0)

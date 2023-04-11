@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.data.model
 
 import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.Companion.CASCADE
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.util.TRANSLATED_WORDS_HINTS
 import com.ovolk.dictionary.util.TRANSLATED_WORDS_TABLE_NAME
