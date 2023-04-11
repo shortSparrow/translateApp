@@ -30,7 +30,7 @@ sealed class CommonScreen(val route: String) {
 fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.COMMON,
-        startDestination = CommonScreen.FullList.route,
+        startDestination = CommonScreen.ModifyWord.route,
     ) {
         composable(
             route = CommonScreen.ModifyWord.route,

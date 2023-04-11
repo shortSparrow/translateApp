@@ -12,7 +12,6 @@ import android.graphics.Color
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
@@ -64,7 +63,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setColor(context.getColor(R.color.light_blue))
                 .setAutoCancel(true)
                 .setSound(soundUri)
-                .setLights(Color.MAGENTA, 5000, 5000)
+                .setLights(Color.WHITE, 5000, 5000)
                 .setContentIntent(pendingIntent)
                 .build()
 
@@ -83,7 +82,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build()
 
-            notificationChanel.enableLights(true);
+            notificationChanel.enableLights(true)
             notificationChanel.setSound(soundUri, audioAttributes)
             notificationManager.createNotificationChannel(notificationChanel)
         }

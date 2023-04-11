@@ -19,6 +19,7 @@ import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
+import com.ovolk.dictionary.util.PASSED_SEARCH_WORD
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import com.ovolk.dictionary.util.helpers.setShowVariantsExamAvailableLanguagesIdNeeded
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                     val deepLinkPendingIntent: PendingIntent? =
                         TaskStackBuilder.create(context).run {
                             addNextIntentWithParentStack(deepLinkIntent)
-                            getPendingIntent(10, PendingIntent.FLAG_UPDATE_CURRENT)
+                            getPendingIntent(PASSED_SEARCH_WORD, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
                         }
                     deepLinkPendingIntent?.send()
                 } else {
@@ -109,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                     val deepLinkPendingIntent: PendingIntent? =
                         TaskStackBuilder.create(context).run {
                             addNextIntentWithParentStack(deepLinkIntent)
-                            getPendingIntent(10, PendingIntent.FLAG_UPDATE_CURRENT)
+                            getPendingIntent(PASSED_SEARCH_WORD, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
                         }
 
                     deepLinkPendingIntent?.send()

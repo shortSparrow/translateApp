@@ -36,3 +36,6 @@ const val DEFAULT_DAILY_EXAM_WORDS_COUNT = 10
 val MAX_BUTTON_WIDTH = 300.dp
 
 const val DEEP_LINK_BASE = "https://www.personal-dictionary"
+
+// PENDING INTENTS
+const val PASSED_SEARCH_WORD = 10

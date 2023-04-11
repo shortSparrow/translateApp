@@ -68,7 +68,7 @@ class GetExamWordListUseCase @Inject constructor(
                 )
             }
 
-            val examWordList = request.mapIndexed { index, examWord ->
+            val examWordList = request.shuffled().mapIndexed { index, examWord ->
                 val from = index * EXAM_WORD_ANSWER_LIST_SIZE
                 val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
 
