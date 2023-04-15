@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
+import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
+import com.ovolk.dictionary.data.in_memory_storage.ExamStatus
 import com.ovolk.dictionary.data.model.UpdatePriority
 import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
 import com.ovolk.dictionary.domain.model.exam.ExamWord
@@ -32,12 +34,14 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private val application: Application,
 ) : ViewModel() {
     var listener: Listener? = null
+    private val examLocalCache = ExamLocalCache.getInstance()
     var composeState by mutableStateOf(ExamKnowledgeState())
         private set
 
-//    init {
+    init {
 //        GenerateFakeWords(modifyWordUseCase).generateFakeWords()
-//    }
+        examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
+    }
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
@@ -46,6 +50,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     fun onAction(action: ExamAction) {
         when (action) {
             ExamAction.OnCheckAnswer -> checkAnswer(composeState.answerValue)
+
             is ExamAction.OnInputTranslate -> {
                 composeState =
                     composeState.copy(answerValue = action.value)
@@ -55,6 +60,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     }
                 }
             }
+
             is ExamAction.OnPressNavigate -> {
                 when (action.navigateButton) {
                     NEXT -> {
@@ -64,6 +70,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                         val newActiveWordPosition = composeState.activeWordPosition + 1
                         handleNavigation(newActiveWordPosition)
                     }
+
                     PREVIOUS -> {
                         if (composeState.activeWordPosition - 1 < 0) {
                             return
@@ -74,22 +81,27 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     }
                 }
             }
+
             is ExamAction.OnSelectVariant -> {
                 composeState = composeState.copy(answerValue = action.variant.value)
                 getCurrentWord().answerVariants.forEach {
                     it.isSelected = it.id == action.variant.id
                 }
             }
+
             ExamAction.ToggleHints -> {
                 composeState = composeState.copy(isHintsExpanded = !composeState.isHintsExpanded)
             }
+
             ExamAction.ToggleShowVariants -> {
                 composeState =
                     composeState.copy(isVariantsExpanded = !composeState.isVariantsExpanded)
             }
+
             is ExamAction.ToggleSelectModeModal -> {
                 composeState = composeState.copy(isModeDialogOpen = !composeState.isModeDialogOpen)
             }
+
             is ExamAction.OnSelectMode -> {
                 composeState = ExamKnowledgeState(
                     mode = action.mode,
@@ -98,6 +110,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 )
                 loadWordsList(composeState.listId, listName = composeState.listName)
             }
+
             ExamAction.OnLoadNextPageWords -> {
                 if (!composeState.isAllExamWordsLoaded) {
                     viewModelScope.launch {
@@ -117,23 +130,30 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     }
                 }
             }
+
             is ExamAction.OnSelectActiveWord -> handleNavigation(action.wordIndex)
+
             ExamAction.ToggleHiddenTranslateDescription -> {
                 composeState =
                     composeState.copy(isHiddenTranslateDescriptionExpanded = !composeState.isHiddenTranslateDescriptionExpanded)
             }
+
             ExamAction.ToggleTranslates -> {
                 composeState =
                     composeState.copy(isTranslateExpanded = !composeState.isTranslateExpanded)
             }
+
             ExamAction.OnPressAddHiddenTranslate -> addHiddenTranslate()
+
             is ExamAction.OnLongPressHiddenTranslate -> toggleIsHiddenTranslate(action.translateId)
+
             is ExamAction.CloseTheEndExamModal -> {
                 composeState = composeState.copy(isExamEnd = false)
                 if (action.behavior == CompleteAlertBehavior.GO_HOME) {
                     listener?.onNavigateToHome()
                 }
             }
+
             ExamAction.OnNavigateToCreateFirstWord -> {
                 listener?.onNavigateToCreateFirstWord()
 
@@ -146,6 +166,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     )
                 }
             }
+
             is ExamAction.LoadExamList -> {
                 val listId = if (action.listId == -1L) null else action.listId
                 loadWordsList(listId = listId, listName = action.listName)
@@ -248,7 +269,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         val newStatus =
             if (isAnswerCorrect) ExamWordStatus.SUCCESS else ExamWordStatus.FAIL
 
-
         getCurrentWord().priority = newPriority
         getCurrentWord().status = newStatus
         getCurrentWord().givenAnswer = answer
@@ -265,6 +285,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
         val isExamEnd =
             composeState.examWordList.none { word -> word.status == ExamWordStatus.UNPROCESSED || word.status == ExamWordStatus.IN_PROCESS }
         composeState = composeState.copy(isExamEnd = isExamEnd)
+        if (isExamEnd) {
+            examLocalCache.setExamStatus(ExamStatus.INACTIVE)
+        }
     }
 
     private fun handleNavigation(newActiveWordPosition: Int) {
@@ -300,11 +323,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
      * temporary table during the exam and after end/cancel exam worker go to the temporary table, get data and update main table, and clear
      * temporary table. If crash happens, or user kill app, worker also runs every times on app launch, so data will be updated anyway
      * **/
-     fun updateAnsweredWords() {
+    fun updateAnsweredWords() {
         val workManager = WorkManager.getInstance(application)
         workManager.enqueueUniqueWork(
             UpdateWordsPriorityWorker.DELAY_UPDATE_WORDS_PRIORITY_NAME,
-            ExistingWorkPolicy.APPEND_OR_REPLACE, // Що робити, якщо worker з таким імям вже існує
+            ExistingWorkPolicy.APPEND_OR_REPLACE, // What should we do, when worker with this name already exist
             UpdateWordsPriorityWorker.getWorker()
         )
     }
