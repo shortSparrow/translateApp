@@ -224,6 +224,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 currentWord.translates =
                     currentWord.translates.plus(hiddenTranslate.copy(id = this.first()))
                 currentWord.status = ExamWordStatus.SUCCESS
+                currentWord.givenAnswer = value
                 composeState = composeState.copy(answerValue = "")
             }
 
