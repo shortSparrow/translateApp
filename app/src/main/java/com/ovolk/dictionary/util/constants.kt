@@ -18,7 +18,6 @@ const val SETTINGS_PREFERENCES = "my_preferences"
 const val USER_STATE_PREFERENCES = "user_state_preferences"
 
 // PREFERENCES KEYS
-const val TIME_TO_NEXT_REMINDER = "left_before_notification"
 const val EXAM_REMINDER_FREQUENCY = "exam_reminder_frequency"
 const val EXAM_REMINDER_TIME = "exam_reminder_time"
 const val IS_CHOOSE_LANGUAGE = "is_choose_language"
@@ -37,3 +36,6 @@ const val DEFAULT_DAILY_EXAM_WORDS_COUNT = 10
 val MAX_BUTTON_WIDTH = 300.dp
 
 const val DEEP_LINK_BASE = "https://www.personal-dictionary"
+
+// PENDING INTENTS
+const val PASSED_SEARCH_WORD = 10

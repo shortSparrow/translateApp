@@ -8,7 +8,7 @@ on:
 
 jobs:
   signed:
-    name: build signed APK
+    name: build release signed APK
     runs-on: ubuntu-latest
     if: github.ref_name == 'main'
     steps:
@@ -27,9 +27,9 @@ jobs:
 
       - name: Run test
         run: ./gradlew test
-      #
-      #      - name: Run lint
-      #        run: ./gradlew lint
+
+      - name: Run lint
+        run: ./gradlew lint
 
       - shell: bash
         run: echo "${{ secrets.KEYSTORE }}" | base64 -d > $GITHUB_WORKSPACE/upload-keystore.jks
@@ -41,8 +41,6 @@ jobs:
           echo "STORE_PASSWORD=${{secrets.STORE_PASSWORD}}" >> release.properties
           echo "ALIAS=${{ secrets.ALIAS }}" >> release.properties
 
-      #      - name: build release
-      #        run: ./gradlew app:bundleRelease
       - name: build release
         run: ./gradlew assembleRelease
 
@@ -59,7 +57,7 @@ jobs:
           file: app/build/outputs/apk/release/app-release.apk
 
   un_signed:
-    name: build unsigned APK
+    name: build debug signed APK
     runs-on: ubuntu-latest
     if: github.ref_name == 'qa'
     steps:
@@ -83,8 +81,8 @@ jobs:
       - name: Run test
         run: ./gradlew test
 
-      #      - name: Run lint
-      #        run: ./gradlew lint
+      - name: Run lint
+        run: ./gradlew lint
 
       - name: build release
         run: ./gradlew assembleQa

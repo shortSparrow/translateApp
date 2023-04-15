@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam_reminder.FrequencyItem
-import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.settings_reminder_exam.OnExamReminderAction
 import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminderExamState
@@ -92,25 +91,6 @@ fun ExamReminderPresenter(
                         color = colorResource(id = R.color.grey_2)
                     )
                 }
-
-
-                if (state.leftTimeToNextExam.isNotEmpty()) {
-                    Row(
-                        modifier = Modifier.padding(vertical = paddingVertical),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = stringResource(id = R.string.settings_exam_reminder_left_before_next_reminder))
-                        Text(
-                            text = state.leftTimeToNextExam,
-                            modifier = Modifier.padding(
-                                start = dimensionResource(
-                                    id = R.dimen.gutter
-                                )
-                            ),
-                            color = colorResource(id = R.color.grey_2),
-                        )
-                    }
-                }
             }
 
             Box(
@@ -141,7 +121,6 @@ fun ExamReminderPresenter(
 fun ExamReminderPresenterPreview() {
     ExamReminderPresenter(
         state = SettingsReminderExamState(
-            leftTimeToNextExam = "22:00",
             reminderTime = "10:00",
             frequencyList = listOf(
                 FrequencyItem(

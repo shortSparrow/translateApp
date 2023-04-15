@@ -25,7 +25,7 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE updated_at <= :beforeUpdatedAt AND priority < $DEFAULT_PRIORITY_VALUE ORDER BY priority DESC, updated_at DESC LIMIT :count")
     suspend fun getWordsForSilentUpdatePriority(beforeUpdatedAt: Long, count: Int): List<WordFullDb>
 
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC, updated_at ASC LIMIT :count OFFSET :skip")
     suspend fun getExamWordList(count: Int, skip: Int): List<WordFullDb>
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id=:listId ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")

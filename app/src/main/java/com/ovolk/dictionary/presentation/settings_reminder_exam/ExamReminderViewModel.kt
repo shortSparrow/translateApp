@@ -8,14 +8,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
-import com.ovolk.dictionary.util.*
+import com.ovolk.dictionary.util.EXAM_REMINDER_FREQUENCY
+import com.ovolk.dictionary.util.PushFrequency
+import com.ovolk.dictionary.util.SETTINGS_PREFERENCES
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -44,7 +43,6 @@ class ExamReminderViewModel @Inject constructor(
         val hours = convertTime(time.hours)
         val minutes = convertTime(time.minutes)
 
-
         state = state.copy(
             timeHours = time.hours,
             timeMinutes = time.minutes,
@@ -52,7 +50,6 @@ class ExamReminderViewModel @Inject constructor(
             reminderTime = "${hours}:${minutes}"
         )
         initialValues = state
-        showTimeBeforePush()
     }
 
     fun onAction(action: OnExamReminderAction) {
@@ -78,12 +75,10 @@ class ExamReminderViewModel @Inject constructor(
         }
     }
 
-
     override fun onCleared() {
         super.onCleared()
         timer?.cancel()
     }
-
 
     private fun updateSettingsPreferences() {
         try {
@@ -96,52 +91,10 @@ class ExamReminderViewModel @Inject constructor(
             initialValues = state
             checkIsChangedExist()
         } catch (e: Exception) {
-
-        }
-        showTimeBeforePush()
-    }
-
-    private fun showTimeBeforePush() {
-        timer?.cancel()
-
-        val getNotificationPref =
-            sharedPref.getLong(TIME_TO_NEXT_REMINDER, -1L)
-        if (getNotificationPref == -1L) {
-            viewModelScope.launch {
-                state = state.copy(leftTimeToNextExam = "")
-            }
-            return
-        }
-
-        val millis = getNotificationPref - Calendar.getInstance().timeInMillis
-
-        if (millis > 0) {
-            timer = object : CountDownTimer(millis, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val hms = convertTimeToHMS(millisUntilFinished)
-                    state = state.copy(leftTimeToNextExam = hms)
-                }
-
-                override fun onFinish() {
-                    // repeat timer
-                    listenReminderRepeat()
-                }
-            }
-            timer?.start()
+            Timber.e("Error update reminder $e")
         }
     }
 
-    private fun listenReminderRepeat() = viewModelScope.launch {
-        var listen = true
-        while (listen) {
-            val isReady = sharedPref.getLong(TIME_TO_NEXT_REMINDER, -1L)
-            if (isReady !== -1L) {
-                listen = false
-            }
-            delay(500)
-        }
-        showTimeBeforePush()
-    }
 
     private fun checkIsChangedExist() {
         val isSame =
