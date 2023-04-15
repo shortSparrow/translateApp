@@ -18,7 +18,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
+import com.ovolk.dictionary.data.in_memory_storage.ExamStatus
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabBottomBar
+import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 
 
 data class MainBottomBarItem(
@@ -26,6 +29,22 @@ data class MainBottomBarItem(
     val icon: Painter,
     val route: MainTabBottomBar
 )
+
+fun bottomTabNavigate(navController: NavHostController, route: String) {
+    navController.navigate(route) {
+        // Pop up to the start destination of the graph to
+        // avoid building up a large stack of destinations
+        // on the back stack as users select items
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        // Avoid multiple copies of the same destination when
+        // reselecting the same item
+        launchSingleTop = true
+        // Restore state when reselecting a previously selected item
+        restoreState = false
+    }
+}
 
 @Composable
 fun MainBottomBar(navController: NavHostController) {
@@ -55,6 +74,7 @@ fun MainBottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val bottomBarDestination = screens.any { it.route.route == currentDestination?.route }
+    val examLocalCache = ExamLocalCache.getInstance()
 
     if (bottomBarDestination) {
         BottomNavigation {
@@ -68,22 +88,20 @@ fun MainBottomBar(navController: NavHostController) {
                     selected = selected,
                     onClick = {
                         // ignoring navigation if current tab equals selected
-                        if(currentDestination?.route == screen.route.route) {
+                        if (currentDestination?.route == screen.route.route) {
                             return@BottomNavigationItem
                         }
-                        navController.navigate(screen.route.route) {
-                            // Pop up to the start destination of the graph to
-                            // avoid building up a large stack of destinations
-                            // on the back stack as users select items
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            // Avoid multiple copies of the same destination when
-                            // reselecting the same item
-                            launchSingleTop = true
-                            // Restore state when reselecting a previously selected item
-                            restoreState = false
+
+                        // prevent navigation on bottom tab when exam in progress for avoid interrupt one (just show confirmDialog)
+                        if (currentDestination?.route?.startsWith(MainTabRotes.EXAM.name) == true &&
+                            examLocalCache.examStatus == ExamStatus.IN_PROGRESS
+                        ) {
+                            examLocalCache.setIsInterruptExamPopupShown(true)
+                            examLocalCache.setInterruptedRoute(screen.route.route)
+                            return@BottomNavigationItem
                         }
+
+                        bottomTabNavigate(navController, screen.route.route)
                     },
                     selectedContentColor = colorResource(id = R.color.blue),
                     unselectedContentColor = colorResource(id = R.color.grey),

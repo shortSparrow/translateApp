@@ -99,6 +99,7 @@
     <string name="exam_next_word_button_cd">Next word</string>
     <string name="exam_prev_word_button_cd">Previous word</string>
     <string name="exam_select_exam_daily_mode_cd">Select daily exam mode button</string>
+    <string name="exam_interrupt">Are you sure you want to interrupt current exam?</string>
 
     <!-- Settings fragment -->
     <string name="settings_language_item_title">language</string>
