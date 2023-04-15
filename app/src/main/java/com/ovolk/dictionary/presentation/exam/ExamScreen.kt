@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
+import com.ovolk.dictionary.data.in_memory_storage.ExamStatus
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.exam.components.ExamPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
@@ -15,6 +16,7 @@ import com.ovolk.dictionary.presentation.navigation.bottomTabNavigate
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabBottomBar
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
+import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
 fun ExamScreen(
@@ -49,6 +51,14 @@ fun ExamScreen(
         onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
     }
 
+    BackHandler {
+        if(examLocalCache.examStatus == ExamStatus.IN_PROGRESS) {
+            examLocalCache.setIsInterruptExamPopupShown(true)
+        } else {
+            navController.popBackStack()
+        }
+    }
+
     if (viewModel.listener == null) {
         viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
             override fun onNavigateToCreateFirstWord() {
@@ -70,6 +80,9 @@ fun ExamScreen(
                 examLocalCache.interruptedRoute?.let { interruptedRoute ->
                     examLocalCache.resetToDefault()
                     bottomTabNavigate(navController = navController, route = interruptedRoute)
+                } ?: run {
+                    examLocalCache.resetToDefault()
+                    navController.popBackStack()
                 }
             },
             onDeclineClick = { examLocalCache.setIsInterruptExamPopupShown(false) })
