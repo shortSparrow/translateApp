@@ -15,6 +15,7 @@ import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.*
+import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.*
 import com.ovolk.dictionary.domain.use_case.settings_languages.GetSelectedLanguages
 import com.ovolk.dictionary.presentation.modify_word.helpers.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,6 +49,7 @@ class ModifyWordViewModel @Inject constructor(
         private set
     var hintState by mutableStateOf(Hints())
         private set
+    private var _localState by mutableStateOf(LocalState())
     val recordAudio = RecordAudioHandler(application = application)
     private var initialState by mutableStateOf(InitialState(recordAudio = recordAudio))
 
@@ -121,9 +123,11 @@ class ModifyWordViewModel @Inject constructor(
                 composeState = composeState.copy(isOpenAddNewListModal = action.isOpen)
                 if (!action.isOpen) resetModalError()
             }
+
             is ModifyWordAction.HandleSelectModal -> {
                 composeState = composeState.copy(isOpenSelectModal = action.isOpen)
             }
+
             is ModifyWordAction.OnSelectLanguage -> {
                 languageState = selectLanguageUseCase.selectLanguage(
                     languageState,
@@ -131,11 +135,13 @@ class ModifyWordViewModel @Inject constructor(
                     action.type
                 )
             }
+
             is ModifyWordAction.PressAddNewLanguage -> {
                 languageState = languageState.copy(
                     addNewLangModal = AddNewLangModal(isOpen = true, type = action.type)
                 )
             }
+
             ModifyWordAction.CloseAddNewLanguageModal -> closeAddNewLanguageModal()
             is ModifyWordAction.AddNewList -> {
                 viewModelScope.launch {
@@ -146,31 +152,38 @@ class ModifyWordViewModel @Inject constructor(
                     )
                 }
             }
+
             is ModifyWordAction.OnChangeDescription -> {
                 composeState = composeState.copy(descriptionWord = action.value)
             }
+
             is ModifyWordAction.OnChangeEnglishTranscription -> {
                 composeState = composeState.copy(transcriptionWord = action.value)
             }
+
             is ModifyWordAction.OnChangeWord -> {
                 composeState = composeState.copy(
                     word = action.value,
                     englishWordError = ValidateResult()
                 )
             }
+
             is ModifyWordAction.OnChangePriority -> {
                 composeState = composeState.copy(priorityValue = action.value)
             }
+
             is ModifyWordAction.OnSelectList -> onSelectList(action.listId)
             ModifyWordAction.ToggleVisibleAdditionalPart -> {
                 composeState =
                     composeState.copy(isAdditionalFieldVisible = !composeState.isAdditionalFieldVisible)
             }
-            ModifyWordAction.OnPressSaveWord -> saveWord()
+
+            ModifyWordAction.OnPressSaveWord -> saveWord(overrideWordWithSameValue = false)
             ModifyWordAction.ToggleDeleteModalOpen -> {
                 composeState =
                     composeState.copy(isOpenDeleteWordModal = !composeState.isOpenDeleteWordModal)
             }
+
             ModifyWordAction.DeleteWord -> {
                 composeState.editableWordId?.let { wordId ->
                     viewModelScope.launch {
@@ -180,17 +193,41 @@ class ModifyWordViewModel @Inject constructor(
                     }
                 }
             }
+
             is ModifyWordAction.GoBack -> handlePressGoBack(action.withValidateUnsavedChanges)
             ModifyWordAction.ToggleUnsavedChanges -> {
                 composeState =
                     composeState.copy(isOpenUnsavedChanges = !composeState.isOpenUnsavedChanges)
             }
+
             is ModifyWordAction.ToggleFieldDescribeModalOpen -> {
                 composeState =
                     composeState.copy(
                         isFieldDescribeModalOpen = !composeState.isFieldDescribeModalOpen,
                         fieldDescribeModalQuestion = action.question
                     )
+            }
+
+            is ModifyWordAction.HandleWordAlreadyExistModal -> {
+                composeState = composeState.copy(isOpenModalWordAlreadyExist = false)
+
+                when (action.action) {
+                    WordAlreadyExistActions.REPLACE -> {
+                        saveWord(overrideWordWithSameValue = true)
+                        _localState = _localState.copy(alreadyExistWordId = null)
+                    }
+
+                    WordAlreadyExistActions.CLOSE -> {
+                        _localState = _localState.copy(alreadyExistWordId = null)
+                    }
+
+                    WordAlreadyExistActions.GO_TO_WORD -> {
+                        _localState.alreadyExistWordId?.let { id->
+                            launchEditMode(id)
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -201,6 +238,7 @@ class ModifyWordViewModel @Inject constructor(
                 translateState =
                     translateState.copy(translationWord = action.value, error = ValidateResult())
             }
+
             is ModifyWordTranslatesAction.OnLongPressTranslate -> {
                 val newTranslateList = translateState.translates.map {
                     if (it.localId == action.translateLocalId) return@map it.copy(isHidden = !it.isHidden)
@@ -209,10 +247,12 @@ class ModifyWordViewModel @Inject constructor(
                 translateState = translateState.copy(translates = newTranslateList)
 
             }
+
             is ModifyWordTranslatesAction.OnPressDeleteTranslate -> {
                 translateState =
                     translateState.copy(translates = translateState.translates.filter { it.localId != action.translateLocalId })
             }
+
             is ModifyWordTranslatesAction.OnPressEditTranslate -> {
                 translateState = translateState.copy(
                     editableTranslate = action.translate,
@@ -220,12 +260,14 @@ class ModifyWordViewModel @Inject constructor(
                     error = ValidateResult()
                 )
             }
+
             ModifyWordTranslatesAction.OnPressAddTranslate -> {
                 translateState = addChipUseCase.addTranslate(
                     translateValue = translateState.translationWord.trim(),
                     translateState = translateState
                 )
             }
+
             ModifyWordTranslatesAction.CancelEditTranslate -> {
                 translateState = translateState.copy(editableTranslate = null, translationWord = "")
             }
@@ -237,10 +279,12 @@ class ModifyWordViewModel @Inject constructor(
             is ModifyWordHintsAction.OnChangeHint -> {
                 hintState = hintState.copy(hintWord = action.value, error = ValidateResult())
             }
+
             is ModifyWordHintsAction.OnDeleteHint -> {
                 hintState =
                     hintState.copy(hints = hintState.hints.filter { it.localId != action.hintLocalId })
             }
+
             is ModifyWordHintsAction.OnPressEditHint -> {
                 hintState = hintState.copy(
                     editableHint = action.hint,
@@ -248,12 +292,14 @@ class ModifyWordViewModel @Inject constructor(
                     error = ValidateResult()
                 )
             }
+
             ModifyWordHintsAction.OnPressAddHint -> {
                 hintState = addChipUseCase.addHint(
                     hintValue = hintState.hintWord.trim(),
                     hintState = hintState
                 )
             }
+
             ModifyWordHintsAction.CancelEditHint -> {
                 hintState = hintState.copy(editableHint = null, hintWord = "")
             }
@@ -266,6 +312,7 @@ class ModifyWordViewModel @Inject constructor(
                 langFromCode = null,
                 langToCode = null
             )
+
             ModifyWordModes.MODE_EDIT -> loadLanguages(
                 langFromCode = languageState.languageFromList.find { it.isChecked }?.langCode,
                 langToCode = languageState.languageToList.find { it.isChecked }?.langCode,
@@ -337,7 +384,7 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    private fun saveWord() {
+    private fun saveWord(overrideWordWithSameValue: Boolean) {
         val wordValidation = validateWordValue(composeState.word)
         val priorityValidation = validationPriority(composeState.priorityValue)
         val translatesValidation = validateTranslates(translateState.translates)
@@ -386,9 +433,30 @@ class ModifyWordViewModel @Inject constructor(
             wordListId = composeState.wordListInfo?.id,
         )
 
+        if (!overrideWordWithSameValue && composeState.modifyMode == ModifyWordModes.MODE_ADD) {
+            saveWordOrGetModal(word = word)
+        } else {
+            saveWordAndOverrideIfExist(word = word)
+        }
+    }
+
+    private fun saveWordAndOverrideIfExist(word: ModifyWord) {
         viewModelScope.launch {
-            modifyWordUseCase(word).apply {
+            modifyWordUseCase(word = word.copy(id = _localState.alreadyExistWordId ?: word.id)).apply {
                 listener?.onSaveWord()
+            }
+        }
+    }
+
+    private fun saveWordOrGetModal(word: ModifyWord) {
+        viewModelScope.launch {
+            val result = modifyWordUseCase.addWordIfNotExist(word)
+            when (result.status) {
+                SUCCESS -> listener?.onSaveWord()
+                WORD_ALREADY_EXIST -> {
+                    composeState = composeState.copy(isOpenModalWordAlreadyExist = true)
+                    _localState = _localState.copy(alreadyExistWordId = result.wordId)
+                }
             }
         }
     }

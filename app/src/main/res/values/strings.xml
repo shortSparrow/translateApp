@@ -23,7 +23,6 @@
     <string name="modify_word_transcription">Word transcription</string>
     <string name="modify_word_input_hint">Input hint</string>
     <string name="modify_word_cancel_edit">Cancel edit</string>
-    <string name="modify_word_show_more">Розкрити</string>
     <string name="modify_word_success_save_word">Word saved successfully</string>
     <string name="modify_word_success_delete_word">Word was deleted</string>
     <string name="modify_word_invalid_word_value">Invalid Word</string>
@@ -64,6 +63,10 @@
     <string name="modify_word_field_describe_hint">
         Hints are special sentences that will help you during the exam if you need them. For example, for the word "Suite", a hint could be "clothes worn by businessmen"
     </string>
+    <string name="modify_word_dialog_word_already_exist_title">Word \"%s\" already exist</string>
+    <string name="modify_word_dialog_word_already_exist_description">You can replace the old word with current or just see current word</string>
+    <string name="modify_word_dialog_word_already_exist_replace">Replace word</string>
+    <string name="modify_word_dialog_word_already_exist_go_to_word">To to the word</string>
     <string name="modify_word_record_delete_cd">Delete this record</string>
     <string name="modify_word_record_cd">Recording button</string>
     <string name="modify_word_add_new_record_cd">Add bew record button</string>

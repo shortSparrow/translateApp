@@ -38,11 +38,6 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     var composeState by mutableStateOf(ExamKnowledgeState())
         private set
 
-    init {
-//        GenerateFakeWords(modifyWordUseCase).generateFakeWords()
-        examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
-    }
-
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
     private fun getCurrentWord() = composeState.examWordList[composeState.activeWordPosition]
@@ -190,6 +185,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             val list: List<ExamWord> = response.examWordList
             if (list.isNotEmpty()) {
                 list[0].status = ExamWordStatus.IN_PROCESS
+                examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
             }
 
             composeState = composeState.copy(

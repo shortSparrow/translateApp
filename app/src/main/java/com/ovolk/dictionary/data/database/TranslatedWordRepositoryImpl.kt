@@ -68,7 +68,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun searchExactWordList(query: String): WordRV? {
+    override suspend fun searchExactWord(query: String): WordRV? {
         val res = translatedWordDao.searchExactWord(query = query)
         return if (res != null) {
             mapper.wordFullDbToWordRv(res)
@@ -83,6 +83,18 @@ class TranslatedWordRepositoryImpl @Inject constructor(
 
     override suspend fun getWordById(id: Long): ModifyWord {
         return mapper.wordFullDbToModifyWord(translatedWordDao.getWordById(id))
+    }
+
+    override suspend fun getWordByValue(value: String, langFrom: String, langTo: String): Long {
+        return try {
+            translatedWordDao.getWordByValue(
+                value = value,
+                langFrom = langFrom,
+                langTo = langTo
+            )
+        } catch (e: Exception) {
+            return WORD_IS_NOT_FOUND.toLong()
+        }
     }
 
     override suspend fun deleteWord(id: Long): Boolean {
@@ -135,6 +147,6 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        private const val WORD_IS_NOT_FOUND = -1
+        const val WORD_IS_NOT_FOUND = -1
     }
 }
