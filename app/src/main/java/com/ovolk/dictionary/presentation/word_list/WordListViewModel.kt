@@ -11,8 +11,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.data.workers.HandleOldWordsPriority
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
+import com.ovolk.dictionary.presentation.exam.helpers.GenerateFakeWords
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ class WordListViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
     private val application: Application,
     savedStateHandle: SavedStateHandle,
-    private val handleOldWordsPriority: HandleOldWordsPriority
+    generateFakeWords: GenerateFakeWords
 ) : ViewModel() {
     var listener: Listener? = null
     var state by mutableStateOf(WordListState())
@@ -44,9 +44,16 @@ class WordListViewModel @Inject constructor(
 
 
     init {
-//        viewModelScope.launch {
-//            handleOldWordsPriority.updatePriorityForBunchOldWords()
-//        }
+        // generate fake words nad lists for preparing screenshots for PlayMarket
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                generateFakeWords.generateFakeWordListWithWords()
+            }
+            withContext(Dispatchers.Default) {
+                generateFakeWords.generateFakeWordsForPlayMarket()
+            }
+        }
+
         val searchedWord: String? = savedStateHandle["searchedWord"]
         if (searchedWord != null) {
             state = state.copy(searchValue = searchedWord)
@@ -62,6 +69,7 @@ class WordListViewModel @Inject constructor(
                 state = state.copy(searchValue = action.value)
                 searchDebounced(action.value)
             }
+
             is WordListAction.PlayAudio -> playAudio(
                 onStartListener = action.onStartListener,
                 word = action.word,
