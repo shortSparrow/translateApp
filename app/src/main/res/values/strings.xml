@@ -146,6 +146,8 @@
     <string name="settings_daily_exam_screen_title">Daily Exam Settings</string>
     <string name="settings_daily_exam_words_count_description">Set quantity of words for daily exam</string>
     <string name="settings_daily_exam_words_count_label">Count of words</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_label">Whether to use a combined exam</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_description">When you pass the exam, you will alternate languages. The first word will be %s and you will have to translate it into %s, and the second, on the contrary, is %s and you will have to translate it into %s</string>
 
 
     <!--  Select Languages -->

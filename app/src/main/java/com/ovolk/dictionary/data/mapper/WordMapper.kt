@@ -111,6 +111,7 @@ class WordMapper @Inject constructor() {
             initialTranslates = wordDb.translates.map { translateDbToLocal(it) },
             hints = wordDb.hints.map { hintDbToLocal(it) },
             langTo = wordDb.wordInfo.langTo,
+            langFrom = wordDb.wordInfo.langFrom,
             initialPriority = wordDb.wordInfo.priority,
             initialStatus = ExamWordStatus.UNPROCESSED,
             answerVariants = mutableListOf(),

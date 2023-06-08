@@ -125,7 +125,10 @@ fun ExamPresenter(
         )
 
         val listName =
-            if (state.listName.isEmpty()) "" else stringResource(id = R.string.exam_list_name, state.listName)
+            if (state.listName.isEmpty()) "" else stringResource(
+                id = R.string.exam_list_name,
+                state.listName
+            )
 
         Text(
             text = listName,
@@ -167,7 +170,8 @@ fun ExamPresenter(
                     word = currentWord.value,
                     answerValue = state.answerValue,
                     onAction = onAction,
-                    currentWordFreeze = currentWordFreeze
+                    currentWordFreeze = currentWordFreeze,
+                    isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable
                 )
 
                 NavigationPart(
