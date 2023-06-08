@@ -36,6 +36,7 @@ import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFie
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldPriority
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldTranscription
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
+import com.ovolk.dictionary.presentation.modify_word.compose.word_already_exist.DialogWordAlreadyExist
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewHints
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
@@ -79,6 +80,9 @@ fun ModifyWordPresenter(
             null
         }
 
+    if (state.isOpenModalWordAlreadyExist) {
+        DialogWordAlreadyExist(onAction = onAction, wordValue = state.word)
+    }
     if (state.isOpenDeleteWordModal) {
         ConfirmDialog(
             message = stringResource(id = R.string.modify_word_confirm_delete_title),

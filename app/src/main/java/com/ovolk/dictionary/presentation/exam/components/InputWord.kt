@@ -29,7 +29,8 @@ fun InputWord(
     word: String,
     answerValue: String,
     onAction: (ExamAction) -> Unit,
-    currentWordFreeze: Boolean = false
+    currentWordFreeze: Boolean = false,
+    isDoubleLanguageExamEnable: Boolean,
 ) {
     Box(
         modifier = Modifier
@@ -47,26 +48,39 @@ fun InputWord(
         )
     }
 
-    val focusManager = LocalFocusManager.current
-    OutlinedErrableTextField(
-        value = answerValue,
-        onValueChange = { value -> onAction(ExamAction.OnInputTranslate(value)) },
-        label = { Text(text = stringResource(id = R.string.word_translate)) },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Send,
-        ),
-        keyboardActions = KeyboardActions(
-            onSend = {
-                // answer and go to the next word
-                // double check for avoid multiple setting priority if user use action SEND button multiple times for one word
-                if (!currentWordFreeze) {
-                    onAction(ExamAction.OnCheckAnswer)
+
+
+    if (isDoubleLanguageExamEnable) {
+        LocaleAbleInput(
+            answerValue = answerValue,
+            onAction = onAction,
+            currentWordFreeze = currentWordFreeze
+        )
+    } else {
+        val focusManager = LocalFocusManager.current
+
+        OutlinedErrableTextField(
+            value = answerValue,
+            onValueChange = { value -> onAction(ExamAction.OnInputTranslate(value)) },
+            label = { Text(text = stringResource(id = R.string.word_translate)) },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Send,
+            ),
+
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    // answer and go to the next word
+                    // double check for avoid multiple setting priority if user use action SEND button multiple times for one word
+                    if (!currentWordFreeze) {
+                        onAction(ExamAction.OnCheckAnswer)
+                    }
+                    onAction(ExamAction.OnPressNavigate(NavigateButtons.NEXT))
+                    focusManager.moveFocus(FocusDirection.Down)
                 }
-                onAction(ExamAction.OnPressNavigate(NavigateButtons.NEXT))
-                focusManager.moveFocus(FocusDirection.Down)
-            }
-        ),
-    )
+            ),
+        )
+    }
+
 }
 
 @Preview(showBackground = true)
@@ -76,7 +90,8 @@ fun InputWordPreview() {
         InputWord(
             word = "Green",
             answerValue = "Зелений",
-            onAction = {}
+            onAction = {},
+            isDoubleLanguageExamEnable = true
         )
     }
 }

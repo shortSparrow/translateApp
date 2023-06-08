@@ -1,10 +1,17 @@
 package com.ovolk.dictionary.presentation.settings_exam_daily
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -30,12 +38,21 @@ import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 fun SettingsExamDailyScreen(
     navController: NavHostController,
 ) {
-    val focusManager = LocalFocusManager.current
-
     val viewModel = hiltViewModel<SettingsExamDailyViewModel>()
     val state = viewModel.state
     val onAction = viewModel::onAction
 
+    SettingsExamDailyPresenter(navController = navController, state = state, onAction = onAction)
+
+}
+
+@Composable
+fun SettingsExamDailyPresenter(
+    navController: NavHostController,
+    state: SettingsExamDailyState,
+    onAction: (SettingsExamDailyAction) -> Unit
+) {
+    val focusManager = LocalFocusManager.current
     val isSaveEnabled = state.isStateChanges && state.countOfWords.isNotEmpty()
 
     Column {
@@ -73,6 +90,38 @@ fun SettingsExamDailyScreen(
                         ),
                     )
                 }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_label),
+                        )
+                        Text(
+                            text = stringResource(
+                                id = R.string.settings_daily_exam_words_is_double_lang_exam_description,
+                                "uk", // TODO get current dictionary (will have dictionary on each languages pare)
+                                "en",
+                                "en",
+                                "uk"
+                            ),
+                            fontSize = 10.sp,
+                            color = colorResource(id = R.color.light_grey)
+                        )
+
+                    }
+                    Switch(
+                        checked = state.isDoubleLanguageExamEnable,
+                        onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleDoubleLanguageExam) },
+                        modifier = Modifier.padding(start = 5.dp),
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = colorResource(id = R.color.blue),
+                            checkedTrackColor =  colorResource(id = R.color.blue),
+                        )
+                    )
+                }
             }
 
             Box(
@@ -96,11 +145,14 @@ fun SettingsExamDailyScreen(
             }
         }
     }
-
 }
+
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun SettingsExamDailyScreenPreview() {
-    SettingsExamDailyScreen(navController = rememberNavController())
+    SettingsExamDailyPresenter(
+        navController = rememberNavController(),
+        state = SettingsExamDailyState(countOfWords = "10"),
+        onAction = {})
 }

@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.presentation.core
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -24,22 +26,34 @@ fun SearchBar(
     onSearch: (query: String) -> Unit,
     onPressCross: () -> Unit,
     searchedValue: String? = null,
-    placeholderTextId: @Composable () -> Unit = { Text(text = stringResource(id = R.string.search_word_placeholder)) }
+    placeholderTextId: @Composable () -> Unit = {
+        Text(text = stringResource(id = R.string.search_word_placeholder))
+    }
 ) {
     val isControlled = searchedValue != null
     var text by remember {
         mutableStateOf("")
     }
+    var isSearchBarFocused by remember {
+        mutableStateOf(false)
+    }
+    val borderColor =
+        if (isSearchBarFocused) colorResource(id = R.color.blue) else colorResource(id = R.color.grey)
+    val borderWidth = if (isSearchBarFocused) 1.5.dp else 1.dp
 
     Column(
         modifier = Modifier
     ) {
         Surface(
             shape = RoundedCornerShape(5.dp),
-            border = BorderStroke(1.dp, Color.Gray),
+            border = BorderStroke(borderWidth, borderColor),
         ) {
             TextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged {
+                        isSearchBarFocused = it.hasFocus
+                    },
                 value = searchedValue ?: text,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
@@ -75,10 +89,10 @@ fun SearchBar(
                     Icon(
                         painter = painterResource(id = R.drawable.search),
                         contentDescription = stringResource(id = R.string.cd_search_icon),
-                        tint = colorResource(id = R.color.grey),
+                        tint = borderColor,
                     )
                 },
-                placeholder = placeholderTextId
+                placeholder = placeholderTextId,
             )
         }
     }

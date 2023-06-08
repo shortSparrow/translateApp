@@ -20,6 +20,7 @@ const val USER_STATE_PREFERENCES = "user_state_preferences"
 // PREFERENCES KEYS
 const val EXAM_REMINDER_FREQUENCY = "exam_reminder_frequency"
 const val EXAM_REMINDER_TIME = "exam_reminder_time"
+const val IS_DOUBLE_LANGUAGE_EXAM_ENABLE = "is_double_language_exam_enable"
 const val IS_CHOOSE_LANGUAGE = "is_choose_language"
 const val SHOW_VARIANTS_EXAM_AVAILABLE_LANGUAGES = "show_variants_exam_available_languages"
 const val DAILY_EXAM_SETTINGS = "daily_exam_settings"
@@ -29,6 +30,7 @@ const val UKRAINE_COUNTRY_CODE = "ua"
 const val UKRAINE_LANGUAGE_CODE = "uk"
 val showVariantsAvailableLanguages = listOf("UK")
 
+const val DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE = false
 const val EXAM_REMINDER_INTENT_CODE = 101
 const val DEFAULT_PRIORITY_VALUE = 5
 const val DEFAULT_DAILY_EXAM_WORDS_COUNT = 10

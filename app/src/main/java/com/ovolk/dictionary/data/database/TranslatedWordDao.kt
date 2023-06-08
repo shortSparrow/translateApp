@@ -40,6 +40,9 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb
 
+    @Query("SELECT id FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value=:value AND lang_from=:langFrom AND lang_to=:langTo")
+    suspend fun getWordByValue(value: String, langFrom: String, langTo: String): Long
+
     @Query("DELETE FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id = :wordId")
     suspend fun deleteWord(wordId: Long): Int
 

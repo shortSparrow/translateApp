@@ -12,6 +12,8 @@ import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
+enum class WordAlreadyExistActions { REPLACE, CLOSE, GO_TO_WORD }
+
 
 data class AddNewLangModal(
     val isOpen: Boolean = false,
@@ -76,6 +78,7 @@ data class ComposeState(
     val isOpenDeleteWordModal: Boolean = false,
     val isFieldDescribeModalOpen: Boolean = false,
     val fieldDescribeModalQuestion: String = "",
+    val isOpenModalWordAlreadyExist: Boolean = false,
 )
 
 data class RecordAudioState(
@@ -88,6 +91,10 @@ data class RecordAudioState(
     val isChangesExist: Boolean = false
 )
 
+data class LocalState(
+    val alreadyExistWordId: Long? = null
+)
+
 sealed interface RecordAudioAction {
     object StartRecording : RecordAudioAction
     object StopRecording : RecordAudioAction
@@ -97,6 +104,7 @@ sealed interface RecordAudioAction {
     object HideBottomSheet : RecordAudioAction
     object OpenBottomSheet : RecordAudioAction
 }
+
 
 sealed interface ModifyWordAction {
     object ResetModalError : ModifyWordAction
@@ -119,7 +127,8 @@ sealed interface ModifyWordAction {
     object DeleteWord : ModifyWordAction
     data class GoBack(val withValidateUnsavedChanges: Boolean = true) : ModifyWordAction
     object ToggleUnsavedChanges : ModifyWordAction
-    data class ToggleFieldDescribeModalOpen(val question:String) : ModifyWordAction
+    data class ToggleFieldDescribeModalOpen(val question: String) : ModifyWordAction
+    data class HandleWordAlreadyExistModal(val action: WordAlreadyExistActions) : ModifyWordAction
 }
 
 sealed interface ModifyWordHintsAction {

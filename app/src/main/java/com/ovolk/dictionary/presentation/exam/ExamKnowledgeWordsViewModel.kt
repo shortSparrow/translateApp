@@ -1,6 +1,10 @@
 package com.ovolk.dictionary.presentation.exam
 
 import android.app.Application
+import android.os.LocaleList
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,11 +22,13 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
+import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -38,18 +44,28 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     var composeState by mutableStateOf(ExamKnowledgeState())
         private set
 
-    init {
-//        GenerateFakeWords(modifyWordUseCase).generateFakeWords()
-        examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
-    }
+    private var editText: EditText? by mutableStateOf(null)
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
 
     private fun getCurrentWord() = composeState.examWordList[composeState.activeWordPosition]
 
+    private fun setupKeyboardLanguage() {
+        if (!examLocalCache.getIsDoubleLanguageExamEnable()) return
+
+        editText?.imeHintLocales = LocaleList(Locale(getCurrentWord().langTo))
+        val inputMethodManager = DictionaryApp.applicationContext()
+            .getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.restartInput(editText)
+
+    }
+
     fun onAction(action: ExamAction) {
         when (action) {
             ExamAction.OnCheckAnswer -> checkAnswer(composeState.answerValue)
+            is ExamAction.SetEditText -> {
+                editText = action.editText
+            }
 
             is ExamAction.OnInputTranslate -> {
                 composeState =
@@ -171,6 +187,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 val listId = if (action.listId == -1L) null else action.listId
                 loadWordsList(listId = listId, listName = action.listName)
             }
+
         }
     }
 
@@ -190,6 +207,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             val list: List<ExamWord> = response.examWordList
             if (list.isNotEmpty()) {
                 list[0].status = ExamWordStatus.IN_PROCESS
+                examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
             }
 
             composeState = composeState.copy(
@@ -197,7 +215,11 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 isAllExamWordsLoaded = response.totalCount == list.size,
                 examListTotalCount = response.totalCount,
                 isLoading = false,
+                isDoubleLanguageExamEnable = examLocalCache.getIsDoubleLanguageExamEnable()
             )
+
+            delay(100) // delay for apply keyboard locale
+            setupKeyboardLanguage()
         }
     }
 
@@ -316,6 +338,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             isVariantsExpanded = false,
             isHintsExpanded = false
         )
+        setupKeyboardLanguage()
     }
 
     /**
