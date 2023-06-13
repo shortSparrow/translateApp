@@ -14,6 +14,7 @@ import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import java.lang.reflect.Type
 import javax.inject.Inject
 
+// TODO remove and delete daved language data
 class GetSelectedLanguages @Inject constructor(
     val application: Application,
     val mapper: LanguageMapper

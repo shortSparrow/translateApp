@@ -6,27 +6,36 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.ovolk.dictionary.data.database.dictionary.DictionaryDao
 import com.ovolk.dictionary.data.database.migration.migrateFrom1To2
 import com.ovolk.dictionary.data.database.migration.migrateFrom2To3
 import com.ovolk.dictionary.data.database.migration.migrateFrom3To4
 import com.ovolk.dictionary.data.database.migration.migrateFrom4To5
-import com.ovolk.dictionary.data.model.*
+import com.ovolk.dictionary.data.model.HintDb
+import com.ovolk.dictionary.data.model.ListItemDb
+import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
+import com.ovolk.dictionary.data.model.TranslateDb
+import com.ovolk.dictionary.data.model.UpdatePriorityDb
+import com.ovolk.dictionary.data.model.WordInfoDb
+import com.ovolk.dictionary.data.model.DictionaryDb
 
 @Database(
-    version = 5,
+    version = 9, // TODO was 5, migration is needed
     entities = [
         WordInfoDb::class,
         TranslateDb::class,
         HintDb::class,
         PotentialExamAnswerDb::class,
         ListItemDb::class,
-        UpdatePriorityDb::class
+        UpdatePriorityDb::class,
+        DictionaryDb::class,
     ],
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun translatedWordDao(): TranslatedWordDao
     abstract fun examWordAnswerDao(): ExamWordAnswerDao
+    abstract fun dictionaryDaoDao(): DictionaryDao
     abstract fun listsDao(): ListsDao
 
     companion object {

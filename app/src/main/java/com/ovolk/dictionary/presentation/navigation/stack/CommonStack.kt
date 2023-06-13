@@ -4,26 +4,31 @@ import androidx.navigation.*
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.ovolk.dictionary.presentation.list_full.ListFullScreen
+import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
+import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryScreen
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
 import com.ovolk.dictionary.presentation.navigation.graph.Graph
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyScreen
-import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesScreen
+import com.ovolk.dictionary.presentation.settings_dictionaries.SettingsDictionariesScreen
 import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromScreen
 import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 
-enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LANGUAGES_FROM, SETTINGS_LANGUAGES_TO, EXAM_REMINDER, EXAM_DAILY }
+enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LANGUAGES_FROM, SETTINGS_LANGUAGES_TO, EXAM_REMINDER, EXAM_DAILY, MODIFY_DICTIONARY }
 sealed class CommonScreen(val route: String) {
     object ModifyWord :
         CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}")
+
     object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}")
     object SettingsLanguages : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES}")
     object SettingsLanguagesFrom : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_FROM}")
     object SettingsLanguagesTo : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_TO}")
     object ExamReminder : CommonScreen("${CommonRotes.EXAM_REMINDER}")
-    object ExamDaily: CommonScreen("${CommonRotes.EXAM_DAILY}")
+    object ExamDaily : CommonScreen("${CommonRotes.EXAM_DAILY}")
+    object ModifyDictionary :
+        CommonScreen("${CommonRotes.MODIFY_DICTIONARY}/mode={mode}?dictionaryId={dictionaryId}")
 }
 
 
@@ -73,7 +78,7 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
         }
 
         composable(route = CommonScreen.SettingsLanguages.route) {
-            SettingsLanguagesScreen(navController = navController)
+            SettingsDictionariesScreen(navController = navController)
         }
 
         composable(route = CommonScreen.SettingsLanguagesFrom.route) {
@@ -90,6 +95,21 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
 
         composable(route = CommonScreen.ExamDaily.route) {
             SettingsExamDailyScreen(navController = navController)
+        }
+        composable(
+            route = CommonScreen.ModifyDictionary.route,
+            arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = ModifyDictionaryModes.MODE_ADD.toString()
+                },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
+            )
+        ) {
+            ModifyDictionaryScreen(navController = navController)
         }
     }
 }

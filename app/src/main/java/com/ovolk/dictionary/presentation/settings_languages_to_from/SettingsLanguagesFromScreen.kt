@@ -22,6 +22,6 @@ fun SettingsLanguagesFromScreen(navController: NavHostController) {
             withBackButton = true,
             onBackButtonClick = { navController.popBackStack() }
         )
-        SettingsLanguagesToFromPresenter(state = state, onAction = viewModel::onAction)
+//        SettingsLanguagesToFromPresenter(state = state, onAction = viewModel::onAction)
     }
 }

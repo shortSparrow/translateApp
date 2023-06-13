@@ -16,19 +16,22 @@ class GetLanguageList @Inject constructor(
     val application: Application,
 ) {
 
-    fun getLanguageListTo(): List<Language> {
-        return getLanguageList(LanguagesType.LANG_TO)
+    fun getLanguageListTo(selectedLangCode: String? = null): List<Language> {
+        return getLanguageList(LanguagesType.LANG_TO, selectedLangCode = selectedLangCode)
     }
 
-    fun getLanguageListFrom(): List<Language> {
-        return getLanguageList(LanguagesType.LANG_FROM)
+    fun getLanguageListFrom(selectedLangCode: String? = null): List<Language> {
+        return getLanguageList(LanguagesType.LANG_FROM, selectedLangCode = selectedLangCode)
     }
 
     fun getLanguageListByKey(key: LanguagesType): List<Language> {
         return getLanguageList(key)
     }
 
-    private fun getLanguageList(key: LanguagesType): List<Language> {
+    private fun getLanguageList(
+        key: LanguagesType,
+        selectedLangCode: String? = null
+    ): List<Language> {
         val languageRaw = application.resources.openRawResource(R.raw.languges).bufferedReader()
             .use { it.readText() }
         val gson = Gson()
@@ -36,27 +39,27 @@ class GetLanguageList @Inject constructor(
         val languageListType: Type = object : TypeToken<List<Language>?>() {}.type
         var languageList: List<Language> = gson.fromJson(languageRaw, languageListType)
 
-        val languageCodeListType: Type = object : TypeToken<List<SharedLanguage>?>() {}.type
+//        val languageCodeListType: Type = object : TypeToken<List<SharedLanguage>?>() {}.type
+//
+//        val sharedLanguageList = application.getSharedPreferences(
+//            USER_STATE_PREFERENCES,
+//            AppCompatActivity.MODE_PRIVATE
+//        ).getString(key.toString(), "")
+//
+        selectedLangCode?.let {
+//            if (it.isNotEmpty()) {
+//                val savedSelectedFromLanguage: List<SharedLanguage> =
+//                    gson.fromJson(it, languageCodeListType)
 
-        val sharedLanguageList = application.getSharedPreferences(
-            USER_STATE_PREFERENCES,
-            AppCompatActivity.MODE_PRIVATE
-        ).getString(key.toString(), "")
-
-        sharedLanguageList?.let {
-            if (it.isNotEmpty()) {
-                val savedSelectedFromLanguage: List<SharedLanguage> =
-                    gson.fromJson(it, languageCodeListType)
-
-                languageList = languageList.map { lang ->
-                    return@map if (savedSelectedFromLanguage.find { it.langCode == lang.langCode } != null) {
-                        lang.copy(isChecked = true)
-                    } else {
-                        lang
-                    }
-
+            languageList = languageList.map { lang ->
+                return@map if (selectedLangCode == lang.langCode) {
+                    lang.copy(isChecked = true)
+                } else {
+                    lang
                 }
+
             }
+//            }
         }
 
         return languageList
