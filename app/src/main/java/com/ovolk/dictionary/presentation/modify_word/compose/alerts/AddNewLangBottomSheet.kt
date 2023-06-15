@@ -46,7 +46,7 @@ fun AddNewLangBottomSheet(
         scope.launch {
             bottomSheetScaffoldState.bottomSheetState.collapse()
             delay(100)
-            onAction(ModifyWordAction.CloseAddNewLanguageModal)
+//            onAction(ModifyWordAction.CloseAddNewLanguageModal)
             viewModel.clearCurrentType()
         }
     }

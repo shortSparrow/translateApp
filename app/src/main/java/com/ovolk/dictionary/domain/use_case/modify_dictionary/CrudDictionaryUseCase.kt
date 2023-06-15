@@ -31,7 +31,6 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
         return Either.Success(response)
     }
 
-
     suspend fun addDictionary(
         title: String,
         langFromCode: String?,

@@ -20,7 +20,7 @@ import com.ovolk.dictionary.data.model.WordInfoDb
 import com.ovolk.dictionary.data.model.DictionaryDb
 
 @Database(
-    version = 9, // TODO was 5, migration is needed
+    version = 12, // TODO was 5, migration is needed
     entities = [
         WordInfoDb::class,
         TranslateDb::class,

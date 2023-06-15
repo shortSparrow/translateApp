@@ -12,7 +12,9 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
 
-class WordMapper @Inject constructor() {
+class WordMapper @Inject constructor(
+    private val dictionaryMapper: DictionaryMapper
+) {
     fun wordListDbToWordList(dbWordList: List<WordFullDb>) = dbWordList.map {
         wordFullDbToWordRv(it)
     }
@@ -83,6 +85,7 @@ class WordMapper @Inject constructor() {
         createdAt = wordDb.wordInfo.createdAt,
         updatedAt = wordDb.wordInfo.updatedAt,
         wordListId = wordDb.wordInfo.wordListId,
+        dictionary = dictionaryMapper.dictionaryDbToDictionary(wordDb.dictionary)
     )
 
     fun wordFullDbToUpdatePriority(wordDb: WordFullDb): UpdatePriority = UpdatePriority(
@@ -101,7 +104,8 @@ class WordMapper @Inject constructor() {
         transcription = modifyWord.transcription,
         createdAt = modifyWord.createdAt,
         updatedAt = modifyWord.updatedAt,
-        wordListId = modifyWord.wordListId
+        wordListId = modifyWord.wordListId,
+        dictionaryId = modifyWord.dictionary.id
     )
 
     fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord =

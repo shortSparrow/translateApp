@@ -1,17 +1,31 @@
 package com.ovolk.dictionary.presentation.modify_word.compose
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -21,20 +35,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
-import com.ovolk.dictionary.presentation.modify_word.*
+import com.ovolk.dictionary.presentation.modify_word.ComposeState
+import com.ovolk.dictionary.presentation.modify_word.Hints
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
+import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
+import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
+import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
+import com.ovolk.dictionary.presentation.modify_word.Translates
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
-import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.LanguagesPicker
+import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.SelectDictionaryPicker
 import com.ovolk.dictionary.presentation.modify_word.compose.question_wrapper.QuestionWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
-import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldWord
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldPriority
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldTranscription
+import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldWord
 import com.ovolk.dictionary.presentation.modify_word.compose.translates.TranslatePart
 import com.ovolk.dictionary.presentation.modify_word.compose.word_already_exist.DialogWordAlreadyExist
 import com.ovolk.dictionary.util.compose.click_effects.opacityClick
@@ -46,7 +71,6 @@ import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewTranslates
 @Composable
 fun ModifyWordPresenter(
     state: ComposeState,
-    languageState: Languages,
     translateState: Translates,
     hintState: Hints,
     recordState: RecordAudioState,
@@ -108,30 +132,108 @@ fun ModifyWordPresenter(
         )
     }
 
+    var expanded by remember { mutableStateOf(false) }
+    fun setExpanded(value: Boolean) {
+        expanded = value
+    }
+
+
+//    Box(
+//        Modifier
+//            .zIndex(2F)
+//            .padding(top = 50.dp)) {
+//        SelectDictionaryPicker(
+//            dropDownItem = dropDownList,
+//            error = ValidateResult(successful = true),
+//            expanded = expanded,
+//            setExpanded = ::setExpanded,
+//        )
+//    }
+
+    val scrollState = rememberScrollState()
+
+
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
     ) {
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .clickable(
-                interactionSource = interactionSourceScreen,
-                indication = null
-            ) { keyboardController?.hide() }) {
-            Header(
-                title = headerTitle,
-                withBackButton = true,
-                onBackButtonClick = { onAction(ModifyWordAction.GoBack()) },
-                firstRightIcon = firstRightIcon,
-                onFirstRightIconClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) },
-            )
-
-            Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(1f)
+        Column(
+            modifier = Modifier
+//                .pointerInteropFilter {
+//                    Log.d("XXX", "MotionEvent outside X: ${it.x}; Y: ${it.y}")
+////                    if (expanded) {
+////                        setExpanded(false)
+////                    }
+//                    false
+//                }
+                .verticalScroll(state = scrollState, enabled = !expanded)
+//                .scrollable(state = scrollState, orientation = Orientation.Vertical)
+                .clickable(
+                    interactionSource = interactionSourceScreen,
+                    indication = null
                 ) {
-                    LanguagesPicker(state = languageState, onAction = onAction)
+                    keyboardController?.hide()
+                },
+        ) {
+            Box(
+                modifier = Modifier
+                    .pointerInteropFilter {
+                        if (expanded) {
+                            setExpanded(false)
+                        }
+                        false
+                    },
+            ) {
+                Header(
+                    title = headerTitle,
+                    withBackButton = true,
+                    onBackButtonClick = { onAction(ModifyWordAction.GoBack()) },
+                    firstRightIcon = firstRightIcon,
+                    onFirstRightIconClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) },
+                )
+            }
+            Layout(
+                modifier = Modifier.zIndex(2F),
+                content = {
+                    Box(
+                        modifier = Modifier
+                            .layout { measurable, constraints ->
+                                val placeable = measurable.measure(constraints)
+                                layout(placeable.width, placeable.height) {
+                                    placeable.placeRelative(0, 0)
+                                }
+                            }
+                    ) {
+                        SelectDictionaryPicker(
+                            selectedDictionary = state.dictionary,
+                            dictionaryList = state.dictionaryList,
+                            error = ValidateResult(successful = true),
+                            expanded = expanded,
+                            setExpanded = ::setExpanded,
+                            onSelectDictionary = { id ->
+                                onAction(
+                                    ModifyWordAction.OnSelectDictionary(id)
+                                )
+                            },
+                            onPressAddNewDictionary = { onAction(ModifyWordAction.PressAddNewDictionary) },
+                        )
+                    }
                 }
+            ) { measurables, constraints ->
+                val placeable = measurables.firstOrNull()?.measure(constraints)
+                layout(constraints.maxWidth, 50) {
+                    placeable?.placeRelative(0, 0)
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.gutter))
+                    .pointerInteropFilter {
+                        if (expanded) {
+                            setExpanded(false)
+                        }
+                        false
+                    },
+            ) {
 
                 TextFieldWord(
                     englishWord = state.word,
@@ -220,7 +322,6 @@ fun ModifyWordPresenter(
 fun ModifyWordScreenPreview() {
     ModifyWordPresenter(
         state = ComposeState(isAdditionalFieldVisible = true),
-        languageState = Languages(),
         translateState = Translates(
             translates = getPreviewTranslates()
         ),

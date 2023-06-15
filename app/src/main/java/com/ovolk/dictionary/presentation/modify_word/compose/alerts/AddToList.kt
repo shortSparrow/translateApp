@@ -1,11 +1,22 @@
 package com.ovolk.dictionary.presentation.modify_word.compose.alerts
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -77,6 +88,7 @@ fun AddToList(
 
     if (state.isOpenSelectModal) {
         DialogSelectList(
+            selectedId = state.selectedWordList?.id,
             list = state.wordLists,
             onDismissRequest = { onAction(ModifyWordAction.HandleSelectModal(false)) },
             onItemsPress = { id: Long -> onAction(ModifyWordAction.OnSelectList(id)) },
@@ -84,7 +96,7 @@ fun AddToList(
         )
     }
 
-    if (state.wordListInfo == null) {
+    if (state.selectedWordList == null) {
         Column {
             OutlinedButton(onClick = { onAction(ModifyWordAction.HandleSelectModal(true)) }) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -106,9 +118,10 @@ fun AddToList(
             )
 
             ListItem(
-                wordListInfo = state.wordListInfo,
+                wordListInfo = state.selectedWordList,
                 onItemsPress = { onAction(ModifyWordAction.HandleSelectModal(true)) },
-                withMark = false
+                withMark = false,
+                isSelected = true
             )
         }
     }
@@ -120,7 +133,7 @@ fun AddToList(
 fun ComposablePreviewAddToList() {
     AddToList(
         state = ComposeState(
-            wordListInfo = ModifyWordListItem(
+            selectedWordList = ModifyWordListItem(
                 title = "My List",
                 count = 10,
                 id = 1L
@@ -136,7 +149,7 @@ fun ComposablePreviewAddToList() {
 fun ComposablePreviewAddToList2() {
     AddToList(
         state = ComposeState(
-            wordListInfo = null,
+            selectedWordList = null,
             wordLists = emptyList()
         ),
         onAction = {}
@@ -148,7 +161,7 @@ fun ComposablePreviewAddToList2() {
 fun ComposablePreviewAddToList3() {
     AddToList(
         state = ComposeState(
-            wordListInfo = ModifyWordListItem(
+            selectedWordList = ModifyWordListItem(
                 title = "My List",
                 count = 10,
                 id = 1L
@@ -166,7 +179,7 @@ fun ComposablePreviewAddToList3() {
 fun ComposablePreviewAddToList4() {
     AddToList(
         state = ComposeState(
-            wordListInfo = ModifyWordListItem(
+            selectedWordList = ModifyWordListItem(
                 title = "My List",
                 count = 10,
                 id = 1L

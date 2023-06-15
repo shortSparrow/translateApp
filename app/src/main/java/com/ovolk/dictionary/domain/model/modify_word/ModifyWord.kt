@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.domain.model.modify_word
 
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
@@ -18,6 +19,7 @@ data class ModifyWord @Inject constructor(
     val createdAt: Long,
     val updatedAt: Long,
     val wordListId: Long? = null,
+    val dictionary: Dictionary
 ) {
     companion object {
         const val UNDEFINED_ID = 0L

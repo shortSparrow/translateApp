@@ -42,9 +42,10 @@ fun PickLanguageButton(
     }
 
 
+    val selectLanguagePickerWidth = 110.dp
     Column(
         modifier = Modifier
-            .width(com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.selectLanguagePickerWidth),
+            .width(selectLanguagePickerWidth),
 
         ) {
         Surface(

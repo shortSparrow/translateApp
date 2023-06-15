@@ -28,6 +28,7 @@ fun DialogSelectList(
     onDismissRequest: () -> Unit,
     onItemsPress: (id: Long) -> Unit,
     onAddNewItemPress: () -> Unit,
+    selectedId: Long? = null
 ) {
     MyDialog(
         title = stringResource(id = R.string.modify_word_select_lists_dialog_title),
@@ -61,7 +62,8 @@ fun DialogSelectList(
                                     ListItem(
                                         wordListInfo = item,
                                         onItemsPress = { onItemsPress(item.id) },
-                                        withMark = true
+                                        withMark = true,
+                                        isSelected = item.id == selectedId
                                     )
                                 }
                             }
@@ -111,9 +113,10 @@ fun ComposablePreviewDialogSelectList2() {
                 title = "Sport",
                 count = 5,
                 id = 2L,
-                isSelected = true
+                isSelected = true // TODO maybe remove isSelected
             )
         ),
+        selectedId = 2L,
         onDismissRequest = {},
         onItemsPress = {},
         onAddNewItemPress = {}
@@ -124,6 +127,7 @@ fun ComposablePreviewDialogSelectList2() {
 @Composable
 fun ComposablePreviewDialogSelectListLarge() {
     DialogSelectList(
+        selectedId = 2L,
         list = listOf(
             ModifyWordListItem(
                 title = "My List",

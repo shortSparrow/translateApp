@@ -24,10 +24,10 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 
 @Composable
-fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMark: Boolean) {
+fun ListItem(isSelected:Boolean, wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMark: Boolean) {
 
     val borderColor =
-        if (wordListInfo.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
+        if (isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
 
     ConstraintLayout {
         val (dd, mark) = createRefs()
@@ -72,7 +72,7 @@ fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMar
             }
         }
 
-        if (wordListInfo.isSelected && withMark) {
+        if (isSelected && withMark) {
             Image(
                 painter = painterResource(
                     id = R.drawable.check_mark,
@@ -104,6 +104,7 @@ fun ComposableListItemPreview() {
         ),
         onItemsPress = {},
         withMark = false,
+        isSelected = false
     )
 }
 
@@ -118,5 +119,6 @@ fun ComposableListItemPreview2() {
         ),
         onItemsPress = {},
         withMark = false,
+        isSelected = true
     )
 }

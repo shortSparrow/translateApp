@@ -60,6 +60,7 @@ fun validateTranslates(value: List<Translate>): ValidateResult {
     }
 }
 
+// TODO change on validate Dictionary
 fun validateSelectLanguage(langCode: String?): ValidateResult {
     return if (langCode == null) {
         ValidateResult(

@@ -9,17 +9,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
-import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
+import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionary
 import com.ovolk.dictionary.domain.use_case.modify_word.*
 import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.*
 import com.ovolk.dictionary.domain.use_case.settings_languages.GetSelectedLanguages
 import com.ovolk.dictionary.presentation.modify_word.helpers.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,18 +36,18 @@ class ModifyWordViewModel @Inject constructor(
     private val deleteWordUseCase: DeleteWordUseCase,
     private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
-    private val getSelectedLanguages: GetSelectedLanguages,
+    private val getSelectedLanguages: GetSelectedLanguages, // todo remove
     private val addChipUseCase: AddChipUseCase,
-    private val selectLanguageUseCase: SelectLanguageUseCase,
     application: Application,
     private val savedStateHandle: SavedStateHandle,
+    private val crudDictionaryUseCase: CrudDictionaryUseCase,
+    private val getActiveDictionary: GetActiveDictionary,
 ) : ViewModel() {
     var listener: Listener? = null
 
     var composeState by mutableStateOf(ComposeState())
         private set
-    var languageState by mutableStateOf(Languages())
-        private set
+
     var translateState by mutableStateOf(Translates())
         private set
     var hintState by mutableStateOf(Hints())
@@ -59,13 +62,14 @@ class ModifyWordViewModel @Inject constructor(
         launchRightMode()
         viewModelScope.launch {
             getListsUseCase.getAllListsForModifyWord().collectLatest { list ->
-                composeState = composeState.copy(
-                    wordLists = list.map {
-                        if (it.id == composeState.wordListInfo?.id) {
-                            it.copy(isSelected = true)
-                        } else it
-                    },
-                )
+                composeState = composeState.copy(wordLists = list)
+            }
+        }
+
+
+        viewModelScope.launch {
+            crudDictionaryUseCase.getDictionaryList().collectLatest { dictionaryList ->
+                composeState = composeState.copy(dictionaryList = dictionaryList)
             }
         }
 
@@ -78,6 +82,12 @@ class ModifyWordViewModel @Inject constructor(
                 updateAudio(savableFile)
             }
         }
+    }
+
+    private fun getMode(): ModifyWordModes {
+        val mode = checkNotNull(savedStateHandle.get<String>("mode"))
+        if (ModifyWordModes.valueOf(mode) == ModifyWordModes.MODE_EDIT) return ModifyWordModes.MODE_EDIT
+        return ModifyWordModes.MODE_ADD
     }
 
     private fun launchRightMode() {
@@ -128,21 +138,15 @@ class ModifyWordViewModel @Inject constructor(
                 composeState = composeState.copy(isOpenSelectModal = action.isOpen)
             }
 
-            is ModifyWordAction.OnSelectLanguage -> {
-                languageState = selectLanguageUseCase.selectLanguage(
-                    languageState,
-                    action.language.langCode,
-                    action.type
-                )
+            is ModifyWordAction.OnSelectDictionary -> {
+                composeState =
+                    composeState.copy(dictionary = composeState.dictionaryList.find { it.id == action.dictionaryId })
             }
 
-            is ModifyWordAction.PressAddNewLanguage -> {
-                languageState = languageState.copy(
-                    addNewLangModal = AddNewLangModal(isOpen = true, type = action.type)
-                )
+            is ModifyWordAction.PressAddNewDictionary -> {
+                listener?.toAddNewDictionary()
             }
 
-            ModifyWordAction.CloseAddNewLanguageModal -> closeAddNewLanguageModal()
             is ModifyWordAction.AddNewList -> {
                 viewModelScope.launch {
                     val validationResult = addNewListUseCase.addNewList(action.title)
@@ -222,7 +226,7 @@ class ModifyWordViewModel @Inject constructor(
                     }
 
                     WordAlreadyExistActions.GO_TO_WORD -> {
-                        _localState.alreadyExistWordId?.let { id->
+                        _localState.alreadyExistWordId?.let { id ->
                             launchEditMode(id)
                         }
                     }
@@ -306,39 +310,12 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    private fun closeAddNewLanguageModal() {
-        val langList = when (composeState.modifyMode) {
-            ModifyWordModes.MODE_ADD -> loadLanguages(
-                langFromCode = null,
-                langToCode = null
-            )
-
-            ModifyWordModes.MODE_EDIT -> loadLanguages(
-                langFromCode = languageState.languageFromList.find { it.isChecked }?.langCode,
-                langToCode = languageState.languageToList.find { it.isChecked }?.langCode,
-            )
-        }
-
-        languageState = languageState.copy(
-            addNewLangModal = AddNewLangModal(isOpen = false, type = null),
-            languageFromList = langList["languageFrom"] ?: emptyList(),
-            languageToList = langList["languageTo"] ?: emptyList(),
-        )
-    }
-
     private fun onSelectList(listId: Long) {
-        val newList = composeState.wordLists.map {
-            if (it.id == listId) it.copy(isSelected = !it.isSelected) else it.copy(
-                isSelected = false
-            )
-        }
-
-        val pressableList =
-            newList.find { it.id == listId }.takeIf { it?.isSelected == true }
-
+        val selectedList = composeState.wordLists.find { it.id == listId }
+        val selectedWordList =
+            if (selectedList?.id == composeState.selectedWordList?.id) null else selectedList
         composeState = composeState.copy(
-            wordLists = newList,
-            wordListInfo = pressableList
+            selectedWordList = selectedWordList
         )
     }
 
@@ -352,7 +329,7 @@ class ModifyWordViewModel @Inject constructor(
                 if (passedListId != -1L) {
                     return true
                 }
-                return initialState.composeState.wordListInfo == composeState.wordListInfo
+                return initialState.composeState.selectedWordList == composeState.selectedWordList
             }
 
             val isTheSame =
@@ -368,10 +345,9 @@ class ModifyWordViewModel @Inject constructor(
                         initialState.hintState.hintWord == hintState.hintWord &&
 
                         initialState.translateState.translates == translateState.translates &&
-                        initialState.translateState.translationWord == translateState.translationWord &&
+                        initialState.translateState.translationWord == translateState.translationWord
 
-                        initialState.languageState.languageFromList.find { it.isChecked } == languageState.languageFromList.find { it.isChecked } &&
-                        initialState.languageState.languageToList.find { it.isChecked } == languageState.languageToList.find { it.isChecked }
+//                        initialState.languageState.languageToList.find { it.isChecked } == languageState.languageToList.find { it.isChecked }
 
             if (isTheSame) {
                 listener?.goBack()
@@ -388,18 +364,16 @@ class ModifyWordViewModel @Inject constructor(
         val wordValidation = validateWordValue(composeState.word)
         val priorityValidation = validationPriority(composeState.priorityValue)
         val translatesValidation = validateTranslates(translateState.translates)
-        val selectLanguageToValidation =
-            validateSelectLanguage(languageState.languageToList.find { it.isChecked }?.langCode)
-        val selectLanguageFromValidation =
-            validateSelectLanguage(languageState.languageFromList.find { it.isChecked }?.langCode)
+//        val selectLanguageToValidation = // TODO change pn validate dictionary
+//            validateSelectLanguage(languageState.languageToList.find { it.isChecked }?.langCode)
+
 
         val hasError =
             listOf(
                 wordValidation,
                 translatesValidation,
                 priorityValidation,
-                selectLanguageToValidation,
-                selectLanguageFromValidation
+//                selectLanguageToValidation,
             ).any { !it.successful }
 
         if (hasError) {
@@ -408,10 +382,7 @@ class ModifyWordViewModel @Inject constructor(
                 priorityError = priorityValidation
             )
             translateState = translateState.copy(error = translatesValidation)
-            languageState = languageState.copy(
-                selectLanguageFromError = selectLanguageFromValidation,
-                selectLanguageToError = selectLanguageToValidation
-            )
+
             return
         }
 
@@ -424,13 +395,14 @@ class ModifyWordViewModel @Inject constructor(
             translates = translateState.translates,
             description = composeState.descriptionWord.trim(),
             sound = sound,
-            langFrom = languageState.languageFromList.find { it.isChecked }!!.langCode,
-            langTo = languageState.languageToList.find { it.isChecked }!!.langCode,
+            langFrom = "SS",
+            langTo = "OO",
             hints = hintState.hints,
             transcription = composeState.transcriptionWord.trim(),
             createdAt = composeState.createdAt ?: getTimestamp(),
             updatedAt = getTimestamp(),
-            wordListId = composeState.wordListInfo?.id,
+            wordListId = composeState.selectedWordList?.id,
+            dictionary = composeState.dictionary!!, // TODO remove !!
         )
 
         if (!overrideWordWithSameValue && composeState.modifyMode == ModifyWordModes.MODE_ADD) {
@@ -442,7 +414,11 @@ class ModifyWordViewModel @Inject constructor(
 
     private fun saveWordAndOverrideIfExist(word: ModifyWord) {
         viewModelScope.launch {
-            modifyWordUseCase(word = word.copy(id = _localState.alreadyExistWordId ?: word.id)).apply {
+            modifyWordUseCase(
+                word = word.copy(
+                    id = _localState.alreadyExistWordId ?: word.id
+                )
+            ).apply {
                 listener?.onSaveWord()
             }
         }
@@ -461,16 +437,33 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
+    private suspend fun setDefaultDictionary() {
+        if (composeState.dictionaryList.isEmpty()) {
+            delay(100)
+            setDefaultDictionary()
+        } else {
+            composeState = composeState.copy(dictionary = composeState.dictionaryList[0])
+        }
+    }
+
     // wordValue which selected and passed into app as intent
     private fun launchAddMode(wordValue: String, listId: Long) {
-        val langList = loadLanguages(langFromCode = null, langToCode = null)
-        languageState = languageState.copy(
-            languageFromList = langList["languageFrom"]
-                ?: emptyList(),
-            languageToList = langList["languageTo"] ?: emptyList(),
-        )
         composeState =
             composeState.copy(modifyMode = ModifyWordModes.MODE_ADD, word = wordValue)
+
+        viewModelScope.launch {
+            val activeDictionary = getActiveDictionary.getDictionaryActive()
+            when (activeDictionary) {
+                is Either.Failure -> {
+                    setDefaultDictionary()
+                }
+                is Either.Success -> {
+                    withContext(Dispatchers.Main) {
+                        composeState = composeState.copy(dictionary = activeDictionary.value)
+                    }
+                }
+            }
+        }
 
         if (listId != -1L) {
             prefillListIdFromArgs(listId)
@@ -479,7 +472,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun launchEditMode(wordId: Long) {
-        val id = if (wordId == -1L) error("wordId is null") else wordId
+        val id = if (wordId == -1L) error("wordId is null") else wordId // TODO it should do usecase
         getWordById(id)
     }
 
@@ -488,7 +481,7 @@ class ModifyWordViewModel @Inject constructor(
             val res = getListsUseCase.getListById(listId)
 
             withContext(Dispatchers.Main) {
-                composeState = composeState.copy(wordListInfo = res)
+                composeState = composeState.copy(selectedWordList = res)
             }
         }
     }
@@ -508,8 +501,8 @@ class ModifyWordViewModel @Inject constructor(
     private fun getWordById(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val word = getWordItemUseCase(id)
-            val langList = loadLanguages(langToCode = word.langTo, langFromCode = word.langFrom)
-            val wordListInfo = word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
+            val selectedWordList =
+                word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
 
             withContext(Dispatchers.Main) {
                 word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
@@ -521,38 +514,24 @@ class ModifyWordViewModel @Inject constructor(
                     editableWordId = word.id,
                     createdAt = word.createdAt,
                     priorityValue = word.priority.toString(),
-                    wordListInfo = wordListInfo,
-                    modifyMode = ModifyWordModes.MODE_EDIT
+                    selectedWordList = selectedWordList,
+                    modifyMode = ModifyWordModes.MODE_EDIT,
+                    dictionary = word.dictionary,
                 )
 
                 translateState = translateState.copy(translates = word.translates)
                 hintState = hintState.copy(hints = word.hints)
-
-                languageState = languageState.copy(
-                    languageToList = langList["languageTo"] ?: emptyList(),
-                    languageFromList = langList["languageFrom"] ?: emptyList(),
-                )
 
                 setInitialState()
             }
         }
     }
 
-    private fun loadLanguages(
-        langToCode: String? = null,
-        langFromCode: String? = null
-    ): Map<String, List<SelectLanguage>> {
-        return getSelectedLanguages.getLanguagesForSelect(
-            savedLangToCode = langToCode,
-            savedLangFromCode = langFromCode
-        )
-    }
 
     // state for track changes and show alert on goBack press if has unsaved changes
     private fun setInitialState() {
         initialState = InitialState(
             composeState = composeState,
-            languageState = languageState,
             translateState = translateState,
             hintState = hintState,
             recordAudio = recordAudio
@@ -563,5 +542,6 @@ class ModifyWordViewModel @Inject constructor(
         fun onDeleteWord()
         fun onSaveWord()
         fun goBack()
+        fun toAddNewDictionary()
     }
 }

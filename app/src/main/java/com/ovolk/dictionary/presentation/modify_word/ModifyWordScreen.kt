@@ -6,7 +6,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_word.compose.ModifyWordPresenter
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
@@ -40,11 +42,14 @@ fun ModifyWordScreen(navController: NavHostController) {
         override fun goBack() {
             navController.popBackStack()
         }
+
+        override fun toAddNewDictionary() {
+            navController.navigate("${CommonRotes.MODIFY_DICTIONARY}/mode=${ModifyDictionaryModes.MODE_ADD}")
+        }
     }
 
     val viewModel = hiltViewModel<ModifyWordViewModel>()
     val state = viewModel.composeState
-    val languageState = viewModel.languageState
     val translateState = viewModel.translateState
     val hintState = viewModel.hintState
     val recordState = viewModel.recordAudio.recordState
@@ -60,7 +65,6 @@ fun ModifyWordScreen(navController: NavHostController) {
 
     ModifyWordPresenter(
         state = state,
-        languageState = languageState,
         translateState = translateState,
         hintState = hintState,
         recordState = recordState,

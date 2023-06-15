@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.exam.helpers
 
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
@@ -44,7 +45,15 @@ class GenerateFakeWords constructor(
                     createdAt = getTimestamp(),
                     updatedAt = getTimestamp(),
                     transcription = "",
-                    priority = 0
+                    priority = 0,
+                    dictionary = Dictionary(
+                        id = 1L,
+                        langFromCode = "EN",
+                        langToCode = "UA",
+                        title = "EN-UA",
+                        isSelected = false,
+                        isActive = true,
+                    )
                 )
                 val d = this.async {
                     modifyWordUseCase(word = word)
