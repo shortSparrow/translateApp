@@ -3,6 +3,7 @@ package com.ovolk.dictionary.domain.use_case.select_languages
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import javax.inject.Inject
 
+// TODO remove
 class SearchLanguageList @Inject constructor() {
     operator fun invoke(languageList: List<Language>, query: String): List<Language> {
         return languageList.filter {

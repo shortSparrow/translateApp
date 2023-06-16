@@ -11,19 +11,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryAction
+import com.ovolk.dictionary.domain.model.select_languages.Language
+import com.ovolk.dictionary.presentation.core.select_language.SelectLanguages
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryState
-import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToFromPresenter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectLanguageBottomSheet(
-    state: ModifyDictionaryState,
-    onAction: (ModifyDictionaryAction) -> Unit,
-    body: @Composable () -> Unit
+    languageList: List<Language>,
+    preferredLanguages: List<Language>,
+    isBottomSheetOpen: Boolean,
+    body: @Composable () -> Unit,
+    onSearchLanguage: (query: String) -> Unit,
+    closeLanguageBottomSheet: () -> Unit,
+    onSelectLanguage: (langCode: String) -> Unit
 ) {
     val bottomSheetScaffoldState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -33,19 +36,20 @@ fun SelectLanguageBottomSheet(
     val scope = rememberCoroutineScope()
 
     fun clearLanguageSearchField() {
-        onAction(ModifyDictionaryAction.OnSearchLanguage(""))
+        onSearchLanguage("")
     }
+
     fun closeModal() {
         scope.launch {
             clearLanguageSearchField()
             bottomSheetScaffoldState.hide()
-            onAction(ModifyDictionaryAction.CloseLanguageBottomSheet)
+            closeLanguageBottomSheet()
         }
     }
 
-    LaunchedEffect(state.languageBottomSheet.isOpen) {
+    LaunchedEffect(isBottomSheetOpen) {
         scope.launch {
-            if (state.languageBottomSheet.isOpen) {
+            if (isBottomSheetOpen) {
                 bottomSheetScaffoldState.show()
             }
         }
@@ -78,17 +82,18 @@ fun SelectLanguageBottomSheet(
                 )
 
                 Box(modifier = Modifier.padding(top = 25.dp)) {
-                    SettingsLanguagesToFromPresenter(
-                        languageList = state.languageBottomSheet.languageList,
+                    SelectLanguages(
+                        languageList = languageList,
                         onSelect = { langCode ->
                             scope.launch {
-                                onAction(ModifyDictionaryAction.OnSelectLanguage(languageCode = langCode))
+                                onSelectLanguage(langCode)
                                 delay(400)
                                 closeModal()
                             }
                         },
-                        onSearch = { query -> onAction(ModifyDictionaryAction.OnSearchLanguage(query)) },
-                        shouldClearSearchField = bottomSheetScaffoldState.currentValue == ModalBottomSheetValue.Hidden
+                        onSearch = { query -> onSearchLanguage(query) },
+                        shouldClearSearchField = bottomSheetScaffoldState.currentValue == ModalBottomSheetValue.Hidden,
+                        preferredLanguages = preferredLanguages
                     )
                 }
             }

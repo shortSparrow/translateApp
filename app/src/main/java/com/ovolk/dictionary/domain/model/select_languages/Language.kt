@@ -7,6 +7,7 @@ data class Language(
     val isChecked: Boolean = false
 )
 
+// TODO remove
 data class SharedLanguage(
     val langCode: String,
 )

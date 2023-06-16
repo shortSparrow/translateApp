@@ -28,7 +28,7 @@ fun LanguagesPicker(
     langToError: Boolean,
     languageFromName: String?,
     langFromError: Boolean,
-    onAction: (ModifyDictionaryAction) -> Unit,
+    openLanguageBottomSheet: (langType: LanguagesType) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -64,7 +64,7 @@ fun LanguagesPicker(
                 langName = languageFromName,
                 error = langFromError,
                 hintMessage = if (languageFromName == null) "Select language" else null,
-                onClick = { onAction(ModifyDictionaryAction.OpenLanguageBottomSheet(LanguagesType.LANG_FROM)) }
+                onClick = { openLanguageBottomSheet(LanguagesType.LANG_FROM) }
             )
 
             Column {
@@ -80,7 +80,7 @@ fun LanguagesPicker(
                 langName = languageToName,
                 error = langToError,
                 hintMessage = if (languageToName == null) "Select language" else null,
-                onClick = { onAction(ModifyDictionaryAction.OpenLanguageBottomSheet(LanguagesType.LANG_TO)) }
+                onClick = { openLanguageBottomSheet(LanguagesType.LANG_TO) }
             )
         }
     }
@@ -94,7 +94,7 @@ fun LanguagesPickerPreview() {
         languageToName = "UK",
         langToError = false,
         langFromError = false,
-        onAction = {}
+        openLanguageBottomSheet = {}
     )
 }
 
@@ -106,7 +106,7 @@ fun LanguagesPickerPreview2() {
         languageToName = "EN",
         langFromError = false,
         langToError = false,
-        onAction = {}
+        openLanguageBottomSheet = {}
     )
 }
 
@@ -118,6 +118,6 @@ fun LanguagesPickerPreview3() {
         languageToName = "EN",
         langFromError = true,
         langToError = false,
-        onAction = {}
+        openLanguageBottomSheet = {}
     )
 }

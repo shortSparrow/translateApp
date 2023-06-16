@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             AppCompatTheme {
                 RootNavigationGraph(
                     navController = navController,
-                    getIsChosenLanguage = ::getIsChosenLanguage
+                    getIsWelcomeScreenPassed = ::getIsChosenLanguage
                 )
             }
         }
