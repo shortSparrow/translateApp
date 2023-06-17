@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureWithCode
@@ -21,7 +22,6 @@ import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.modify_dictionary.utils.generateDictionaryNameLangFrom
 import com.ovolk.dictionary.presentation.modify_dictionary.utils.generateDictionaryNameLangTo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +34,8 @@ data class LocalState(
 class CreateFirstDictionaryViewModel @Inject constructor(
     private val dictionaryUseCase: CrudDictionaryUseCase,
     private val getLanguageList: GetLanguageList,
-    private val getPreferredLanguages: GetPreferredLanguages
+    private val getPreferredLanguages: GetPreferredLanguages,
+    private val appSettingsRepository: AppSettingsRepository
 ) : ViewModel() {
     var listener: Listener? = null
     var state by mutableStateOf(FirstDictionaryState())
@@ -199,6 +200,10 @@ class CreateFirstDictionaryViewModel @Inject constructor(
                     langToError = false,
                     langErrorMessage = null,
                 )
+                appSettingsRepository.setAppSettings().apply {
+                    isWelcomeScreenPassed(true)
+                    update()
+                }
                 listener?.goToHome()
             }
 

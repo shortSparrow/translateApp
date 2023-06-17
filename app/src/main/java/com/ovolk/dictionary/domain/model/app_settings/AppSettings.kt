@@ -13,5 +13,4 @@ data class AppSettings(
 data class ReminderSettings(
     val examReminderFrequency: Int,
     val examReminderTime: ReminderTime,
-
 )
