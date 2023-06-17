@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.data.database
+package com.ovolk.dictionary.data.database.words
 
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
 import com.ovolk.dictionary.data.mapper.WordMapper
@@ -7,7 +7,7 @@ import com.ovolk.dictionary.data.model.TranslateDb
 import com.ovolk.dictionary.data.model.UpdatePriority
 import com.ovolk.dictionary.data.model.UpdatePriorityDb
 import com.ovolk.dictionary.data.model.WordInfoDb
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.WordRV

@@ -68,9 +68,9 @@ class ModifyDictionaryViewModel @Inject constructor(
                         _editedDictionary = dictionary.value
 
                         languageFromList =
-                            getLanguageList.getLanguageListFrom(dictionary.value.langFromCode)
+                            getLanguageList.getLanguageList(dictionary.value.langFromCode)
                         languageToList =
-                            getLanguageList.getLanguageListTo(dictionary.value.langToCode)
+                            getLanguageList.getLanguageList(dictionary.value.langToCode)
 
                         state = state.copy(
                             dictionaryName = dictionary.value.title,
@@ -86,8 +86,8 @@ class ModifyDictionaryViewModel @Inject constructor(
         }
 
         if (getCurrentMode() == ModifyDictionaryModes.MODE_ADD) {
-            languageFromList = getLanguageList.getLanguageListFrom()
-            languageToList = getLanguageList.getLanguageListTo()
+            languageFromList = getLanguageList.getLanguageList()
+            languageToList = getLanguageList.getLanguageList()
             state = state.copy(
                 languageFromList = languageFromList,
                 languageToList = languageToList,

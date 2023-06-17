@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.data.database
+package com.ovolk.dictionary.data.database.word_lists
 
 import androidx.room.Dao
 import androidx.room.Insert

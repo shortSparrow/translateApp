@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.domain
+package com.ovolk.dictionary.domain.repositories
 
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
 import com.ovolk.dictionary.data.mapper.WordMapper

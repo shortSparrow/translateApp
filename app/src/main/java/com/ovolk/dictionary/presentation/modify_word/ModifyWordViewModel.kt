@@ -16,10 +16,16 @@ import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionary
-import com.ovolk.dictionary.domain.use_case.modify_word.*
-import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.*
-import com.ovolk.dictionary.domain.use_case.settings_languages.GetSelectedLanguages
-import com.ovolk.dictionary.presentation.modify_word.helpers.*
+import com.ovolk.dictionary.domain.use_case.modify_word.AddChipUseCase
+import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.SUCCESS
+import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.WORD_ALREADY_EXIST
+import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
+import com.ovolk.dictionary.domain.use_case.modify_word.GetWordItemUseCase
+import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
+import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
+import com.ovolk.dictionary.presentation.modify_word.helpers.validateTranslates
+import com.ovolk.dictionary.presentation.modify_word.helpers.validateWordValue
+import com.ovolk.dictionary.presentation.modify_word.helpers.validationPriority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -36,7 +42,6 @@ class ModifyWordViewModel @Inject constructor(
     private val deleteWordUseCase: DeleteWordUseCase,
     private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
-    private val getSelectedLanguages: GetSelectedLanguages, // todo remove
     private val addChipUseCase: AddChipUseCase,
     application: Application,
     private val savedStateHandle: SavedStateHandle,

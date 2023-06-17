@@ -7,10 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ovolk.dictionary.data.database.dictionary.DictionaryDao
+import com.ovolk.dictionary.data.database.exam.ExamWordAnswerDao
 import com.ovolk.dictionary.data.database.migration.migrateFrom1To2
 import com.ovolk.dictionary.data.database.migration.migrateFrom2To3
 import com.ovolk.dictionary.data.database.migration.migrateFrom3To4
 import com.ovolk.dictionary.data.database.migration.migrateFrom4To5
+import com.ovolk.dictionary.data.database.word_lists.ListsDao
+import com.ovolk.dictionary.data.database.words.TranslatedWordDao
 import com.ovolk.dictionary.data.model.HintDb
 import com.ovolk.dictionary.data.model.ListItemDb
 import com.ovolk.dictionary.data.model.PotentialExamAnswerDb

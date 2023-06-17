@@ -2,9 +2,9 @@ package com.ovolk.dictionary.di
 
 import android.app.Application
 import com.ovolk.dictionary.data.database.AppDatabase
-import com.ovolk.dictionary.data.database.ExamWordAnswerDao
-import com.ovolk.dictionary.data.database.ListsDao
-import com.ovolk.dictionary.data.database.TranslatedWordDao
+import com.ovolk.dictionary.data.database.exam.ExamWordAnswerDao
+import com.ovolk.dictionary.data.database.word_lists.ListsDao
+import com.ovolk.dictionary.data.database.words.TranslatedWordDao
 import com.ovolk.dictionary.data.database.dictionary.DictionaryDao
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
 import com.ovolk.dictionary.data.in_memory_storage.LocalCache

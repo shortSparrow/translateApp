@@ -1,8 +1,8 @@
-package com.ovolk.dictionary.data.database
+package com.ovolk.dictionary.data.database.exam
 
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
-import com.ovolk.dictionary.domain.ExamWordAnswerRepository
+import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import javax.inject.Inject
 

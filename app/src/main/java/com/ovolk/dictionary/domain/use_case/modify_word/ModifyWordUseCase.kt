@@ -1,8 +1,8 @@
 package com.ovolk.dictionary.domain.use_case.modify_word
 
-import com.ovolk.dictionary.data.database.TranslatedWordRepositoryImpl
+import com.ovolk.dictionary.data.database.words.TranslatedWordRepositoryImpl
 import com.ovolk.dictionary.data.mapper.WordMapper
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate

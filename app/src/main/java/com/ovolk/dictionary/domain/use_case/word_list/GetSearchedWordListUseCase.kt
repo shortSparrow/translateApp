@@ -1,6 +1,6 @@
 package com.ovolk.dictionary.domain.use_case.word_list
 
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine

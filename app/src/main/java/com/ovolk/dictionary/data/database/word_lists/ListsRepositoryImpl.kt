@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.data.database
+package com.ovolk.dictionary.data.database.word_lists
 
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.domain.model.lists.ListItem

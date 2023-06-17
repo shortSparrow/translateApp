@@ -2,8 +2,8 @@ package com.ovolk.dictionary.domain.use_case.exam
 
 import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
 import com.ovolk.dictionary.data.mapper.WordMapper
-import com.ovolk.dictionary.domain.ExamWordAnswerRepository
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate

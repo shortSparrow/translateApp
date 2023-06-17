@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.data.database
+package com.ovolk.dictionary.data.database.words
 
 import androidx.room.*
 import com.ovolk.dictionary.data.mapper.WordMapper

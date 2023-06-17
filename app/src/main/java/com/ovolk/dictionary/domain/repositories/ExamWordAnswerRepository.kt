@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.domain
+package com.ovolk.dictionary.domain.repositories
 
 import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant

@@ -42,8 +42,8 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val languageFromList = getLanguageList.getLanguageListFrom()
-            val languageToList = getLanguageList.getLanguageListTo()
+            val languageFromList = getLanguageList.getLanguageList()
+            val languageToList = getLanguageList.getLanguageList()
             state = state.copy(
                 languageFromList = languageFromList,
                 languageToList = languageToList,

@@ -3,7 +3,6 @@ package com.ovolk.dictionary.presentation
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,15 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.domain.ExamReminder
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
-import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.PASSED_SEARCH_WORD
-import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
-import com.ovolk.dictionary.util.helpers.setShowVariantsExamAvailableLanguagesIdNeeded
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,13 +32,15 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var getSearchedWordListUseCase: GetSearchedWordListUseCase
 
+    @Inject
+    lateinit var appSettingsRepository: AppSettingsRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setupNavigation()
 
         lifecycleScope.launch {
-            setShowVariantsExamAvailableLanguagesIdNeeded(application)
             examReminder.setInitialReminderIfNeeded()
         }
 
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             AppCompatTheme {
                 RootNavigationGraph(
                     navController = navController,
-                    getIsWelcomeScreenPassed = ::getIsChosenLanguage
+                    getIsWelcomeScreenPassed = ::getIsWelcomeScreenPassed
                 )
             }
         }
@@ -67,13 +66,8 @@ class MainActivity : AppCompatActivity() {
         setupInitialDestination(intent)
     }
 
-    private fun getIsChosenLanguage(): Boolean {
-        val userStatePreferences: SharedPreferences = application.getSharedPreferences(
-            USER_STATE_PREFERENCES,
-            MODE_PRIVATE
-        )
-
-        return userStatePreferences.getBoolean(IS_CHOOSE_LANGUAGE, false)
+    private fun getIsWelcomeScreenPassed(): Boolean {
+        return appSettingsRepository.getAppSettings().isWelcomeScreenPassed
     }
 
 
@@ -82,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         val text = intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
         val context = DictionaryApp.applicationContext()
 
-        if (text != null && getIsChosenLanguage()) {
+        if (text != null && getIsWelcomeScreenPassed()) {
             lifecycleScope.launch {
                 val searchedValue =
                     getSearchedWordListUseCase.getExactSearchedWord(text.toString())

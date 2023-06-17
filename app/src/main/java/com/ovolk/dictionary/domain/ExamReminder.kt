@@ -4,15 +4,16 @@ import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
-import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
-import com.ovolk.dictionary.util.*
+import com.ovolk.dictionary.util.EXAM_REMINDER_INTENT_CODE
+import com.ovolk.dictionary.util.PushFrequency
+import com.ovolk.dictionary.util.getExamReminderDelayFromNow
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -21,14 +22,9 @@ import javax.inject.Inject
 class ExamReminder @Inject constructor(
     private val application: Application,
     private val getExamWordListUseCase: GetExamWordListUseCase,
-    private val getTimeReminder: GetTimeReminder
+    private val appSettingsRepository: AppSettingsRepository
 ) {
     private val gson = Gson()
-
-    private val sharedPref: SharedPreferences = application.getSharedPreferences(
-        SETTINGS_PREFERENCES,
-        AppCompatActivity.MODE_PRIVATE
-    )
 
     fun updateReminder(frequency: Int, startHour: Int, startMinute: Int) {
         val delay =
@@ -40,11 +36,12 @@ class ExamReminder @Inject constructor(
         val time = ReminderTime(hours = startHour, minutes = startMinute)
         val timeGson = gson.toJson(time)
 
-        sharedPref.edit().apply {
-            putInt(EXAM_REMINDER_FREQUENCY, frequency)
-            putString(EXAM_REMINDER_TIME, timeGson)
-            apply()
+        appSettingsRepository.setAppSettings().apply {
+            examReminderFrequency(frequency)
+            examReminderTime(timeGson)
+            update()
         }
+
         if (frequency != PushFrequency.NONE) {
             setReminder(timeInMillis = delay, interval = frequency.toLong())
         } else {
@@ -78,9 +75,9 @@ class ExamReminder @Inject constructor(
     private fun resetReminder() {
         handleAlarmEnabling(PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
 
-        sharedPref.edit().apply {
-            putInt(EXAM_REMINDER_FREQUENCY, PushFrequency.NONE)
-            apply()
+        appSettingsRepository.setAppSettings().apply {
+            examReminderFrequency(PushFrequency.NONE)
+            update()
         }
 
         val alarmManager =
@@ -98,24 +95,24 @@ class ExamReminder @Inject constructor(
     }
 
     private fun setInitialReminder() {
-        var frequency = sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)
+        val reminderSettings = appSettingsRepository.getAppSettings().reminder
+        var frequency = reminderSettings.examReminderFrequency
         // if PushFrequency was reset when a user didn't have any word
         if (frequency == PushFrequency.NONE) {
             frequency = PushFrequency.ONCE_AT_DAY
         }
 
-        val time = getTimeReminder(sharedPref)
+        val time = reminderSettings.examReminderTime
         val delay =
             getExamReminderDelayFromNow(
                 frequencyDelay = frequency,
                 hours = time.hours,
                 minutes = time.minutes
             )
-
-        sharedPref.edit().apply {
-                putInt(EXAM_REMINDER_FREQUENCY, frequency)
-                putString(EXAM_REMINDER_TIME, gson.toJson(time))
-            apply()
+        appSettingsRepository.setAppSettings().apply {
+            examReminderFrequency(frequency)
+            examReminderTime(gson.toJson(time))
+            update()
         }
 
         setReminder(timeInMillis = delay, interval = frequency.toLong());

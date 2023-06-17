@@ -25,7 +25,7 @@ class ExamLocalCache {
 
     fun getIsDoubleLanguageExamEnable(): Boolean {
         return _isDoubleLanguageExamEnable ?: kotlin.run {
-            DictionaryApp.applicationContext().getSharedPreferences(
+            DictionaryApp.applicationContext().getSharedPreferences( // TODO try to change with AppSettingsRepositoryImpl
                 SETTINGS_PREFERENCES,
                 AppCompatActivity.MODE_PRIVATE
             ).getBoolean(IS_DOUBLE_LANGUAGE_EXAM_ENABLE, DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE)
