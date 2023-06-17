@@ -1,6 +1,6 @@
 package com.ovolk.dictionary.data.database.app_settings
 
-import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
@@ -19,18 +19,18 @@ import com.ovolk.dictionary.util.SETTINGS_VERSION
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import javax.inject.Inject
 
-class AppSettingsMigration @Inject constructor(val application: Application) {
-    private val appSettingsPreferences: SharedPreferences = application.getSharedPreferences(
+class AppSettingsMigration @Inject constructor(val context: Context) {
+    private val appSettingsPreferences: SharedPreferences = context.getSharedPreferences(
         APP_SETTINGS,
         AppCompatActivity.MODE_PRIVATE
     )
 
-    private val userStatePreferences: SharedPreferences = application.getSharedPreferences(
+    private val userStatePreferences: SharedPreferences = context.getSharedPreferences(
         USER_STATE_PREFERENCES,
         AppCompatActivity.MODE_PRIVATE
     )
 
-    private val userSettingsPreferences: SharedPreferences = application.getSharedPreferences(
+    private val userSettingsPreferences: SharedPreferences = context.getSharedPreferences(
         SETTINGS_PREFERENCES,
         AppCompatActivity.MODE_PRIVATE
     )
@@ -78,14 +78,18 @@ class AppSettingsMigration @Inject constructor(val application: Application) {
                 putString(DAILY_EXAM_SETTINGS, countOfWords)
                 putInt(SETTINGS_VERSION, 1)
                 commit()
-            }.apply {
-                deleteOldPreferences()
             }
+
+        // old SharedPreferences will be deleted after database migration
     }
 
-    private fun deleteOldPreferences() {
-        application.deleteSharedPreferences(SETTINGS_PREFERENCES)
-        application.deleteSharedPreferences(USER_STATE_PREFERENCES)
+    // this function calls after database migration complete (see migrateFrom5To6)
+    fun deleteOldSharedPreferences() {
+        val settingsVersion = appSettingsPreferences.getInt(SETTINGS_VERSION, 0)
+        if (settingsVersion != 0) { // check if data will be transferred from old SharedPreferences
+            context.deleteSharedPreferences(SETTINGS_PREFERENCES)
+            context.deleteSharedPreferences(USER_STATE_PREFERENCES)
+        }
     }
 
 }

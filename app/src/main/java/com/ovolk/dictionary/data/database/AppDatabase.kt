@@ -12,6 +12,7 @@ import com.ovolk.dictionary.data.database.migration.migrateFrom1To2
 import com.ovolk.dictionary.data.database.migration.migrateFrom2To3
 import com.ovolk.dictionary.data.database.migration.migrateFrom3To4
 import com.ovolk.dictionary.data.database.migration.migrateFrom4To5
+import com.ovolk.dictionary.data.database.migration.migrateFrom5To6
 import com.ovolk.dictionary.data.database.word_lists.ListsDao
 import com.ovolk.dictionary.data.database.words.TranslatedWordDao
 import com.ovolk.dictionary.data.model.HintDb
@@ -23,7 +24,7 @@ import com.ovolk.dictionary.data.model.WordInfoDb
 import com.ovolk.dictionary.data.model.DictionaryDb
 
 @Database(
-    version = 12, // TODO was 5, migration is needed
+    version = 6,
     entities = [
         WordInfoDb::class,
         TranslateDb::class,
@@ -70,6 +71,11 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val migration_5_6: Migration = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                migrateFrom5To6(database)
+            }
+        }
 
         fun getInstance(application: Application): AppDatabase {
             INSTANCE?.let {
@@ -91,6 +97,7 @@ abstract class AppDatabase : RoomDatabase() {
                         migration_2_3,
                         migration_3_4,
                         migration_4_5,
+                        migration_5_6,
                     )
                     .build()
 
