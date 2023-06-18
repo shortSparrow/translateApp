@@ -38,8 +38,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var appSettingsRepository: AppSettingsRepository
 
-    @Inject
-    lateinit var appSettingsMigration: AppSettingsMigration
+    val appSettingsMigration =  AppSettingsMigration(DictionaryApp.applicationContext())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
