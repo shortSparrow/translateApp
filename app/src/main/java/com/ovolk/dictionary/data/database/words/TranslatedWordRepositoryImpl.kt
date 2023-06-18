@@ -85,12 +85,11 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         return mapper.wordFullDbToModifyWord(translatedWordDao.getWordById(id))
     }
 
-    override suspend fun getWordByValue(value: String, langFrom: String, langTo: String): Long {
+    override suspend fun getWordByValue(value: String, dictionaryId: Long): Long {
         return try {
             translatedWordDao.getWordByValue(
                 value = value,
-                langFrom = langFrom,
-                langTo = langTo
+                dictionaryId = dictionaryId,
             )
         } catch (e: Exception) {
             return WORD_IS_NOT_FOUND.toLong()

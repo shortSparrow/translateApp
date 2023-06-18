@@ -23,12 +23,16 @@ class ModifyWordUseCase @Inject constructor(
 
 
     suspend fun addWordIfNotExist(word: ModifyWord): AddWordIfNotExistResult {
-        val searchedWordId = repository.getWordByValue(value = word.value, langFrom = word.langFrom, langTo = word.langTo)
+        val searchedWordId =
+            repository.getWordByValue(value = word.value, dictionaryId = word.dictionary.id)
         if (searchedWordId == TranslatedWordRepositoryImpl.WORD_IS_NOT_FOUND.toLong()) {
             val wordId = invoke(word)
             return AddWordIfNotExistResult(status = AddedWordResult.SUCCESS, wordId = wordId)
         }
-        return AddWordIfNotExistResult(status = AddedWordResult.WORD_ALREADY_EXIST, wordId = searchedWordId)
+        return AddWordIfNotExistResult(
+            status = AddedWordResult.WORD_ALREADY_EXIST,
+            wordId = searchedWordId
+        )
     }
 
     suspend fun modifyTranslates(

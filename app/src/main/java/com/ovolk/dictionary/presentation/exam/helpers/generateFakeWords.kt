@@ -5,7 +5,11 @@ import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 // Needed for auto generate fake words (only for testing/debugging)
@@ -32,8 +36,6 @@ class GenerateFakeWords constructor(
                     ),
                     description = "",
                     sound = null,
-                    langFrom = "EN",
-                    langTo = "UK",
                     hints = listOf(
                         HintItem(
                             localId = 1,

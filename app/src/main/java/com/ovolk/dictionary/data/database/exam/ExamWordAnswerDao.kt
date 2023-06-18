@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
 import com.ovolk.dictionary.util.EXAM_WORD_ANSWERS_TABLE_NAME
 
+// TODO need migration, because for now we have only UK list, and can't add new one
 @Dao
 interface ExamWordAnswerDao {
     @Query("SELECT * FROM $EXAM_WORD_ANSWERS_TABLE_NAME ORDER BY RANDOM() LIMIT :limit")

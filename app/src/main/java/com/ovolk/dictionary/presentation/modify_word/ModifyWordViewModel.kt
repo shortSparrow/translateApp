@@ -400,8 +400,6 @@ class ModifyWordViewModel @Inject constructor(
             translates = translateState.translates,
             description = composeState.descriptionWord.trim(),
             sound = sound,
-            langFrom = "SS",
-            langTo = "OO",
             hints = hintState.hints,
             transcription = composeState.transcriptionWord.trim(),
             createdAt = composeState.createdAt ?: getTimestamp(),

@@ -19,7 +19,7 @@ interface TranslatedWordRepository : InMemoryStorage {
     suspend fun searchWordListSize(): Flow<Int>
 
     suspend fun getWordById(id: Long): ModifyWord
-    suspend fun getWordByValue(value: String, langFrom: String, langTo: String): Long
+    suspend fun getWordByValue(value: String, dictionaryId: Long): Long
 
     suspend fun deleteWord(id: Long): Boolean
 

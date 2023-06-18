@@ -12,8 +12,6 @@ data class ModifyWord @Inject constructor(
     val translates: List<Translate>,
     val description: String,
     val sound: WordAudio?, // english sound
-    val langFrom: String,
-    val langTo: String,
     val hints: List<HintItem>,
     val transcription: String,
     val createdAt: Long,

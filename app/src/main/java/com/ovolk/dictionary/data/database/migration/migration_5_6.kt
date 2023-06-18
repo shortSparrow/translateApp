@@ -81,8 +81,6 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
                 "'value' TEXT NOT NULL, " +
                 "'description' TEXT NOT NULL, " +
                 "'sound' TEXT, " +
-                "'lang_from' TEXT NOT NULL, " + // TODO probably delete
-                "'lang_to' TEXT NOT NULL, " + // TODO probably delete
                 "'transcription' TEXT NOT NULL, " +
                 "'created_at' INTEGER NOT NULL, " +
                 "'updated_at' INTEGER  NOT NULL, " +
@@ -124,8 +122,6 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
             contentValues.put("value", value)
             contentValues.put("description", description)
             contentValues.put("sound", sound)
-            contentValues.put("lang_from", langFromValue) // TODO probably delete
-            contentValues.put("lang_to", langToValue) // TODO probably delete
             contentValues.put("transcription", transcription)
             contentValues.put("created_at", createdAt)
             contentValues.put("updated_at", updatedAt)

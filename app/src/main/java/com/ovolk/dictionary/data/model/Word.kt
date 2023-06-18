@@ -52,8 +52,6 @@ data class WordInfoDb @Inject constructor(
     val value: String,
     val description: String,
     val sound: WordAudio?, // english sound
-    @ColumnInfo(name = "lang_from") val langFrom: String,
-    @ColumnInfo(name = "lang_to") val langTo: String,
     val transcription: String,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
