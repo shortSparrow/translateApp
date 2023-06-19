@@ -14,8 +14,8 @@ interface DictionaryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewDictionary(dictionary: DictionaryDb): Long
 
-    @Query("DELETE FROM DICTIONARIES WHERE id = :dictionaryId")
-    suspend fun deleteDictionary(dictionaryId: Long): Int
+    @Query("DELETE FROM DICTIONARIES WHERE id IN (:dictionariesIdList) ")
+    suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Int
 
     @Query("SELECT * FROM DICTIONARIES")
     fun getDictionaryList(): Flow<List<DictionaryDb>>
@@ -25,6 +25,12 @@ interface DictionaryDao {
 
     @Query("SELECT * FROM DICTIONARIES WHERE id = :id")
     suspend fun getDictionary(id: Long): DictionaryDb?
+
+    @Query("SELECT * FROM DICTIONARIES WHERE lang_from_code = :langFromCode AND lang_to_code = :langToCode")
+    suspend fun getDictionaryByLang(
+        langFromCode: String,
+        langToCode: String
+    ): DictionaryDb?
 
     @Query("SELECT * FROM DICTIONARIES WHERE is_active=1 LIMIT 1")
     suspend fun getCurrentActiveDictionary(): DictionaryDb?
@@ -38,7 +44,7 @@ interface DictionaryDao {
     suspend fun makeDictionaryActive(id: Long, isActive: Boolean): Int
 
     @Transaction
-    suspend fun setDictionaryActive(id: Long, isActive: Boolean):Int {
+    suspend fun setDictionaryActive(id: Long, isActive: Boolean): Int {
         resetAllActiveDictionaries()
         return makeDictionaryActive(id, isActive)
     }

@@ -69,7 +69,7 @@ class SettingsDictionariesViewModel @Inject constructor(
                     if (it.id == action.id) {
                         return@map it.copy(isSelected = !it.isSelected)
                     }
-                    return@map it.copy(isSelected = false)
+                    return@map it
                 }
 
                 state = state.copy(dictionaryList = newList)
@@ -87,26 +87,33 @@ class SettingsDictionariesViewModel @Inject constructor(
             }
 
             SettingsDictionariesAction.DeleteDictionary -> {
+                state = state.copy(isDeleteDictionaryModalOpen = false)
                 viewModelScope.launch {
-                    state.dictionaryList.find { it.isSelected }?.id?.let { id ->
-                        when (val response = dictionaryUseCase.deleteDictionary(id)) {
-                            is Either.Failure -> {
-                                Toast.makeText(
-                                    DictionaryApp.applicationContext(),
-                                    response.value.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                    val listToDelete = state.dictionaryList.filter { it.isSelected }.map { it.id }
 
-                            is Either.Success -> {}
+                    when (val response = dictionaryUseCase.deleteDictionaries(listToDelete)) {
+                        is Either.Failure -> {
+                            Toast.makeText(
+                                DictionaryApp.applicationContext(),
+                                response.value.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
+
+                        is Either.Success -> {}
                     }
-                }
             }
         }
-    }
 
-    interface Listener {
-        fun navigate(dictionaryId: Long?)
+        is SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal -> {
+            state = state.copy(isDeleteDictionaryModalOpen = action.isOpen)
+        }
+
+        SettingsDictionariesAction.ClearDictionarySelection -> TODO()
     }
+}
+
+interface Listener {
+    fun navigate(dictionaryId: Long?)
+}
 }

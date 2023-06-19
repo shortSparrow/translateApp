@@ -22,6 +22,9 @@ data class ModifyDictionaryState(
 
     val langErrorMessage: String? = null,
     val languageBottomSheet: LanguageBottomSheet = LanguageBottomSheet(),
+
+    val dictionaryAlreadyExistModelOpen: Boolean = false
+
 )
 
 data class LanguageBottomSheet(
@@ -39,4 +42,5 @@ sealed interface ModifyDictionaryAction {
     object SaveDictionary : ModifyDictionaryAction
     data class OpenLanguageBottomSheet(val type: LanguagesType) : ModifyDictionaryAction
     object CloseLanguageBottomSheet : ModifyDictionaryAction
+    data class ToggleOpenDictionaryAlreadyExistModal(val isOpen: Boolean) : ModifyDictionaryAction
 }

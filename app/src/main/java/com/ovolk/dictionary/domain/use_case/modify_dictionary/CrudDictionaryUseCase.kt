@@ -11,7 +11,7 @@ import com.ovolk.dictionary.domain.use_case.modify_dictionary.util.validateNewDi
 import javax.inject.Inject
 
 const val DICTIONARY_NOT_EXIST = 1
-const val FAILED_DELETE_DICTIONARY = 5
+const val DICTIONARY_ALREADY_EXIST = 2
 const val UNKNOWN_ERROR = 6
 
 
@@ -46,11 +46,25 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
             return validation.returnValidationFailure()
         }
 
+        val isTheSameDictionaryExist = dictionaryRepository.getDictionaryByLang(
+            langCodeFrom = langFromCode as String,
+            langCodeTo = langToCode as String
+        ) != null
+
+        if (isTheSameDictionaryExist) {
+            return Either.Failure(
+                FailureWithCode(
+                    "Dictionary with the same languages already exist",
+                    code = DICTIONARY_ALREADY_EXIST
+                )
+            )
+        }
+
         val dictionary = Dictionary(
             id = 0L,
             title = title,
-            langToCode = langToCode as String,
-            langFromCode = langFromCode as String,
+            langToCode = langToCode,
+            langFromCode = langFromCode,
             isActive = dictionaryRepository.getDictionaryListSize() == 0, // if it is first dictionary make it active
             isSelected = false,
         )
@@ -101,15 +115,15 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
         else Either.Success(Success)
     }
 
-
-    suspend fun deleteDictionary(dictionaryId: Long): Either<Success, FailureMessage> {
-        val isDeleteSuccess = dictionaryRepository.deleteDictionary(dictionaryId)
+    suspend fun deleteDictionaries(dictionaryListId: List<Long>): Either<Success, FailureMessage> {
+        val isDeleteSuccess = dictionaryRepository.deleteDictionaries(dictionaryListId)
 
         if (isDeleteSuccess) {
             return Either.Success(Success)
         }
-        return Either.Failure(FailureMessage("Can't delete this dictionary"))
+        val errorMessage =
+            if (dictionaryListId.size == 1) "Can't delete this dictionary" else "Can't delete these dictionaries"
+        return Either.Failure(FailureMessage(errorMessage))
     }
-
 
 }

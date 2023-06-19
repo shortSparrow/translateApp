@@ -8,18 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
+import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryAction
@@ -32,6 +32,22 @@ fun ModifyDictionaryPresenter(
     onAction: (ModifyDictionaryAction) -> Unit,
     goBack: () -> Unit,
 ) {
+
+    if (state.dictionaryAlreadyExistModelOpen) {
+        fun closeDictionary() = onAction(
+            ModifyDictionaryAction.ToggleOpenDictionaryAlreadyExistModal(
+                false
+            )
+        )
+
+        InfoDialog(
+            onDismissRequest = ::closeDictionary,
+            message = "Dictionary ${state.dictionaryName} already exist",
+            onClick = ::closeDictionary,
+            buttonText = stringResource(id = R.string.ok)
+        )
+    }
+
     SelectLanguageBottomSheet(
         isBottomSheetOpen = state.languageBottomSheet.isOpen,
         languageList = state.languageBottomSheet.languageList,

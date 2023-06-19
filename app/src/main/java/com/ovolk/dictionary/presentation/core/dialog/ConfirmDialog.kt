@@ -1,6 +1,8 @@
 package com.ovolk.dictionary.presentation.core.dialog
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +33,57 @@ fun ConfirmDialog(
     declineButtonText: String? = null,
     type: ConfirmDialogType = OK_BUTTON_RED
 ) {
+
+    ConfirmDialogBase(
+        onDismissRequest = onDismissRequest,
+        message = {
+            Text(
+                text = message,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        },
+        onAcceptClick = onAcceptClick,
+        onDeclineClick = onDeclineClick,
+        confirmButtonText = confirmButtonText,
+        declineButtonText = declineButtonText,
+        type = type,
+    )
+}
+
+@Composable
+fun ConfirmDialog(
+    onDismissRequest: (() -> Unit)? = null,
+    message: @Composable () -> Unit,
+    onAcceptClick: () -> Unit,
+    onDeclineClick: () -> Unit,
+    confirmButtonText: String? = null,
+    declineButtonText: String? = null,
+    type: ConfirmDialogType = OK_BUTTON_RED
+) {
+
+    ConfirmDialogBase(
+        onDismissRequest = onDismissRequest,
+        message = message,
+        onAcceptClick = onAcceptClick,
+        onDeclineClick = onDeclineClick,
+        confirmButtonText = confirmButtonText,
+        declineButtonText = declineButtonText,
+        type = type,
+    )
+
+}
+
+@Composable
+fun ConfirmDialogBase(
+    onDismissRequest: (() -> Unit)? = null,
+    message: @Composable () -> Unit,
+    onAcceptClick: () -> Unit,
+    onDeclineClick: () -> Unit,
+    confirmButtonText: String? = null,
+    declineButtonText: String? = null,
+    type: ConfirmDialogType = OK_BUTTON_RED
+) {
     val okButtonColor = when (type) {
         OK_BUTTON_RED -> colorResource(id = R.color.red)
         NO_BUTTON_RED -> colorResource(id = R.color.blue)
@@ -52,12 +105,9 @@ fun ConfirmDialog(
             }
         },
     ) {
-        Text(
-            text = message,
-            Modifier.align(Alignment.CenterHorizontally),
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
+        Box(Modifier.align(Alignment.CenterHorizontally)) {
+            message()
+        }
 
         Row(
             horizontalArrangement = Arrangement.SpaceAround,

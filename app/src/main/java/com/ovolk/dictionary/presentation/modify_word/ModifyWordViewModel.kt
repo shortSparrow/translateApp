@@ -458,7 +458,7 @@ class ModifyWordViewModel @Inject constructor(
             val activeDictionary = getActiveDictionary.getDictionaryActive()
             when (activeDictionary) {
                 is Either.Failure -> {
-                    setDefaultDictionary()
+//                    setDefaultDictionary()
                 }
                 is Either.Success -> {
                     withContext(Dispatchers.Main) {

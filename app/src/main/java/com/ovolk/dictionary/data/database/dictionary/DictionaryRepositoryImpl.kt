@@ -15,8 +15,8 @@ class DictionaryRepositoryImpl @Inject constructor(
         return dictionaryDao.addNewDictionary(dictionaryMapper.dictionaryToDictionaryDb(dictionary = dictionary))
     }
 
-    override suspend fun deleteDictionary(dictionaryId: Long): Boolean {
-        val response = dictionaryDao.deleteDictionary(dictionaryId)
+    override suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Boolean {
+        val response = dictionaryDao.deleteDictionaries(dictionariesIdList)
         return response == OPERATION_SUCCESSFUL
     }
 
@@ -36,7 +36,16 @@ class DictionaryRepositoryImpl @Inject constructor(
 
     override suspend fun getDictionary(dictionaryId: Long): Dictionary? {
         val response = dictionaryDao.getDictionary(dictionaryId)
-        return if(response == null) null else dictionaryMapper.dictionaryDbToDictionary(response)
+        return if (response == null) null else dictionaryMapper.dictionaryDbToDictionary(response)
+    }
+
+    override suspend fun getDictionaryByLang(
+        langFromCode: String,
+        langToCode: String
+    ): Dictionary? {
+        val response =
+            dictionaryDao.getDictionaryByLang(langToCode = langToCode, langFromCode = langFromCode)
+        return if (response == null) null else dictionaryMapper.dictionaryDbToDictionary(response)
     }
 
     override suspend fun setDictionaryActive(dictionaryId: Long, isActive: Boolean): Boolean {

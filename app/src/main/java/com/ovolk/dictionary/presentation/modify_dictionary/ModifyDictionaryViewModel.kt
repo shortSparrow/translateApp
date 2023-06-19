@@ -12,9 +12,11 @@ import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
+import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.DICTIONARY_ALREADY_EXIST
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.util.ValidationFailure
 import com.ovolk.dictionary.domain.use_case.select_languages.GetLanguageList
@@ -185,8 +187,13 @@ class ModifyDictionaryViewModel @Inject constructor(
                 state =
                     state.copy(languageBottomSheet = state.languageBottomSheet.copy(languageList = filteredList))
             }
+
+            is ModifyDictionaryAction.ToggleOpenDictionaryAlreadyExistModal -> {
+                state = state.copy(dictionaryAlreadyExistModelOpen = action.isOpen)
+            }
         }
     }
+
     private fun toggleLanguageList(list: List<Language>, languageCode: String): List<Language> {
         return list.map {
             if (it.langCode == languageCode) it.copy(
@@ -248,6 +255,10 @@ class ModifyDictionaryViewModel @Inject constructor(
 
                 if (response.value is FailureWithCode) {
                     when (response.value.code) {
+                        DICTIONARY_ALREADY_EXIST -> {
+                            // TODO add popup dictionary already exist
+                            state = state.copy(dictionaryAlreadyExistModelOpen = true)
+                        }
                         // TODO replace with snackbar maybe
                         UNKNOWN_ERROR -> {
                             Toast.makeText(
@@ -258,6 +269,7 @@ class ModifyDictionaryViewModel @Inject constructor(
                         }
                     }
                 }
+
             }
         }
     }
