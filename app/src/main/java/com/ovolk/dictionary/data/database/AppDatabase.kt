@@ -24,7 +24,7 @@ import com.ovolk.dictionary.data.model.WordInfoDb
 import com.ovolk.dictionary.data.model.DictionaryDb
 
 @Database(
-    version = 10,
+    version = 6,
     entities = [
         WordInfoDb::class,
         TranslateDb::class,

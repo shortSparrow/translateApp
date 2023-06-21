@@ -19,6 +19,7 @@ import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.util.DELAYED_UPDATE_WORDS_PRIORITY
 import com.ovolk.dictionary.util.DICTIONARIES
 import com.ovolk.dictionary.util.SETTINGS_PREFERENCES
+import com.ovolk.dictionary.util.TRANSLATED_WORDS_LISTS
 import com.ovolk.dictionary.util.TRANSLATED_WORDS_TABLE_NAME
 import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import java.lang.reflect.Type
@@ -59,7 +60,10 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
                 val contentValues = ContentValues()
                 contentValues.put("lang_from_code", langItemFrom.langCode)
                 contentValues.put("lang_to_code", langItemTo.langCode)
-                contentValues.put("is_active", langFromItemIndex == 0 && langToItemIndex == 0)
+                contentValues.put(
+                    "is_active",
+                    langFromItemIndex == 0 && langToItemIndex == 0
+                ) // TODO maybe make is_active lang which includes last words
                 contentValues.put(
                     "title",
                     "${langItemFrom.langCode.uppercase()} - ${langItemTo.langCode.uppercase()}"
@@ -163,10 +167,104 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
     }
     c.close()
 
+//    // Remove old table
+//    database.execSQL("DROP TABLE $TRANSLATED_WORDS_TABLE_NAME")
+//    // Change name of table to correct one
+//    database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_TABLE_NAME_temp' RENAME TO $TRANSLATED_WORDS_TABLE_NAME")
+
+
+    // TODO update lists
+
+    database.execSQL(
+        "CREATE TABLE IF NOT EXISTS 'TRANSLATED_WORDS_LISTS_temp' (" +
+                "'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "'title' TEXT NOT NULL, " +
+                "'created_at' INTEGER NOT NULL, " +
+                "'updated_at' INTEGER  NOT NULL, " +
+                "'dictionary_id' INTEGER NOT NULL, " +
+                "FOREIGN KEY('dictionary_id') REFERENCES $DICTIONARIES('id') ON DELETE CASCADE ON UPDATE NO ACTION )"
+    )
+
+    val listCursor: Cursor = database.query("SELECT * FROM $TRANSLATED_WORDS_LISTS", emptyArray())
+    if (listCursor.moveToFirst()) {
+        do {
+            val id = listCursor.getLong(0)
+            val title = listCursor.getString(1)
+            val createdAt = listCursor.getLong(2)
+            val updatedAt = listCursor.getLong(3)
+
+            val wordsWithList: Cursor =
+                database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id=${id}")
+            // if lists if empty probably move it to active dictionary
+            if (wordsWithList.count == 0) {
+                val activeDictionaryCursor: Cursor =
+                    database.query("SELECT id FROM $DICTIONARIES WHERE is_active=true LIMIT 1")
+
+                if(activeDictionaryCursor.moveToFirst()) {
+                    val listContentValues = ContentValues()
+                    val activeDictionaryId = listCursor.getLong(0)
+                    listContentValues.put("id", id)
+                    listContentValues.put("title", title)
+                    listContentValues.put("created_at", createdAt)
+                    listContentValues.put("updated_at", updatedAt)
+                    listContentValues.put("dictionary_id", activeDictionaryId)
+
+                    database.insert(
+                        "TRANSLATED_WORDS_LISTS_temp",
+                        SQLiteDatabase.CONFLICT_REPLACE,
+                        listContentValues
+                    )
+                }
+                activeDictionaryCursor.close()
+            }
+
+            if (wordsWithList.moveToFirst()) {
+                do {
+                    val langFromValue = wordsWithList.getString(5)
+                    val langToValue = wordsWithList.getString(6)
+
+                    // find dictionary with this languages
+                    val dictionaryWithLanguages: Cursor =
+                        database.query("SELECT * FROM $DICTIONARIES WHERE lang_from_code='${langFromValue}' AND lang_to_code='${langToValue}' LIMIT 1")
+
+                    if (dictionaryWithLanguages.moveToFirst()) {
+                        val listContentValues = ContentValues()
+                        val dictionaryId = dictionaryWithLanguages.getLong(0)
+
+                        listContentValues.put("id", id)
+                        listContentValues.put("title", title)
+                        listContentValues.put("created_at", createdAt)
+                        listContentValues.put("updated_at", updatedAt)
+                        listContentValues.put("dictionary_id", dictionaryId)
+
+                        database.insert(
+                            "TRANSLATED_WORDS_LISTS_temp",
+                            SQLiteDatabase.CONFLICT_REPLACE,
+                            listContentValues
+                        )
+                    }
+
+                    dictionaryWithLanguages.close()
+
+                } while (wordsWithList.moveToNext())
+            }
+            wordsWithList.close()
+
+        } while (listCursor.moveToNext())
+    }
+    listCursor.close()
+
+// translaed words
     // Remove old table
     database.execSQL("DROP TABLE $TRANSLATED_WORDS_TABLE_NAME")
     // Change name of table to correct one
     database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_TABLE_NAME_temp' RENAME TO $TRANSLATED_WORDS_TABLE_NAME")
+
+    // Remove old table
+    database.execSQL("DROP TABLE $TRANSLATED_WORDS_LISTS")
+    // Change name of table to correct one
+    database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_LISTS_temp' RENAME TO $TRANSLATED_WORDS_LISTS")
+
 
     // delete shared preferences because this no needed more
     AppSettingsMigration(context).deleteOldSharedPreferences()
