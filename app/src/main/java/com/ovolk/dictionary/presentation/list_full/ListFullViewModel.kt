@@ -38,7 +38,6 @@ class ListsFullViewModel @Inject constructor(
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-
     private fun searchDebounced(searchText: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
@@ -93,22 +92,30 @@ class ListsFullViewModel @Inject constructor(
             is ListFullAction.SearchWord -> {
                 searchDebounced(action.query)
             }
+
             ListFullAction.TakeExam -> {
                 listener?.navigateToExam(listId = state.listId, listName = state.listName)
             }
+
             is ListFullAction.PressOnWord -> {
                 listener?.navigateToEditWord(
                     wordId = action.wordId
                 )
             }
+
             ListFullAction.AddNewWord -> {
-                listener?.navigateToAddWord(listId = state.listId)
+                listener?.navigateToAddWord(
+                    listId = state.listId,
+                    dictionaryId = state.dictionaryId
+                )
             }
+
             is ListFullAction.InitialLoadData -> {
                 state =
                     state.copy(
                         listId = action.listId,
-                        loadingStatusWordList = LoadingState.PENDING
+                        loadingStatusWordList = LoadingState.PENDING,
+                        dictionaryId = action.dictionaryId,
                     )
                 viewModelScope.launch(Dispatchers.IO) {
                     val title = getListsUseCase.getListById(action.listId)?.title ?: ""
@@ -120,6 +127,7 @@ class ListsFullViewModel @Inject constructor(
                 }
                 searchDebounced("")
             }
+
             is ListFullAction.PlayAudio -> {
                 playAudio(
                     action.word,
@@ -134,6 +142,6 @@ class ListsFullViewModel @Inject constructor(
     interface Listener {
         fun navigateToExam(listId: Long, listName: String)
         fun navigateToEditWord(wordId: Long)
-        fun navigateToAddWord(listId: Long)
+        fun navigateToAddWord(listId: Long, dictionaryId: Long)
     }
 }

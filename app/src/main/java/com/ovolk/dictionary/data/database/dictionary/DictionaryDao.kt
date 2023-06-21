@@ -14,6 +14,7 @@ interface DictionaryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewDictionary(dictionary: DictionaryDb): Long
 
+    // TODO also need delete lists
     @Query("DELETE FROM DICTIONARIES WHERE id IN (:dictionariesIdList) ")
     suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Int
 

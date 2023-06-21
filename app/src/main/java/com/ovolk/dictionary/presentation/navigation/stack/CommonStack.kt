@@ -21,9 +21,9 @@ import com.ovolk.dictionary.util.DEEP_LINK_BASE
 enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, EXAM_REMINDER, EXAM_DAILY, MODIFY_DICTIONARY }
 sealed class CommonScreen(val route: String) {
     object ModifyWord :
-        CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}")
+        CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}&dictionaryId={dictionaryId}")
 
-    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}")
+    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}&dictionaryId={dictionaryId}")
     object SettingsLanguages : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES}")
     object ExamReminder : CommonScreen("${CommonRotes.EXAM_REMINDER}")
     object ExamDaily : CommonScreen("${CommonRotes.EXAM_DAILY}")
@@ -59,6 +59,10 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
                     type = NavType.LongType
                     defaultValue = -1L
                 },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             )
         ) {
             ModifyWordScreen(navController)
@@ -70,11 +74,20 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
                 navArgument("listId") {
                     type = NavType.LongType
                     defaultValue = -1L
-                }
+                },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             ),
         ) { backStackEntry ->
             val listId = backStackEntry.arguments?.getLong("listId") ?: -1L
-            ListFullScreen(navController = navController, listId = listId)
+            val dictionaryId = backStackEntry.arguments?.getLong("dictionaryId") ?: -1L
+            ListFullScreen(
+                navController = navController,
+                listId = listId,
+                dictionaryId = dictionaryId
+            )
         }
 
         composable(route = CommonScreen.SettingsLanguages.route) {

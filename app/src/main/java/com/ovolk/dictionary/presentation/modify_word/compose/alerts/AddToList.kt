@@ -136,7 +136,8 @@ fun ComposablePreviewAddToList() {
             selectedWordList = ModifyWordListItem(
                 title = "My List",
                 count = 10,
-                id = 1L
+                id = 1L,
+                dictionaryId = 1L,
             ),
             wordLists = emptyList(),
         ),
@@ -164,7 +165,8 @@ fun ComposablePreviewAddToList3() {
             selectedWordList = ModifyWordListItem(
                 title = "My List",
                 count = 10,
-                id = 1L
+                id = 1L,
+                dictionaryId = 1L,
             ),
             wordLists = emptyList(),
             isOpenAddNewListModal = true,
@@ -182,7 +184,8 @@ fun ComposablePreviewAddToList4() {
             selectedWordList = ModifyWordListItem(
                 title = "My List",
                 count = 10,
-                id = 1L
+                id = 1L,
+                dictionaryId = 1L,
             ),
             wordLists = emptyList(),
             isOpenAddNewListModal = false,

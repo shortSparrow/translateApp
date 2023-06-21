@@ -148,7 +148,8 @@ fun ComposablePreviewHeader() {
                 title = "sport",
                 isSelected = true,
                 createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
+                updatedAt = System.currentTimeMillis(),
+                dictionaryId = 1L,
             )
         ),
         onAction = {})

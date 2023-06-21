@@ -100,7 +100,8 @@ fun ComposableListItemPreview() {
         wordListInfo = ModifyWordListItem(
             title = "My List",
             count = 10,
-            id = 1L
+            id = 1L,
+            dictionaryId = 1L,
         ),
         onItemsPress = {},
         withMark = false,
@@ -115,7 +116,8 @@ fun ComposableListItemPreview2() {
         wordListInfo = ModifyWordListItem(
             title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
             count = 10,
-            id = 1L
+            id = 1L,
+            dictionaryId = 1L,
         ),
         onItemsPress = {},
         withMark = false,

@@ -5,4 +5,5 @@ data class ModifyWordListItem(
     val title: String = "",
     val count: Int = 0,
     val isSelected: Boolean = false,
+    val dictionaryId: Long,
 )

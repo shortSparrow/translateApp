@@ -17,6 +17,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -138,18 +139,6 @@ fun ModifyWordPresenter(
     }
 
 
-//    Box(
-//        Modifier
-//            .zIndex(2F)
-//            .padding(top = 50.dp)) {
-//        SelectDictionaryPicker(
-//            dropDownItem = dropDownList,
-//            error = ValidateResult(successful = true),
-//            expanded = expanded,
-//            setExpanded = ::setExpanded,
-//        )
-//    }
-
     val scrollState = rememberScrollState()
 
 
@@ -158,15 +147,7 @@ fun ModifyWordPresenter(
     ) {
         Column(
             modifier = Modifier
-//                .pointerInteropFilter {
-//                    Log.d("XXX", "MotionEvent outside X: ${it.x}; Y: ${it.y}")
-////                    if (expanded) {
-////                        setExpanded(false)
-////                    }
-//                    false
-//                }
                 .verticalScroll(state = scrollState, enabled = !expanded)
-//                .scrollable(state = scrollState, orientation = Orientation.Vertical)
                 .clickable(
                     interactionSource = interactionSourceScreen,
                     indication = null
@@ -204,7 +185,7 @@ fun ModifyWordPresenter(
                             }
                     ) {
                         SelectDictionaryPicker(
-                            selectedDictionary = state.dictionary,
+                            selectedDictionary = state.dictionary.collectAsState().value,
                             dictionaryList = state.dictionaryList,
                             error = ValidateResult(successful = true),
                             expanded = expanded,

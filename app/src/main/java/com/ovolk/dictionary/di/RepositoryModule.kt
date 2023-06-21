@@ -9,7 +9,7 @@ import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.repositories.DictionaryRepository
-import com.ovolk.dictionary.domain.use_case.lists.ListsRepository
+import com.ovolk.dictionary.domain.repositories.ListsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

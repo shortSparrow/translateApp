@@ -7,4 +7,5 @@ data class ListItem(
     val isSelected: Boolean = false,
     val createdAt: Long,
     val updatedAt: Long,
+    val dictionaryId: Long,
 )

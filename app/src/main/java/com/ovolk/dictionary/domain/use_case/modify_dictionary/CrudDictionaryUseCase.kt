@@ -8,6 +8,7 @@ import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.util.validateNewDictionary
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 const val DICTIONARY_NOT_EXIST = 1
@@ -16,7 +17,9 @@ const val UNKNOWN_ERROR = 6
 
 
 class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
-    fun getDictionaryList() = dictionaryRepository.getDictionaryList()
+    fun getDictionaryList(): Flow<List<Dictionary>> {
+        return dictionaryRepository.getDictionaryList()
+    }
 
     suspend fun getDictionary(dictionaryId: Long): Either<Dictionary, FailureWithCode> {
         val response = dictionaryRepository.getDictionary(dictionaryId = dictionaryId)

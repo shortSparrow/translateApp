@@ -107,13 +107,15 @@ fun ComposablePreviewDialogSelectList2() {
                 title = "My List",
                 count = 10,
                 id = 1L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "Sport",
                 count = 5,
                 id = 2L,
-                isSelected = true // TODO maybe remove isSelected
+                isSelected = true,// TODO maybe remove isSelected
+                dictionaryId = 1L,
             )
         ),
         selectedId = 2L,
@@ -133,37 +135,43 @@ fun ComposablePreviewDialogSelectListLarge() {
                 title = "My List",
                 count = 10,
                 id = 1L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "Sport",
                 count = 5,
                 id = 2L,
-                isSelected = true
+                isSelected = true,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "A",
                 count = 5,
                 id = 3L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "B",
                 count = 1,
                 id = 4L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "C",
                 count = 3,
                 id = 5L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "D",
                 count = 3,
                 id = 6L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
         ),
         onDismissRequest = {},

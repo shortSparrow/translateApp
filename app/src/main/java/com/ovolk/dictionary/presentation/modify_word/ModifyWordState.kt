@@ -11,6 +11,7 @@ import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
+import kotlinx.coroutines.flow.MutableStateFlow
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
 enum class WordAlreadyExistActions { REPLACE, CLOSE, GO_TO_WORD }
@@ -74,7 +75,7 @@ data class ComposeState(
     val fieldDescribeModalQuestion: String = "",
     val isOpenModalWordAlreadyExist: Boolean = false,
     val dictionaryList: List<Dictionary> = emptyList(),
-    val dictionary:Dictionary? = null,
+    val dictionary: MutableStateFlow<Dictionary?> = MutableStateFlow(null),
 )
 
 data class RecordAudioState(

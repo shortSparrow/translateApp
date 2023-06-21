@@ -134,21 +134,32 @@ class WordMapper @Inject constructor(
     fun fullListToModifyWordListItem(fullListItem: List<FullListItem>): List<ModifyWordListItem> =
         fullListItem.map { fullListItemToModifyWordListItem(it) }
 
+    fun listItemToModifyWordListItem(listItem: ListItem): ModifyWordListItem = ModifyWordListItem(
+        id = listItem.id,
+        title = listItem.title,
+        count = listItem.count,
+        isSelected = listItem.isSelected,
+        dictionaryId = listItem.dictionaryId
+    )
+
+
     fun fullListItemToModifyWordListItem(fullListItem: FullListItem): ModifyWordListItem =
         ModifyWordListItem(
-            id = fullListItem.id,
-            title = fullListItem.title,
+            id = fullListItem.listInfo.id,
+            title = fullListItem.listInfo.title,
             count = fullListItem.count,
-            isSelected = false
+            isSelected = false,
+            dictionaryId = fullListItem.dictionary.id
         )
 
     fun fullListItemToLocal(listItemDb: FullListItem): ListItem = ListItem(
-        id = listItemDb.id,
-        title = listItemDb.title,
+        id = listItemDb.listInfo.id,
+        title = listItemDb.listInfo.title,
         count = listItemDb.count,
-        createdAt = listItemDb.createdAt,
-        updatedAt = listItemDb.updatedAt,
+        createdAt = listItemDb.listInfo.createdAt,
+        updatedAt = listItemDb.listInfo.updatedAt,
         isSelected = false,
+        dictionaryId = listItemDb.dictionary.id
     )
 
     fun listItemLocalToDb(listItem: ListItem): ListItemDb = ListItemDb(
@@ -156,6 +167,7 @@ class WordMapper @Inject constructor(
         title = listItem.title,
         createdAt = listItem.createdAt,
         updatedAt = listItem.updatedAt,
+        dictionaryId = listItem.dictionaryId
     )
 
     fun updatePriorityToUpdatePriorityDb(updatePriority: UpdatePriority) = UpdatePriorityDb(

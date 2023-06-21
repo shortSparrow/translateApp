@@ -23,12 +23,7 @@ fun HomeScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<WordListViewModel>()
     val state = viewModel.state
 
-    // prefilled search field and do search when open app from intent and pass searchWord
-//    LaunchedEffect(args) {
-//        args.searchedWord?.let {
-//            viewModel.onAction(WordListAction.SearchWord(it))
-//        }
-//    }
+
     if (viewModel.listener == null) {
         viewModel.listener = listener()
     }

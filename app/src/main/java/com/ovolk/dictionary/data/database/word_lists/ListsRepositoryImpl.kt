@@ -4,7 +4,7 @@ import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.domain.model.lists.ListItem
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
-import com.ovolk.dictionary.domain.use_case.lists.ListsRepository
+import com.ovolk.dictionary.domain.repositories.ListsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -21,8 +21,8 @@ class ListsRepositoryImpl @Inject constructor(
             .map { mapper.wordListDbToWordList(it) }
     }
 
-    override suspend fun getAllLists(): Flow<List<ListItem>> {
-        return listsDao.getAllLists().map { list ->
+    override suspend fun getAllLists(dictionaryId: Long): Flow<List<ListItem>> {
+        return listsDao.getAllLists(dictionaryId).map { list ->
             mapper.fullListToLocal(list)
         }
     }
@@ -36,15 +36,18 @@ class ListsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllListsForModifyWord(): Flow<List<ModifyWordListItem>> {
-        return listsDao.getAllLists().map { list ->
+    override suspend fun getAllListsForModifyWord(dictionaryId: Long): Flow<List<ModifyWordListItem>> {
+        return listsDao.getAllLists(dictionaryId).map { list ->
             mapper.fullListToModifyWordListItem(list)
         }
     }
 
-    override suspend fun addNewList(newList: ListItem): Boolean {
-        val id = listsDao.addNewList(mapper.listItemLocalToDb(newList))
-        return id != UNDEFINED_ID
+    override suspend fun getAllListsForDictionary(dictionaryId: Long): List<ListItem> {
+        return mapper.fullListToLocal(listsDao.getAllListsForDictionary(dictionaryId))
+    }
+
+    override suspend fun addNewList(newList: ListItem): Long {
+        return listsDao.addNewList(mapper.listItemLocalToDb(newList))
     }
 
     override suspend fun renameList(title: String, id: Long): Boolean {
