@@ -45,8 +45,8 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
             langToCode = langToCode
         )
 
-        if (validation.isErrorExist()) {
-            return validation.returnValidationFailure()
+        if (validation is Either.Failure) {
+            return validation
         }
 
         val isTheSameDictionaryExist = dictionaryRepository.getDictionaryByLang(
@@ -82,6 +82,7 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
         else Either.Success(Success)
     }
 
+
     suspend fun editDictionary(
         id: Long,
         title: String,
@@ -95,8 +96,8 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
             langToCode = langToCode
         )
 
-        if (validation.isErrorExist()) {
-            return validation.returnValidationFailure()
+        if (validation is Either.Failure) {
+            return validation
         }
 
         val dictionary = Dictionary(

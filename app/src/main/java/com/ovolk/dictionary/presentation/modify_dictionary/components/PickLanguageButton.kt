@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -24,25 +25,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 
 @Composable
 fun PickLanguageButton(
-    error: Boolean,
+    validationError: ValidateResult,
     hintMessage: String? = null,
     langName: String? = null,
     onClick: () -> Unit
 ) {
+    val selectLanguagePickerWidth = 110.dp
+    val iconSize = 24
 
     val errorColor =
         colorResource(id = R.color.red)
-    val borderColor = if (error) {
-        errorColor
-    } else {
+    val borderColor = if (validationError.successful) {
         colorResource(id = R.color.blue)
+    } else {
+        errorColor
     }
 
-
-    val selectLanguagePickerWidth = 110.dp
     Column(
         modifier = Modifier
             .width(selectLanguagePickerWidth),
@@ -63,52 +65,71 @@ fun PickLanguageButton(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         painter = painterResource(id = R.drawable.language),
-                        contentDescription = stringResource(id = R.string.cd_lang_icon)
+                        contentDescription = stringResource(id = R.string.cd_lang_icon),
+                        modifier = Modifier.size(iconSize.dp)
                     )
+                    if (langName == null && hintMessage != null) {
+                        Text(
+                            text = hintMessage,
+                            Modifier.padding(start = 10.dp),
+                            color = colorResource(id = R.color.grey),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = false,
+                            fontSize = 12.sp
+                        )
+                    }
                     Text(
                         text = langName ?: "",
-                        Modifier.padding(start = 10.dp),
+                        Modifier
+                            .padding(start = 5.dp, end = (5 + iconSize).dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
                     )
                 }
-//                Icon(
-//                    painter = painterResource(id = R.drawable.prev_arrow),
-//                    contentDescription = stringResource(id = R.string.cd_arrow_lang),
-//                    modifier = Modifier.rotate(rotateArrow)
-//                )
             }
         }
 
-        Text(
-            text = hintMessage ?: "",
-            color = colorResource(id = R.color.grey),
-            fontSize = 12.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Visible,
-            softWrap = false,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
+        if (!validationError.successful && validationError.errorMessage != null) {
+            Text(
+                text = validationError.errorMessage as String,
+                maxLines = 2,
+                fontSize = 12.sp,
+                color = colorResource(id = R.color.red),
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+
     }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun PickLanguageButtonPreview() {
-    PickLanguageButton(error = false, hintMessage = null, langName = "UK", onClick = {})
+    PickLanguageButton(
+        validationError = ValidateResult(),
+        hintMessage = null,
+        langName = "UK",
+        onClick = {})
 }
 
 @Composable
 @Preview(showBackground = true)
 fun PickLanguageButtonPreview2() {
-    PickLanguageButton(error = true, hintMessage = null, langName = "UK", onClick = {})
+    PickLanguageButton(
+        validationError = ValidateResult(
+            successful = false,
+            errorMessage = "this field is required"
+        ), hintMessage = null, langName = "UK", onClick = {})
 }
 
 @Composable
 @Preview(showBackground = true)
 fun PickLanguageButtonPreview3() {
     PickLanguageButton(
-        error = false,
+        validationError = ValidateResult(),
         hintMessage = "select language",
-        langName = "UK",
+        langName = null,
         onClick = {})
 }

@@ -196,7 +196,7 @@ fun SelectDictionaryPicker(
             IgnoreHeightWrapper(calculatedHeight = 0) {
                 Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = validation.errorMessage,
+                        text = validation.errorMessage.toString(),
                         color = colorResource(id = R.color.red),
                         maxLines = 2,
                         fontSize = 12.sp,

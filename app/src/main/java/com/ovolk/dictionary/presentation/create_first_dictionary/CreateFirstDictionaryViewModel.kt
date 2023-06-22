@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
@@ -67,8 +68,7 @@ class CreateFirstDictionaryViewModel @Inject constructor(
             is FirstDictionaryAction.OnInputTitle -> {
                 state = state.copy(
                     dictionaryName = action.value,
-                    dictionaryNameError = false,
-                    langErrorMessage = null
+                    dictionaryValidation = ValidateResult(),
                 )
             }
 
@@ -162,9 +162,8 @@ class CreateFirstDictionaryViewModel @Inject constructor(
                 languageList = languageFromList,
                 preferredLanguageList = _localState.preferredLanguageListFrom
             ),
-            langFromError = false,
-            dictionaryNameError = false,
-            langErrorMessage = null,
+            langFromValidation = ValidateResult(),
+            dictionaryValidation = ValidateResult(),
         )
     }
 
@@ -186,20 +185,14 @@ class CreateFirstDictionaryViewModel @Inject constructor(
                 languageList = languageToList,
                 preferredLanguageList = _localState.preferredLanguageListTo
             ),
-            langToError = false,
-            dictionaryNameError = false,
-            langErrorMessage = null,
+            langToValidation = ValidateResult(),
+            dictionaryValidation = ValidateResult(),
         )
     }
 
     private fun accessOnSaveDictionary(response: Either<Success, Failure>) {
         when (response) {
             is Either.Success -> {
-                state = state.copy(
-                    langFromError = false,
-                    langToError = false,
-                    langErrorMessage = null,
-                )
                 appSettingsRepository.setAppSettings().apply {
                     isWelcomeScreenPassed(true)
                     update()
@@ -210,10 +203,9 @@ class CreateFirstDictionaryViewModel @Inject constructor(
             is Either.Failure -> {
                 if (response.value is ValidationFailure) {
                     state = state.copy(
-                        langErrorMessage = response.value.langErrorMessage,
-                        langToError = response.value.langToError,
-                        langFromError = response.value.langFromError,
-                        dictionaryNameError = response.value.dictionaryNameError,
+                        langFromValidation = response.value.langFrom,
+                        langToValidation = response.value.langTo,
+                        dictionaryValidation = response.value.dictionaryName
                     )
                 }
 

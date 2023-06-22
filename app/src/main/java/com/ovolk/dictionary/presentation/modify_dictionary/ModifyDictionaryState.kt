@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_dictionary
 
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 
@@ -10,21 +11,18 @@ data class ModifyDictionaryState(
     val loadingError: String? = null,
 
     val dictionaryName: String = "",
-    val dictionaryNameError: Boolean = false,
+    val dictionaryNameValidation: ValidateResult = ValidateResult(),
 
     val languageFromList: List<Language> = emptyList(),
     val languageFromCode: String? = null,
-    val langFromError: Boolean = false,
+    val langFromValidation: ValidateResult = ValidateResult(),
 
     val languageToList: List<Language> = emptyList(),
     val languageToCode: String? = null,
-    val langToError: Boolean = false,
+    val langToValidation: ValidateResult = ValidateResult(),
 
-    val langErrorMessage: String? = null,
     val languageBottomSheet: LanguageBottomSheet = LanguageBottomSheet(),
-
     val dictionaryAlreadyExistModelOpen: Boolean = false
-
 )
 
 data class LanguageBottomSheet(

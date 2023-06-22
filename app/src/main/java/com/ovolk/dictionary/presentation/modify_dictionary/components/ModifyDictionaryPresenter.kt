@@ -10,7 +10,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -19,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextField
@@ -93,7 +93,8 @@ fun ModifyDictionaryPresenter(
                             onValueChange = { onAction(ModifyDictionaryAction.OnInputTitle(it)) },
                             label = { Text(text = "Dictionary name") },
                             modifier = Modifier.fillMaxWidth(),
-                            isError = state.dictionaryNameError
+                            isError = !state.dictionaryNameValidation.successful,
+                            errorMessage = state.dictionaryNameValidation.errorMessage,
                         )
 
 
@@ -101,23 +102,13 @@ fun ModifyDictionaryPresenter(
                             LanguagesPicker(
                                 languageToName = state.languageToCode,
                                 languageFromName = state.languageFromCode,
-                                langFromError = state.langFromError,
-                                langToError = state.langToError,
+                                langFromValidation = state.langFromValidation,
+                                langToValidation = state.langToValidation,
                                 openLanguageBottomSheet = { languageType ->
                                     onAction(
                                         ModifyDictionaryAction.OpenLanguageBottomSheet(languageType)
                                     )
                                 }
-                            )
-                        }
-
-                        if (state.langErrorMessage != null) {
-                            Text(
-                                text = state.langErrorMessage,
-                                color = colorResource(id = R.color.red),
-                                modifier = Modifier
-                                    .align(Alignment.CenterHorizontally)
-                                    .padding(top = 20.dp)
                             )
                         }
                     }
@@ -151,8 +142,18 @@ fun ModifyDictionaryPresenterPreview2() {
     ModifyDictionaryPresenter(
         state = ModifyDictionaryState(
             isLoading = false,
-            langToError = true,
-            langErrorMessage = "lang to must be mot null"
+            dictionaryNameValidation = ValidateResult(
+                successful = false,
+                errorMessage = "this field is required"
+            ),
+            langFromValidation = ValidateResult(
+                successful = false,
+                errorMessage = "this field is required"
+            ),
+            langToValidation = ValidateResult(
+                successful = false,
+                errorMessage = "this field is required"
+            ),
         ),
         onAction = {},
         goBack = {},

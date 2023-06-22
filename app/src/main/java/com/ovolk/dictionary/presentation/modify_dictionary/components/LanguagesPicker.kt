@@ -17,17 +17,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryAction
 
 val selectLanguagePickerWidth = 300.dp
 
 @Composable
 fun LanguagesPicker(
     languageToName: String?,
-    langToError: Boolean,
+    langToValidation: ValidateResult,
     languageFromName: String?,
-    langFromError: Boolean,
+    langFromValidation: ValidateResult,
     openLanguageBottomSheet: (langType: LanguagesType) -> Unit
 ) {
     Column(
@@ -62,8 +62,8 @@ fun LanguagesPicker(
         ) {
             PickLanguageButton(
                 langName = languageFromName,
-                error = langFromError,
-                hintMessage = if (languageFromName == null) "Select language" else null,
+                validationError = langFromValidation,
+                hintMessage = if (languageFromName == null) "select language" else null,
                 onClick = { openLanguageBottomSheet(LanguagesType.LANG_FROM) }
             )
 
@@ -78,8 +78,8 @@ fun LanguagesPicker(
 
             PickLanguageButton(
                 langName = languageToName,
-                error = langToError,
-                hintMessage = if (languageToName == null) "Select language" else null,
+                validationError = langToValidation,
+                hintMessage = if (languageToName == null) "select language" else null,
                 onClick = { openLanguageBottomSheet(LanguagesType.LANG_TO) }
             )
         }
@@ -92,8 +92,8 @@ fun LanguagesPickerPreview() {
     LanguagesPicker(
         languageFromName = "EN",
         languageToName = "UK",
-        langToError = false,
-        langFromError = false,
+        langToValidation = ValidateResult(),
+        langFromValidation = ValidateResult(),
         openLanguageBottomSheet = {}
     )
 }
@@ -104,8 +104,8 @@ fun LanguagesPickerPreview2() {
     LanguagesPicker(
         languageFromName = "FR",
         languageToName = "EN",
-        langFromError = false,
-        langToError = false,
+        langFromValidation = ValidateResult(),
+        langToValidation = ValidateResult(),
         openLanguageBottomSheet = {}
     )
 }
@@ -116,8 +116,8 @@ fun LanguagesPickerPreview3() {
     LanguagesPicker(
         languageFromName = null,
         languageToName = "EN",
-        langFromError = true,
-        langToError = false,
+        langFromValidation = ValidateResult(successful = false, errorMessage = "this filed is required"),
+        langToValidation = ValidateResult(),
         openLanguageBottomSheet = {}
     )
 }

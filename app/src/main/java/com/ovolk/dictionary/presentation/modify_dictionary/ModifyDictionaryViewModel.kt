@@ -8,11 +8,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
-import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
@@ -111,8 +111,7 @@ class ModifyDictionaryViewModel @Inject constructor(
             is ModifyDictionaryAction.OnInputTitle -> {
                 state = state.copy(
                     dictionaryName = action.value,
-                    dictionaryNameError = false,
-                    langErrorMessage = null
+                    dictionaryNameValidation = ValidateResult(),
                 )
             }
 
@@ -212,9 +211,8 @@ class ModifyDictionaryViewModel @Inject constructor(
             languageFromList = languageFromList,
             dictionaryName = dictionaryName,
             languageBottomSheet = state.languageBottomSheet.copy(languageList = languageFromList),
-            langFromError = false,
-            dictionaryNameError = false,
-            langErrorMessage = null,
+            langFromValidation = ValidateResult(),
+            dictionaryNameValidation = ValidateResult(),
         )
     }
 
@@ -226,30 +224,24 @@ class ModifyDictionaryViewModel @Inject constructor(
             languageToList = languageToList,
             dictionaryName = dictionaryName,
             languageBottomSheet = state.languageBottomSheet.copy(languageList = languageToList),
-            langToError = false,
-            dictionaryNameError = false,
-            langErrorMessage = null,
+            langToValidation = ValidateResult(),
+            dictionaryNameValidation = ValidateResult(),
+
         )
     }
 
     private fun accessOnSaveDictionary(response: Either<Success, Failure>) {
         when (response) {
             is Either.Success -> {
-                state = state.copy(
-                    langFromError = false,
-                    langToError = false,
-                    langErrorMessage = null,
-                )
                 listener?.goBack()
             }
 
             is Either.Failure -> {
                 if (response.value is ValidationFailure) {
                     state = state.copy(
-                        langErrorMessage = response.value.langErrorMessage,
-                        langToError = response.value.langToError,
-                        langFromError = response.value.langFromError,
-                        dictionaryNameError = response.value.dictionaryNameError,
+                       dictionaryNameValidation = response.value.dictionaryName,
+                        langToValidation = response.value.langTo,
+                        langFromValidation = response.value.langFrom
                     )
                 }
 

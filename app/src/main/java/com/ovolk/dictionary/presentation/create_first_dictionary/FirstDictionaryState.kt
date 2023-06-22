@@ -1,22 +1,22 @@
 package com.ovolk.dictionary.presentation.create_first_dictionary
 
+import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 
 
 data class FirstDictionaryState(
     val dictionaryName: String = "",
-    val dictionaryNameError: Boolean = false,
+    val dictionaryValidation: ValidateResult = ValidateResult(),
 
     val languageFromList: List<Language> = emptyList(),
     val languageFromCode: String? = null,
-    val langFromError: Boolean = false,
+    val langFromValidation: ValidateResult = ValidateResult(),
 
     val languageToList: List<Language> = emptyList(),
     val languageToCode: String? = null,
-    val langToError: Boolean = false,
+    val langToValidation: ValidateResult = ValidateResult(),
 
-    val langErrorMessage: String? = null,
     val languageBottomSheet: LanguageBottomSheet = LanguageBottomSheet(),
 )
 
@@ -32,7 +32,8 @@ sealed interface FirstDictionaryAction {
     data class OnInputTitle(val value: String) : FirstDictionaryAction
     data class OnSelectLanguage(val languageCode: String) :
         FirstDictionaryAction
-    data class OnSearchLanguage(val query:String): FirstDictionaryAction
+
+    data class OnSearchLanguage(val query: String) : FirstDictionaryAction
     object SaveDictionary : FirstDictionaryAction
     data class OpenLanguageBottomSheet(val type: LanguagesType) : FirstDictionaryAction
     object CloseLanguageBottomSheet : FirstDictionaryAction
