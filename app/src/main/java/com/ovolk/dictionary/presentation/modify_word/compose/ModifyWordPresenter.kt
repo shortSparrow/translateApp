@@ -38,11 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.dictionary.Dictionary
-import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.ignore_height_wrapper.IgnoreHeightWrapper
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
 import com.ovolk.dictionary.presentation.modify_word.Hints
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
@@ -172,39 +171,18 @@ fun ModifyWordPresenter(
                     onFirstRightIconClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) },
                 )
             }
-            Layout(
-                modifier = Modifier.zIndex(2F),
-                content = {
-                    Box(
-                        modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(constraints)
-                                layout(placeable.width, placeable.height) {
-                                    placeable.placeRelative(0, 0)
-                                }
-                            }
-                    ) {
-                        SelectDictionaryPicker(
-                            selectedDictionary = state.dictionary.collectAsState().value,
-                            dictionaryList = state.dictionaryList,
-                            error = ValidateResult(successful = true),
-                            expanded = expanded,
-                            setExpanded = ::setExpanded,
-                            onSelectDictionary = { id ->
-                                onAction(
-                                    ModifyWordAction.OnSelectDictionary(id)
-                                )
-                            },
-                            onPressAddNewDictionary = { onAction(ModifyWordAction.PressAddNewDictionary) },
-                        )
-                    }
-                }
-            ) { measurables, constraints ->
-                val placeable = measurables.firstOrNull()?.measure(constraints)
-                layout(constraints.maxWidth, 50) {
-                    placeable?.placeRelative(0, 0)
-                }
+            IgnoreHeightWrapper(modifier = Modifier.zIndex(2F), calculatedHeight = 100) {
+                SelectDictionaryPicker(
+                    selectedDictionary = state.dictionary.collectAsState().value,
+                    dictionaryList = state.dictionaryList,
+                    validation = state.dictionaryError,
+                    expanded = expanded,
+                    setExpanded = ::setExpanded,
+                    onSelectDictionary = { id -> onAction(ModifyWordAction.OnSelectDictionary(id)) },
+                    onPressAddNewDictionary = { onAction(ModifyWordAction.PressAddNewDictionary) },
+                )
             }
+
             Column(
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.gutter))

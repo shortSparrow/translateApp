@@ -76,6 +76,7 @@ data class ComposeState(
     val isOpenModalWordAlreadyExist: Boolean = false,
     val dictionaryList: List<Dictionary> = emptyList(),
     val dictionary: MutableStateFlow<Dictionary?> = MutableStateFlow(null),
+    val dictionaryError: ValidateResult = ValidateResult(),
 )
 
 data class RecordAudioState(

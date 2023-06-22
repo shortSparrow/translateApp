@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.presentation.modify_word
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,10 +13,13 @@ import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.response.FailureMessage
+import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionary
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
 import com.ovolk.dictionary.domain.use_case.modify_word.AddChipUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.SUCCESS
 import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.WORD_ALREADY_EXIST
@@ -24,6 +28,7 @@ import com.ovolk.dictionary.domain.use_case.modify_word.GetWordItemUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.list_full.LoadingState
 import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
+import com.ovolk.dictionary.presentation.modify_word.helpers.validateDictionary
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateTranslates
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateWordValue
 import com.ovolk.dictionary.presentation.modify_word.helpers.validationPriority
@@ -44,7 +49,7 @@ class ModifyWordViewModel @Inject constructor(
     private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
     private val addChipUseCase: AddChipUseCase,
-    application: Application,
+    private val application: Application,
     private val savedStateHandle: SavedStateHandle,
     private val crudDictionaryUseCase: CrudDictionaryUseCase,
     private val getActiveDictionary: GetActiveDictionary,
@@ -63,7 +68,6 @@ class ModifyWordViewModel @Inject constructor(
     private var initialState by mutableStateOf(InitialState(recordAudio = recordAudio))
 
     private fun getTimestamp(): Long = System.currentTimeMillis()
-
 
     init {
         launchRightMode()
@@ -112,8 +116,8 @@ class ModifyWordViewModel @Inject constructor(
             val dictionaryId = checkNotNull(savedStateHandle.get<Long>("dictionaryId"))
             launchAddMode(
                 wordValue = wordValue,
-                listId = listId, // when open fragment from word list fragment
-                dictionaryId = dictionaryId,
+                listId = listId, // when open fragment from word list screen
+                dictionaryId = dictionaryId, // when open from list screen
             )
         }
     }
@@ -152,22 +156,9 @@ class ModifyWordViewModel @Inject constructor(
                 val selectedWordList =
                     if (action.dictionaryId == composeState.selectedWordList?.dictionaryId) composeState.selectedWordList else null
 
-                composeState =
-                    composeState.copy(
-//                        dictionary = composeState.dictionaryList.find { it.id == action.dictionaryId },
-                        selectedWordList = selectedWordList,
-                    )
+                composeState = composeState.copy(selectedWordList = selectedWordList, dictionaryError = ValidateResult())
                 composeState.dictionary.value =
                     composeState.dictionaryList.find { it.id == action.dictionaryId }
-
-//                // TODO do as the same in ListViewModel (observe currentDictionary and observe flow)
-//                viewModelScope.launch(Dispatchers.IO) {
-//                    val wordLists =
-//                        getListsUseCase.getAllListsForDictionaryForModifyWord(action.dictionaryId)
-//                    withContext(Dispatchers.Main) {
-//                        composeState = composeState.copy(wordLists = wordLists)
-//                    }
-//                }
             }
 
             is ModifyWordAction.PressAddNewDictionary -> {
@@ -183,7 +174,25 @@ class ModifyWordViewModel @Inject constructor(
 
                     when (validationResult) {
                         is Either.Failure -> {
-                            // TODO add toast
+                            if (validationResult.value is FailureMessage) {
+                                composeState = composeState.copy(
+                                    isOpenAddNewListModal = true,
+                                    modalError = SimpleError(
+                                        isError = true,
+                                        text = validationResult.value.message
+                                    )
+                                )
+                            }
+                            if (validationResult.value is FailureWithCode) {
+                                if (validationResult.value.code == UNKNOWN_ERROR) {
+                                    // TODO replace with nice toast
+                                    Toast.makeText(
+                                        application,
+                                        validationResult.value.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
                         }
 
                         is Either.Success -> {
@@ -193,18 +202,6 @@ class ModifyWordViewModel @Inject constructor(
                             )
                         }
                     }
-
-//                    withContext(Dispatchers.IO) {
-//                        val id = composeState.dictionary?.id
-//                        if (id != null) {
-//                            val wordList =
-//                                getListsUseCase.getAllListsForDictionaryForModifyWord(id)
-//                            withContext(Dispatchers.Main) {
-//                                composeState = composeState.copy(wordLists = wordList)
-//                            }
-//                        }
-//
-//                    }
                 }
             }
 
@@ -372,7 +369,6 @@ class ModifyWordViewModel @Inject constructor(
 
     private fun handlePressGoBack(withValidateUnsavedChanges: Boolean) {
         if (withValidateUnsavedChanges) {
-
             // when user got to modifyWord screen from list screen we automatically apply wordListInfo.
             // In this case we should ignore it and go back without popup
             fun isWordListInfoTheSame(): Boolean {
@@ -415,19 +411,21 @@ class ModifyWordViewModel @Inject constructor(
         val wordValidation = validateWordValue(composeState.word)
         val priorityValidation = validationPriority(composeState.priorityValue)
         val translatesValidation = validateTranslates(translateState.translates)
+        val dictionaryValidation = validateDictionary(composeState.dictionary.value)
 
         val hasError =
             listOf(
                 wordValidation,
                 translatesValidation,
                 priorityValidation,
-//                selectLanguageToValidation,
+                dictionaryValidation,
             ).any { !it.successful }
 
         if (hasError) {
             composeState = composeState.copy(
                 englishWordError = wordValidation,
-                priorityError = priorityValidation
+                priorityError = priorityValidation,
+                dictionaryError = dictionaryValidation
             )
             translateState = translateState.copy(error = translatesValidation)
 
@@ -484,15 +482,6 @@ class ModifyWordViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setDefaultDictionary() {
-        if (composeState.dictionaryList.isEmpty()) {
-            delay(100)
-            setDefaultDictionary()
-        } else {
-//            composeState = composeState.copy(dictionary = composeState.dictionaryList[0])
-            composeState.dictionary.value = composeState.dictionaryList[0]
-        }
-    }
 
     // wordValue which selected and passed into app as intent
     private fun launchAddMode(wordValue: String, listId: Long, dictionaryId: Long) {
@@ -501,28 +490,18 @@ class ModifyWordViewModel @Inject constructor(
 
         viewModelScope.launch {
             val activeDictionary =
-                if (dictionaryId == -1L) getActiveDictionary.getDictionaryActive() else crudDictionaryUseCase.getDictionary(
-                    dictionaryId = dictionaryId
-                )
-            when (activeDictionary) {
-                is Either.Failure -> {
-//                    setDefaultDictionary()
+                if (dictionaryId == -1L) {
+                    getActiveDictionary.getDictionaryActive()
+                } else {
+                    crudDictionaryUseCase.getDictionary(dictionaryId = dictionaryId)
                 }
 
+            when (activeDictionary) {
+                is Either.Failure -> {}
                 is Either.Success -> {
                     withContext(Dispatchers.Main) {
-//                        composeState = composeState.copy(dictionary = activeDictionary.value)
                         composeState.dictionary.value = activeDictionary.value
                     }
-
-//                    withContext(Dispatchers.IO) {
-//                        val wordList =
-//                            getListsUseCase.getAllListsForDictionaryForModifyWord(activeDictionary.value.id)
-//                        withContext(Dispatchers.Main) {
-//                            composeState = composeState.copy(wordLists = wordList)
-//                        }
-//                    }
-
                 }
             }
         }
@@ -565,8 +544,6 @@ class ModifyWordViewModel @Inject constructor(
             val word = getWordItemUseCase(id)
             val selectedWordList =
                 word.wordListId?.let { getListsUseCase.getListById(word.wordListId) }
-//            val wordList =
-//                getListsUseCase.getAllListsForDictionaryForModifyWord(word.dictionary.id)
 
             withContext(Dispatchers.Main) {
                 word.sound?.let { sound -> recordAudio.prepareToOpen(sound.fileName) }
@@ -579,7 +556,6 @@ class ModifyWordViewModel @Inject constructor(
                     createdAt = word.createdAt,
                     priorityValue = word.priority.toString(),
                     selectedWordList = selectedWordList,
-//                    wordLists = wordList,
                     modifyMode = ModifyWordModes.MODE_EDIT,
                 )
                 composeState.dictionary.value = word.dictionary
@@ -591,7 +567,6 @@ class ModifyWordViewModel @Inject constructor(
             }
         }
     }
-
 
     // state for track changes and show alert on goBack press if has unsaved changes
     private fun setInitialState() {

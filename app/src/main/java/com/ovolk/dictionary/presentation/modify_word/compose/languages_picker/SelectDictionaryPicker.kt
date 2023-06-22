@@ -7,12 +7,13 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -38,14 +39,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
+import com.ovolk.dictionary.presentation.core.ignore_height_wrapper.IgnoreHeightWrapper
 
 const val HEADER_ANIMATION_TIME = 150
 const val HEIGHT_ANIMATION_TIME = 250
@@ -54,7 +56,7 @@ const val HEIGHT_ANIMATION_TIME = 250
 fun SelectDictionaryPicker(
     selectedDictionary: Dictionary?,
     dictionaryList: List<Dictionary>,
-    error: ValidateResult,
+    validation: ValidateResult,
     expanded: Boolean = false,
     setExpanded: (value: Boolean) -> Unit,
     onSelectDictionary: (dictionaryId: Long) -> Unit,
@@ -63,7 +65,7 @@ fun SelectDictionaryPicker(
     val transition = updateTransition(expanded, label = "selectIsOpen")
     val errorColor =
         colorResource(id = R.color.red)
-    val borderColor = if (error.successful) {
+    val borderColor = if (validation.successful) {
         colorResource(id = R.color.blue)
     } else {
         errorColor
@@ -190,6 +192,19 @@ fun SelectDictionaryPicker(
                 )
             }
         }
+        if (!validation.successful && validation.errorMessage != null) {
+            IgnoreHeightWrapper(calculatedHeight = 0) {
+                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = validation.errorMessage,
+                        color = colorResource(id = R.color.red),
+                        maxLines = 2,
+                        fontSize = 12.sp,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
 
         Surface(
             shape = RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp),
@@ -251,7 +266,7 @@ fun SelectDictionaryPicker(
 fun SelectLanguagePreview() {
     SelectDictionaryPicker(
         selectedDictionary = Dictionary(
-            // TODO remove isSelected from this Dictionary
+            // TODO remove isSelected from this Dictionary. Create just dictionary and SelectableDictionary for settings
             id = 0L,
             title = "FR-PL",
             isActive = false,
@@ -277,7 +292,7 @@ fun SelectLanguagePreview() {
                 langToCode = "UA",
             )
         ),
-        error = ValidateResult(successful = true),
+        validation = ValidateResult(successful = true),
         setExpanded = {},
         onSelectDictionary = {},
         onPressAddNewDictionary = {},
@@ -314,7 +329,7 @@ fun SelectLanguagePreview2() {
                 langToCode = "UA",
             )
         ),
-        error = ValidateResult(errorMessage = "this field is required"),
+        validation = ValidateResult(errorMessage = "this field is required"),
         setExpanded = {},
         expanded = true,
         onSelectDictionary = {},
@@ -328,7 +343,7 @@ fun SelectLanguagePreview3() {
     SelectDictionaryPicker(
         selectedDictionary = null,
         dictionaryList = emptyList(),
-        error = ValidateResult(errorMessage = "this field is required"),
+        validation = ValidateResult(errorMessage = "this field is required", successful = false),
         setExpanded = {},
         onSelectDictionary = {},
         onPressAddNewDictionary = {},
