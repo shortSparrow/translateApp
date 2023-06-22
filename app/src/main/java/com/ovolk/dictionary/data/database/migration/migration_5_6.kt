@@ -27,7 +27,12 @@ import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import java.lang.reflect.Type
 
 data class Lang(
-    val langCode: String
+    val langCode: String,
+)
+
+data class DictionaryLang(
+    val langFrom: String,
+    val langTo: String,
 )
 
 private fun createDictionaryTable(database: SupportSQLiteDatabase, context: Context) {
@@ -54,32 +59,58 @@ private fun createDictionaryTable(database: SupportSQLiteDatabase, context: Cont
                     "'title' TEXT NOT NULL )"
         )
 
-        // fill dictionaries table
-        listLangFrom.forEachIndexed { langFromItemIndex, langItemFrom ->
-            listLangTo.forEachIndexed { langToItemIndex, langItemTo ->
-                // TODO filter languages without words
+        // get data for decides which dictionary must be active
+        val dictionaryLang = mutableListOf<DictionaryLang>()
+        val latestCreatedWordWithList =
+            database.query("SELECT * from $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id IS NOT NULL ORDER BY created_at DESC LIMIT 1")
+        latestCreatedWordWithList.moveToFirst()
+        val isLatestCreatedWordWithListExist = latestCreatedWordWithList.count != 0
+
+
+
+        // filter unused languages and fill dictionaryLang list
+        listLangFrom.forEach{  langItemFrom ->
+            listLangTo.forEach {  langItemTo ->
                 val wordWithLanguagesCursor =
                     database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE lang_from='${langItemFrom.langCode}' AND lang_to='${langItemTo.langCode}' LIMIT 1")
-                if (wordWithLanguagesCursor.count == 0) return@forEachIndexed
-
-                val contentValues = ContentValues()
-                contentValues.put("lang_from_code", langItemFrom.langCode)
-                contentValues.put("lang_to_code", langItemTo.langCode)
-                contentValues.put(
-                    "is_active",
-                    langFromItemIndex == 0 && langToItemIndex == 0 // FIXME may be always false because we return if  wordWithLanguagesCursor.count is 0
-                ) // TODO maybe make is_active lang which includes last words
-                contentValues.put(
-                    "title",
-                    "${langItemFrom.langCode.uppercase()} - ${langItemTo.langCode.uppercase()}"
-                )
-
-                database.insert(
-                    DICTIONARIES,
-                    SQLiteDatabase.CONFLICT_REPLACE,
-                    contentValues
+                if (wordWithLanguagesCursor.count == 0) return@forEach
+                dictionaryLang.add(
+                    DictionaryLang(
+                        langTo = langItemTo.langCode,
+                        langFrom = langItemFrom.langCode
+                    )
                 )
             }
+        }
+
+        // fill DICTIONARIES table
+        dictionaryLang.forEachIndexed { index, dictionaryLanguages ->
+           val isActiveDictionary = if(isLatestCreatedWordWithListExist) {
+               val langFromValue = latestCreatedWordWithList.getString(5)
+               val langToValue = latestCreatedWordWithList.getString(6)
+               langFromValue == dictionaryLanguages.langFrom && langToValue == dictionaryLanguages.langTo
+           } else {
+               index == 0
+           }
+
+            val contentValues = ContentValues()
+            contentValues.put("lang_from_code", dictionaryLanguages.langFrom)
+            contentValues.put("lang_to_code", dictionaryLanguages.langTo)
+            contentValues.put(
+                "is_active",
+                isActiveDictionary
+            )
+
+            contentValues.put(
+                "title",
+                "${dictionaryLanguages.langFrom.uppercase()} - ${dictionaryLanguages.langTo.uppercase()}"
+            )
+
+            database.insert(
+                DICTIONARIES,
+                SQLiteDatabase.CONFLICT_REPLACE,
+                contentValues
+            )
         }
     }
 }
