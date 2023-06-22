@@ -125,7 +125,9 @@ fun ListsPresenter(
 
 
 
+            // TODO what happens if dictionary list is not empty but active dictionary don't exist
             if (state.list.isEmpty()
+//                && state.dictionaryList.isEmpty()
                 && state.isLoadingList == LoadingState.SUCCESS
                 && currentDictionary.value == null
             ) {

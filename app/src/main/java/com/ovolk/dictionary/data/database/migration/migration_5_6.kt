@@ -1,12 +1,14 @@
 package com.ovolk.dictionary.data.database.migration
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.database.getLongOrNull
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.airbnb.lottie.animation.content.Content
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ovolk.dictionary.data.database.app_settings.AppSettingsMigration
@@ -28,14 +30,12 @@ data class Lang(
     val langCode: String
 )
 
-fun migrateFrom5To6(database: SupportSQLiteDatabase) {
-    val context = DictionaryApp.applicationContext()
+private fun createDictionaryTable(database: SupportSQLiteDatabase, context: Context) {
     val userSettingsPreferences: SharedPreferences =
         context.getSharedPreferences(
             USER_STATE_PREFERENCES,
             AppCompatActivity.MODE_PRIVATE
         )
-
     val gson = Gson()
     val langFrom = userSettingsPreferences.getString("LANG_FROM", "")
     val langTo = userSettingsPreferences.getString("LANG_TO", "")
@@ -57,12 +57,17 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
         // fill dictionaries table
         listLangFrom.forEachIndexed { langFromItemIndex, langItemFrom ->
             listLangTo.forEachIndexed { langToItemIndex, langItemTo ->
+                // TODO filter languages without words
+                val wordWithLanguagesCursor =
+                    database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE lang_from='${langItemFrom.langCode}' AND lang_to='${langItemTo.langCode}' LIMIT 1")
+                if (wordWithLanguagesCursor.count == 0) return@forEachIndexed
+
                 val contentValues = ContentValues()
                 contentValues.put("lang_from_code", langItemFrom.langCode)
                 contentValues.put("lang_to_code", langItemTo.langCode)
                 contentValues.put(
                     "is_active",
-                    langFromItemIndex == 0 && langToItemIndex == 0
+                    langFromItemIndex == 0 && langToItemIndex == 0 // FIXME may be always false because we return if  wordWithLanguagesCursor.count is 0
                 ) // TODO maybe make is_active lang which includes last words
                 contentValues.put(
                     "title",
@@ -77,7 +82,10 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
             }
         }
     }
+}
 
+private fun createAndFillNewTranslatedWordTable(database: SupportSQLiteDatabase) {
+    // create TRANSLATED_WORDS_TABLE_NAME_temp table
     database.execSQL(
         "CREATE TABLE IF NOT EXISTS 'TRANSLATED_WORDS_TABLE_NAME_temp' (" +
                 "'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -95,20 +103,21 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
 
 
     // fill TRANSLATED_WORDS_TABLE_NAME_temp table
-    val c: Cursor = database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME", emptyArray())
-    if (c.moveToFirst()) {
+    val translatedWordCursor: Cursor =
+        database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME", emptyArray())
+    if (translatedWordCursor.moveToFirst()) {
         do {
-            val id = c.getLong(0)
-            val priority = c.getInt(1)
-            val value = c.getString(2)
-            val description = c.getString(3)
-            val sound = c.getString(4)
-            val langFromValue = c.getString(5)
-            val langToValue = c.getString(6)
-            val transcription = c.getString(7)
-            val createdAt = c.getLong(8)
-            val updatedAt = c.getLong(9)
-            val wordListId = c.getLongOrNull(10)
+            val id = translatedWordCursor.getLong(0)
+            val priority = translatedWordCursor.getInt(1)
+            val value = translatedWordCursor.getString(2)
+            val description = translatedWordCursor.getString(3)
+            val sound = translatedWordCursor.getString(4)
+            val langFromValue = translatedWordCursor.getString(5)
+            val langToValue = translatedWordCursor.getString(6)
+            val transcription = translatedWordCursor.getString(7)
+            val createdAt = translatedWordCursor.getLong(8)
+            val updatedAt = translatedWordCursor.getLong(9)
+            val wordListId = translatedWordCursor.getLongOrNull(10)
 
             var dictionaryId: Long? = null
 
@@ -163,18 +172,12 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
                 SQLiteDatabase.CONFLICT_REPLACE,
                 contentValues
             )
-        } while (c.moveToNext())
+        } while (translatedWordCursor.moveToNext())
     }
-    c.close()
+    translatedWordCursor.close()
+}
 
-//    // Remove old table
-//    database.execSQL("DROP TABLE $TRANSLATED_WORDS_TABLE_NAME")
-//    // Change name of table to correct one
-//    database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_TABLE_NAME_temp' RENAME TO $TRANSLATED_WORDS_TABLE_NAME")
-
-
-    // TODO update lists
-
+private fun createAndFillNewListTable(database: SupportSQLiteDatabase) {
     database.execSQL(
         "CREATE TABLE IF NOT EXISTS 'TRANSLATED_WORDS_LISTS_temp' (" +
                 "'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -195,14 +198,14 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
 
             val wordsWithList: Cursor =
                 database.query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id=${id}")
-            // if lists if empty probably move it to active dictionary
+            // if lists if empty move it to active dictionary
             if (wordsWithList.count == 0) {
                 val activeDictionaryCursor: Cursor =
-                    database.query("SELECT id FROM $DICTIONARIES WHERE is_active=true LIMIT 1")
+                    database.query("SELECT id FROM $DICTIONARIES WHERE is_active=1 LIMIT 1")
 
-                if(activeDictionaryCursor.moveToFirst()) {
+                if (activeDictionaryCursor.moveToFirst()) {
                     val listContentValues = ContentValues()
-                    val activeDictionaryId = listCursor.getLong(0)
+                    val activeDictionaryId = activeDictionaryCursor.getLong(0)
                     listContentValues.put("id", id)
                     listContentValues.put("title", title)
                     listContentValues.put("created_at", createdAt)
@@ -254,16 +257,25 @@ fun migrateFrom5To6(database: SupportSQLiteDatabase) {
     }
     listCursor.close()
 
-// translaed words
-    // Remove old table
-    database.execSQL("DROP TABLE $TRANSLATED_WORDS_TABLE_NAME")
-    // Change name of table to correct one
-    database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_TABLE_NAME_temp' RENAME TO $TRANSLATED_WORDS_TABLE_NAME")
-
-    // Remove old table
+    // Remove old TRANSLATED_WORDS_LISTS table
     database.execSQL("DROP TABLE $TRANSLATED_WORDS_LISTS")
     // Change name of table to correct one
     database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_LISTS_temp' RENAME TO $TRANSLATED_WORDS_LISTS")
+}
+
+fun migrateFrom5To6(database: SupportSQLiteDatabase) {
+    val context = DictionaryApp.applicationContext()
+
+    createDictionaryTable(database = database, context = context)
+    createAndFillNewTranslatedWordTable(database)
+    createAndFillNewListTable(database)
+
+
+    // Remove old TRANSLATED_WORDS_TABLE_NAME table
+    // (I do it after createAndFillNewListTable, because I need langFromValue and langToValue from old version TRANSLATED_WORDS_TABLE_NAME, in new version this fields are deleted)
+    database.execSQL("DROP TABLE $TRANSLATED_WORDS_TABLE_NAME")
+    // Change name of table to correct one
+    database.execSQL("ALTER TABLE 'TRANSLATED_WORDS_TABLE_NAME_temp' RENAME TO $TRANSLATED_WORDS_TABLE_NAME")
 
 
     // delete shared preferences because this no needed more
