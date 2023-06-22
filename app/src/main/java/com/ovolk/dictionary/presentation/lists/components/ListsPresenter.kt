@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.floating.AddButton
@@ -35,6 +36,7 @@ import com.ovolk.dictionary.presentation.list_full.LoadingState
 import com.ovolk.dictionary.presentation.lists.ListsAction
 import com.ovolk.dictionary.presentation.lists.ListsState
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.SelectDictionaryPicker
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,6 +47,9 @@ fun ListsPresenter(
     val selectedLists = state.list.groupBy { it.isSelected }[true]
     val atLeastOneListSelected = selectedLists != null
     val currentDictionary = state.currentDictionary.collectAsState()
+    var expanded by remember {
+        mutableStateOf(false)
+    }
 
     if (state.modalList.isOpen) {
         DialogAddNewList(
@@ -81,14 +86,10 @@ fun ListsPresenter(
         ) {
 
             if (state.isLoadingList == LoadingState.PENDING) {
-//                Text(text = "LOADING...")
+                return@Scaffold
             }
 
             Header(selectedLists = selectedLists, onAction = onAction)
-
-            var expanded by remember {
-                mutableStateOf(false)
-            }
 
             Box(modifier = Modifier.zIndex(1f)) {
                 Layout(
@@ -124,79 +125,12 @@ fun ListsPresenter(
             }
 
 
-
-            // TODO what happens if dictionary list is not empty but active dictionary don't exist
-            if (state.list.isEmpty()
-//                && state.dictionaryList.isEmpty()
-                && state.isLoadingList == LoadingState.SUCCESS
-                && currentDictionary.value == null
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.empty_list),
-                        contentDescription = stringResource(id = R.string.cd_nothing_found),
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                    )
-                    Text(
-                        text = "Looks lie you don't have any dictionary",
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                        fontSize = 20.sp,
-                        color = colorResource(id = R.color.grey_2),
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = "At first create dictionary where you can put your lists",
-                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                        color = colorResource(id = R.color.grey_2),
-                        textAlign = TextAlign.Center
-                    )
-
-                    Button(onClick = { onAction(ListsAction.PressAddNewDictionary) }) {
-                        Text(
-                            text = "create dictionary".uppercase(),
-                            color = Color.White
-                        )
-                    }
-                }
-            }
-
-
-            if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty() && currentDictionary.value != null) {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        vertical = dimensionResource(id = R.dimen.large_gutter)
-                    ),
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    item {
-                        Image(
-                            painter = painterResource(id = R.drawable.empty_list),
-                            contentDescription = stringResource(id = R.string.cd_nothing_found),
-                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                        )
-                        Text(
-                            text = stringResource(id = R.string.nothing_found),
-                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                            fontSize = 20.sp,
-                            color = colorResource(id = R.color.grey_2)
-                        )
-
-                        Button(onClick = { onAction(ListsAction.OpenModalNewList) }) {
-                            Text(
-                                text = stringResource(id = R.string.lists_screen_add_new_list).uppercase(),
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
+            if (state.dictionaryList.isEmpty() && state.isLoadingList == LoadingState.SUCCESS) {
+                NoDictionaries(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
+            } else if (state.isLoadingList == LoadingState.SUCCESS && currentDictionary.value == null) {
+                NoSelectedDictionary()
+            } else if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty() && currentDictionary.value != null) {
+                NoListsInDictionary(onPressAddNewList = { onAction(ListsAction.OpenModalNewList) })
             }
 
             if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {
@@ -232,23 +166,32 @@ fun ListsPresenter(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
-@Composable
-fun PreviewListsScreenPending() {
-    ListsPresenter(
-        state = ListsState(
-            list = listOf(),
-            isLoadingList = LoadingState.PENDING
-        ),
-        onAction = {},
-    )
-}
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Preview(showBackground = true)
 @Composable
-fun PreviewListsScreenSuccess() {
+fun PreviewListsScreenLoadedWithLists() {
     ListsPresenter(
         state = ListsState(
+            currentDictionary = MutableStateFlow(
+                Dictionary(
+                    id = 1L,
+                    langFromCode = "EN",
+                    langToCode = "UK",
+                    title = "EN-UK",
+                    isActive = true,
+                    isSelected = false
+                )
+            ),
+            dictionaryList = listOf(
+                Dictionary(
+                    id = 1L,
+                    langFromCode = "EN",
+                    langToCode = "UK",
+                    title = "EN-UK",
+                    isActive = true,
+                    isSelected = false
+                )
+            ),
             list = listOf(
                 com.ovolk.dictionary.domain.model.lists.ListItem(
                     title = "Sport",
@@ -265,30 +208,132 @@ fun PreviewListsScreenSuccess() {
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis(),
                     dictionaryId = 1L,
-                ),
-                com.ovolk.dictionary.domain.model.lists.ListItem(
-                    title = "LolKek",
-                    count = 4,
-                    id = 3L,
-                    isSelected = true,
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis(),
-                    dictionaryId = 1L,
+                    isSelected = false,
                 ),
             ),
+
             isLoadingList = LoadingState.SUCCESS
         ),
         onAction = {},
     )
 }
 
-@Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_2)
+@Preview(showBackground = true, device = Devices.PIXEL_2)
 @Composable
-fun PreviewListsScreenEmpty() {
+fun PreviewListsScreenLoadedWithSelectedList() {
+    ListsPresenter(
+        state = ListsState(
+            currentDictionary = MutableStateFlow(
+                Dictionary(
+                    id = 1L,
+                    langFromCode = "EN",
+                    langToCode = "UK",
+                    title = "EN-UK",
+                    isActive = true,
+                    isSelected = false
+                )
+            ),
+            dictionaryList = listOf(
+                Dictionary(
+                    id = 1L,
+                    langFromCode = "EN",
+                    langToCode = "UK",
+                    title = "EN-UK",
+                    isActive = true,
+                    isSelected = false
+                )
+            ),
+            list = listOf(
+                com.ovolk.dictionary.domain.model.lists.ListItem(
+                    title = "Sport",
+                    count = 0,
+                    id = 1L,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
+                    dictionaryId = 1L,
+                ),
+                com.ovolk.dictionary.domain.model.lists.ListItem(
+                    title = "Politics",
+                    count = 10,
+                    id = 2L,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
+                    dictionaryId = 1L,
+                    isSelected = true,
+                ),
+            ),
+
+            isLoadingList = LoadingState.SUCCESS
+        ),
+        onAction = {},
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewListsScreenWithoutCurrentDictionary() {
+    ListsPresenter(
+        state = ListsState(
+            currentDictionary = MutableStateFlow(null),
+            dictionaryList = listOf(
+                Dictionary(
+                    id = 1L,
+                    langFromCode = "EN",
+                    langToCode = "UK",
+                    title = "EN-UK",
+                    isActive = true,
+                    isSelected = false
+                )
+            ),
+            list = listOf(
+                com.ovolk.dictionary.domain.model.lists.ListItem(
+                    title = "Sport",
+                    count = 0,
+                    id = 1L,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
+                    dictionaryId = 1L,
+                ),
+            ),
+
+            isLoadingList = LoadingState.SUCCESS
+        ),
+        onAction = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewListsScreenWithoutDictionaryList() {
+    ListsPresenter(
+        state = ListsState(
+            currentDictionary = MutableStateFlow(null),
+            dictionaryList = emptyList(),
+            list = listOf(
+                com.ovolk.dictionary.domain.model.lists.ListItem(
+                    title = "Sport",
+                    count = 0,
+                    id = 1L,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
+                    dictionaryId = 1L,
+                ),
+            ),
+
+            isLoadingList = LoadingState.SUCCESS
+        ),
+        onAction = {},
+    )
+}
+
+@Preview(showBackground = true, device = Devices.PIXEL_2)
+@Composable
+fun PreviewListsScreenLoading() {
     ListsPresenter(
         state = ListsState(
             list = listOf(),
-            isLoadingList = LoadingState.SUCCESS
+            isLoadingList = LoadingState.PENDING
         ),
         onAction = {},
     )

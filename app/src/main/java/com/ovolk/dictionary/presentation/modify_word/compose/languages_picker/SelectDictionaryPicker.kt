@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_word.compose.languages_picker
 
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
@@ -7,18 +8,23 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +32,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +47,8 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 
+const val HEADER_ANIMATION_TIME = 150
+const val HEIGHT_ANIMATION_TIME = 250
 
 @Composable
 fun SelectDictionaryPicker(
@@ -50,7 +60,6 @@ fun SelectDictionaryPicker(
     onSelectDictionary: (dictionaryId: Long) -> Unit,
     onPressAddNewDictionary: () -> Unit,
 ) {
-//    var expanded by remember { mutableStateOf(false) }
     val transition = updateTransition(expanded, label = "selectIsOpen")
     val errorColor =
         colorResource(id = R.color.red)
@@ -59,6 +68,17 @@ fun SelectDictionaryPicker(
     } else {
         errorColor
     }
+
+    fun onAddNewDictionaryPress() {
+        onPressAddNewDictionary()
+        setExpanded(false)
+    }
+
+    fun onDictionaryItemPress(item: Dictionary) {
+        onSelectDictionary(item.id)
+        setExpanded(false)
+    }
+
 
     val selectLanguagePickerWidth by transition.animateDp(
         label = "width",
@@ -69,7 +89,15 @@ fun SelectDictionaryPicker(
             }
         },
         transitionSpec = {
-            tween(durationMillis = 150, easing = LinearEasing)
+            if (transition.currentState) {
+                tween(
+                    durationMillis = HEADER_ANIMATION_TIME,
+                    easing = LinearEasing,
+                    delayMillis = HEIGHT_ANIMATION_TIME + 50
+                )
+            } else {
+                tween(durationMillis = HEADER_ANIMATION_TIME, easing = EaseInOut)
+            }
         },
     )
 
@@ -82,11 +110,19 @@ fun SelectDictionaryPicker(
             }
         },
         transitionSpec = {
-            tween(durationMillis = 150, easing = LinearEasing)
+            if (transition.currentState) {
+                tween(
+                    durationMillis = HEADER_ANIMATION_TIME,
+                    easing = LinearEasing,
+                    delayMillis = HEIGHT_ANIMATION_TIME + 50
+                )
+            } else {
+                tween(durationMillis = HEADER_ANIMATION_TIME, easing = EaseInOut)
+            }
         },
     )
 
-    val height by transition.animateDp(
+    val maxHeight by transition.animateDp(
         label = "height",
         targetValueByState = { state ->
             when (state) {
@@ -95,14 +131,22 @@ fun SelectDictionaryPicker(
             }
         },
         transitionSpec = {
-            tween(durationMillis = 150, easing = LinearEasing, delayMillis = 150)
+            if (transition.currentState) {
+                tween(
+                    durationMillis = HEIGHT_ANIMATION_TIME,
+                    easing = LinearEasing,
+                )
+
+            } else {
+                tween(
+                    durationMillis = HEIGHT_ANIMATION_TIME,
+                    easing = LinearEasing,
+                    delayMillis = HEADER_ANIMATION_TIME + 50
+                )
+            }
         },
     )
 
-//    Popup(
-//        properties = PopupProperties(dismissOnClickOutside = true),
-//        onDismissRequest = { expanded = false },
-//    ) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -147,43 +191,58 @@ fun SelectDictionaryPicker(
             }
         }
 
-        Popup(properties = PopupProperties(dismissOnClickOutside = true)) {
-
-        }
-
         Surface(
             shape = RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp),
             border = BorderStroke(width = 1.dp, color = borderColor),
             modifier = Modifier
-//                    .width(selectLanguagePickerWidth)
-                .width(if (selectLanguagePickerWidth.value.toInt() == 300) 300.dp else 0.dp)
+                .widthIn(0.dp, selectLanguagePickerWidth)
                 .offset(y = ((-20).dp))
+                .shadow(
+                    elevation = 3.dp,
+                    shape = RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp),
+                )
                 .zIndex(0F),
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .height(height)
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 20.dp)
+            Column() {
+                LazyColumn(
+                    modifier = Modifier
+                        .heightIn(50.dp, maxHeight)
+                        .padding(top = 20.dp)
 
-            ) {
-                items(dictionaryList) { item ->
-                    Text(text = item.title, modifier = Modifier.clickable {
-                        onSelectDictionary(item.id)
-                        setExpanded(false)
-                    })
+                ) {
+                    items(dictionaryList) { item ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onDictionaryItemPress(item) }
+                                .padding(vertical = 10.dp, horizontal = 10.dp),
+                        ) {
+                            Text(text = item.title, modifier = Modifier)
+                        }
+                        Divider()
+                    }
+
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .padding(vertical = 15.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            OutlinedButton(onClick = ::onAddNewDictionaryPress) {
+                                Text(
+                                    text = "Add new Dictionary".uppercase(),
+                                    modifier = Modifier,
+                                    color = colorResource(id = R.color.blue)
+                                )
+                            }
+                        }
+                    }
                 }
 
-                item {
-                    Text(text = "Add new Dictionary", modifier = Modifier.clickable {
-                        onPressAddNewDictionary()
-                        setExpanded(false)
-                    })
-                }
             }
         }
     }
-//    }
 }
 
 
