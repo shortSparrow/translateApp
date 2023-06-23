@@ -68,6 +68,16 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun searchWordListByDictionary(
+        query: String,
+        dictionaryId: Long
+    ): Flow<List<WordRV>> {
+        return translatedWordDao.searchWordListByDictionary(query = "%$query%", dictionaryId=dictionaryId)
+            .map { list ->
+                mapper.wordListDbToWordList(list)
+            }
+    }
+
     override suspend fun searchExactWord(query: String): WordRV? {
         val res = translatedWordDao.searchExactWord(query = query)
         return if (res != null) {

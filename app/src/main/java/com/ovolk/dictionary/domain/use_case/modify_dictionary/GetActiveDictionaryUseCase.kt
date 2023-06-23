@@ -5,10 +5,9 @@ import com.ovolk.dictionary.domain.repositories.DictionaryRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureMessage
-import com.ovolk.dictionary.domain.response.Success
 import javax.inject.Inject
 
-class GetActiveDictionary @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
+class GetActiveDictionaryUseCase @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
     suspend fun getDictionaryActive(): Either<Dictionary, Failure> {
         val dictionary =
             dictionaryRepository.getCurrentActiveDictionary()

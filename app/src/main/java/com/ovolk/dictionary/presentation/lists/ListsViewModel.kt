@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
@@ -18,9 +19,8 @@ import com.ovolk.dictionary.domain.use_case.lists.DeleteListsUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.lists.RenameListUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
-import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionary
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
-import com.ovolk.dictionary.presentation.list_full.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -44,7 +44,7 @@ class ListsViewModel @Inject constructor(
     private val addNewListUseCase: AddNewListUseCase,
     private val deleteListsUseCase: DeleteListsUseCase,
     private val renameListUseCase: RenameListUseCase,
-    private val getActiveDictionary: GetActiveDictionary,
+    private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase,
     private val crudDictionaryUseCase: CrudDictionaryUseCase,
     private val application: Application,
 ) : ViewModel() {
@@ -84,7 +84,7 @@ class ListsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            when (val activeDictionaryResponse = getActiveDictionary.getDictionaryActive()) {
+            when (val activeDictionaryResponse = getActiveDictionaryUseCase.getDictionaryActive()) {
                 is Either.Failure -> {
                     // TODO add snackbar
                     state = state.copy(isLoadingList = LoadingState.SUCCESS)

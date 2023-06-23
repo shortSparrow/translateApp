@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.ovolk.dictionary.presentation.dictionary_words.DictionaryWordsScreen
 import com.ovolk.dictionary.presentation.list_full.ListFullScreen
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryScreen
@@ -18,17 +19,22 @@ import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailySc
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 
-enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, EXAM_REMINDER, EXAM_DAILY, MODIFY_DICTIONARY }
+enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, EXAM_REMINDER, EXAM_DAILY, MODIFY_DICTIONARY, DICTIONARY_WORDS }
 sealed class CommonScreen(val route: String) {
     object ModifyWord :
         CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}&dictionaryId={dictionaryId}")
 
-    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}&dictionaryId={dictionaryId}")
+    object FullList :
+        CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}&dictionaryId={dictionaryId}")
+
     object SettingsLanguages : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES}")
     object ExamReminder : CommonScreen("${CommonRotes.EXAM_REMINDER}")
     object ExamDaily : CommonScreen("${CommonRotes.EXAM_DAILY}")
     object ModifyDictionary :
         CommonScreen("${CommonRotes.MODIFY_DICTIONARY}/mode={mode}?dictionaryId={dictionaryId}")
+
+    object DictionaryWords :
+        CommonScreen("${CommonRotes.DICTIONARY_WORDS}?dictionaryId={dictionaryId}")
 }
 
 
@@ -116,6 +122,17 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
             )
         ) {
             ModifyDictionaryScreen(navController = navController)
+        }
+
+        composable(
+            route = CommonScreen.DictionaryWords.route, arguments = listOf(
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
+            )
+        ) {
+            DictionaryWordsScreen(navController = navController)
         }
     }
 }

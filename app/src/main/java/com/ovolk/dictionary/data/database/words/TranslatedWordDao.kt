@@ -16,6 +16,9 @@ interface TranslatedWordDao {
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :query ORDER BY created_at DESC")
     fun searchWordList(query: String): Flow<List<WordFullDb>>
 
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :query AND dictionary_id = :dictionaryId ORDER BY created_at DESC")
+    fun searchWordListByDictionary(query: String, dictionaryId: Long): Flow<List<WordFullDb>>
+
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE value LIKE :query")
     suspend fun searchExactWord(query: String): WordFullDb?
 

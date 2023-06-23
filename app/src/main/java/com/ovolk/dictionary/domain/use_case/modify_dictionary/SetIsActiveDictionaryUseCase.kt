@@ -7,7 +7,7 @@ import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.Success
 import javax.inject.Inject
 
-class SetActiveDictionary @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
+class SetIsActiveDictionaryUseCase @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
     suspend fun setDictionaryActive(
         dictionaryId: Long,
         isActive: Boolean

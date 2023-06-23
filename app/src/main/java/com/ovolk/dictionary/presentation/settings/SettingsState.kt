@@ -8,10 +8,12 @@ import com.ovolk.dictionary.presentation.DictionaryApp
 data class SettingsState(
     val settingsList: List<SettingsItem> = listOf(
         SettingsItem(
-            title = DictionaryApp.applicationContext()
-                .getString(R.string.settings_language_item_title),
-            contentDescription = DictionaryApp.applicationContext()
-                .getString(R.string.settings_language_cd_item_title),
+//            title = DictionaryApp.applicationContext()
+//                .getString(R.string.settings_language_item_title),
+//            contentDescription = DictionaryApp.applicationContext()
+//                .getString(R.string.settings_language_cd_item_title),
+            title = "Dictionaries",
+            contentDescription = "lalal",
             iconId = R.drawable.language,
             navigateTo = SettingsNavigation.LANGUAGE_SETTINGS
         ),

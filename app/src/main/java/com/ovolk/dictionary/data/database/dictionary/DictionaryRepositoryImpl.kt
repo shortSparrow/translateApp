@@ -39,6 +39,12 @@ class DictionaryRepositoryImpl @Inject constructor(
         return if (response == null) null else dictionaryMapper.dictionaryDbToDictionary(response)
     }
 
+    override fun getDictionaryFlow(dictionaryId: Long): Flow<Dictionary?> {
+        return dictionaryDao.getDictionaryFlow(dictionaryId).map { response ->
+            if (response == null) null else dictionaryMapper.dictionaryDbToDictionary(response)
+        }
+    }
+
     override suspend fun getDictionaryByLang(
         langFromCode: String,
         langToCode: String

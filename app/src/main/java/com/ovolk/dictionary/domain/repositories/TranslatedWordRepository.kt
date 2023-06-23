@@ -15,6 +15,7 @@ interface TranslatedWordRepository : InMemoryStorage {
     suspend fun getExamWordListSizeForOneList(listId: Long): Int
 
     suspend fun searchWordList(query: String): Flow<List<WordRV>>
+    suspend fun searchWordListByDictionary(query: String, dictionaryId: Long): Flow<List<WordRV>>
     suspend fun searchExactWord(query: String): WordRV?
     suspend fun searchWordListSize(): Flow<Int>
 

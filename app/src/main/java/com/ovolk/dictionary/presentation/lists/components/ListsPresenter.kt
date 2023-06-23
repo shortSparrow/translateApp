@@ -22,11 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.floating.AddButton
-import com.ovolk.dictionary.presentation.list_full.LoadingState
 import com.ovolk.dictionary.presentation.lists.ListsAction
 import com.ovolk.dictionary.presentation.lists.ListsState
 import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.SelectDictionaryPicker

@@ -33,7 +33,6 @@ fun ConfirmDialog(
     declineButtonText: String? = null,
     type: ConfirmDialogType = OK_BUTTON_RED
 ) {
-
     ConfirmDialogBase(
         onDismissRequest = onDismissRequest,
         message = {

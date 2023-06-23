@@ -27,7 +27,8 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.floating.AddButton
-import com.ovolk.dictionary.presentation.core.header.HeaderWithTwoRightActions
+import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.header.TwoButtonOffset
 import com.ovolk.dictionary.presentation.settings_dictionaries.SettingsDictionariesAction
 import com.ovolk.dictionary.presentation.settings_dictionaries.SettingsDictionariesState
 
@@ -79,11 +80,12 @@ fun SettingsDictionariesPresenter(
         }
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
-
-            HeaderWithTwoRightActions(
-                onBack = onBack,
+            Header(
+                titleHorizontalOffset = TwoButtonOffset,
+                withBackButton = true,
+                onBackButtonClick = onBack,
                 title = "Select dictionary",
-                firstButton = {
+                secondRightIcon = {
                     if (state.dictionaryList.any { it.isSelected }) {
                         Icon(
                             painter = painterResource(R.drawable.delete_active),
@@ -95,10 +97,10 @@ fun SettingsDictionariesPresenter(
                         )
                     }
                 },
-                onFirstButtonClick = {
+                onSecondRightIconClick = {
                     onAction(SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal(true))
                 },
-                secondButton = {
+                firstRightIcon = {
                     if (state.dictionaryList.filter { it.isSelected }.size == 1) {
                         Icon(
                             painter = painterResource(R.drawable.edit),
@@ -110,8 +112,9 @@ fun SettingsDictionariesPresenter(
                         )
                     }
                 },
-                onSecondButtonClick = { onAction(SettingsDictionariesAction.EditDictionary) },
+                onFirstRightIconClick = { onAction(SettingsDictionariesAction.EditDictionary) },
             )
+
             Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
 
                 LazyColumn {

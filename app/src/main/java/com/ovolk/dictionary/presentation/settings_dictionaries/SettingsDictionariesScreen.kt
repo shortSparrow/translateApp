@@ -15,10 +15,14 @@ import com.ovolk.dictionary.util.compose.OnLifecycleEvent
 fun SettingsDictionariesScreen(navController: NavHostController) {
 
     fun listener() = object : SettingsDictionariesViewModel.Listener {
-        override fun navigate(dictionaryId: Long?) {
+        override fun goToModifyDictionary(dictionaryId: Long?) {
             val mode =
                 if (dictionaryId == null) ModifyDictionaryModes.MODE_ADD else ModifyDictionaryModes.MODE_EDIT
             navController.navigate("${CommonRotes.MODIFY_DICTIONARY}/mode=${mode}?dictionaryId=${dictionaryId}")
+        }
+
+        override fun goToDictionaryWords(dictionaryId: Long) {
+            navController.navigate("${CommonRotes.DICTIONARY_WORDS}?dictionaryId=${dictionaryId}")
         }
     }
 

@@ -27,6 +27,9 @@ interface DictionaryDao {
     @Query("SELECT * FROM DICTIONARIES WHERE id = :id")
     suspend fun getDictionary(id: Long): DictionaryDb?
 
+    @Query("SELECT * FROM DICTIONARIES WHERE id = :id")
+    fun getDictionaryFlow(id: Long): Flow<DictionaryDb?>
+
     @Query("SELECT * FROM DICTIONARIES WHERE lang_from_code = :langFromCode AND lang_to_code = :langToCode")
     suspend fun getDictionaryByLang(
         langFromCode: String,

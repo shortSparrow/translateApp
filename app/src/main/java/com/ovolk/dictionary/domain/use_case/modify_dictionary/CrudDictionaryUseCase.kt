@@ -21,6 +21,10 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
         return dictionaryRepository.getDictionaryList()
     }
 
+    fun getDictionaryFlow(dictionaryId: Long): Flow<Dictionary?> {
+        return dictionaryRepository.getDictionaryFlow(dictionaryId = dictionaryId)
+    }
+
     suspend fun getDictionary(dictionaryId: Long): Either<Dictionary, FailureWithCode> {
         val response = dictionaryRepository.getDictionary(dictionaryId = dictionaryId)
         if (response == null) {

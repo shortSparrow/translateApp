@@ -18,7 +18,7 @@ import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
-import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionary
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
 import com.ovolk.dictionary.domain.use_case.modify_word.AddChipUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.SUCCESS
@@ -26,7 +26,6 @@ import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.WORD_ALR
 import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.GetWordItemUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
-import com.ovolk.dictionary.presentation.list_full.LoadingState
 import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateDictionary
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateTranslates
@@ -34,7 +33,6 @@ import com.ovolk.dictionary.presentation.modify_word.helpers.validateWordValue
 import com.ovolk.dictionary.presentation.modify_word.helpers.validationPriority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,7 +50,7 @@ class ModifyWordViewModel @Inject constructor(
     private val application: Application,
     private val savedStateHandle: SavedStateHandle,
     private val crudDictionaryUseCase: CrudDictionaryUseCase,
-    private val getActiveDictionary: GetActiveDictionary,
+    private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase,
 ) : ViewModel() {
     var listener: Listener? = null
 
@@ -491,7 +489,7 @@ class ModifyWordViewModel @Inject constructor(
         viewModelScope.launch {
             val activeDictionary =
                 if (dictionaryId == -1L) {
-                    getActiveDictionary.getDictionaryActive()
+                    getActiveDictionaryUseCase.getDictionaryActive()
                 } else {
                     crudDictionaryUseCase.getDictionary(dictionaryId = dictionaryId)
                 }
@@ -513,7 +511,7 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun launchEditMode(wordId: Long) {
-        val id = if (wordId == -1L) error("wordId is null") else wordId // TODO it should do usecase
+        val id = if (wordId == -1L) error("wordId is null") else wordId // TODO it should do usecase and return some error
         getWordById(id)
     }
 

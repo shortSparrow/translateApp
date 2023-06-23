@@ -10,6 +10,7 @@ interface DictionaryRepository {
     suspend fun getCurrentActiveDictionary(): Dictionary?
     suspend fun getDictionaryListSize(): Int
     suspend fun getDictionary(dictionaryId: Long): Dictionary?
+    fun getDictionaryFlow(dictionaryId: Long): Flow<Dictionary?>
     suspend fun getDictionaryByLang(langCodeFrom: String, langCodeTo: String): Dictionary?
     suspend fun setDictionaryActive(dictionaryId: Long, isActive: Boolean): Boolean
 }

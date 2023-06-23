@@ -1,9 +1,9 @@
 package com.ovolk.dictionary.presentation.lists
 
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.lists.ListItem
-import com.ovolk.dictionary.presentation.list_full.LoadingState
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class ListsState(

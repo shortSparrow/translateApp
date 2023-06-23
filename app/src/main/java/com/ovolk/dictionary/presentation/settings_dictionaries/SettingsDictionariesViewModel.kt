@@ -7,9 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.response.Either
-import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
-import com.ovolk.dictionary.domain.use_case.modify_dictionary.SetActiveDictionary
 import com.ovolk.dictionary.presentation.DictionaryApp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -20,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsDictionariesViewModel @Inject constructor(
     private val dictionaryUseCase: CrudDictionaryUseCase,
-    private val setActiveDictionary: SetActiveDictionary
 ) : ViewModel() {
     var state by mutableStateOf(SettingsDictionariesState())
         private set
@@ -42,26 +39,7 @@ class SettingsDictionariesViewModel @Inject constructor(
     fun onAction(action: SettingsDictionariesAction) {
         when (action) {
             is SettingsDictionariesAction.OnPressDictionary -> {
-                viewModelScope.launch {
-                    val response = setActiveDictionary.setDictionaryActive(
-                        dictionaryId = action.id,
-                        isActive = true
-                    )
-
-                    when (response) {
-                        is Either.Failure -> {
-                            if (response.value is FailureMessage) {
-                                Toast.makeText(
-                                    DictionaryApp.applicationContext(),
-                                    response.value.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-
-                        is Either.Success -> {}
-                    }
-                }
+                    listener?.goToDictionaryWords(action.id)
             }
 
             is SettingsDictionariesAction.OnSelectDictionary -> {
@@ -76,13 +54,13 @@ class SettingsDictionariesViewModel @Inject constructor(
             }
 
             SettingsDictionariesAction.AddNewDictionary -> {
-                listener?.navigate(null)
+                listener?.goToModifyDictionary(null)
             }
 
             SettingsDictionariesAction.EditDictionary -> {
                 val selectedDictionary = state.dictionaryList.find { it.isSelected }
                 selectedDictionary?.let {
-                    listener?.navigate(it.id)
+                    listener?.goToModifyDictionary(it.id)
                 }
             }
 
@@ -102,18 +80,19 @@ class SettingsDictionariesViewModel @Inject constructor(
 
                         is Either.Success -> {}
                     }
+                }
             }
-        }
 
-        is SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal -> {
-            state = state.copy(isDeleteDictionaryModalOpen = action.isOpen)
-        }
+            is SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal -> {
+                state = state.copy(isDeleteDictionaryModalOpen = action.isOpen)
+            }
 
-        SettingsDictionariesAction.ClearDictionarySelection -> TODO()
+            SettingsDictionariesAction.ClearDictionarySelection -> TODO()
+        }
     }
-}
 
-interface Listener {
-    fun navigate(dictionaryId: Long?)
-}
+    interface Listener {
+        fun goToModifyDictionary(dictionaryId: Long?)
+        fun goToDictionaryWords(dictionaryId: Long)
+    }
 }

@@ -2,6 +2,7 @@ package com.ovolk.dictionary.di
 
 import androidx.lifecycle.ViewModel
 import com.ovolk.dictionary.presentation.create_first_dictionary.CreateFirstDictionaryViewModel
+import com.ovolk.dictionary.presentation.dictionary_words.DictionaryWordsViewModel
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsViewModel
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordViewModel
 import com.ovolk.dictionary.presentation.settings.SettingsViewModel
@@ -62,5 +63,12 @@ interface ViewModelModule {
     @Binds
     @ViewModelScoped
     fun bindCreateFirstDictionaryViewModel(impl: CreateFirstDictionaryViewModel): ViewModel
+
+
+    @IntoMap
+    @ViewModelKey(DictionaryWordsViewModel::class)
+    @Binds
+    @ViewModelScoped
+    fun bindDictionaryWordsViewModel(impl: DictionaryWordsViewModel): ViewModel
 
 }

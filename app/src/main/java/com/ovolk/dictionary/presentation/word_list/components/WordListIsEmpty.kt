@@ -22,7 +22,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.word_list.WordListAction
 
 @Composable
-fun EmptyDictionary(onAction: (WordListAction) -> Unit) {
+fun WordListIsEmpty(onPressAddNewWord: () -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(
             vertical = dimensionResource(id = R.dimen.large_gutter)
@@ -44,7 +44,7 @@ fun EmptyDictionary(onAction: (WordListAction) -> Unit) {
                 color = colorResource(id = R.color.grey_2)
             )
 
-            Button(onClick = { onAction(WordListAction.OnPressAddNewWord) }) {
+            Button(onClick = { onPressAddNewWord() }) {
                 Text(
                     text = stringResource(id = R.string.word_list_add_first_word).uppercase(),
                     color = Color.White
@@ -58,5 +58,5 @@ fun EmptyDictionary(onAction: (WordListAction) -> Unit) {
 @Preview
 @Composable
 fun EmptyDictionaryPreview() {
-    EmptyDictionary(onAction = {})
+    WordListIsEmpty(onPressAddNewWord = {})
 }
