@@ -61,7 +61,7 @@ fun SettingsItemPreview() {
                 "language",
                 "language settings",
                 R.drawable.language,
-                navigateTo = SettingsNavigation.LANGUAGE_SETTINGS
+                navigateTo = SettingsNavigation.DICTIONARY_LIST
             ),
             onClick = {}
         )

@@ -15,7 +15,7 @@ data class SettingsState(
             title = "Dictionaries",
             contentDescription = "lalal",
             iconId = R.drawable.language,
-            navigateTo = SettingsNavigation.LANGUAGE_SETTINGS
+            navigateTo = SettingsNavigation.DICTIONARY_LIST
         ),
         SettingsItem(
             title = DictionaryApp.applicationContext()

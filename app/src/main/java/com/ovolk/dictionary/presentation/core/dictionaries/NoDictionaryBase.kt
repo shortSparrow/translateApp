@@ -1,18 +1,19 @@
-package com.ovolk.dictionary.presentation.lists.components
+package com.ovolk.dictionary.presentation.core.dictionaries
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,7 +21,13 @@ import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 
 @Composable
-fun NoSelectedDictionary() {
+fun NoDictionaryBase(
+    onPressAddNewDictionary: (() -> Unit)?,
+    buttonText: String?,
+    imageDescription: String = "",
+    title: String,
+    description: String,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,28 +37,30 @@ fun NoSelectedDictionary() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.empty_list),
-            contentDescription = stringResource(id = R.string.cd_nothing_found),
+            contentDescription = imageDescription,
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
         )
         Text(
-            text = "Please select dictionary",
+            text = title,
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
             fontSize = 20.sp,
             color = colorResource(id = R.color.grey_2),
             textAlign = TextAlign.Center,
         )
-
         Text(
-            text = "Each list must be attached to the dictionary",
+            text = description,
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
             color = colorResource(id = R.color.grey_2),
             textAlign = TextAlign.Center
         )
-    }
-}
 
-@Composable
-@Preview(showBackground = true)
-fun NoSelectedDictionaryPreview() {
-    NoSelectedDictionary()
+        if (buttonText != null && onPressAddNewDictionary != null) {
+            Button(onClick = onPressAddNewDictionary) {
+                Text(
+                    text = "create dictionary".uppercase(),
+                    color = Color.White
+                )
+            }
+        }
+    }
 }

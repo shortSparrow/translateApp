@@ -95,7 +95,11 @@ class ListsFullViewModel @Inject constructor(
             }
 
             ListFullAction.TakeExam -> {
-                listener?.navigateToExam(listId = state.listId, listName = state.listName)
+                listener?.navigateToExam(
+                    listId = state.listId,
+                    listName = state.listName,
+                    dictionaryId = state.dictionaryId
+                )
             }
 
             is ListFullAction.PressOnWord -> {
@@ -141,7 +145,7 @@ class ListsFullViewModel @Inject constructor(
 
 
     interface Listener {
-        fun navigateToExam(listId: Long, listName: String)
+        fun navigateToExam(listId: Long, listName: String, dictionaryId: Long?)
         fun navigateToEditWord(wordId: Long)
         fun navigateToAddWord(listId: Long, dictionaryId: Long)
     }

@@ -25,20 +25,28 @@ interface TranslatedWordDao {
     @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
     fun searchWordListSize(): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME WHERE dictionary_id= :dictionaryId")
+    fun searchWordListSizeByDictionary(dictionaryId: Long): Flow<Int>
+
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE updated_at <= :beforeUpdatedAt AND priority < $DEFAULT_PRIORITY_VALUE ORDER BY priority DESC, updated_at DESC LIMIT :count")
     suspend fun getWordsForSilentUpdatePriority(beforeUpdatedAt: Long, count: Int): List<WordFullDb>
 
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME ORDER BY priority DESC, updated_at ASC LIMIT :count OFFSET :skip")
-    suspend fun getExamWordList(count: Int, skip: Int): List<WordFullDb>
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE dictionary_id= :dictionaryId ORDER BY priority DESC, updated_at ASC LIMIT :count OFFSET :skip")
+    suspend fun getExamWordList(count: Int, skip: Int, dictionaryId: Long): List<WordFullDb>
 
-    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id=:listId ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
-    suspend fun getExamWordListFromOneList(count: Int, skip: Int, listId: Long): List<WordFullDb>
+    @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE word_list_id=:listId AND dictionary_id= :dictionaryId ORDER BY priority DESC, updated_at DESC LIMIT :count OFFSET :skip")
+    suspend fun getExamWordListFromOneList(
+        count: Int,
+        skip: Int,
+        listId: Long,
+        dictionaryId: Long,
+    ): List<WordFullDb>
 
-    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME")
-    suspend fun getExamWordListSize(): Int
+    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME WHERE dictionary_id= :dictionaryId")
+    suspend fun getExamWordListSize(dictionaryId: Long): Int
 
-    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME  WHERE word_list_id=:listId")
-    suspend fun getExamWordListSizeForOneList(listId: Long): Int
+    @Query("SELECT COUNT(*) FROM $TRANSLATED_WORDS_TABLE_NAME  WHERE word_list_id=:listId AND dictionary_id= :dictionaryId")
+    suspend fun getExamWordListSizeForOneList(listId: Long, dictionaryId: Long): Int
 
     @Query("SELECT * FROM $TRANSLATED_WORDS_TABLE_NAME WHERE id= :wordId")
     suspend fun getWordById(wordId: Long): WordFullDb

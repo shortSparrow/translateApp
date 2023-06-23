@@ -13,8 +13,8 @@ import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 fun ListFullScreen(navController: NavHostController, listId: Long, dictionaryId: Long) {
 
     fun listener() = object : ListsFullViewModel.Listener {
-        override fun navigateToExam(listId: Long, listName: String) {
-            navController.navigate("${MainTabRotes.EXAM}?listName=${listName}&listId=${listId}")
+        override fun navigateToExam(listId: Long, listName: String, dictionaryId: Long?) {
+            navController.navigate("${MainTabRotes.EXAM}?listName=${listName}&listId=${listId}&dictionaryId=${dictionaryId}")
         }
 
         override fun navigateToEditWord(wordId: Long) {

@@ -26,23 +26,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
-import com.ovolk.dictionary.presentation.settings_dictionaries.SettingsDictionariesAction
+import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DictionaryItem(
     dictionary: Dictionary,
     isSomeDictionarySelected: Boolean = false,
-    onAction: (SettingsDictionariesAction) -> Unit
+    onAction: (DictionaryListAction) -> Unit
 ) {
     val context = LocalContext.current
 
     fun selectDictionary() {
-        onAction(SettingsDictionariesAction.OnSelectDictionary(dictionary.id))
+        onAction(DictionaryListAction.OnSelectDictionary(dictionary.id))
     }
 
     fun setDictionaryActive() {
-        onAction(SettingsDictionariesAction.OnPressDictionary(dictionary.id))
+        onAction(DictionaryListAction.OnPressDictionary(dictionary.id))
     }
 
     fun onStartClick() {

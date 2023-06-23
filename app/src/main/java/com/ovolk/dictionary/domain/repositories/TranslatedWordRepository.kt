@@ -9,15 +9,22 @@ import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import kotlinx.coroutines.flow.Flow
 
 interface TranslatedWordRepository : InMemoryStorage {
-    suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord>
-    suspend fun getExamWordListFromOneList(count: Int, skip: Int, listId: Long): List<ExamWord>
-    suspend fun getExamWordListSize(): Int
-    suspend fun getExamWordListSizeForOneList(listId: Long): Int
+    suspend fun getExamWordList(count: Int, skip: Int, dictionaryId: Long): List<ExamWord>
+    suspend fun getExamWordListFromOneList(
+        count: Int,
+        skip: Int,
+        listId: Long,
+        dictionaryId: Long
+    ): List<ExamWord>
+
+    suspend fun getExamWordListSize(dictionaryId: Long): Int
+    suspend fun getExamWordListSizeForOneList(listId: Long,dictionaryId: Long): Int
 
     suspend fun searchWordList(query: String): Flow<List<WordRV>>
     suspend fun searchWordListByDictionary(query: String, dictionaryId: Long): Flow<List<WordRV>>
     suspend fun searchExactWord(query: String): WordRV?
     suspend fun searchWordListSize(): Flow<Int>
+    suspend fun searchWordListSizeByDictionary(dictionaryId: Long): Flow<Int>
 
     suspend fun getWordById(id: Long): ModifyWord
     suspend fun getWordByValue(value: String, dictionaryId: Long): Long
@@ -40,5 +47,8 @@ interface TranslatedWordRepository : InMemoryStorage {
     suspend fun modifyWordInfo(wordInfoDb: WordInfoDb): Long
 
     // update words which not updated a lot of time, and hase priority less than default
-    suspend fun getWordsForSilentUpdatePriority(beforeUpdatedAt: Long, count: Int): List<UpdatePriority>
+    suspend fun getWordsForSilentUpdatePriority(
+        beforeUpdatedAt: Long,
+        count: Int
+    ): List<UpdatePriority>
 }

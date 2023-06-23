@@ -16,10 +16,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class SettingsDictionariesViewModel @Inject constructor(
+class DictionaryListViewModel @Inject constructor(
     private val dictionaryUseCase: CrudDictionaryUseCase,
 ) : ViewModel() {
-    var state by mutableStateOf(SettingsDictionariesState())
+    var state by mutableStateOf(DictionaryListState())
         private set
 
     var listener: Listener? = null
@@ -36,13 +36,13 @@ class SettingsDictionariesViewModel @Inject constructor(
         }
     }
 
-    fun onAction(action: SettingsDictionariesAction) {
+    fun onAction(action: DictionaryListAction) {
         when (action) {
-            is SettingsDictionariesAction.OnPressDictionary -> {
+            is DictionaryListAction.OnPressDictionary -> {
                     listener?.goToDictionaryWords(action.id)
             }
 
-            is SettingsDictionariesAction.OnSelectDictionary -> {
+            is DictionaryListAction.OnSelectDictionary -> {
                 val newList = state.dictionaryList.map {
                     if (it.id == action.id) {
                         return@map it.copy(isSelected = !it.isSelected)
@@ -53,18 +53,18 @@ class SettingsDictionariesViewModel @Inject constructor(
                 state = state.copy(dictionaryList = newList)
             }
 
-            SettingsDictionariesAction.AddNewDictionary -> {
+            DictionaryListAction.AddNewDictionary -> {
                 listener?.goToModifyDictionary(null)
             }
 
-            SettingsDictionariesAction.EditDictionary -> {
+            DictionaryListAction.EditDictionary -> {
                 val selectedDictionary = state.dictionaryList.find { it.isSelected }
                 selectedDictionary?.let {
                     listener?.goToModifyDictionary(it.id)
                 }
             }
 
-            SettingsDictionariesAction.DeleteDictionary -> {
+            DictionaryListAction.DeleteDictionary -> {
                 state = state.copy(isDeleteDictionaryModalOpen = false)
                 viewModelScope.launch {
                     val listToDelete = state.dictionaryList.filter { it.isSelected }.map { it.id }
@@ -83,11 +83,11 @@ class SettingsDictionariesViewModel @Inject constructor(
                 }
             }
 
-            is SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal -> {
+            is DictionaryListAction.ToggleOpenDeleteDictionaryModal -> {
                 state = state.copy(isDeleteDictionaryModalOpen = action.isOpen)
             }
 
-            SettingsDictionariesAction.ClearDictionarySelection -> TODO()
+            DictionaryListAction.ClearDictionarySelection -> TODO()
         }
     }
 

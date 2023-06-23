@@ -45,7 +45,7 @@ fun ShowMoreDropdown(
         onDismissRequest = { setShowMoreExpanded(false) },
         properties = PopupProperties(focusable = true),
     ) {
-        DropdownMenuItem(onClick = { onDropdownItemClick { DictionaryWordsAction.OnPressTakeExam } }) {
+        DropdownMenuItem(onClick = { onDropdownItemClick { onAction(DictionaryWordsAction.OnPressTakeExam) } }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(R.drawable.exam),

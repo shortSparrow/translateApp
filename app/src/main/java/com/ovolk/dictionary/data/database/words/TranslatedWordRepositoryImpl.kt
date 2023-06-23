@@ -34,31 +34,44 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             .map { word -> mapper.wordFullDbToUpdatePriority(word) }
     }
 
-    override suspend fun getExamWordList(count: Int, skip: Int): List<ExamWord> {
-        return translatedWordDao.getExamWordList(count = count, skip = skip)
+    override suspend fun getExamWordList(
+        count: Int,
+        skip: Int,
+        dictionaryId: Long
+    ): List<ExamWord> {
+        return translatedWordDao.getExamWordList(
+            count = count,
+            skip = skip,
+            dictionaryId = dictionaryId
+        )
             .map { word -> mapper.wordFullDbToExamWord(word) }
     }
 
     override suspend fun getExamWordListFromOneList(
         count: Int,
         skip: Int,
-        listId: Long
+        listId: Long,
+        dictionaryId: Long,
     ): List<ExamWord> {
 
         return translatedWordDao.getExamWordListFromOneList(
             count = count,
             skip = skip,
-            listId = listId
+            listId = listId,
+            dictionaryId = dictionaryId
         )
             .map { word -> mapper.wordFullDbToExamWord(word) }
     }
 
-    override suspend fun getExamWordListSize(): Int {
-        return translatedWordDao.getExamWordListSize()
+    override suspend fun getExamWordListSize(dictionaryId: Long): Int {
+        return translatedWordDao.getExamWordListSize(dictionaryId = dictionaryId)
     }
 
-    override suspend fun getExamWordListSizeForOneList(listId: Long): Int {
-        return translatedWordDao.getExamWordListSizeForOneList(listId = listId)
+    override suspend fun getExamWordListSizeForOneList(listId: Long, dictionaryId: Long): Int {
+        return translatedWordDao.getExamWordListSizeForOneList(
+            listId = listId,
+            dictionaryId = dictionaryId
+        )
     }
 
     override suspend fun searchWordList(query: String): Flow<List<WordRV>> {
@@ -72,7 +85,10 @@ class TranslatedWordRepositoryImpl @Inject constructor(
         query: String,
         dictionaryId: Long
     ): Flow<List<WordRV>> {
-        return translatedWordDao.searchWordListByDictionary(query = "%$query%", dictionaryId=dictionaryId)
+        return translatedWordDao.searchWordListByDictionary(
+            query = "%$query%",
+            dictionaryId = dictionaryId
+        )
             .map { list ->
                 mapper.wordListDbToWordList(list)
             }
@@ -89,6 +105,10 @@ class TranslatedWordRepositoryImpl @Inject constructor(
 
     override suspend fun searchWordListSize(): Flow<Int> {
         return translatedWordDao.searchWordListSize()
+    }
+
+    override suspend fun searchWordListSizeByDictionary(dictionaryId: Long): Flow<Int> {
+        return translatedWordDao.searchWordListSizeByDictionary(dictionaryId = dictionaryId)
     }
 
     override suspend fun getWordById(id: Long): ModifyWord {

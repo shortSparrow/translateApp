@@ -29,13 +29,13 @@ import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.header.TwoButtonOffset
-import com.ovolk.dictionary.presentation.settings_dictionaries.SettingsDictionariesAction
-import com.ovolk.dictionary.presentation.settings_dictionaries.SettingsDictionariesState
+import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
+import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListState
 
 @Composable
 fun SettingsDictionariesPresenter(
-    state: SettingsDictionariesState,
-    onAction: (SettingsDictionariesAction) -> Unit,
+    state: DictionaryListState,
+    onAction: (DictionaryListAction) -> Unit,
     onBack: () -> Unit
 ) {
 
@@ -64,9 +64,9 @@ fun SettingsDictionariesPresenter(
                     textAlign = TextAlign.Center
                 )
             },
-            onAcceptClick = { onAction(SettingsDictionariesAction.DeleteDictionary) },
+            onAcceptClick = { onAction(DictionaryListAction.DeleteDictionary) },
             onDeclineClick = {
-                onAction(SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal(false))
+                onAction(DictionaryListAction.ToggleOpenDeleteDictionaryModal(false))
             }
         )
     }
@@ -74,7 +74,7 @@ fun SettingsDictionariesPresenter(
     Scaffold(
         floatingActionButton = {
             AddButton(
-                onClick = { onAction(SettingsDictionariesAction.AddNewDictionary) },
+                onClick = { onAction(DictionaryListAction.AddNewDictionary) },
                 contentDescription = "ff"
             )
         }
@@ -98,7 +98,7 @@ fun SettingsDictionariesPresenter(
                     }
                 },
                 onSecondRightIconClick = {
-                    onAction(SettingsDictionariesAction.ToggleOpenDeleteDictionaryModal(true))
+                    onAction(DictionaryListAction.ToggleOpenDeleteDictionaryModal(true))
                 },
                 firstRightIcon = {
                     if (state.dictionaryList.filter { it.isSelected }.size == 1) {
@@ -112,7 +112,7 @@ fun SettingsDictionariesPresenter(
                         )
                     }
                 },
-                onFirstRightIconClick = { onAction(SettingsDictionariesAction.EditDictionary) },
+                onFirstRightIconClick = { onAction(DictionaryListAction.EditDictionary) },
             )
 
             Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
@@ -135,7 +135,7 @@ fun SettingsDictionariesPresenter(
 @Composable
 fun SettingsLanguageScreenPreview() {
     SettingsDictionariesPresenter(
-        state = SettingsDictionariesState(
+        state = DictionaryListState(
             dictionaryList = listOf(
                 Dictionary(
                     id = 0L,
@@ -156,7 +156,7 @@ fun SettingsLanguageScreenPreview() {
 @Composable
 fun SettingsLanguageScreenPreview2() {
     SettingsDictionariesPresenter(
-        state = SettingsDictionariesState(
+        state = DictionaryListState(
             dictionaryList = listOf(
                 Dictionary(
                     id = 0L,

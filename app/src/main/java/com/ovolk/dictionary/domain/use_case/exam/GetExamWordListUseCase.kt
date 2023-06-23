@@ -2,12 +2,18 @@ package com.ovolk.dictionary.domain.use_case.exam
 
 import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
 import com.ovolk.dictionary.data.mapper.WordMapper
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.response.Failure
+import com.ovolk.dictionary.domain.response.FailureMessage
+import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.daily_exam_settings.HandleDailyExamSettingsUseCase
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.presentation.exam.ExamMode
 import com.ovolk.dictionary.presentation.exam.ExamMode.DAILY_MODE
 import com.ovolk.dictionary.presentation.exam.ExamMode.INFINITY_MODE
@@ -16,6 +22,7 @@ import com.ovolk.dictionary.util.showVariantsAvailableLanguages
 import com.ovolk.dictionary.util.temporarryAnswerList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,18 +47,38 @@ class GetExamWordListUseCase @Inject constructor(
     private val dailyExamWordsCount =
         handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords.toInt()
 
-    suspend fun searchWordListSize() = coroutineScope { repository.searchWordListSize() }
-
-    suspend fun loadNextPage(listId: Long?, mode: ExamMode): ExamWordListUseCaseResponse? {
-        if (isLoadingNextPage) return null
-        return invoke(listId = listId, mode = mode)
+    suspend fun searchWordListSize(dictionaryId: Long?) = coroutineScope {
+        return@coroutineScope if (dictionaryId != null) {
+            repository.searchWordListSizeByDictionary(dictionaryId = dictionaryId)
+        } else {
+            repository.searchWordListSize()
+        }
     }
 
-    suspend operator fun invoke(isInitialLoad: Boolean = false, listId: Long?, mode: ExamMode) =
+    suspend fun loadNextPage(
+        listId: Long?,
+        mode: ExamMode,
+        dictionaryId: Long?
+    ): Either<ExamWordListUseCaseResponse, FailureMessage>? {
+        if (isLoadingNextPage) return null
+        return invoke(listId = listId, mode = mode, dictionaryId = dictionaryId)
+    }
+
+    suspend operator fun invoke(
+        isInitialLoad: Boolean = false,
+        listId: Long?,
+        mode: ExamMode,
+        dictionaryId: Long?
+    ): Either<ExamWordListUseCaseResponse, FailureMessage> =
         coroutineScope {
+
+            if (dictionaryId == null) {
+                return@coroutineScope Either.Failure(FailureMessage("you not pass dictionary"))
+            }
+
             isLoadingNextPage = true
             if (isInitialLoad) {
-                loadTotalCount(listId, mode)
+                loadTotalCount(listId = listId, mode = mode, dictionaryId = dictionaryId)
                 getExamWordListCurrentPage = 0
             }
             val skip = getExamWordListCurrentPage * dailyExamWordsCount
@@ -63,12 +90,14 @@ class GetExamWordListUseCase @Inject constructor(
                 repository.getExamWordListFromOneList(
                     count = dailyExamWordsCount,
                     skip = skip,
-                    listId = listId
+                    listId = listId,
+                    dictionaryId = dictionaryId,
                 )
             } else {
                 repository.getExamWordList(
                     count = dailyExamWordsCount,
                     skip = skip,
+                    dictionaryId = dictionaryId,
                 )
             }
 
@@ -79,7 +108,7 @@ class GetExamWordListUseCase @Inject constructor(
                 val randomWordTranslateIndex =
                     Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
 
-                 // // only for available languages for this feature
+                // // only for available languages for this feature
                 if (showVariantsAvailableLanguages.contains(examWord.langTo.uppercase())) {
                     examWord.answerVariants = answerList.slice(from until to)
                         .plus(ExamAnswerVariant(value = examWord.translates[randomWordTranslateIndex].value))
@@ -88,7 +117,7 @@ class GetExamWordListUseCase @Inject constructor(
                 }
 
                 val shouldInvertWord = Random.nextInt(0 until 2)
-                if (examLocalCache.getIsDoubleLanguageExamEnable() && shouldInvertWord== 1) {
+                if (examLocalCache.getIsDoubleLanguageExamEnable() && shouldInvertWord == 1) {
                     val randomInverseWordTranslateIndex =
                         Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
                     return@mapIndexed examWord.copy(
@@ -111,19 +140,24 @@ class GetExamWordListUseCase @Inject constructor(
                 }
             }
 
-            ExamWordListUseCaseResponse(
-                examWordList,
-                totalCount,
+            Either.Success(
+                ExamWordListUseCaseResponse(
+                    examWordList,
+                    totalCount,
+                )
+                    .apply { isLoadingNextPage = false }
             )
-                .apply { isLoadingNextPage = false }
         }
 
-    private fun loadTotalCount(listId: Long?, mode: ExamMode) {
+    private fun loadTotalCount(listId: Long?, mode: ExamMode, dictionaryId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             val tempTotalCount = if (listId == null) {
-                repository.getExamWordListSize()
+                repository.getExamWordListSize(dictionaryId = dictionaryId)
             } else {
-                repository.getExamWordListSizeForOneList(listId)
+                repository.getExamWordListSizeForOneList(
+                    listId = listId,
+                    dictionaryId = dictionaryId
+                )
             }
 
             totalCount = when (mode) {

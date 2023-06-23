@@ -10,7 +10,9 @@ import com.google.gson.Gson
 import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
+import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.util.EXAM_REMINDER_INTENT_CODE
 import com.ovolk.dictionary.util.PushFrequency
 import com.ovolk.dictionary.util.getExamReminderDelayFromNow
@@ -22,7 +24,8 @@ import javax.inject.Inject
 class ExamReminder @Inject constructor(
     private val application: Application,
     private val getExamWordListUseCase: GetExamWordListUseCase,
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase
 ) {
     private val gson = Gson()
 
@@ -134,19 +137,22 @@ class ExamReminder @Inject constructor(
         )
     }
 
-
+    // TODO figure out how reminder will be with dictionaries and if I change active dictionary
     suspend fun setInitialReminderIfNeeded() {
         coroutineScope {
-            val isWordListNoEmpty = getExamWordListUseCase.searchWordListSize()
-            isWordListNoEmpty.collectLatest { count ->
-                /**
-                 * On first install wordCount = 0, if user add one word, we setup reminder.
-                 * If user remove word and count = 0 we again reset reminder.
-                 */
-                when (count) {
-                    0 -> resetReminder()
-                    1 -> {
-                        setInitialReminder()
+            val activeDictionary = getActiveDictionaryUseCase.getDictionaryActive()
+            if(activeDictionary is Either.Success) {
+                val isWordListNoEmpty = getExamWordListUseCase.searchWordListSize(activeDictionary.value.id)
+                isWordListNoEmpty.collectLatest { count ->
+                    /**
+                     * On first install wordCount = 0, if user add one word, we setup reminder.
+                     * If user remove word and count = 0 we again reset reminder.
+                     */
+                    when (count) {
+                        0 -> resetReminder()
+                        1 -> {
+                            setInitialReminder()
+                        }
                     }
                 }
             }

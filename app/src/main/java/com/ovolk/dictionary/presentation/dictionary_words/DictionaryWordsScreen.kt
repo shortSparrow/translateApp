@@ -35,7 +35,7 @@ fun DictionaryWordsScreen(navController: NavHostController) {
             }
 
             override fun goToExam(dictionaryId: Long) {
-//                navController.navigate("${MainTabRotes.EXAM}")
+                navController.navigate("${MainTabRotes.EXAM}?dictionaryId=${dictionaryId}")
             }
         }
 

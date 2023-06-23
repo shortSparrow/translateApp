@@ -8,4 +8,4 @@ data class SettingsItem(
     val navigateTo: SettingsNavigation
 )
 
-enum class SettingsNavigation { LANGUAGE_SETTINGS, EXAM_REMINDER_SETTINGS, EXAM_DAILY_SETTINGS }
+enum class SettingsNavigation { DICTIONARY_LIST, EXAM_REMINDER_SETTINGS, EXAM_DAILY_SETTINGS }
