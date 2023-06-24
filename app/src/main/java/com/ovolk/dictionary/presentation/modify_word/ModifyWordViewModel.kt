@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.presentation.modify_word
 
 import android.app.Application
-import android.widget.Toast
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,6 +15,7 @@ import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
@@ -26,6 +27,7 @@ import com.ovolk.dictionary.domain.use_case.modify_word.AddedWordResult.WORD_ALR
 import com.ovolk.dictionary.domain.use_case.modify_word.DeleteWordUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.GetWordItemUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateDictionary
 import com.ovolk.dictionary.presentation.modify_word.helpers.validateTranslates
@@ -183,12 +185,10 @@ class ModifyWordViewModel @Inject constructor(
                             }
                             if (validationResult.value is FailureWithCode) {
                                 if (validationResult.value.code == UNKNOWN_ERROR) {
-                                    // TODO replace with nice toast
-                                    Toast.makeText(
-                                        application,
-                                        validationResult.value.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    GlobalSnackbarManger.showGlobalSnackbar(
+                                        duration = SnackbarDuration.Short,
+                                        data = SnackBarError(message = validationResult.value.message),
+                                    )
                                 }
                             }
                         }

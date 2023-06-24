@@ -1,17 +1,17 @@
 package com.ovolk.dictionary.data.in_memory_storage
 
-import androidx.appcompat.app.AppCompatActivity
+import com.ovolk.dictionary.di.MyEntryPoint
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.presentation.DictionaryApp
-import com.ovolk.dictionary.util.DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE
-import com.ovolk.dictionary.util.IS_DOUBLE_LANGUAGE_EXAM_ENABLE
-import com.ovolk.dictionary.util.SETTINGS_PREFERENCES
+import dagger.hilt.EntryPoints
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
 enum class ExamStatus { INACTIVE, IN_PROGRESS }
 
 // analog redux in RN
-class ExamLocalCache {
+class ExamLocalCache @Inject constructor(appSettingsRepository: AppSettingsRepository) {
     var examStatus: ExamStatus = ExamStatus.INACTIVE
         private set
 
@@ -20,16 +20,10 @@ class ExamLocalCache {
 
     private val _isInterruptExamPopupShown = MutableStateFlow(false)
     val isInterruptExamPopupShown = _isInterruptExamPopupShown.asStateFlow()
-    private var _isDoubleLanguageExamEnable: Boolean? = null
-
+    private var isDoubleLanguageExamEnable: Boolean = appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
 
     fun getIsDoubleLanguageExamEnable(): Boolean {
-        return _isDoubleLanguageExamEnable ?: kotlin.run {
-            DictionaryApp.applicationContext().getSharedPreferences( // TODO try to change with AppSettingsRepositoryImpl
-                SETTINGS_PREFERENCES,
-                AppCompatActivity.MODE_PRIVATE
-            ).getBoolean(IS_DOUBLE_LANGUAGE_EXAM_ENABLE, DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE)
-        }
+        return  isDoubleLanguageExamEnable
     }
 
     fun setInterruptedRoute(route: String?) {
@@ -58,7 +52,10 @@ class ExamLocalCache {
                 return it
             }
 
-            val localCache = ExamLocalCache()
+            // inject dependency
+            val localCache =
+                EntryPoints.get(DictionaryApp.applicationContext(), MyEntryPoint::class.java).getExamLocalCache()
+
             INSTANCE = localCache
             return localCache
         }

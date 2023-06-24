@@ -1,14 +1,15 @@
 package com.ovolk.dictionary.presentation.settings_dictionaries
 
-import android.widget.Toast
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
-import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -71,11 +72,10 @@ class DictionaryListViewModel @Inject constructor(
 
                     when (val response = dictionaryUseCase.deleteDictionaries(listToDelete)) {
                         is Either.Failure -> {
-                            Toast.makeText(
-                                DictionaryApp.applicationContext(),
-                                response.value.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            GlobalSnackbarManger.showGlobalSnackbar(
+                                duration = SnackbarDuration.Short,
+                                data = SnackBarError(message = response.value.message),
+                            )
                         }
 
                         is Either.Success -> {}

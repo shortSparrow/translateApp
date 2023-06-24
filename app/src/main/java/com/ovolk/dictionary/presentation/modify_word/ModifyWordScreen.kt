@@ -1,11 +1,13 @@
 package com.ovolk.dictionary.presentation.modify_word
 
-import android.widget.Toast
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarSuccess
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_word.compose.ModifyWordPresenter
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
@@ -15,11 +17,10 @@ import com.ovolk.dictionary.util.compose.BackHandler
 fun ModifyWordScreen(navController: NavHostController) {
 
     fun showMessage(text: String) {
-        Toast.makeText(
-            DictionaryApp.applicationContext(),
-            text,
-            Toast.LENGTH_SHORT
-        ).show()
+        GlobalSnackbarManger.showGlobalSnackbar(
+            duration = SnackbarDuration.Short,
+            data = SnackBarSuccess(message = text),
+        )
     }
 
     fun listener() = object : ModifyWordViewModel.Listener {

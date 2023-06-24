@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.presentation.lists
 
 import android.app.Application
-import android.widget.Toast
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +14,7 @@ import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.lists.AddNewListUseCase
 import com.ovolk.dictionary.domain.use_case.lists.DeleteListsUseCase
 import com.ovolk.dictionary.domain.use_case.lists.GetListsUseCase
@@ -21,6 +22,7 @@ import com.ovolk.dictionary.domain.use_case.lists.RenameListUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -86,7 +88,10 @@ class ListsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val activeDictionaryResponse = getActiveDictionaryUseCase.getDictionaryActive()) {
                 is Either.Failure -> {
-                    // TODO add snackbar
+                    GlobalSnackbarManger.showGlobalSnackbar(
+                        duration = SnackbarDuration.Short,
+                        data = SnackBarError(message = activeDictionaryResponse.value.message),
+                    )
                     state = state.copy(isLoadingList = LoadingState.SUCCESS)
                 }
 
@@ -124,8 +129,14 @@ class ListsViewModel @Inject constructor(
                 }
 
                 if (response.value is FailureWithCode && response.value.code == UNKNOWN_ERROR) {
-                    // TODO add snackbar
-                    Toast.makeText(application, response.value.message, Toast.LENGTH_SHORT).show()
+                    GlobalSnackbarManger.showGlobalSnackbar(
+                        duration = SnackbarDuration.Short,
+                        data = SnackBarError(message = response.value.message),
+                    )
+                    GlobalSnackbarManger.showGlobalSnackbar(
+                        duration = SnackbarDuration.Short,
+                        data = SnackBarError(message = response.value.message),
+                    )
                 }
             }
 

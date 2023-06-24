@@ -8,7 +8,7 @@ import com.ovolk.dictionary.domain.response.FailureMessage
 import javax.inject.Inject
 
 class GetActiveDictionaryUseCase @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
-    suspend fun getDictionaryActive(): Either<Dictionary, Failure> {
+    suspend fun getDictionaryActive(): Either<Dictionary, FailureMessage> {
         val dictionary =
             dictionaryRepository.getCurrentActiveDictionary()
 

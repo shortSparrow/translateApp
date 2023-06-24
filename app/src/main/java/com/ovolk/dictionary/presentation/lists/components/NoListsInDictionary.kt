@@ -31,7 +31,7 @@ fun NoListsInDictionary(onPressAddNewList: () -> Unit) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.empty_list),
-            contentDescription = stringResource(id = R.string.cd_nothing_found), // TODO replace with "there are no any list for this dictionary"
+            contentDescription = "there are no any list for this dictionary",
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
         )
         Text(

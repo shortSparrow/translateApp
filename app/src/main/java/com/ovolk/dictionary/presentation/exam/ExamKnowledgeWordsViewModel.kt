@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,11 +23,13 @@ import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -174,7 +177,10 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 
                         when (response) {
                             is Either.Failure -> {
-                                // todo add nice snackbar
+                                GlobalSnackbarManger.showGlobalSnackbar(
+                                    duration = SnackbarDuration.Short,
+                                    data = SnackBarError(message = response.value.message),
+                                )
                             }
 
                             is Either.Success -> {
@@ -254,7 +260,10 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             )
             when (response) {
                 is Either.Failure -> {
-                    // todo add nice snackbar
+                    GlobalSnackbarManger.showGlobalSnackbar(
+                        duration = SnackbarDuration.Short,
+                        data = SnackBarError(message = response.value.message),
+                    )
                     composeState = composeState.copy(isLoading = false)
                 }
 

@@ -55,7 +55,7 @@ fun DictionaryWords(
                 onAction = onAction,
             )
             if (state.loadingStatus == LoadingState.FAILED) {
-                // TODO
+                // TODO add layout
             }
 
             if (state.loadingStatus == LoadingState.SUCCESS && state.totalWordListSize == 0) {

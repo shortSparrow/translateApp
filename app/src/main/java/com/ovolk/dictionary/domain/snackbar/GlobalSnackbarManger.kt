@@ -1,8 +1,9 @@
 package com.ovolk.dictionary.domain.snackbar
 
 import androidx.compose.material.SnackbarDuration
+import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.presentation.core.snackbar.CustomSnackbarHostState
-import com.ovolk.dictionary.presentation.core.snackbar.SnackBarType
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarData
 import com.ovolk.dictionary.presentation.core.snackbar.SnackbarOffset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +20,9 @@ object GlobalSnackbarManger {
 
     fun showGlobalSnackbar(
         duration: SnackbarDuration = SnackbarDuration.Short,
-        data: SnackBarType,
+        data: SnackBarData,
         isHideOnAction: Boolean = false,
-        offset: SnackbarOffset
+        offset: SnackbarOffset =  SnackbarOffset(0.dp,(-80).dp)
     ) {
         // configure snackbar
         customSnackbarHostState.value = CustomSnackbarHostState(

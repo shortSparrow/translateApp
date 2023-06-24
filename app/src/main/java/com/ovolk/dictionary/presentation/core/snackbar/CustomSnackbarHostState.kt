@@ -13,7 +13,7 @@ data class SnackbarOffset(val x: Dp = 0.dp, val y: Dp = 0.dp)
 
 class CustomSnackbarHostState(
     val duration: SnackbarDuration = SnackbarDuration.Short,
-    val data: SnackBarType,
+    val data: SnackBarData,
     val isHideOnAction: Boolean = false,
     val offset: SnackbarOffset = SnackbarOffset(0.dp,0.dp),
 ) {

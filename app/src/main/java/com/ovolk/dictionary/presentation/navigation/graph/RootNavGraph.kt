@@ -15,9 +15,9 @@ object Graph {
 }
 
 @Composable
-fun RootNavigationGraph(navController: NavHostController, getIsWelcomeScreenPassed: ()-> Boolean) {
+fun RootNavigationGraph(navController: NavHostController, isWelcomeScreenPassed: Boolean) {
 
-    val startDestination = if (getIsWelcomeScreenPassed()) {
+    val startDestination = if (isWelcomeScreenPassed) {
         Graph.MAIN_TAB_BAR
     } else {
         Graph.WELCOME_SCREEN

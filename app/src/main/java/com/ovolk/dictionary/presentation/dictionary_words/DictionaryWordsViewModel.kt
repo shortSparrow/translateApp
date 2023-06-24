@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,9 +14,13 @@ import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.response.FailureMessage
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.SetIsActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarSuccess
 import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -75,9 +80,13 @@ class DictionaryWordsViewModel @Inject constructor(
 
             DictionaryWordsAction.OnPressConfirmDelete -> {
                 viewModelScope.launch {
-                    when (crudDictionaryUseCase.deleteDictionaries(listOf(dictionaryId))) {
+                    when (val response =
+                        crudDictionaryUseCase.deleteDictionaries(listOf(dictionaryId))) {
                         is Either.Failure -> {
-                            // TODO add nice snack bar with error
+                            GlobalSnackbarManger.showGlobalSnackbar(
+                                duration = SnackbarDuration.Short,
+                                data = SnackBarError(message = response.value.message),
+                            )
                         }
 
                         is Either.Success -> {
@@ -98,11 +107,19 @@ class DictionaryWordsViewModel @Inject constructor(
 
                     when (response) {
                         is Either.Failure -> {
-                            // TODO show nice snackbar
+                            if (response.value is FailureMessage) {
+                                GlobalSnackbarManger.showGlobalSnackbar(
+                                    duration = SnackbarDuration.Short,
+                                    data = SnackBarError(message = response.value.message),
+                                )
+                            }
                         }
 
                         is Either.Success -> {
-                            // TODO show nice snackbar
+                            GlobalSnackbarManger.showGlobalSnackbar(
+                                duration = SnackbarDuration.Short,
+                                data = SnackBarSuccess(message = "Congratulations ${state.dictionary?.title} now is active"),
+                            )
                         }
                     }
                 }
@@ -123,7 +140,7 @@ class DictionaryWordsViewModel @Inject constructor(
         }
     }
 
-    // todo maybe move it to compose
+    // TODO maybe move it to compose
     private fun playAudio(
         onStartListener: () -> Unit,
         word: WordRV,

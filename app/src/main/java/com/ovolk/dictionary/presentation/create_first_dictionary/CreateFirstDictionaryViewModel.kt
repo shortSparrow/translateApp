@@ -1,6 +1,6 @@
 package com.ovolk.dictionary.presentation.create_first_dictionary
 
-import android.widget.Toast
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,12 +14,13 @@ import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.response.Success
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.util.ValidationFailure
 import com.ovolk.dictionary.domain.use_case.select_languages.GetLanguageList
 import com.ovolk.dictionary.domain.use_case.select_languages.GetPreferredLanguages
-import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import com.ovolk.dictionary.presentation.modify_dictionary.utils.generateDictionaryNameLangFrom
 import com.ovolk.dictionary.presentation.modify_dictionary.utils.generateDictionaryNameLangTo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -211,13 +212,11 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
                 if (response.value is FailureWithCode) {
                     when (response.value.code) {
-                        // TODO replace with snackbar maybe
                         UNKNOWN_ERROR -> {
-                            Toast.makeText(
-                                DictionaryApp.applicationContext(),
-                                response.value.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            GlobalSnackbarManger.showGlobalSnackbar(
+                                duration = SnackbarDuration.Short,
+                                data = SnackBarError(message = response.value.message),
+                            )
                         }
                     }
                 }
