@@ -15,13 +15,12 @@ import com.ovolk.dictionary.data.database.app_settings.AppSettingsMigration
 import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
+import com.ovolk.dictionary.presentation.core.snackbar.CustomGlobalSnackbar
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.graph.RootNavigationGraph
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import com.ovolk.dictionary.util.PASSED_SEARCH_WORD
-import com.ovolk.dictionary.util.SETTINGS_PREFERENCES
-import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var appSettingsRepository: AppSettingsRepository
 
-    val appSettingsMigration =  AppSettingsMigration(DictionaryApp.applicationContext())
+    private val appSettingsMigration = AppSettingsMigration(DictionaryApp.applicationContext())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -51,13 +50,16 @@ class MainActivity : AppCompatActivity() {
             examReminder.setInitialReminderIfNeeded()
         }
 
+
         setContent {
             val navController = rememberNavController()
+
             AppCompatTheme {
                 RootNavigationGraph(
                     navController = navController,
                     getIsWelcomeScreenPassed = ::getIsWelcomeScreenPassed
                 )
+                CustomGlobalSnackbar()
             }
         }
     }
@@ -78,6 +80,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    // todo move to usecase
     private fun setupInitialDestination(intent: Intent?) {
         // get text from selected items
         val text = intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
@@ -98,7 +101,10 @@ class MainActivity : AppCompatActivity() {
                     val deepLinkPendingIntent: PendingIntent? =
                         TaskStackBuilder.create(context).run {
                             addNextIntentWithParentStack(deepLinkIntent)
-                            getPendingIntent(PASSED_SEARCH_WORD, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+                            getPendingIntent(
+                                PASSED_SEARCH_WORD,
+                                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                            )
                         }
                     deepLinkPendingIntent?.send()
                 } else {
@@ -111,7 +117,10 @@ class MainActivity : AppCompatActivity() {
                     val deepLinkPendingIntent: PendingIntent? =
                         TaskStackBuilder.create(context).run {
                             addNextIntentWithParentStack(deepLinkIntent)
-                            getPendingIntent(PASSED_SEARCH_WORD, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+                            getPendingIntent(
+                                PASSED_SEARCH_WORD,
+                                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                            )
                         }
 
                     deepLinkPendingIntent?.send()
