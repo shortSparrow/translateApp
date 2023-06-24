@@ -57,8 +57,6 @@ fun ExamScreen(navController: NavHostController) {
         }
     }
 
-
-
     BackHandler {
         if (examLocalCache.examStatus == ExamStatus.IN_PROGRESS) {
             examLocalCache.setIsInterruptExamPopupShown(true)

@@ -14,5 +14,4 @@ sealed interface DictionaryListAction {
     object DeleteDictionary : DictionaryListAction
     object EditDictionary : DictionaryListAction
     object AddNewDictionary : DictionaryListAction
-    object ClearDictionarySelection : DictionaryListAction
 }

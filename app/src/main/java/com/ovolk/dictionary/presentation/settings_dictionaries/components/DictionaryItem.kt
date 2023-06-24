@@ -15,17 +15,24 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
+import com.ovolk.dictionary.presentation.core.dialog.InfoDialogWithDescription
 import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -35,7 +42,9 @@ fun DictionaryItem(
     isSomeDictionarySelected: Boolean = false,
     onAction: (DictionaryListAction) -> Unit
 ) {
-    val context = LocalContext.current
+    var isStartDescriptionModalOpen by remember {
+        mutableStateOf(false)
+    }
 
     fun selectDictionary() {
         onAction(DictionaryListAction.OnSelectDictionary(dictionary.id))
@@ -46,12 +55,23 @@ fun DictionaryItem(
     }
 
     fun onStartClick() {
-        Toast.makeText(context, "This dictionary active", Toast.LENGTH_SHORT).show()
+        isStartDescriptionModalOpen = true
     }
 
 
     val borderColor =
         if (dictionary.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
+
+
+    if (isStartDescriptionModalOpen) {
+        InfoDialogWithDescription(
+            onDismissRequest = { isStartDescriptionModalOpen = false },
+            message = "This dictionary active",
+            description = "You mark the dictionary active for the languages you are currently learning. \nWhen you create new word or new list this dictionary will be prefilled. Words to daily exam will take from this dictionary",
+            onClick = { isStartDescriptionModalOpen = false },
+            buttonText = stringResource(id = R.string.ok),
+        )
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

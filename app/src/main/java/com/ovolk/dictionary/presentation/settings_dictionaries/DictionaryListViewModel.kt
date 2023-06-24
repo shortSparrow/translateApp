@@ -87,7 +87,6 @@ class DictionaryListViewModel @Inject constructor(
                 state = state.copy(isDeleteDictionaryModalOpen = action.isOpen)
             }
 
-            DictionaryListAction.ClearDictionarySelection -> TODO()
         }
     }
 
