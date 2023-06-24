@@ -58,7 +58,7 @@ fun SelectLanguages(
             if (preferredLanguages.isNotEmpty()) {
                 item {
                     PreferredLanguages(
-                        languages = preferredLanguages, // TODO remove list
+                        languages = preferredLanguages,
                         onCheck = { language -> onSelect(language.langCode) },
                         title = stringResource(id = R.string.settings_languages_from_to_selected_lang)
                     )

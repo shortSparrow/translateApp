@@ -1,13 +1,17 @@
 package com.ovolk.dictionary.data.mapper
 
-import com.ovolk.dictionary.data.model.*
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
-import com.ovolk.dictionary.domain.model.modify_word.WordRV
+import com.ovolk.dictionary.data.model.HintDb
+import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
+import com.ovolk.dictionary.data.model.TranslateDb
+import com.ovolk.dictionary.data.model.UpdatePriority
+import com.ovolk.dictionary.data.model.UpdatePriorityDb
+import com.ovolk.dictionary.data.model.WordFullDb
+import com.ovolk.dictionary.data.model.WordInfoDb
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
-import com.ovolk.dictionary.domain.model.lists.ListItem
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
+import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
@@ -19,7 +23,7 @@ class WordMapper @Inject constructor(
         wordFullDbToWordRv(it)
     }
 
-    private fun translateDbToLocal(translate: TranslateDb): Translate =
+    fun translateDbToLocal(translate: TranslateDb): Translate =
         Translate(
             id = translate.id,
             localId = translate.id,
@@ -104,71 +108,6 @@ class WordMapper @Inject constructor(
         dictionaryId = modifyWord.dictionary.id
     )
 
-    fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord =
-        ExamWord(
-            id = wordDb.wordInfo.id,
-            value = wordDb.wordInfo.value,
-            initialTranslates = wordDb.translates.map { translateDbToLocal(it) },
-            hints = wordDb.hints.map { hintDbToLocal(it) },
-            langTo = wordDb.dictionary.langToCode,
-            langFrom = wordDb.dictionary.langFromCode,
-            initialPriority = wordDb.wordInfo.priority,
-            initialStatus = ExamWordStatus.UNPROCESSED,
-            answerVariants = mutableListOf(),
-        )
-
-
-    fun examAnswerToExamAnswerDb(examAnswer: ExamAnswerVariant) = PotentialExamAnswerDb(
-        id = examAnswer.id,
-        value = examAnswer.value,
-    )
-
-    fun examAnswerDbToExamAnswer(examAnswer: PotentialExamAnswerDb) = ExamAnswerVariant(
-        id = examAnswer.id,
-        value = examAnswer.value,
-    )
-
-    fun fullListToLocal(listDb: List<FullListItem>): List<ListItem> =
-        listDb.map { fullListItemToLocal(it) }
-
-    fun fullListToModifyWordListItem(fullListItem: List<FullListItem>): List<ModifyWordListItem> =
-        fullListItem.map { fullListItemToModifyWordListItem(it) }
-
-    fun listItemToModifyWordListItem(listItem: ListItem): ModifyWordListItem = ModifyWordListItem(
-        id = listItem.id,
-        title = listItem.title,
-        count = listItem.count,
-        isSelected = listItem.isSelected,
-        dictionaryId = listItem.dictionaryId
-    )
-
-
-    fun fullListItemToModifyWordListItem(fullListItem: FullListItem): ModifyWordListItem =
-        ModifyWordListItem(
-            id = fullListItem.listInfo.id,
-            title = fullListItem.listInfo.title,
-            count = fullListItem.count,
-            isSelected = false,
-            dictionaryId = fullListItem.dictionary.id
-        )
-
-    fun fullListItemToLocal(listItemDb: FullListItem): ListItem = ListItem(
-        id = listItemDb.listInfo.id,
-        title = listItemDb.listInfo.title,
-        count = listItemDb.count,
-        createdAt = listItemDb.listInfo.createdAt,
-        updatedAt = listItemDb.listInfo.updatedAt,
-        isSelected = false,
-        dictionaryId = listItemDb.dictionary.id
-    )
-
-    fun listItemLocalToDb(listItem: ListItem): ListItemDb = ListItemDb(
-        id = listItem.id,
-        title = listItem.title,
-        createdAt = listItem.createdAt,
-        updatedAt = listItem.updatedAt,
-        dictionaryId = listItem.dictionaryId
-    )
 
     fun updatePriorityToUpdatePriorityDb(updatePriority: UpdatePriority) = UpdatePriorityDb(
         wordId = updatePriority.wordId,

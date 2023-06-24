@@ -17,9 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
+import com.ovolk.dictionary.util.helpers.get_preview_models.getListsList
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -114,7 +115,7 @@ fun ComposablePreviewDialogSelectList2() {
                 title = "Sport",
                 count = 5,
                 id = 2L,
-                isSelected = true, // TODO maybe remove isSelected
+                isSelected = true,
                 dictionaryId = 1L,
             )
         ),
@@ -130,50 +131,7 @@ fun ComposablePreviewDialogSelectList2() {
 fun ComposablePreviewDialogSelectListLarge() {
     DialogSelectList(
         selectedId = 2L,
-        list = listOf(
-            ModifyWordListItem(
-                title = "My List",
-                count = 10,
-                id = 1L,
-                isSelected = false,
-                dictionaryId = 1L,
-            ),
-            ModifyWordListItem(
-                title = "Sport",
-                count = 5,
-                id = 2L,
-                isSelected = true,
-                dictionaryId = 1L,
-            ),
-            ModifyWordListItem(
-                title = "A",
-                count = 5,
-                id = 3L,
-                isSelected = false,
-                dictionaryId = 1L,
-            ),
-            ModifyWordListItem(
-                title = "B",
-                count = 1,
-                id = 4L,
-                isSelected = false,
-                dictionaryId = 1L,
-            ),
-            ModifyWordListItem(
-                title = "C",
-                count = 3,
-                id = 5L,
-                isSelected = false,
-                dictionaryId = 1L,
-            ),
-            ModifyWordListItem(
-                title = "D",
-                count = 3,
-                id = 6L,
-                isSelected = false,
-                dictionaryId = 1L,
-            ),
-        ),
+        list = getListsList(),
         onDismissRequest = {},
         onItemsPress = {},
         onAddNewItemPress = {}

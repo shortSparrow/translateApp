@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.domain.repositories
 
 import com.ovolk.dictionary.domain.model.lists.ListItem
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import kotlinx.coroutines.flow.Flow
 

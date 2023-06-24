@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction

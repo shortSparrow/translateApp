@@ -1,18 +1,18 @@
 package com.ovolk.dictionary.data.database.exam
 
-import com.ovolk.dictionary.data.mapper.WordMapper
+import com.ovolk.dictionary.data.mapper.ExamMapper
 import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
-import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
+import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import javax.inject.Inject
 
 class ExamWordAnswerRepositoryImpl @Inject constructor(
     private val examWordAnswerDao: ExamWordAnswerDao,
-    private val mapper: WordMapper
+    private val examMapper: ExamMapper,
 ) : ExamWordAnswerRepository {
     override suspend fun getWordAnswerList(limit: Int): List<ExamAnswerVariant> {
         return examWordAnswerDao.getWordAnswerList(limit)
-            .map { mapper.examAnswerDbToExamAnswer(it) }
+            .map { examMapper.examAnswerDbToExamAnswer(it) }
     }
 
     override suspend fun modifyWordAnswer(potentialExamAnswerDb: PotentialExamAnswerDb): Boolean {
@@ -21,7 +21,7 @@ class ExamWordAnswerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setWordAnswerList(list: List<ExamAnswerVariant>) {
-        return examWordAnswerDao.setWordAnswerList(list.map { mapper.examAnswerToExamAnswerDb(it) })
+        return examWordAnswerDao.setWordAnswerList(list.map { examMapper.examAnswerToExamAnswerDb(it) })
     }
 
     companion object {

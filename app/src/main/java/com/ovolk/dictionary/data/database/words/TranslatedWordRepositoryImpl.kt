@@ -1,16 +1,17 @@
 package com.ovolk.dictionary.data.database.words
 
 import com.ovolk.dictionary.data.in_memory_storage.InMemoryStorage
+import com.ovolk.dictionary.data.mapper.ExamMapper
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.data.model.HintDb
 import com.ovolk.dictionary.data.model.TranslateDb
 import com.ovolk.dictionary.data.model.UpdatePriority
 import com.ovolk.dictionary.data.model.UpdatePriorityDb
 import com.ovolk.dictionary.data.model.WordInfoDb
-import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,7 +21,8 @@ import javax.inject.Inject
 // We copy them from inMemoryStorage implementation (Local Cache)
 class TranslatedWordRepositoryImpl @Inject constructor(
     private val translatedWordDao: TranslatedWordDao,
-    private val mapper: WordMapper,
+    private val wordMapper: WordMapper,
+    private val examMapper: ExamMapper,
     private val inMemoryStorage: InMemoryStorage,
 ) : TranslatedWordRepository, InMemoryStorage by inMemoryStorage {
     override suspend fun getWordsForSilentUpdatePriority(
@@ -31,7 +33,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             beforeUpdatedAt = beforeUpdatedAt,
             count = count
         )
-            .map { word -> mapper.wordFullDbToUpdatePriority(word) }
+            .map { word -> wordMapper.wordFullDbToUpdatePriority(word) }
     }
 
     override suspend fun getExamWordList(
@@ -44,7 +46,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             skip = skip,
             dictionaryId = dictionaryId
         )
-            .map { word -> mapper.wordFullDbToExamWord(word) }
+            .map { word -> examMapper.wordFullDbToExamWord(word) }
     }
 
     override suspend fun getExamWordListFromOneList(
@@ -60,7 +62,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             listId = listId,
             dictionaryId = dictionaryId
         )
-            .map { word -> mapper.wordFullDbToExamWord(word) }
+            .map { word -> examMapper.wordFullDbToExamWord(word) }
     }
 
     override suspend fun getExamWordListSize(dictionaryId: Long): Int {
@@ -77,7 +79,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     override suspend fun searchWordList(query: String): Flow<List<WordRV>> {
         return translatedWordDao.searchWordList(query = "%$query%")
             .map { list ->
-                mapper.wordListDbToWordList(list)
+                wordMapper.wordListDbToWordList(list)
             }
     }
 
@@ -90,14 +92,14 @@ class TranslatedWordRepositoryImpl @Inject constructor(
             dictionaryId = dictionaryId
         )
             .map { list ->
-                mapper.wordListDbToWordList(list)
+                wordMapper.wordListDbToWordList(list)
             }
     }
 
     override suspend fun searchExactWord(query: String): WordRV? {
         val res = translatedWordDao.searchExactWord(query = query)
         return if (res != null) {
-            mapper.wordFullDbToWordRv(res)
+            wordMapper.wordFullDbToWordRv(res)
         } else {
             res
         }
@@ -112,7 +114,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getWordById(id: Long): ModifyWord {
-        return mapper.wordFullDbToModifyWord(translatedWordDao.getWordById(id))
+        return wordMapper.wordFullDbToModifyWord(translatedWordDao.getWordById(id))
     }
 
     override suspend fun getWordByValue(value: String, dictionaryId: Long): Long {
@@ -132,7 +134,7 @@ class TranslatedWordRepositoryImpl @Inject constructor(
 
     override suspend fun getWordsForDelayedUpdatePriority(): List<UpdatePriority> {
         return translatedWordDao.getWordsForDelayedUpdatePriority()
-            .map { mapper.updatePriorityDbToUpdatePriority(it) }
+            .map { wordMapper.updatePriorityDbToUpdatePriority(it) }
     }
 
     override suspend fun addWordForDelayedUpdatePriority(word: UpdatePriorityDb): Boolean {

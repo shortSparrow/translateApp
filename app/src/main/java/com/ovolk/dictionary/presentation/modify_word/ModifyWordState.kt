@@ -3,8 +3,7 @@ package com.ovolk.dictionary.presentation.modify_word
 import androidx.compose.runtime.Stable
 import com.ovolk.dictionary.domain.SimpleError
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
-import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
@@ -24,7 +23,6 @@ data class AddNewLangModal(
 
 data class InitialState(
     val composeState: ComposeState = ComposeState(),
-//    val dictionaryState:DictionaryState = DictionaryState(),
     val translateState: Translates = Translates(),
     val hintState: Hints = Hints(),
     val recordAudio: RecordAudioHandler
