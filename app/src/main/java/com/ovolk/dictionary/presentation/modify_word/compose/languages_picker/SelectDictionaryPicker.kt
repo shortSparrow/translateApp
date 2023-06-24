@@ -7,7 +7,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -266,11 +264,9 @@ fun SelectDictionaryPicker(
 fun SelectLanguagePreview() {
     SelectDictionaryPicker(
         selectedDictionary = Dictionary(
-            // TODO remove isSelected from this Dictionary. Create just dictionary and SelectableDictionary for settings
             id = 0L,
             title = "FR-PL",
             isActive = false,
-            isSelected = false,
             langFromCode = "FR",
             langToCode = "PL",
         ),
@@ -279,7 +275,6 @@ fun SelectLanguagePreview() {
                 id = 0L,
                 title = "FR-PL",
                 isActive = false,
-                isSelected = false,
                 langFromCode = "FR",
                 langToCode = "PL",
             ),
@@ -287,7 +282,6 @@ fun SelectLanguagePreview() {
                 id = 1L,
                 title = "EN-UA",
                 isActive = false,
-                isSelected = true,
                 langFromCode = "EN",
                 langToCode = "UA",
             )
@@ -307,7 +301,6 @@ fun SelectLanguagePreview2() {
             id = 1L,
             title = "EN-UA",
             isActive = false,
-            isSelected = true,
             langFromCode = "EN",
             langToCode = "UA",
         ),
@@ -316,7 +309,6 @@ fun SelectLanguagePreview2() {
                 id = 0L,
                 title = "FR-PL",
                 isActive = false,
-                isSelected = false,
                 langFromCode = "FR",
                 langToCode = "PL",
             ),
@@ -324,7 +316,6 @@ fun SelectLanguagePreview2() {
                 id = 1L,
                 title = "EN-UA",
                 isActive = false,
-                isSelected = true,
                 langFromCode = "EN",
                 langToCode = "UA",
             )

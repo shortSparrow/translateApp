@@ -175,7 +175,6 @@ fun PreviewListsScreenLoadedWithLists() {
                     langToCode = "UK",
                     title = "EN-UK",
                     isActive = true,
-                    isSelected = false
                 )
             ),
             dictionaryList = listOf(
@@ -185,7 +184,6 @@ fun PreviewListsScreenLoadedWithLists() {
                     langToCode = "UK",
                     title = "EN-UK",
                     isActive = true,
-                    isSelected = false
                 )
             ),
             list = listOf(
@@ -226,7 +224,6 @@ fun PreviewListsScreenLoadedWithSelectedList() {
                     langToCode = "UK",
                     title = "EN-UK",
                     isActive = true,
-                    isSelected = false
                 )
             ),
             dictionaryList = listOf(
@@ -236,7 +233,6 @@ fun PreviewListsScreenLoadedWithSelectedList() {
                     langToCode = "UK",
                     title = "EN-UK",
                     isActive = true,
-                    isSelected = false
                 )
             ),
             list = listOf(
@@ -279,7 +275,6 @@ fun PreviewListsScreenWithoutCurrentDictionary() {
                     langToCode = "UK",
                     title = "EN-UK",
                     isActive = true,
-                    isSelected = false
                 )
             ),
             list = listOf(

@@ -1,6 +1,8 @@
 package com.ovolk.dictionary.domain.use_case.modify_dictionary
 
+import com.ovolk.dictionary.data.mapper.DictionaryMapper
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.domain.repositories.DictionaryRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
@@ -9,6 +11,7 @@ import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.util.validateNewDictionary
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 const val DICTIONARY_NOT_EXIST = 1
@@ -16,9 +19,22 @@ const val DICTIONARY_ALREADY_EXIST = 2
 const val UNKNOWN_ERROR = 6
 
 
-class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository: DictionaryRepository) {
+class CrudDictionaryUseCase @Inject constructor(
+    private val dictionaryRepository: DictionaryRepository,
+    private val mapper: DictionaryMapper
+) {
     fun getDictionaryList(): Flow<List<Dictionary>> {
         return dictionaryRepository.getDictionaryList()
+    }
+
+    fun getSelectableDictionaryList(): Flow<List<SelectableDictionary>> {
+        return getDictionaryList().map { list ->
+            list.map {
+                mapper.dictionaryToSelectableDictionary(
+                    it
+                )
+            }
+        }
     }
 
     fun getDictionaryFlow(dictionaryId: Long): Flow<Dictionary?> {
@@ -73,7 +89,6 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
             langToCode = langToCode,
             langFromCode = langFromCode,
             isActive = dictionaryRepository.getDictionaryListSize() == 0, // if it is first dictionary make it active
-            isSelected = false,
         )
         val response = dictionaryRepository.addNewDictionary(dictionary = dictionary)
 
@@ -110,7 +125,6 @@ class CrudDictionaryUseCase @Inject constructor(private val dictionaryRepository
             langToCode = langToCode as String,
             langFromCode = langFromCode as String,
             isActive = isActive,
-            isSelected = false,
         )
         val response = dictionaryRepository.addNewDictionary(dictionary = dictionary)
 

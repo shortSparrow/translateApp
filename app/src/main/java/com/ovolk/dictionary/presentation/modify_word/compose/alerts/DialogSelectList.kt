@@ -114,7 +114,7 @@ fun ComposablePreviewDialogSelectList2() {
                 title = "Sport",
                 count = 5,
                 id = 2L,
-                isSelected = true,// TODO maybe remove isSelected
+                isSelected = true, // TODO maybe remove isSelected
                 dictionaryId = 1L,
             )
         ),

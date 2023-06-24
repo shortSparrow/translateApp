@@ -1,9 +1,9 @@
 package com.ovolk.dictionary.presentation.settings_dictionaries
 
-import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 
 data class DictionaryListState(
-    val dictionaryList: List<Dictionary> = emptyList(),
+    val dictionaryList: List<SelectableDictionary> = emptyList(),
     val isDeleteDictionaryModalOpen: Boolean = false,
 )
 

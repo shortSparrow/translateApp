@@ -6,5 +6,13 @@ data class Dictionary(
     val langFromCode: String,
     val langToCode: String,
     val isActive: Boolean,
+)
+
+data class SelectableDictionary(
+    val id: Long,
+    val title: String,
+    val langFromCode: String,
+    val langToCode: String,
+    val isActive: Boolean,
     val isSelected: Boolean,
 )

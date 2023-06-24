@@ -120,7 +120,6 @@ fun DictionaryWordsPreview() {
                 langToCode = "UK",
                 langFromCode = "EN",
                 isActive = true,
-                isSelected = false,
             ),
             totalWordListSize = getPreviewWordList().size,
             filteredWordList = getPreviewWordList(),

@@ -29,13 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.presentation.core.dialog.InfoDialogWithDescription
 import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DictionaryItem(
-    dictionary: Dictionary,
+    dictionary: SelectableDictionary,
     isSomeDictionarySelected: Boolean = false,
     onAction: (DictionaryListAction) -> Unit
 ) {
@@ -123,7 +124,7 @@ fun DictionaryItem(
 @Composable
 fun DictionaryItemPreviewActive() {
     DictionaryItem(
-        dictionary = Dictionary(
+        dictionary = SelectableDictionary(
             id = 0L,
             title = "EN-UA",
             langFromCode = "EN",
@@ -139,7 +140,7 @@ fun DictionaryItemPreviewActive() {
 @Composable
 fun DictionaryItemPreviewNotActive() {
     DictionaryItem(
-        dictionary = Dictionary(
+        dictionary = SelectableDictionary(
             id = 0L,
             title = "EN-FR",
             langFromCode = "EN",
@@ -155,7 +156,7 @@ fun DictionaryItemPreviewNotActive() {
 @Composable
 fun DictionaryItemPreviewSelected() {
     DictionaryItem(
-        dictionary = Dictionary(
+        dictionary = SelectableDictionary(
             id = 0L,
             title = "EN-FR",
             langFromCode = "EN",

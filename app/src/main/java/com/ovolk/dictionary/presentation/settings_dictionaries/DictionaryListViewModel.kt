@@ -31,7 +31,7 @@ class DictionaryListViewModel @Inject constructor(
 
     private fun getDictionaries() {
         viewModelScope.launch {
-            dictionaryUseCase.getDictionaryList().collectLatest { dictionaryList ->
+            dictionaryUseCase.getSelectableDictionaryList().collectLatest { dictionaryList ->
                 state = state.copy(dictionaryList = dictionaryList)
             }
         }

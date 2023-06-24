@@ -11,7 +11,6 @@ fun ModifyDictionaryScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<ModifyDictionaryViewModel>()
     val state = viewModel.state
 
-    // TODO add modal if there are unsaved changes
     LaunchedEffect(Unit) {
         viewModel.listener = object : ModifyDictionaryViewModel.Listener {
             override fun goBack() {

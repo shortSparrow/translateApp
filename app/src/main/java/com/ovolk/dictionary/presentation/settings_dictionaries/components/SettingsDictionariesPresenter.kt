@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.header.Header
@@ -137,7 +138,7 @@ fun SettingsLanguageScreenPreview() {
     SettingsDictionariesPresenter(
         state = DictionaryListState(
             dictionaryList = listOf(
-                Dictionary(
+                SelectableDictionary(
                     id = 0L,
                     title = "EN-UA",
                     isActive = true,
@@ -158,7 +159,7 @@ fun SettingsLanguageScreenPreview2() {
     SettingsDictionariesPresenter(
         state = DictionaryListState(
             dictionaryList = listOf(
-                Dictionary(
+                SelectableDictionary(
                     id = 0L,
                     title = "FR-PL",
                     isActive = false,
@@ -166,7 +167,7 @@ fun SettingsLanguageScreenPreview2() {
                     langFromCode = "FR",
                     langToCode = "PL",
                 ),
-                Dictionary(
+                SelectableDictionary(
                     id = 1L,
                     title = "EN-UA",
                     isActive = false,

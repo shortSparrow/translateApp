@@ -53,7 +53,6 @@ class GenerateFakeWords constructor(
                         langFromCode = "EN",
                         langToCode = "UA",
                         title = "EN-UA",
-                        isSelected = false,
                         isActive = true,
                     )
                 )
