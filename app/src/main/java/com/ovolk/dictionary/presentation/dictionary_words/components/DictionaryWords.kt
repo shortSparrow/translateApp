@@ -56,7 +56,7 @@ fun DictionaryWords(
                 onAction = onAction,
             )
             if (state.loadingStatus == LoadingState.FAILED) {
-                // TODO add layout
+                FailedLoadDictionary()
             }
 
             if (state.loadingStatus == LoadingState.SUCCESS && state.totalWordListSize == 0) {
@@ -125,6 +125,18 @@ fun DictionaryWordsPreview() {
             totalWordListSize = getPreviewWordList().size,
             filteredWordList = getPreviewWordList(),
             loadingStatus = LoadingState.SUCCESS
+        ),
+        onAction = {},
+        goBack = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DictionaryWordsPreview2() {
+    DictionaryWords(
+        state = DictionaryWordsState(
+            loadingStatus = LoadingState.FAILED
         ),
         onAction = {},
         goBack = {},
