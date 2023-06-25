@@ -1,5 +1,7 @@
 package com.ovolk.dictionary.domain.use_case.modify_dictionary
 
+import android.app.Application
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.mapper.DictionaryMapper
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
@@ -21,7 +23,8 @@ const val UNKNOWN_ERROR = 6
 
 class CrudDictionaryUseCase @Inject constructor(
     private val dictionaryRepository: DictionaryRepository,
-    private val mapper: DictionaryMapper
+    private val mapper: DictionaryMapper,
+    private val application: Application,
 ) {
     fun getDictionaryList(): Flow<List<Dictionary>> {
         return dictionaryRepository.getDictionaryList()
@@ -46,10 +49,10 @@ class CrudDictionaryUseCase @Inject constructor(
         if (response == null) {
             return Either.Failure(
                 FailureWithCode(
-                    "this dictionary does not exist",
+                    application.getString(R.string.crud_dictionary_use_case_dictionary_not_exist),
                     DICTIONARY_NOT_EXIST
                 )
-            );
+            )
         }
         return Either.Success(response)
     }
@@ -77,7 +80,7 @@ class CrudDictionaryUseCase @Inject constructor(
         if (isTheSameDictionaryExist) {
             return Either.Failure(
                 FailureWithCode(
-                    "Dictionary with the same languages already exist",
+                    application.getString(R.string.crud_dictionary_use_case_dictionary_already_exist),
                     code = DICTIONARY_ALREADY_EXIST
                 )
             )
@@ -94,7 +97,7 @@ class CrudDictionaryUseCase @Inject constructor(
 
         return if (response == -1L) return Either.Failure(
             FailureWithCode(
-                "Something went wrong, please, try again",
+                application.getString(R.string.something_wrong_try_again),
                 code = UNKNOWN_ERROR
             )
         )
@@ -130,7 +133,7 @@ class CrudDictionaryUseCase @Inject constructor(
 
         return if (response == -1L) return Either.Failure(
             FailureWithCode(
-                "Something went wrong, please, try again",
+                application.getString(R.string.something_wrong_try_again),
                 code = UNKNOWN_ERROR
             )
         )
@@ -143,8 +146,11 @@ class CrudDictionaryUseCase @Inject constructor(
         if (isDeleteSuccess) {
             return Either.Success(Success)
         }
-        val errorMessage =
-            if (dictionaryListId.size == 1) "Can't delete this dictionary" else "Can't delete these dictionaries"
+
+        val errorMessage = application.resources.getQuantityString(
+            R.plurals.crud_dictionary_use_case_cant_delete_dictionary,
+            dictionaryListId.size,
+        )
         return Either.Failure(FailureMessage(errorMessage))
     }
 

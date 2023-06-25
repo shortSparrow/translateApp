@@ -56,16 +56,13 @@ fun LanguagesPicker(
         }
 
         Row(
-            modifier = Modifier
-                .width(selectLanguagePickerWidth * 2 + (40 + 20).dp),
+            modifier = Modifier.width(selectLanguagePickerWidth * 2 + (40 + 20).dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            PickLanguageButton(
-                langName = languageFromName,
+            PickLanguageButton(langName = languageFromName,
                 validationError = langFromValidation,
-                hintMessage = if (languageFromName == null) "select language" else null,
-                onClick = { openLanguageBottomSheet(LanguagesType.LANG_FROM) }
-            )
+                hintMessage = if (languageFromName == null) stringResource(id = R.string.modify_word_select_language_placeholder) else null,
+                onClick = { openLanguageBottomSheet(LanguagesType.LANG_FROM) })
 
             Column {
                 Divider(
@@ -76,12 +73,10 @@ fun LanguagesPicker(
                 )
             }
 
-            PickLanguageButton(
-                langName = languageToName,
+            PickLanguageButton(langName = languageToName,
                 validationError = langToValidation,
-                hintMessage = if (languageToName == null) "select language" else null,
-                onClick = { openLanguageBottomSheet(LanguagesType.LANG_TO) }
-            )
+                hintMessage = if (languageToName == null) stringResource(id = R.string.modify_word_select_language_placeholder) else null,
+                onClick = { openLanguageBottomSheet(LanguagesType.LANG_TO) })
         }
     }
 }
@@ -89,35 +84,31 @@ fun LanguagesPicker(
 @Composable
 @Preview(showBackground = true)
 fun LanguagesPickerPreview() {
-    LanguagesPicker(
-        languageFromName = "EN",
+    LanguagesPicker(languageFromName = "EN",
         languageToName = "UK",
         langToValidation = ValidateResult(),
         langFromValidation = ValidateResult(),
-        openLanguageBottomSheet = {}
-    )
+        openLanguageBottomSheet = {})
 }
 
 @Composable
 @Preview(showBackground = true)
 fun LanguagesPickerPreview2() {
-    LanguagesPicker(
-        languageFromName = "FR",
+    LanguagesPicker(languageFromName = "FR",
         languageToName = "EN",
         langFromValidation = ValidateResult(),
         langToValidation = ValidateResult(),
-        openLanguageBottomSheet = {}
-    )
+        openLanguageBottomSheet = {})
 }
 
 @Composable
 @Preview(showBackground = true)
 fun LanguagesPickerPreview3() {
-    LanguagesPicker(
-        languageFromName = null,
+    LanguagesPicker(languageFromName = null,
         languageToName = "EN",
-        langFromValidation = ValidateResult(successful = false, errorMessage = "this filed is required"),
+        langFromValidation = ValidateResult(
+            successful = false, errorMessage = "this filed is required"
+        ),
         langToValidation = ValidateResult(),
-        openLanguageBottomSheet = {}
-    )
+        openLanguageBottomSheet = {})
 }

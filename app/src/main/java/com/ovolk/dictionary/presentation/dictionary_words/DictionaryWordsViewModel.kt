@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.response.Either
@@ -118,7 +119,12 @@ class DictionaryWordsViewModel @Inject constructor(
                         is Either.Success -> {
                             GlobalSnackbarManger.showGlobalSnackbar(
                                 duration = SnackbarDuration.Short,
-                                data = SnackBarSuccess(message = "Congratulations ${state.dictionary?.title} now is active"),
+                                data = SnackBarSuccess(
+                                    message = application.getString(
+                                        R.string.dictionary_word_list_dictionary_marked_active,
+                                        state.dictionary?.title
+                                    )
+                                ),
                             )
                         }
                     }

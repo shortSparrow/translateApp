@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.presentation.core.dialog.InfoDialogWithDescription
 import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
@@ -64,8 +63,8 @@ fun DictionaryItem(
     if (isStartDescriptionModalOpen) {
         InfoDialogWithDescription(
             onDismissRequest = { isStartDescriptionModalOpen = false },
-            message = "This dictionary active",
-            description = "You mark the dictionary active for the languages you are currently learning. \nWhen you create new word or new list this dictionary will be prefilled. Words to daily exam will take from this dictionary",
+            message = stringResource(id = R.string.setting_dictionaries_active_dialog_title),
+            description = stringResource(id = R.string.setting_dictionaries_active_dialog_description),
             onClick = { isStartDescriptionModalOpen = false },
             buttonText = stringResource(id = R.string.ok),
         )

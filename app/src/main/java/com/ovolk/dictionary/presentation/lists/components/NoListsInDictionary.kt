@@ -31,11 +31,11 @@ fun NoListsInDictionary(onPressAddNewList: () -> Unit) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.empty_list),
-            contentDescription = "there are no any list for this dictionary",
+            contentDescription = stringResource(id = R.string.lists_screen_no_list_for_dictionary),
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
         )
         Text(
-            text = stringResource(id = R.string.nothing_found),
+            text = stringResource(id = R.string.lists_screen_no_list_for_dictionary),
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
             fontSize = 20.sp,
             color = colorResource(id = R.color.grey_2)

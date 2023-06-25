@@ -1,16 +1,18 @@
 package com.ovolk.dictionary.presentation.core.dictionaries
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.ovolk.dictionary.R
 
 @Composable
 fun NoDictionaries(onPressAddNewDictionary: () -> Unit) {
     NoDictionaryBase(
         onPressAddNewDictionary = { onPressAddNewDictionary() },
-        buttonText = "create dictionary".uppercase(),
-        imageDescription = "there are not any dictionary",
-        title = "Looks lie you don't have any dictionary",
-        description = "At first create dictionary where you can put your lists",
+        buttonText = stringResource(id = R.string.create_dictionary).uppercase(),
+        imageDescription = stringResource(id = R.string.no_any_dictionary_image_cd),
+        title = stringResource(id = R.string.no_any_dictionary_message),
+        description = stringResource(id = R.string.no_any_dictionary_description),
     )
 }
 

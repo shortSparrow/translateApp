@@ -216,7 +216,7 @@ fun SelectDictionaryPicker(
                 )
                 .zIndex(0F),
         ) {
-            Column() {
+            Column {
                 LazyColumn(
                     modifier = Modifier
                         .heightIn(50.dp, maxHeight)
@@ -244,7 +244,7 @@ fun SelectDictionaryPicker(
                         ) {
                             OutlinedButton(onClick = ::onAddNewDictionaryPress) {
                                 Text(
-                                    text = "Add new Dictionary".uppercase(),
+                                    text = stringResource(id = R.string.add_new_dictionary).uppercase(),
                                     modifier = Modifier,
                                     color = colorResource(id = R.color.blue)
                                 )

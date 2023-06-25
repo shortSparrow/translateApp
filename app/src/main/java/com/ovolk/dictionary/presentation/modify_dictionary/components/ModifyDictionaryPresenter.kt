@@ -42,12 +42,21 @@ fun ModifyDictionaryPresenter(
 
         InfoDialog(
             onDismissRequest = ::closeDictionary,
-            message = "Dictionary ${state.dictionaryName} already exist",
+            message = stringResource(
+                id = R.string.modify_dictionary_dictionary_already_exist_title,
+                state.dictionaryName
+            ),
             onClick = ::closeDictionary,
             buttonText = stringResource(id = R.string.ok)
         )
     }
 
+    // todo add here info about mode or title
+//    val screenTitle =
+//        if (true) stringResource(id = R.string.modify_dictionary_screen_title_mode_add)
+//        else stringResource(
+//            id = R.string.modify_dictionary_screen_title_mode_edit, state.dictionaryName
+//        )
     SelectLanguageBottomSheet(
         isBottomSheetOpen = state.languageBottomSheet.isOpen,
         languageList = state.languageBottomSheet.languageList,
@@ -58,9 +67,10 @@ fun ModifyDictionaryPresenter(
         onSearchLanguage = { value -> onAction(ModifyDictionaryAction.OnSearchLanguage(value)) },
         closeLanguageBottomSheet = { onAction(ModifyDictionaryAction.CloseLanguageBottomSheet) },
         body = {
-            Column() {
+            Column {
                 Header(
                     title = "ModifyDictionary",
+//                    title = screenTitle,
                     withBackButton = true,
                     onBackButtonClick = goBack
                 )
@@ -87,11 +97,11 @@ fun ModifyDictionaryPresenter(
                         .padding(20.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column() {
+                    Column {
                         OutlinedErrableTextField(
                             value = state.dictionaryName,
                             onValueChange = { onAction(ModifyDictionaryAction.OnInputTitle(it)) },
-                            label = { Text(text = "Dictionary name") },
+                            label = { Text(text = stringResource(id = R.string.modify_dictionary_dictionary_name_placeholder)) },
                             modifier = Modifier.fillMaxWidth(),
                             isError = !state.dictionaryNameValidation.successful,
                             errorMessage = state.dictionaryNameValidation.errorMessage,
@@ -117,7 +127,7 @@ fun ModifyDictionaryPresenter(
                         onClick = { onAction(ModifyDictionaryAction.SaveDictionary) },
                         modifier = Modifier.fillMaxWidth(1f)
                     ) {
-                        Text(text = "Save", color = colorResource(id = R.color.white))
+                        Text(text = stringResource(id = R.string.save), color = colorResource(id = R.color.white))
                     }
                 }
             }

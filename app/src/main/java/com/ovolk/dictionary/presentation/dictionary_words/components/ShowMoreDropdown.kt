@@ -89,7 +89,7 @@ fun ShowMoreDropdown(
                         modifier = iconModifier
                     )
                     Text(
-                        "Make active",
+                        stringResource(id = R.string.make_active),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

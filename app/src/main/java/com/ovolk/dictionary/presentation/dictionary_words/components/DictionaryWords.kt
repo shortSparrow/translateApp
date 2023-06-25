@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
@@ -30,7 +31,7 @@ fun DictionaryWords(
 
     if (state.isDeleteConfirmModalOpen) {
         DeleteDictionaryDialog(
-            dictionaryTitle = state.dictionary?.title ?: "unkown",
+            dictionaryTitle = state.dictionary?.title ?: stringResource(id = R.string.unknown),
             onConfirmDelete = { onAction(DictionaryWordsAction.OnPressConfirmDelete) },
             onDecline = { onAction(DictionaryWordsAction.HandleDeleteDictionaryModal(false)) },
         )
@@ -42,7 +43,7 @@ fun DictionaryWords(
             if (state.loadingStatus == LoadingState.SUCCESS && state.totalWordListSize != 0) {
                 AddButton(
                     onClick = { onAction(DictionaryWordsAction.OnPressAddNewWord) },
-                    contentDescription = "add new word"
+                    contentDescription = stringResource(id = R.string.cd_add_new_word_to_dictionary)
                 )
             }
         },

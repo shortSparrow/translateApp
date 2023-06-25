@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -88,7 +89,7 @@ fun CustomSnackbarLayout(state: CustomSnackbarHostState) {
                     is SnackBarError -> {
                         Icon(
                             painterResource(id = R.drawable.error_sign),
-                            contentDescription = "error happend",
+                            contentDescription = stringResource(id = R.string.cd_action_error),
                             tint = colorResource(id = R.color.white)
                         )
                     }
@@ -96,14 +97,14 @@ fun CustomSnackbarLayout(state: CustomSnackbarHostState) {
                     is SnackBarSuccess -> {
                         Image(
                             painterResource(id = R.drawable.check_mark),
-                            contentDescription = "action was succeed",
+                            contentDescription = stringResource(id = R.string.cd_action_success),
                         )
                     }
 
                     is SnackBarInfo -> {
                         Icon(
                             painterResource(id = R.drawable.stars),
-                            contentDescription = "action was succeed",
+                            contentDescription = stringResource(id = R.string.cd_action_information),
                             tint = colorResource(id = R.color.white)
                         )
                     }
@@ -111,7 +112,7 @@ fun CustomSnackbarLayout(state: CustomSnackbarHostState) {
                     is SnackBarAlert -> {
                         Icon(
                             painterResource(id = R.drawable.error_sign),
-                            contentDescription = "action was succeed",
+                            contentDescription = stringResource(id = R.string.cd_action_alert),
                             tint = colorResource(id = R.color.white)
                         )
                     }

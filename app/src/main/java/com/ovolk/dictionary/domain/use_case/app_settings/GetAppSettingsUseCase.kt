@@ -5,6 +5,4 @@ import javax.inject.Inject
 
 class GetAppSettingsUseCase @Inject constructor(
     private val application: Application,
-) {
-
-}
+)

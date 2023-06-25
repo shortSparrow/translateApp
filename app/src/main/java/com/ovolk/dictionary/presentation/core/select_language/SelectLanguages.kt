@@ -19,6 +19,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.presentation.core.SearchBar
 import com.ovolk.dictionary.presentation.core.languages.PreferredLanguages
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewLanguagesList
 
 @Composable
 fun SelectLanguages(
@@ -79,39 +80,7 @@ fun SelectLanguages(
 @Composable
 fun SettingsLanguagesToScreenPreview() {
     SelectLanguages(
-        languageList = listOf(
-            Language(
-                langCode = "rm",
-                name = "Romansh",
-                nativeName = "rumantsch grischun"
-            ),
-            Language(
-                langCode = "sd",
-                name = "Sindhi",
-                nativeName = "सिन्धी"
-            ),
-            Language(
-                langCode = "uk",
-                name = "Ukrainian",
-                nativeName = "українська",
-                isChecked = true
-            ),
-            Language(
-                langCode = "en",
-                name = "English",
-                nativeName = "English"
-            ),
-            Language(
-                langCode = "se",
-                name = "Northern Sami",
-                nativeName = "Davvisámegiella"
-            ),
-            Language(
-                langCode = "sm",
-                name = "Samoan",
-                nativeName = "gagana faa Samoa"
-            ),
-        ),
+        languageList = getPreviewLanguagesList(),
         shouldClearSearchField = false,
         onSearch = {},
         onSelect = {},

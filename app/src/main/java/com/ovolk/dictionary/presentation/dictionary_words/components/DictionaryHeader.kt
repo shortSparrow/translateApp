@@ -58,10 +58,10 @@ fun DictionaryHeader(
             showMoreExpanded = true
         },
         firstRightIcon = {
-            Box() {
+            Box {
                 Icon(
                     painter = painterResource(R.drawable.more_vertical),
-                    "more",
+                    stringResource(id = R.string.cd_show_more_icon),
                     tint = colorResource(R.color.grey),
                     modifier = Modifier
                         .width(25.dp)

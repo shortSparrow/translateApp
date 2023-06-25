@@ -57,7 +57,7 @@ class ModifyDictionaryViewModel @Inject constructor(
 
         if (getCurrentMode() == ModifyDictionaryModes.MODE_EDIT && dictionaryId != -1L) {
             viewModelScope.launch {
-                val dictionary = dictionaryUseCase.getDictionary(dictionaryId = dictionaryId);
+                val dictionary = dictionaryUseCase.getDictionary(dictionaryId = dictionaryId)
 
                 when (dictionary) {
                     is Either.Failure -> {

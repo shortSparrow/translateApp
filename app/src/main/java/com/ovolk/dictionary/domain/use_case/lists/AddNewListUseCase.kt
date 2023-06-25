@@ -12,6 +12,7 @@ import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
 import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
+import com.ovolk.dictionary.presentation.DictionaryApp
 import javax.inject.Inject
 
 class AddNewListUseCase @Inject constructor(
@@ -37,7 +38,8 @@ class AddNewListUseCase @Inject constructor(
         if (title.isNotEmpty() && dictionaryId == null) {
             return Either.Failure(
                 FailureWithCode(
-                    message = "Something went wrong",
+                    message = DictionaryApp.applicationContext()
+                        .getString(R.string.something_wrong),
                     code = UNKNOWN_ERROR
                 )
             )

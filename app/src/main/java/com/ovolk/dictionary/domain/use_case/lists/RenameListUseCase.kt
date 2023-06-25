@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.domain.use_case.lists
 
 import android.app.Application
+import androidx.compose.ui.res.stringResource
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.lists.ListItem
 import com.ovolk.dictionary.domain.repositories.ListsRepository
@@ -29,7 +30,7 @@ class RenameListUseCase @Inject constructor(
             } else {
                 Either.Failure(
                     FailureWithCode(
-                        message = "Something went wrong",
+                        message = application.getString(R.string.something_wrong),
                         code = UNKNOWN_ERROR
                     )
                 )
@@ -38,7 +39,7 @@ class RenameListUseCase @Inject constructor(
         if (title.isNotEmpty() && dictionaryId == null) {
             return Either.Failure(
                 FailureWithCode(
-                    message = "Something went wrong",
+                    message = application.getString(R.string.something_wrong),
                     code = UNKNOWN_ERROR
                 )
             )

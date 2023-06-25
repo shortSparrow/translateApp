@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -43,13 +44,18 @@ fun SettingsDictionariesPresenter(
     if (state.isDeleteDictionaryModalOpen) {
         val dictionaries = state.dictionaryList.filter { it.isSelected }
         val selectedDictionary = dictionaries.joinToString(", ") { it.title }
-        val ends = if (dictionaries.size == 1) "dictionary" else "dictionaries"
 
         ConfirmDialog(
             message = {
                 Text(
                     buildAnnotatedString {
-                        append("Are you sure you want to delete $selectedDictionary $ends?")
+                        append(
+                            pluralStringResource(
+                                id = R.plurals.setting_dictionaries_delete_dictionary_title,
+                                count = dictionaries.size,
+                                selectedDictionary
+                            )
+                        )
 
                         withStyle(
                             style = SpanStyle(
@@ -57,7 +63,12 @@ fun SettingsDictionariesPresenter(
                                 fontSize = 13.sp,
                             )
                         ) {
-                            append("\n \n All words in this $ends will be deleted")
+                            append(
+                                pluralStringResource(
+                                    id = R.plurals.setting_dictionaries_delete_dictionary_description,
+                                    count = dictionaries.size,
+                                )
+                            )
                         }
 
                     },
@@ -76,7 +87,7 @@ fun SettingsDictionariesPresenter(
         floatingActionButton = {
             AddButton(
                 onClick = { onAction(DictionaryListAction.AddNewDictionary) },
-                contentDescription = "ff"
+                contentDescription = stringResource(id = R.string.add_new_dictionary)
             )
         }
     ) { contentPadding ->
@@ -85,7 +96,7 @@ fun SettingsDictionariesPresenter(
                 titleHorizontalOffset = TwoButtonOffset,
                 withBackButton = true,
                 onBackButtonClick = onBack,
-                title = "Select dictionary",
+                title = stringResource(id = R.string.setting_dictionaries_screen_title),
                 secondRightIcon = {
                     if (state.dictionaryList.any { it.isSelected }) {
                         Icon(
@@ -176,6 +187,36 @@ fun SettingsLanguageScreenPreview2() {
                     langToCode = "UA",
                 )
             )
+        ),
+        onAction = {},
+        onBack = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsLanguageScreenPreview3() {
+    SettingsDictionariesPresenter(
+        state = DictionaryListState(
+            dictionaryList = listOf(
+                SelectableDictionary(
+                    id = 0L,
+                    title = "FR-PL",
+                    isActive = false,
+                    isSelected = false,
+                    langFromCode = "FR",
+                    langToCode = "PL",
+                ),
+                SelectableDictionary(
+                    id = 1L,
+                    title = "EN-UA",
+                    isActive = false,
+                    isSelected = true,
+                    langFromCode = "EN",
+                    langToCode = "UA",
+                ),
+            ),
+            isDeleteDictionaryModalOpen = true
         ),
         onAction = {},
         onBack = {}

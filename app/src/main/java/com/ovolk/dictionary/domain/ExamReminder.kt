@@ -118,7 +118,7 @@ class ExamReminder @Inject constructor(
             update()
         }
 
-        setReminder(timeInMillis = delay, interval = frequency.toLong());
+        setReminder(timeInMillis = delay, interval = frequency.toLong())
     }
 
     /**

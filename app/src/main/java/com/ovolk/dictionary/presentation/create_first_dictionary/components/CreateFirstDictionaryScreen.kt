@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
@@ -26,8 +27,11 @@ fun CreateFirstDictionaryScreen(
     state: FirstDictionaryState,
     onAction: (FirstDictionaryAction) -> Unit
 ) {
-    Column() {
-        Header(title = "Create first dictionary", withBackButton = false)
+    Column {
+        Header(
+            title = stringResource(id = R.string.create_first_dictionary_title),
+            withBackButton = false
+        )
 
         Column(
             modifier = Modifier
@@ -35,11 +39,11 @@ fun CreateFirstDictionaryScreen(
                 .padding(20.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column() {
+            Column {
                 OutlinedErrableTextField(
                     value = state.dictionaryName,
                     onValueChange = { onAction(FirstDictionaryAction.OnInputTitle(it)) },
-                    label = { Text(text = "Dictionary name") },
+                    label = { Text(text = stringResource(id = R.string.create_first_dictionary_title_placeholder)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = !state.dictionaryValidation.successful,
                     errorMessage = state.dictionaryValidation.errorMessage
@@ -53,9 +57,7 @@ fun CreateFirstDictionaryScreen(
                         langFromValidation = state.langFromValidation,
                         langToValidation = state.langToValidation,
                         openLanguageBottomSheet = { languageType ->
-                            onAction(
-                                FirstDictionaryAction.OpenLanguageBottomSheet(languageType)
-                            )
+                            onAction(FirstDictionaryAction.OpenLanguageBottomSheet(languageType))
                         }
                     )
                 }
@@ -65,7 +67,10 @@ fun CreateFirstDictionaryScreen(
                 onClick = { onAction(FirstDictionaryAction.SaveDictionary) },
                 modifier = Modifier.fillMaxWidth(1f)
             ) {
-                Text(text = "Save".uppercase(), color = colorResource(id = R.color.white))
+                Text(
+                    text = stringResource(id = R.string.save).uppercase(),
+                    color = colorResource(id = R.color.white)
+                )
             }
         }
     }

@@ -66,12 +66,14 @@ fun validateDictionary(dictionary: Dictionary?): ValidateResult {
     return if (dictionary == null) {
         ValidateResult(
             successful = false,
-            errorMessage = "dictionary not selected"
+            errorMessage = DictionaryApp.applicationContext()
+                .getString(R.string.modify_word_validation_dictionary_not_selected)
         )
     } else if (dictionary.langFromCode.isEmpty() || dictionary.langToCode.isEmpty()) {
         ValidateResult(
             successful = false,
-            errorMessage = "dictionary dose not contain languages"
+            errorMessage = DictionaryApp.applicationContext()
+                .getString(R.string.modify_word_validation_dictionary_not_contain_languages)
         )
     } else {
         ValidateResult(successful = true)

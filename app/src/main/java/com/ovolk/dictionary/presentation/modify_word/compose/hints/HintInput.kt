@@ -41,7 +41,7 @@ fun HintInput(
                         modifier = Modifier
                             .clickable { onAction(ModifyWordHintsAction.CancelEditHint) },
                         textAlign = TextAlign.Right,
-                        text = "Cancel edit"
+                        text = stringResource(id = R.string.cd_add_cancel_edit)
                     )
                 }
             }
@@ -63,14 +63,15 @@ fun HintInput(
                 .width(85.dp)
         ) {
             Text(
-                text = hintsState.editableHint?.let { "EDIT" } ?: "ADD",
+                text = hintsState.editableHint
+                    ?.let { stringResource(id = R.string.edit).uppercase() }
+                    ?: stringResource(id = R.string.add).uppercase(),
                 color = colorResource(id = R.color.white),
                 modifier = Modifier.padding(vertical = 9.dp)
             )
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

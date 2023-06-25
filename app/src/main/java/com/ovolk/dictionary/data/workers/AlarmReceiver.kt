@@ -31,7 +31,7 @@ class AlarmReceiver : BroadcastReceiver() {
     lateinit var examReminder: ExamReminder
 
     private var soundUri =
-        Uri.parse("$SCHEME_ANDROID_RESOURCE://${DictionaryApp.applicationContext().packageName}/${R.raw.reminder_sound}");
+        Uri.parse("$SCHEME_ANDROID_RESOURCE://${DictionaryApp.applicationContext().packageName}/${R.raw.reminder_sound}")
 
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
@@ -75,7 +75,7 @@ class AlarmReceiver : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChanel = NotificationChannel(
                 CHANNEL_ID,
-                CHANNEL_NAME,
+                DictionaryApp.applicationContext().getString(R.string.exam_reminder_chanel_name),
                 NotificationManager.IMPORTANCE_HIGH
             )
             val audioAttributes = AudioAttributes.Builder()
@@ -90,7 +90,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
     companion object {
         const val CHANNEL_ID = "exam_reminder_id"
-        private const val CHANNEL_NAME = "Exam reminder"
         private const val NOTIFICATION_ID = 100
 
         fun newIntent(context: Context): Intent {

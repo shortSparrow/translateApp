@@ -20,7 +20,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
-import com.ovolk.dictionary.util.helpers.get_preview_models.getListsList
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewListsList
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -131,7 +131,7 @@ fun ComposablePreviewDialogSelectList2() {
 fun ComposablePreviewDialogSelectListLarge() {
     DialogSelectList(
         selectedId = 2L,
-        list = getListsList(),
+        list = getPreviewListsList(),
         onDismissRequest = {},
         onItemsPress = {},
         onAddNewItemPress = {}

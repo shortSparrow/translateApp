@@ -1,19 +1,17 @@
 package com.ovolk.dictionary.domain.use_case.exam
 
+import android.app.Application
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
 import com.ovolk.dictionary.data.mapper.WordMapper
-import com.ovolk.dictionary.domain.model.dictionary.Dictionary
-import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
-import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.response.Either
-import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureMessage
-import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.daily_exam_settings.HandleDailyExamSettingsUseCase
-import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.presentation.exam.ExamMode
 import com.ovolk.dictionary.presentation.exam.ExamMode.DAILY_MODE
 import com.ovolk.dictionary.presentation.exam.ExamMode.INFINITY_MODE
@@ -22,7 +20,6 @@ import com.ovolk.dictionary.util.showVariantsAvailableLanguages
 import com.ovolk.dictionary.util.temporarryAnswerList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,6 +36,7 @@ class GetExamWordListUseCase @Inject constructor(
     private val examWordAnswerRepository: ExamWordAnswerRepository,
     handleDailyExamSettingsUseCase: HandleDailyExamSettingsUseCase,
     val mapper: WordMapper,
+    private val application: Application,
 ) {
     private val examLocalCache = ExamLocalCache.getInstance()
     private var getExamWordListCurrentPage: Int = 0
@@ -73,7 +71,7 @@ class GetExamWordListUseCase @Inject constructor(
         coroutineScope {
 
             if (dictionaryId == null) {
-                return@coroutineScope Either.Failure(FailureMessage("you not pass dictionary"))
+                return@coroutineScope Either.Failure(FailureMessage(application.getString(R.string.get_exam_word_list_use_case_no_dictionary_id)))
             }
 
             isLoadingNextPage = true

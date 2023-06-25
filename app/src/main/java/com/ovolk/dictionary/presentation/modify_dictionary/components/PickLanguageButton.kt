@@ -92,7 +92,7 @@ fun PickLanguageButton(
 
         if (!validationError.successful && validationError.errorMessage != null) {
             Text(
-                text = validationError.errorMessage as String,
+                text = validationError.errorMessage,
                 maxLines = 2,
                 fontSize = 12.sp,
                 color = colorResource(id = R.color.red),

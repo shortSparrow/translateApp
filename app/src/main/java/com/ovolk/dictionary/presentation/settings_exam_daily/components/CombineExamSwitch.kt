@@ -38,13 +38,11 @@ fun CombineExamSwitch(
         modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_label),
-            )
+            Text(text = stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_label))
 
             Text(
                 buildAnnotatedString {
-                    append("When you pass the exam, you will alternate languages. The first word will be ")
+                    append(stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_description_part_1))
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         if (languagesForDescription.isEmpty()) {
                             appendInlineContent("loading")
@@ -52,7 +50,7 @@ fun CombineExamSwitch(
                             append(languagesForDescription[0])
                         }
                     }
-                    append(" and you will have to translate it into ")
+                    append(stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_description_part_2))
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         if (languagesForDescription.isEmpty()) {
                             appendInlineContent("loading")
@@ -60,7 +58,7 @@ fun CombineExamSwitch(
                             append(languagesForDescription[1])
                         }
                     }
-                    append(" and the second, on the contrary, is ")
+                    append(stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_description_part_3))
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         if (languagesForDescription.isEmpty()) {
                             appendInlineContent("loading")
@@ -68,7 +66,7 @@ fun CombineExamSwitch(
                             append(languagesForDescription[1])
                         }
                     }
-                    append(" and you will have to translate it into ")
+                    append(stringResource(id = R.string.settings_daily_exam_words_is_double_lang_exam_description_part_4))
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         if (languagesForDescription.isEmpty()) {
                             appendInlineContent("loading")

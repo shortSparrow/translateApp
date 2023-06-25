@@ -2,7 +2,7 @@ package com.ovolk.dictionary.util.helpers.get_preview_models
 
 import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 
-fun getListsList() = listOf(
+fun getPreviewListsList() = listOf(
         ModifyWordListItem(
             title = "My List",
             count = 10,
