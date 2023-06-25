@@ -85,7 +85,7 @@ fun ExamScreen(navController: NavHostController) {
 
     if (isInterruptExamPopupShown.value) {
         ConfirmDialog(
-            message = stringResource(id = R.string.exam_interrupt),
+            title = stringResource(id = R.string.exam_interrupt),
             onAcceptClick = {
                 examLocalCache.interruptedRoute?.let { interruptedRoute ->
                     examLocalCache.resetToDefault()

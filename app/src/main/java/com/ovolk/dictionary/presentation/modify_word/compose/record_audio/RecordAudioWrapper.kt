@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -42,7 +41,7 @@ import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordAudioWrapper(
     word: String,
@@ -136,12 +135,12 @@ fun RecordAudioWrapper(
 
     if (isPermissionDeniedDialog) {
         ConfirmDialog(
-            message = stringResource(id = R.string.modify_word_enable_audio_permission),
+            title = stringResource(id = R.string.modify_word_enable_audio_permission),
             onAcceptClick = ::goToSettings,
             onDismissRequest = ::closePermissionDeniedDialog,
             onDeclineClick = ::closePermissionDeniedDialog,
             confirmButtonText = stringResource(id = R.string.modify_word_enable_audio_go_to_settings),
-            type = ConfirmDialogType.NO_RED
+            type = ConfirmDialogType.NO_BUTTON_RED
         )
     }
 

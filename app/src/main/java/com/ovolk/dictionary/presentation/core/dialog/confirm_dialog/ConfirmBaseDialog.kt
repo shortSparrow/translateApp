@@ -11,16 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
 
-
 @Composable
-fun ConfirmDialogBase(
+fun ConfirmBaseDialog(
     onDismissRequest: (() -> Unit)? = null,
-    message: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    description: (@Composable () -> Unit)? = null,
     onAcceptClick: () -> Unit,
     onDeclineClick: () -> Unit,
     confirmButtonText: String? = null,
@@ -49,14 +49,23 @@ fun ConfirmDialogBase(
         },
     ) {
         Box(Modifier.align(Alignment.CenterHorizontally)) {
-            message()
+            title()
+        }
+        if (description != null) {
+            Box(
+                Modifier
+                    .padding(top = dimensionResource(id = R.dimen.small_gutter))
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                description()
+            }
         }
 
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
+                .padding(top = dimensionResource(id = R.dimen.gutter))
                 .fillMaxWidth()
-                .padding(top = 20.dp)
         ) {
             OutlinedButton(onClick = onDeclineClick) {
                 Text(
@@ -73,4 +82,3 @@ fun ConfirmDialogBase(
         }
     }
 }
-

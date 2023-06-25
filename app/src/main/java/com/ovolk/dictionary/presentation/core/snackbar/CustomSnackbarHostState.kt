@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 data class SnackbarOffset(val x: Dp = 0.dp, val y: Dp = 0.dp)
 
 class CustomSnackbarHostState(
-    val duration: SnackbarDuration = SnackbarDuration.Short,
+    val duration: SnackbarDuration,
     val data: SnackBarData,
     val isHideOnAction: Boolean = false,
     val offset: SnackbarOffset = SnackbarOffset(0.dp,0.dp),

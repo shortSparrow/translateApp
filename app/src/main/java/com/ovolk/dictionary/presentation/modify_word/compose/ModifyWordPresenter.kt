@@ -107,14 +107,14 @@ fun ModifyWordPresenter(
     }
     if (state.isOpenDeleteWordModal) {
         ConfirmDialog(
-            message = stringResource(id = R.string.modify_word_confirm_delete_title),
+            title = stringResource(id = R.string.modify_word_confirm_delete_title),
             onAcceptClick = { onAction(ModifyWordAction.DeleteWord) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleDeleteModalOpen) })
     }
 
     if (state.isOpenUnsavedChanges) {
         ConfirmDialog(
-            message = stringResource(id = R.string.modify_word_unsaved_changes),
+            title = stringResource(id = R.string.modify_word_unsaved_changes),
             onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
     }
@@ -123,10 +123,10 @@ fun ModifyWordPresenter(
         InfoDialog(
             onDismissRequest = { onAction(ModifyWordAction.ToggleFieldDescribeModalOpen("")) },
             message = state.fieldDescribeModalQuestion,
+            titleFontSize = 14.sp,
             onClick = { onAction(ModifyWordAction.ToggleFieldDescribeModalOpen("")) },
             buttonText = stringResource(id = R.string.ok).uppercase(),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
+            titleWeight = FontWeight.Medium,
         )
     }
 

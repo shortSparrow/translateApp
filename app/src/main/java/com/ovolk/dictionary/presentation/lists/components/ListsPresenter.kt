@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
@@ -28,7 +27,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
-import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialogWithDescription
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionaries
 import com.ovolk.dictionary.presentation.core.dictionaries.NoSelectedDictionary
 import com.ovolk.dictionary.presentation.core.floating.AddButton
@@ -60,10 +59,10 @@ fun ListsPresenter(
 
     if (state.isOpenDeleteListModal) {
         val count = state.list.filter { it.isSelected }.size
-        ConfirmDialogWithDescription(
+        ConfirmDialog(
             title = pluralStringResource(id = R.plurals.lists_screen_confirm_delete_list_title, count = count),
             description = pluralStringResource(id = R.plurals.lists_screen_confirm_delete_list_description, count = count),
-            descriptionColor = colorResource(id = R.color.red_2),
+            descriptionColor = colorResource(id = R.color.red),
             onAcceptClick = { onAction(ListsAction.ConfirmDeleteSelectedLists) },
             onDeclineClick = { onAction(ListsAction.DeclineDeleteSelectedLists) })
     }

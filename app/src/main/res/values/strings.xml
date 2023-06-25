@@ -161,7 +161,7 @@ When you create new word or new list this dictionary will be prefilled. Words to
 
     <!--  Dictionary Word List -->
     <string name="dictionary_word_list_confirm_delete_title">Are you sure you want to delete %s dictionary?</string>
-    <string name="dictionary_word_list_confirm_delete_description">\n\n All words in this dictionary will be deleted</string>
+    <string name="dictionary_word_list_confirm_delete_description">All words in this dictionary will be deleted</string>
     <string name="dictionary_word_list_dictionary_marked_active">Congratulations %s now is active</string>
 
     <!--  Welcome Screen Create First Dictionary -->
