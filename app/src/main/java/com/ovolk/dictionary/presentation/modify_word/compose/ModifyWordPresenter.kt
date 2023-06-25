@@ -25,8 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -38,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
-import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.info_dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.ignore_height_wrapper.IgnoreHeightWrapper
 import com.ovolk.dictionary.presentation.modify_word.ComposeState

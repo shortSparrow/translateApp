@@ -25,9 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialogWithDescription
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.header.TwoButtonOffset
@@ -45,37 +45,54 @@ fun SettingsDictionariesPresenter(
         val dictionaries = state.dictionaryList.filter { it.isSelected }
         val selectedDictionary = dictionaries.joinToString(", ") { it.title }
 
-        ConfirmDialog(
-            message = {
-                Text(
-                    buildAnnotatedString {
-                        append(
-                            pluralStringResource(
-                                id = R.plurals.setting_dictionaries_delete_dictionary_title,
-                                count = dictionaries.size,
-                                selectedDictionary
-                            )
-                        )
+//        ConfirmDialog(
+//            message = {
+//                Text(
+//                    buildAnnotatedString {
+//                        append(
+//                            pluralStringResource(
+//                                id = R.plurals.setting_dictionaries_delete_dictionary_title,
+//                                count = dictionaries.size,
+//                                selectedDictionary
+//                            )
+//                        )
+//
+//                        withStyle(
+//                            style = SpanStyle(
+//                                color = colorResource(id = R.color.red_2),
+//                                fontSize = 13.sp,
+//                            )
+//                        ) {
+//                            append(
+//                                pluralStringResource(
+//                                    id = R.plurals.setting_dictionaries_delete_dictionary_description,
+//                                    count = dictionaries.size,
+//                                )
+//                            )
+//                        }
+//
+//                    },
+//                    fontWeight = FontWeight.Bold,
+//                    textAlign = TextAlign.Center
+//                )
+//            },
+//            onAcceptClick = { onAction(DictionaryListAction.DeleteDictionary) },
+//            onDeclineClick = {
+//                onAction(DictionaryListAction.ToggleOpenDeleteDictionaryModal(false))
+//            }
+//        )
 
-                        withStyle(
-                            style = SpanStyle(
-                                color = colorResource(id = R.color.red_2),
-                                fontSize = 13.sp,
-                            )
-                        ) {
-                            append(
-                                pluralStringResource(
-                                    id = R.plurals.setting_dictionaries_delete_dictionary_description,
-                                    count = dictionaries.size,
-                                )
-                            )
-                        }
-
-                    },
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
+        ConfirmDialogWithDescription(
+            title =   pluralStringResource(
+                id = R.plurals.setting_dictionaries_delete_dictionary_title,
+                count = dictionaries.size,
+                selectedDictionary
+            ),
+            description =  pluralStringResource(
+                id = R.plurals.setting_dictionaries_delete_dictionary_description,
+                count = dictionaries.size,
+            ),
+            descriptionColor = colorResource(id = R.color.red_2),
             onAcceptClick = { onAction(DictionaryListAction.DeleteDictionary) },
             onDeclineClick = {
                 onAction(DictionaryListAction.ToggleOpenDeleteDictionaryModal(false))

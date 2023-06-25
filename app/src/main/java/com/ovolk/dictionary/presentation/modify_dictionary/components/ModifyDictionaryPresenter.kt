@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
-import com.ovolk.dictionary.presentation.core.dialog.InfoDialog
+import com.ovolk.dictionary.presentation.core.dialog.info_dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryAction

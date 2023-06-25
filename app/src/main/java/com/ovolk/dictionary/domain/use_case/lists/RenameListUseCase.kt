@@ -1,9 +1,7 @@
 package com.ovolk.dictionary.domain.use_case.lists
 
 import android.app.Application
-import androidx.compose.ui.res.stringResource
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.lists.ListItem
 import com.ovolk.dictionary.domain.repositories.ListsRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure

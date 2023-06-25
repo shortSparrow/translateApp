@@ -33,8 +33,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.DictionaryApp
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialogType
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialogType
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
 import com.ovolk.dictionary.util.compose.OnLifecycleEvent

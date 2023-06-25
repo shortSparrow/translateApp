@@ -2,15 +2,12 @@ package com.ovolk.dictionary.domain.use_case.lists
 
 import android.app.Application
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.SimpleError
-import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.lists.ListItem
 import com.ovolk.dictionary.domain.repositories.ListsRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.response.FailureWithCode
-import com.ovolk.dictionary.domain.response.Success
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.UNKNOWN_ERROR
 import com.ovolk.dictionary.presentation.DictionaryApp
 import javax.inject.Inject

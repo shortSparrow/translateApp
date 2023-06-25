@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
 import com.ovolk.dictionary.data.in_memory_storage.ExamStatus
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.exam.components.ExamPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.navigation.bottomTabNavigate

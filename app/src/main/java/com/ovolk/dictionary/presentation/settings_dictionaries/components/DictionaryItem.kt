@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
-import com.ovolk.dictionary.presentation.core.dialog.InfoDialogWithDescription
+import com.ovolk.dictionary.presentation.core.dialog.info_dialog.InfoDialogWithDescription
 import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
 
 @OptIn(ExperimentalFoundationApi::class)
