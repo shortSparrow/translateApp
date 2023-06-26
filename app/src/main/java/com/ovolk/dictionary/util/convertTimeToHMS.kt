@@ -3,7 +3,7 @@ package com.ovolk.dictionary.util
 import android.annotation.SuppressLint
 import java.util.concurrent.TimeUnit
 
-
+// TODO maybe delete
 @SuppressLint("DefaultLocale")
 fun convertTimeToHMS(millis: Long): String {
     return String.format(

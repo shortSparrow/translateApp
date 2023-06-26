@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.domain.use_case.exam
 
 import com.ovolk.dictionary.data.mapper.WordMapper
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import javax.inject.Inject
 
 class GetWordsForDelayedUpdatePriorityUseCase @Inject constructor(

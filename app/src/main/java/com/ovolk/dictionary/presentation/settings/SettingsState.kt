@@ -9,11 +9,11 @@ data class SettingsState(
     val settingsList: List<SettingsItem> = listOf(
         SettingsItem(
             title = DictionaryApp.applicationContext()
-                .getString(R.string.settings_language_item_title),
+                .getString(R.string.setting_dictionaries_screen_title),
             contentDescription = DictionaryApp.applicationContext()
-                .getString(R.string.settings_language_cd_item_title),
+                .getString(R.string.setting_dictionaries_screen_title_cd),
             iconId = R.drawable.language,
-            navigateTo = SettingsNavigation.LANGUAGE_SETTINGS
+            navigateTo = SettingsNavigation.DICTIONARY_LIST
         ),
         SettingsItem(
             title = DictionaryApp.applicationContext()
@@ -25,9 +25,9 @@ data class SettingsState(
         ),
         SettingsItem(
             title = DictionaryApp.applicationContext()
-                .getString(R.string.settings_dality_exam_item_title),
+                .getString(R.string.settings_daily_exam_item_title),
             contentDescription = DictionaryApp.applicationContext()
-                .getString(R.string.settings_dality_exam_cd_item_title),
+                .getString(R.string.settings_daily_exam_cd_item_title),
             iconId = R.drawable.exam,
             navigateTo = SettingsNavigation.EXAM_DAILY_SETTINGS
         ),

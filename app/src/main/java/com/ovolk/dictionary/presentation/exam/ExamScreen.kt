@@ -1,15 +1,20 @@
 package com.ovolk.dictionary.presentation.exam
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
 import com.ovolk.dictionary.data.in_memory_storage.ExamStatus
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.exam.components.ExamPresenter
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.navigation.bottomTabNavigate
@@ -19,11 +24,7 @@ import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
-fun ExamScreen(
-    navController: NavHostController,
-    listName: String,
-    listId: Long,
-) {
+fun ExamScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<ExamKnowledgeWordsViewModel>()
     val state = viewModel.composeState
     val onAction = viewModel::onAction
@@ -40,19 +41,24 @@ fun ExamScreen(
         }
     }
 
-    // temporary solution for updating exam list after create first word
-    LaunchedEffect(state.shouldLoadWordListAgain) {
-        if (state.examWordList.isEmpty() && state.shouldLoadWordListAgain) {
-            onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
+//    lister when user go back from createFirstWord or createActiveDictionary and launch loading again
+    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
+    DisposableEffect(lifecycleOwner.value) {
+        val lifecycle = lifecycleOwner.value.lifecycle
+        val observer = LifecycleEventObserver { owner, event ->
+            if(event == Lifecycle.Event.ON_CREATE && state.shouldLoadWordListAgain) {
+                onAction(ExamAction.ReloadLoadExamList)
+            }
+        }
+
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
         }
     }
 
-    LaunchedEffect(listName, listId) {
-        onAction(ExamAction.LoadExamList(listId = listId, listName = listName))
-    }
-
     BackHandler {
-        if(examLocalCache.examStatus == ExamStatus.IN_PROGRESS) {
+        if (examLocalCache.examStatus == ExamStatus.IN_PROGRESS) {
             examLocalCache.setIsInterruptExamPopupShown(true)
         } else {
             navController.popBackStack()
@@ -61,7 +67,7 @@ fun ExamScreen(
 
     if (viewModel.listener == null) {
         viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
-            override fun onNavigateToCreateFirstWord() {
+            override fun onNavigateToCreateFirstWord(listId: Long?) {
                 navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
             }
 
@@ -70,12 +76,16 @@ fun ExamScreen(
                     popUpTo(MainTabBottomBar.Home.route) { inclusive = true }
                 }
             }
+
+            override fun goToDictionaryList() {
+                navController.navigate("${CommonRotes.DICTIONARY_LIST}")
+            }
         }
     }
 
     if (isInterruptExamPopupShown.value) {
         ConfirmDialog(
-            message = stringResource(id = R.string.exam_interrupt),
+            title = stringResource(id = R.string.exam_interrupt),
             onAcceptClick = {
                 examLocalCache.interruptedRoute?.let { interruptedRoute ->
                     examLocalCache.resetToDefault()

@@ -2,9 +2,11 @@ package com.ovolk.dictionary.presentation.modify_word.helpers
 
 import android.text.TextUtils
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.presentation.DictionaryApp
+import kotlinx.coroutines.flow.MutableStateFlow
 
 fun validateOnAddChip(value: String): ValidateResult {
     return if (value.isBlank()) {
@@ -60,12 +62,18 @@ fun validateTranslates(value: List<Translate>): ValidateResult {
     }
 }
 
-fun validateSelectLanguage(langCode: String?): ValidateResult {
-    return if (langCode == null) {
+fun validateDictionary(dictionary: Dictionary?): ValidateResult {
+    return if (dictionary == null) {
         ValidateResult(
             successful = false,
             errorMessage = DictionaryApp.applicationContext()
-                .getString(R.string.field_is_required)
+                .getString(R.string.modify_word_validation_dictionary_not_selected)
+        )
+    } else if (dictionary.langFromCode.isEmpty() || dictionary.langToCode.isEmpty()) {
+        ValidateResult(
+            successful = false,
+            errorMessage = DictionaryApp.applicationContext()
+                .getString(R.string.modify_word_validation_dictionary_not_contain_languages)
         )
     } else {
         ValidateResult(successful = true)

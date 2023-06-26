@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.data.workers
 
 import com.ovolk.dictionary.data.model.UpdatePriority
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
 import java.util.*
 import javax.inject.Inject

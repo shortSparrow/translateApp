@@ -105,10 +105,10 @@ class WordListViewModel @Inject constructor(
     }
 
     private suspend fun searchWord(searchValue: String) {
-        getSearchedWordListUseCase(searchValue)
+        getSearchedWordListUseCase.getWords(searchValue)
             .collectLatest {
                 val list = it.list
-                    .map { it.copy(translates = it.translates.filter { it.isHidden == false }) }
+//                    .map { it.copy(translates = it.translates.filter { it.isHidden == false }) } // now do in usecasse
                     .run {
                         if (searchValue.isEmpty()) this else this.sortedWith(compareBy { l -> l.value.length })
                     }
@@ -120,8 +120,6 @@ class WordListViewModel @Inject constructor(
                         isLoading = false
                     )
                 }
-
-
             }
     }
 

@@ -8,7 +8,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,12 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ovolk.dictionary.R
 
 enum class MaxErrorLines { ONE, TWO }
 
@@ -59,7 +66,7 @@ fun OutlinedErrableTextField(
         {
             Icon(
                 painter = painterResource(id = com.ovolk.dictionary.R.drawable.error_sign),
-                contentDescription = "error sign",
+                contentDescription = stringResource(id = R.string.cd_validation_error),
                 modifier = Modifier.size(25.dp)
             )
         }
@@ -90,7 +97,7 @@ fun OutlinedErrableTextField(
             colors = colors,
         )
 
-        val height = if (maxErrorLines == MaxErrorLines.ONE) 15.dp else  40.dp
+        val height = if (maxErrorLines == MaxErrorLines.ONE) 15.dp else 40.dp
         Column(modifier = Modifier.height(height)) {
             if (errorMessage != null) {
                 Text(

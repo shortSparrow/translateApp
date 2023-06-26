@@ -55,7 +55,7 @@ fun TranslateInput(
                         modifier = Modifier
                             .clickable { onAction(ModifyWordTranslatesAction.CancelEditTranslate) },
                         textAlign = TextAlign.Right,
-                        text = "Cancel edit"
+                        text = stringResource(id = R.string.modify_word_cancel_edit)
                     )
                 }
             }

@@ -17,9 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.compose.lists.ListItem
+import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewListsList
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -28,6 +29,7 @@ fun DialogSelectList(
     onDismissRequest: () -> Unit,
     onItemsPress: (id: Long) -> Unit,
     onAddNewItemPress: () -> Unit,
+    selectedId: Long? = null
 ) {
     MyDialog(
         title = stringResource(id = R.string.modify_word_select_lists_dialog_title),
@@ -61,7 +63,8 @@ fun DialogSelectList(
                                     ListItem(
                                         wordListInfo = item,
                                         onItemsPress = { onItemsPress(item.id) },
-                                        withMark = true
+                                        withMark = true,
+                                        isSelected = item.id == selectedId
                                     )
                                 }
                             }
@@ -105,15 +108,18 @@ fun ComposablePreviewDialogSelectList2() {
                 title = "My List",
                 count = 10,
                 id = 1L,
-                isSelected = false
+                isSelected = false,
+                dictionaryId = 1L,
             ),
             ModifyWordListItem(
                 title = "Sport",
                 count = 5,
                 id = 2L,
-                isSelected = true
+                isSelected = true,
+                dictionaryId = 1L,
             )
         ),
+        selectedId = 2L,
         onDismissRequest = {},
         onItemsPress = {},
         onAddNewItemPress = {}
@@ -124,44 +130,8 @@ fun ComposablePreviewDialogSelectList2() {
 @Composable
 fun ComposablePreviewDialogSelectListLarge() {
     DialogSelectList(
-        list = listOf(
-            ModifyWordListItem(
-                title = "My List",
-                count = 10,
-                id = 1L,
-                isSelected = false
-            ),
-            ModifyWordListItem(
-                title = "Sport",
-                count = 5,
-                id = 2L,
-                isSelected = true
-            ),
-            ModifyWordListItem(
-                title = "A",
-                count = 5,
-                id = 3L,
-                isSelected = false
-            ),
-            ModifyWordListItem(
-                title = "B",
-                count = 1,
-                id = 4L,
-                isSelected = false
-            ),
-            ModifyWordListItem(
-                title = "C",
-                count = 3,
-                id = 5L,
-                isSelected = false
-            ),
-            ModifyWordListItem(
-                title = "D",
-                count = 3,
-                id = 6L,
-                isSelected = false
-            ),
-        ),
+        selectedId = 2L,
+        list = getPreviewListsList(),
         onDismissRequest = {},
         onItemsPress = {},
         onAddNewItemPress = {}

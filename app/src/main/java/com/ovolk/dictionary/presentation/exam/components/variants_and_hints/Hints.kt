@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
@@ -55,7 +56,7 @@ fun Hints(hints: List<HintItem>) {
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.add),
-                            contentDescription = "show next hint"
+                            contentDescription = stringResource(id = R.string.modify_word_show_next_hint_cd)
                         )
 
                     }

@@ -19,7 +19,9 @@ import com.ovolk.dictionary.util.DEEP_LINK_BASE
 enum class MainTabRotes { EXAM, HOME, LISTS, SETTINGS }
 sealed class MainTabBottomBar(val route: String) {
     object Home : MainTabBottomBar("${MainTabRotes.HOME}?searchedWord={searchedWord}")
-    object Exam : MainTabBottomBar("${MainTabRotes.EXAM}?listName={listName}&listId={listId}")
+    object Exam :
+        MainTabBottomBar("${MainTabRotes.EXAM}?listName={listName}&listId={listId}&dictionaryId={dictionaryId}")
+
     object Lists : MainTabBottomBar("${MainTabRotes.LISTS}")
     object Settings : MainTabBottomBar("${MainTabRotes.SETTINGS}")
 }
@@ -63,12 +65,14 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
                 navArgument("listId") {
                     type = NavType.LongType
                     defaultValue = -1L
-                }
+                },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             )
-        ) { backStackEntry ->
-            val listName = backStackEntry.arguments?.getString("listName") ?: ""
-            val listId = backStackEntry.arguments?.getLong("listId") ?: -1L
-            ExamScreen(navController = navController, listName = listName, listId = listId)
+        ) {
+            ExamScreen(navController = navController)
         }
 
         composable(route = MainTabBottomBar.Lists.route) {

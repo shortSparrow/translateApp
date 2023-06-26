@@ -1,23 +1,29 @@
 package com.ovolk.dictionary.data.mapper
 
-import com.ovolk.dictionary.data.model.*
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
-import com.ovolk.dictionary.domain.model.modify_word.WordRV
+import com.ovolk.dictionary.data.model.HintDb
+import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
+import com.ovolk.dictionary.data.model.TranslateDb
+import com.ovolk.dictionary.data.model.UpdatePriority
+import com.ovolk.dictionary.data.model.UpdatePriorityDb
+import com.ovolk.dictionary.data.model.WordFullDb
+import com.ovolk.dictionary.data.model.WordInfoDb
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
-import com.ovolk.dictionary.domain.model.lists.ListItem
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
+import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import javax.inject.Inject
 
-class WordMapper @Inject constructor() {
+class WordMapper @Inject constructor(
+    private val dictionaryMapper: DictionaryMapper
+) {
     fun wordListDbToWordList(dbWordList: List<WordFullDb>) = dbWordList.map {
         wordFullDbToWordRv(it)
     }
 
-    private fun translateDbToLocal(translate: TranslateDb): Translate =
+    fun translateDbToLocal(translate: TranslateDb): Translate =
         Translate(
             id = translate.id,
             localId = translate.id,
@@ -64,8 +70,8 @@ class WordMapper @Inject constructor() {
         translates = wordDb.translates.map { translateDbToLocal(it) },
         description = wordDb.wordInfo.description,
         sound = wordDb.wordInfo.sound,
-        langFrom = wordDb.wordInfo.langFrom,
-        langTo = wordDb.wordInfo.langTo,
+        langFrom = wordDb.dictionary.langFromCode,
+        langTo = wordDb.dictionary.langToCode,
         transcription = wordDb.wordInfo.transcription,
     )
 
@@ -76,13 +82,12 @@ class WordMapper @Inject constructor() {
         translates = wordDb.translates.map { translateDbToLocal(it) },
         description = wordDb.wordInfo.description,
         sound = wordDb.wordInfo.sound,
-        langFrom = wordDb.wordInfo.langFrom,
-        langTo = wordDb.wordInfo.langTo,
         hints = wordDb.hints.map { hintDbToLocal(it) },
         transcription = wordDb.wordInfo.transcription,
         createdAt = wordDb.wordInfo.createdAt,
         updatedAt = wordDb.wordInfo.updatedAt,
         wordListId = wordDb.wordInfo.wordListId,
+        dictionary = dictionaryMapper.dictionaryDbToDictionary(wordDb.dictionary)
     )
 
     fun wordFullDbToUpdatePriority(wordDb: WordFullDb): UpdatePriority = UpdatePriority(
@@ -96,67 +101,13 @@ class WordMapper @Inject constructor() {
         value = modifyWord.value,
         description = modifyWord.description,
         sound = modifyWord.sound,
-        langFrom = modifyWord.langFrom,
-        langTo = modifyWord.langTo,
         transcription = modifyWord.transcription,
         createdAt = modifyWord.createdAt,
         updatedAt = modifyWord.updatedAt,
-        wordListId = modifyWord.wordListId
+        wordListId = modifyWord.wordListId,
+        dictionaryId = modifyWord.dictionary.id
     )
 
-    fun wordFullDbToExamWord(wordDb: WordFullDb): ExamWord =
-        ExamWord(
-            id = wordDb.wordInfo.id,
-            value = wordDb.wordInfo.value,
-            initialTranslates = wordDb.translates.map { translateDbToLocal(it) },
-            hints = wordDb.hints.map { hintDbToLocal(it) },
-            langTo = wordDb.wordInfo.langTo,
-            langFrom = wordDb.wordInfo.langFrom,
-            initialPriority = wordDb.wordInfo.priority,
-            initialStatus = ExamWordStatus.UNPROCESSED,
-            answerVariants = mutableListOf(),
-        )
-
-
-    fun examAnswerToExamAnswerDb(examAnswer: ExamAnswerVariant) = PotentialExamAnswerDb(
-        id = examAnswer.id,
-        value = examAnswer.value,
-    )
-
-    fun examAnswerDbToExamAnswer(examAnswer: PotentialExamAnswerDb) = ExamAnswerVariant(
-        id = examAnswer.id,
-        value = examAnswer.value,
-    )
-
-    fun fullListToLocal(listDb: List<FullListItem>): List<ListItem> =
-        listDb.map { fullListItemToLocal(it) }
-
-    fun fullListToModifyWordListItem(fullListItem: List<FullListItem>): List<ModifyWordListItem> =
-        fullListItem.map { fullListItemToModifyWordListItem(it) }
-
-    fun fullListItemToModifyWordListItem(fullListItem: FullListItem): ModifyWordListItem =
-        ModifyWordListItem(
-            id = fullListItem.id,
-            title = fullListItem.title,
-            count = fullListItem.count,
-            isSelected = false
-        )
-
-    fun fullListItemToLocal(listItemDb: FullListItem): ListItem = ListItem(
-        id = listItemDb.id,
-        title = listItemDb.title,
-        count = listItemDb.count,
-        createdAt = listItemDb.createdAt,
-        updatedAt = listItemDb.updatedAt,
-        isSelected = false,
-    )
-
-    fun listItemLocalToDb(listItem: ListItem): ListItemDb = ListItemDb(
-        id = listItem.id,
-        title = listItem.title,
-        createdAt = listItem.createdAt,
-        updatedAt = listItem.updatedAt,
-    )
 
     fun updatePriorityToUpdatePriorityDb(updatePriority: UpdatePriority) = UpdatePriorityDb(
         wordId = updatePriority.wordId,

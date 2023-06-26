@@ -1,9 +1,20 @@
 package com.ovolk.dictionary.presentation.core.header
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,18 +65,18 @@ fun IconWrapper(onClick: () -> Unit, content: @Composable () -> Unit) {
     }
 }
 
-
 @Composable
-fun Header(
-    title: String,
+private fun BaseHeader(
+    title: @Composable RowScope.() -> Unit,
     withBackButton: Boolean = true,
     onBackButtonClick: (() -> Unit)? = null,
     firstRightIcon: (@Composable () -> Unit)? = null,
     onFirstRightIconClick: (() -> Unit)? = null,
     secondRightIcon: (@Composable () -> Unit)? = null,
     onSecondRightIconClick: (() -> Unit)? = null,
-    titleHorizontalOffset:Dp = OneButtonOffset
+    titleHorizontalOffset: Dp = OneButtonOffset
 ) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -79,17 +90,12 @@ fun Header(
             }
         }
 
-        ProvideTextStyle(value = MaterialTheme.typography.h6) {
-            Text(
-                maxLines = 1,
-                text = title,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f),
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
+        title()
 
-        Row(modifier = Modifier.width(titleHorizontalOffset), horizontalArrangement = Arrangement.End) {
+        Row(
+            modifier = Modifier.width(titleHorizontalOffset),
+            horizontalArrangement = Arrangement.End
+        ) {
             if (firstRightIcon != null && onFirstRightIconClick != null) {
                 IconWrapper(onClick = onFirstRightIconClick) {
                     firstRightIcon()
@@ -102,6 +108,62 @@ fun Header(
             }
         }
     }
+}
+
+@Composable
+fun Header(
+    title: @Composable RowScope.() -> Unit,
+    withBackButton: Boolean = true,
+    onBackButtonClick: (() -> Unit)? = null,
+    firstRightIcon: (@Composable () -> Unit)? = null,
+    onFirstRightIconClick: (() -> Unit)? = null,
+    secondRightIcon: (@Composable () -> Unit)? = null,
+    onSecondRightIconClick: (() -> Unit)? = null,
+    titleHorizontalOffset: Dp = OneButtonOffset
+) {
+    BaseHeader(
+        title = title,
+        withBackButton = withBackButton,
+        onBackButtonClick = onBackButtonClick,
+        firstRightIcon = firstRightIcon,
+        onFirstRightIconClick = onFirstRightIconClick,
+        secondRightIcon = secondRightIcon,
+        onSecondRightIconClick = onSecondRightIconClick,
+        titleHorizontalOffset = titleHorizontalOffset,
+    )
+}
+
+@Composable
+fun Header(
+    title: String,
+    withBackButton: Boolean = true,
+    onBackButtonClick: (() -> Unit)? = null,
+    firstRightIcon: (@Composable () -> Unit)? = null,
+    onFirstRightIconClick: (() -> Unit)? = null,
+    secondRightIcon: (@Composable () -> Unit)? = null,
+    onSecondRightIconClick: (() -> Unit)? = null,
+    titleHorizontalOffset: Dp = OneButtonOffset
+) {
+    BaseHeader(
+        title = {
+            ProvideTextStyle(value = MaterialTheme.typography.h6) {
+                Text(
+                    maxLines = 1,
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        },
+        withBackButton = withBackButton,
+        onBackButtonClick = onBackButtonClick,
+        firstRightIcon = firstRightIcon,
+        onFirstRightIconClick = onFirstRightIconClick,
+        secondRightIcon = secondRightIcon,
+        onSecondRightIconClick = onSecondRightIconClick,
+        titleHorizontalOffset = titleHorizontalOffset,
+    )
 }
 
 
@@ -166,5 +228,6 @@ fun HeaderPreview3() {
             )
         },
         onSecondRightIconClick = {},
+        titleHorizontalOffset = TwoButtonOffset
     )
 }
