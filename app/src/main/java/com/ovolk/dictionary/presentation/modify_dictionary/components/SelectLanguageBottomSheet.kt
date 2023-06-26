@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_dictionary.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.presentation.core.select_language.SelectLanguages
-import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -47,6 +47,11 @@ fun SelectLanguageBottomSheet(
         }
     }
 
+    if(bottomSheetScaffoldState.isVisible) {
+        BackHandler() {
+            closeModal()
+        }
+    }
     LaunchedEffect(isBottomSheetOpen) {
         scope.launch {
             if (isBottomSheetOpen) {

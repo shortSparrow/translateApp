@@ -26,7 +26,7 @@ fun CreateFirstDictionary(navController: NavHostController) {
 
     SelectLanguageBottomSheet(
         isBottomSheetOpen = state.languageBottomSheet.isOpen,
-        languageList = state.languageBottomSheet.languageList,
+        languageList = state.languageBottomSheet.filteredLanguageList,
         onSelectLanguage = { langCode ->
             onAction(FirstDictionaryAction.OnSelectLanguage(languageCode = langCode))
         },

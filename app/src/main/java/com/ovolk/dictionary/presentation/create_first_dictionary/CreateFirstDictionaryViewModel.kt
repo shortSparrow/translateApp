@@ -30,6 +30,8 @@ import javax.inject.Inject
 data class LocalState(
     val preferredLanguageListFrom: List<Language> = emptyList(),
     val preferredLanguageListTo: List<Language> = emptyList(),
+    val languageToList: List<Language> = emptyList(),
+    val languageFromList: List<Language> = emptyList(),
 )
 
 @HiltViewModel
@@ -47,12 +49,13 @@ class CreateFirstDictionaryViewModel @Inject constructor(
         viewModelScope.launch {
             val languageFromList = getLanguageList.getLanguageList()
             val languageToList = getLanguageList.getLanguageList()
-            state = state.copy(
+
+            val preferredLanguageListTo = getPreferredLanguages(languageToList)
+            _localState = _localState.copy(
+                preferredLanguageListTo = preferredLanguageListTo,
                 languageFromList = languageFromList,
                 languageToList = languageToList,
             )
-            val preferredLanguageListFrom = getPreferredLanguages(languageFromList)
-            _localState = _localState.copy(preferredLanguageListFrom = preferredLanguageListFrom)
         }
     }
 
@@ -92,7 +95,7 @@ class CreateFirstDictionaryViewModel @Inject constructor(
                             languageBottomSheet = LanguageBottomSheet(
                                 isOpen = true,
                                 type = LanguagesType.LANG_TO,
-                                languageList = state.languageToList,
+                                filteredLanguageList = _localState.languageToList,
                                 preferredLanguageList = _localState.preferredLanguageListTo
                             )
                         )
@@ -103,7 +106,7 @@ class CreateFirstDictionaryViewModel @Inject constructor(
                             languageBottomSheet = LanguageBottomSheet(
                                 isOpen = true,
                                 type = LanguagesType.LANG_FROM,
-                                languageList = state.languageFromList,
+                                filteredLanguageList = _localState.languageFromList,
                                 preferredLanguageList = _localState.preferredLanguageListFrom,
                             )
                         )
@@ -122,8 +125,8 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
             is FirstDictionaryAction.OnSearchLanguage -> {
                 val list = when (state.languageBottomSheet.type) {
-                    LanguagesType.LANG_TO -> state.languageToList
-                    LanguagesType.LANG_FROM -> state.languageFromList
+                    LanguagesType.LANG_TO -> _localState.languageToList
+                    LanguagesType.LANG_FROM -> _localState.languageFromList
                     null -> emptyList()
                 }
                 val filteredList = list.filter {
@@ -131,7 +134,7 @@ class CreateFirstDictionaryViewModel @Inject constructor(
                             it.nativeName.lowercase().contains(action.query.lowercase())
                 }
                 state =
-                    state.copy(languageBottomSheet = state.languageBottomSheet.copy(languageList = filteredList))
+                    state.copy(languageBottomSheet = state.languageBottomSheet.copy(filteredLanguageList = filteredList))
             }
         }
     }
@@ -146,7 +149,8 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
     private fun selectLanguageFrom(languageCode: String) {
         val dictionaryName = generateDictionaryNameLangFrom(state.dictionaryName, languageCode)
-        val languageFromList = toggleLanguageList(state.languageFromList, languageCode)
+        val languageFromList =
+            toggleLanguageList(state.languageBottomSheet.filteredLanguageList, languageCode)
 
         _localState = _localState.copy(
             preferredLanguageListFrom = toggleLanguageList(
@@ -157,10 +161,10 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
         state = state.copy(
             languageFromCode = languageCode,
-            languageFromList = languageFromList,
+//            languageFromList = languageFromList,
             dictionaryName = dictionaryName,
             languageBottomSheet = state.languageBottomSheet.copy(
-                languageList = languageFromList,
+                filteredLanguageList = languageFromList,
                 preferredLanguageList = _localState.preferredLanguageListFrom
             ),
             langFromValidation = ValidateResult(),
@@ -170,7 +174,8 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
     private fun selectLanguageTo(languageCode: String) {
         val dictionaryName = generateDictionaryNameLangTo(state.dictionaryName, languageCode)
-        val languageToList = toggleLanguageList(state.languageToList, languageCode)
+        val languageToList =
+            toggleLanguageList(state.languageBottomSheet.filteredLanguageList, languageCode)
         _localState = _localState.copy(
             preferredLanguageListTo = toggleLanguageList(
                 _localState.preferredLanguageListTo,
@@ -180,10 +185,9 @@ class CreateFirstDictionaryViewModel @Inject constructor(
 
         state = state.copy(
             languageToCode = languageCode,
-            languageToList = languageToList,
             dictionaryName = dictionaryName,
             languageBottomSheet = state.languageBottomSheet.copy(
-                languageList = languageToList,
+                filteredLanguageList = languageToList,
                 preferredLanguageList = _localState.preferredLanguageListTo
             ),
             langToValidation = ValidateResult(),

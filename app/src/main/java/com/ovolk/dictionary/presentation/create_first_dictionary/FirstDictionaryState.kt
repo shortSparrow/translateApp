@@ -9,11 +9,9 @@ data class FirstDictionaryState(
     val dictionaryName: String = "",
     val dictionaryValidation: ValidateResult = ValidateResult(),
 
-    val languageFromList: List<Language> = emptyList(),
     val languageFromCode: String? = null,
     val langFromValidation: ValidateResult = ValidateResult(),
 
-    val languageToList: List<Language> = emptyList(),
     val languageToCode: String? = null,
     val langToValidation: ValidateResult = ValidateResult(),
 
@@ -23,7 +21,7 @@ data class FirstDictionaryState(
 data class LanguageBottomSheet(
     val isOpen: Boolean = false,
     val type: LanguagesType? = null,
-    val languageList: List<Language> = emptyList(),
+    val filteredLanguageList: List<Language> = emptyList(),
     val preferredLanguageList: List<Language> = emptyList()
 )
 
