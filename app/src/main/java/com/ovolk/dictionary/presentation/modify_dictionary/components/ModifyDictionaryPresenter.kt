@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.info_dialog.InfoDialog
 import com.ovolk.dictionary.presentation.core.header.Header
@@ -51,12 +52,6 @@ fun ModifyDictionaryPresenter(
         )
     }
 
-    // todo add here info about mode or title
-//    val screenTitle =
-//        if (true) stringResource(id = R.string.modify_dictionary_screen_title_mode_add)
-//        else stringResource(
-//            id = R.string.modify_dictionary_screen_title_mode_edit, state.dictionaryName
-//        )
     SelectLanguageBottomSheet(
         isBottomSheetOpen = state.languageBottomSheet.isOpen,
         languageList = state.languageBottomSheet.languageList,
@@ -69,12 +64,11 @@ fun ModifyDictionaryPresenter(
         body = {
             Column {
                 Header(
-                    title = "ModifyDictionary",
-//                    title = screenTitle,
+                    title = state.screenTitle,
                     withBackButton = true,
                     onBackButtonClick = goBack
                 )
-                if (state.isLoading) {
+                if (state.loadingState == LoadingState.PENDING) {
                     return@SelectLanguageBottomSheet CircularProgressIndicator()
                 }
 
@@ -140,7 +134,7 @@ fun ModifyDictionaryPresenter(
 @Composable
 fun ModifyDictionaryPresenterPreview() {
     ModifyDictionaryPresenter(
-        state = ModifyDictionaryState(isLoading = false),
+        state = ModifyDictionaryState(loadingState = LoadingState.SUCCESS),
         onAction = {},
         goBack = {},
     )
@@ -151,7 +145,7 @@ fun ModifyDictionaryPresenterPreview() {
 fun ModifyDictionaryPresenterPreview2() {
     ModifyDictionaryPresenter(
         state = ModifyDictionaryState(
-            isLoading = false,
+            loadingState = LoadingState.SUCCESS,
             dictionaryNameValidation = ValidateResult(
                 successful = false,
                 errorMessage = "this field is required"
@@ -175,7 +169,7 @@ fun ModifyDictionaryPresenterPreview2() {
 fun ModifyDictionaryPresenterPreview3() {
     ModifyDictionaryPresenter(
         state = ModifyDictionaryState(
-            isLoading = false,
+            loadingState = LoadingState.FAILED,
             loadingError = "Can't load this fucking dictionary"
         ),
         onAction = {},

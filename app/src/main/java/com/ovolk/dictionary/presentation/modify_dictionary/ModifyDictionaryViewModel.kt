@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_dictionary
 
+import android.app.Application
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.Language
@@ -33,12 +36,14 @@ class ModifyDictionaryViewModel @Inject constructor(
     private val dictionaryUseCase: CrudDictionaryUseCase,
     private val getLanguageList: GetLanguageList,
     private val savedStateHandle: SavedStateHandle,
+    private val application: Application,
 ) : ViewModel() {
     var listener: Listener? = null
     var state by mutableStateOf(ModifyDictionaryState())
     private var _editedDictionary by mutableStateOf<Dictionary?>(null)
 
     init {
+        state = state.copy(loadingState = LoadingState.PENDING)
         launchRightMode()
     }
 
@@ -62,8 +67,9 @@ class ModifyDictionaryViewModel @Inject constructor(
                 when (dictionary) {
                     is Either.Failure -> {
                         state = state.copy(
-                            isLoading = false,
-                            loadingError = dictionary.value.message
+                            loadingState = LoadingState.FAILED,
+                            loadingError = dictionary.value.message,
+                            screenTitle = application.getString(R.string.modify_dictionary_screen_title_mode_edit, "")
                         )
                     }
 
@@ -81,7 +87,8 @@ class ModifyDictionaryViewModel @Inject constructor(
                             languageToCode = dictionary.value.langToCode,
                             languageFromList = languageFromList,
                             languageToList = languageToList,
-                            isLoading = false,
+                            screenTitle = application.getString(R.string.modify_dictionary_screen_title_mode_edit, dictionary.value.title),
+                            loadingState = LoadingState.SUCCESS,
                         )
                     }
                 }
@@ -89,12 +96,15 @@ class ModifyDictionaryViewModel @Inject constructor(
         }
 
         if (getCurrentMode() == ModifyDictionaryModes.MODE_ADD) {
+            state =
+                state.copy(screenTitle = application.getString(R.string.modify_dictionary_screen_title_mode_add))
+
             languageFromList = getLanguageList.getLanguageList()
             languageToList = getLanguageList.getLanguageList()
             state = state.copy(
                 languageFromList = languageFromList,
                 languageToList = languageToList,
-                isLoading = false,
+                loadingState = LoadingState.SUCCESS,
             )
         }
     }
@@ -228,7 +238,7 @@ class ModifyDictionaryViewModel @Inject constructor(
             langToValidation = ValidateResult(),
             dictionaryNameValidation = ValidateResult(),
 
-        )
+            )
     }
 
     private fun accessOnSaveDictionary(response: Either<Success, Failure>) {
@@ -240,7 +250,7 @@ class ModifyDictionaryViewModel @Inject constructor(
             is Either.Failure -> {
                 if (response.value is ValidationFailure) {
                     state = state.copy(
-                       dictionaryNameValidation = response.value.dictionaryName,
+                        dictionaryNameValidation = response.value.dictionaryName,
                         langToValidation = response.value.langTo,
                         langFromValidation = response.value.langFrom
                     )
@@ -251,6 +261,7 @@ class ModifyDictionaryViewModel @Inject constructor(
                         DICTIONARY_ALREADY_EXIST -> {
                             state = state.copy(dictionaryAlreadyExistModelOpen = true)
                         }
+
                         UNKNOWN_ERROR -> {
                             GlobalSnackbarManger.showGlobalSnackbar(
                                 duration = SnackbarDuration.Short,

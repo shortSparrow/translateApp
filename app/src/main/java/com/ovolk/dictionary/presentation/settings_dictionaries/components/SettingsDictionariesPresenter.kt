@@ -66,6 +66,35 @@ fun SettingsDictionariesPresenter(
         )
     }
 
+    val firstRightIcon: (@Composable () -> Unit)? =
+        if (state.dictionaryList.filter { it.isSelected }.size == 1) {
+            {
+                Icon(
+                    painter = painterResource(R.drawable.edit),
+                    stringResource(id = R.string.lists_screen_cd_rename_selected_list),
+                    tint = colorResource(R.color.grey),
+                    modifier = Modifier
+                        .width(20.dp)
+                        .height(20.dp)
+                )
+            }
+        } else null
+
+
+    val secondRightIcon: (@Composable () -> Unit)? =
+        if (state.dictionaryList.any { it.isSelected }) {
+            {
+                Icon(
+                    painter = painterResource(R.drawable.delete_active),
+                    stringResource(id = R.string.lists_screen_cd_deleted_selected_lists),
+                    tint = colorResource(R.color.red),
+                    modifier = Modifier
+                        .width(25.dp)
+                        .height(25.dp)
+                )
+            }
+        } else null
+
     Scaffold(
         floatingActionButton = {
             AddButton(
@@ -80,33 +109,11 @@ fun SettingsDictionariesPresenter(
                 withBackButton = true,
                 onBackButtonClick = onBack,
                 title = stringResource(id = R.string.setting_dictionaries_screen_title),
-                secondRightIcon = {
-                    if (state.dictionaryList.any { it.isSelected }) {
-                        Icon(
-                            painter = painterResource(R.drawable.delete_active),
-                            stringResource(id = R.string.lists_screen_cd_deleted_selected_lists),
-                            tint = colorResource(R.color.red),
-                            modifier = Modifier
-                                .width(25.dp)
-                                .height(25.dp)
-                        )
-                    }
-                },
+                secondRightIcon = secondRightIcon,
                 onSecondRightIconClick = {
                     onAction(DictionaryListAction.ToggleOpenDeleteDictionaryModal(true))
                 },
-                firstRightIcon = {
-                    if (state.dictionaryList.filter { it.isSelected }.size == 1) {
-                        Icon(
-                            painter = painterResource(R.drawable.edit),
-                            stringResource(id = R.string.lists_screen_cd_rename_selected_list),
-                            tint = colorResource(R.color.grey),
-                            modifier = Modifier
-                                .width(20.dp)
-                                .height(20.dp)
-                        )
-                    }
-                },
+                firstRightIcon = firstRightIcon,
                 onFirstRightIconClick = { onAction(DictionaryListAction.EditDictionary) },
             )
 
@@ -131,10 +138,7 @@ fun SettingsDictionariesPresenter(
                             }
                         }
                     }
-
-
                 }
-
             }
         }
     }

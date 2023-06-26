@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_dictionary
 
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.select_languages.Language
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
@@ -7,8 +8,9 @@ import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 enum class ModifyDictionaryModes { MODE_ADD, MODE_EDIT }
 
 data class ModifyDictionaryState(
-    val isLoading: Boolean = true,
+    val loadingState: LoadingState = LoadingState.IDLE,
     val loadingError: String? = null,
+    val screenTitle: String = "",
 
     val dictionaryName: String = "",
     val dictionaryNameValidation: ValidateResult = ValidateResult(),

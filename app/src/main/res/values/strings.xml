@@ -138,7 +138,7 @@
     <string name="modify_dictionary_dictionary_already_exist_title">Dictionary %s already exist</string>
     <string name="modify_dictionary_dictionary_name_placeholder">Dictionary name</string>
     <string name="modify_dictionary_screen_title_mode_add">Add new dictionary</string>
-    <string name="modify_dictionary_screen_title_mode_edit">Edit dictionary %s</string>
+    <string name="modify_dictionary_screen_title_mode_edit">Edit %s dictionary</string>
     <string name="modify_dictionary_validation_title_empty">Title must be not empty</string>
     <string name="modify_dictionary_validation_lang_from_empty">Language from must be not empty</string>
     <string name="modify_dictionary_validation_lang_to_empty">Language to must be not empty</string>

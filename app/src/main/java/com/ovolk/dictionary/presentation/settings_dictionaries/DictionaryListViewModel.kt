@@ -27,6 +27,7 @@ class DictionaryListViewModel @Inject constructor(
     var listener: Listener? = null
 
     init {
+        state = state.copy(loadingState = LoadingState.PENDING)
         getDictionaries()
     }
 
