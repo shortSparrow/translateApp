@@ -251,13 +251,13 @@ When you create new word or new list this dictionary will be prefilled. Words to
 
     <!--  No Active Dictionary Component  -->
     <string name="no_active_dictionary_image_cd">There is not active dictionary</string>
-    <string name="no_active_dictionary_message">Looks lie you don\'t have active dictionary</string>
-    <string name="no_active_dictionary_description">At first create dictionary where you can put your lists</string>
+    <string name="no_active_dictionary_message">Looks like you don\'t have active dictionary</string>
+    <string name="no_active_dictionary_description">Create first dictionary where you can put your lists</string>
 
     <!--  No Any Dictionary Component  -->
     <string name="no_any_dictionary_image_cd">There are no any dictionary</string>
-    <string name="no_any_dictionary_message">Looks lie you don\'t have any dictionary</string>
-    <string name="no_any_dictionary_description">At first create dictionary where you can put your lists</string>
+    <string name="no_any_dictionary_message">Looks like you don\'t have any dictionary</string>
+    <string name="no_any_dictionary_description">Create first dictionary where you can put your lists</string>
 
     <!--    No Selected Dictionary Component-->
     <string name="no_selected_dictionary_cd">There is no any selected dictionary</string>
@@ -297,6 +297,7 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="something_wrong_try_again">Something went wrong, please, try again</string>
     <string name="unknown">unknown</string>
     <string name="create_dictionary">create dictionary</string>
+    <string name="create_first_dictionary">create first dictionary</string>
     <string name="add_new_dictionary">Add new dictionary</string>
     <string name="make_active">Make active</string>
     <string name="try_again">Try again</string>

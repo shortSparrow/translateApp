@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.settings_dictionaries.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,8 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionaries
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.header.TwoButtonOffset
@@ -109,15 +112,29 @@ fun SettingsDictionariesPresenter(
 
             Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
 
-                LazyColumn {
-                    items(state.dictionaryList) { dictionary ->
-                        DictionaryItem(
-                            dictionary = dictionary,
-                            isSomeDictionarySelected = state.dictionaryList.any { it.isSelected },
-                            onAction = onAction
-                        )
+                if (state.loadingState == LoadingState.SUCCESS) {
+
+                    if (state.dictionaryList.isEmpty()) {
+                        Box(modifier = Modifier.padding(bottom = 45.dp)) {
+                            NoDictionaries(onPressAddNewDictionary = { onAction(DictionaryListAction.AddNewDictionary) })
+                        }
                     }
+
+                    if (state.dictionaryList.isNotEmpty()) {
+                        LazyColumn {
+                            items(state.dictionaryList) { dictionary ->
+                                DictionaryItem(
+                                    dictionary = dictionary,
+                                    isSomeDictionarySelected = state.dictionaryList.any { it.isSelected },
+                                    onAction = onAction
+                                )
+                            }
+                        }
+                    }
+
+
                 }
+
             }
         }
     }
@@ -137,7 +154,8 @@ fun SettingsLanguageScreenPreview() {
                     langFromCode = "EN",
                     langToCode = "UA",
                 )
-            )
+            ),
+            loadingState = LoadingState.SUCCESS,
         ),
         onAction = {},
         onBack = {}
@@ -166,7 +184,22 @@ fun SettingsLanguageScreenPreview2() {
                     langFromCode = "EN",
                     langToCode = "UA",
                 )
-            )
+            ),
+            loadingState = LoadingState.SUCCESS,
+        ),
+        onAction = {},
+        onBack = {}
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsLanguageScreenPreview3() {
+    SettingsDictionariesPresenter(
+        state = DictionaryListState(
+            dictionaryList = listOf(),
+            loadingState = LoadingState.SUCCESS,
         ),
         onAction = {},
         onBack = {}
@@ -175,7 +208,7 @@ fun SettingsLanguageScreenPreview2() {
 
 @Preview(showBackground = true)
 @Composable
-fun SettingsLanguageScreenPreview3() {
+fun SettingsLanguageScreenPreview4() {
     SettingsDictionariesPresenter(
         state = DictionaryListState(
             dictionaryList = listOf(

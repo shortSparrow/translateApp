@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
@@ -32,7 +33,7 @@ class DictionaryListViewModel @Inject constructor(
     private fun getDictionaries() {
         viewModelScope.launch {
             dictionaryUseCase.getSelectableDictionaryList().collectLatest { dictionaryList ->
-                state = state.copy(dictionaryList = dictionaryList)
+                state = state.copy(dictionaryList = dictionaryList, loadingState = LoadingState.SUCCESS)
             }
         }
     }

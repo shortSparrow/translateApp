@@ -29,6 +29,7 @@ import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionaries
+import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionariesFoLists
 import com.ovolk.dictionary.presentation.core.dictionaries.NoSelectedDictionary
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.lists.ListsAction
@@ -127,7 +128,7 @@ fun ListsPresenter(
 
 
             if (state.dictionaryList.isEmpty() && state.isLoadingList == LoadingState.SUCCESS) {
-                NoDictionaries(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
+                NoDictionariesFoLists(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
             } else if (state.isLoadingList == LoadingState.SUCCESS && currentDictionary.value == null) {
                 NoSelectedDictionary()
             } else if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty() && currentDictionary.value != null) {

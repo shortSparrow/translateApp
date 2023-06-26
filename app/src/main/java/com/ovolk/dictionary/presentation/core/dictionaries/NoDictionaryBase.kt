@@ -26,7 +26,7 @@ fun NoDictionaryBase(
     buttonText: String?,
     imageDescription: String = "",
     title: String,
-    description: String,
+    description: String?,
 ) {
     Column(
         modifier = Modifier
@@ -47,12 +47,15 @@ fun NoDictionaryBase(
             color = colorResource(id = R.color.grey_2),
             textAlign = TextAlign.Center,
         )
-        Text(
-            text = description,
-            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-            color = colorResource(id = R.color.grey_2),
-            textAlign = TextAlign.Center
-        )
+
+        if (description != null) {
+            Text(
+                text = description,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
+                color = colorResource(id = R.color.grey_2),
+                textAlign = TextAlign.Center
+            )
+        }
 
         if (buttonText != null && onPressAddNewDictionary != null) {
             Button(onClick = onPressAddNewDictionary) {
