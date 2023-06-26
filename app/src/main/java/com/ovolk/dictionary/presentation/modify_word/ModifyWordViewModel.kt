@@ -444,7 +444,7 @@ class ModifyWordViewModel @Inject constructor(
             createdAt = composeState.createdAt ?: getTimestamp(),
             updatedAt = getTimestamp(),
             wordListId = composeState.selectedWordList?.id,
-            dictionary = composeState.dictionary.value!!, // TODO remove !!
+            dictionary = composeState.dictionary.value!!,
         )
 
 

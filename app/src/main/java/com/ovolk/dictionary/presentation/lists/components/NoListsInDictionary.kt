@@ -15,6 +15,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +39,8 @@ fun NoListsInDictionary(onPressAddNewList: () -> Unit) {
             text = stringResource(id = R.string.lists_screen_no_list_for_dictionary),
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
             fontSize = 20.sp,
-            color = colorResource(id = R.color.grey_2)
+            color = colorResource(id = R.color.grey_2),
+            textAlign = TextAlign.Center
         )
 
         Button(onClick = onPressAddNewList) {

@@ -20,6 +20,7 @@ import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.CrudDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.SetIsActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
+import com.ovolk.dictionary.domain.word_audio.WordListAudioPlayer
 import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import com.ovolk.dictionary.presentation.core.snackbar.SnackBarSuccess
 import com.ovolk.dictionary.util.helpers.getAudioPath
@@ -37,7 +38,7 @@ import javax.inject.Inject
 class DictionaryWordsViewModel @Inject constructor(
     private val getSearchedWordListUseCase: GetSearchedWordListUseCase,
     private val application: Application,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val crudDictionaryUseCase: CrudDictionaryUseCase,
     private val setIsActiveDictionaryUseCase: SetIsActiveDictionaryUseCase
 ) : ViewModel() {
@@ -45,12 +46,9 @@ class DictionaryWordsViewModel @Inject constructor(
     var state by mutableStateOf(DictionaryWordsState())
         private set
     var listener: Listener? = null
+    private val wordListAudioPlayer  =  WordListAudioPlayer()
 
     private var searchJob: Job? = null
-    private val player = MediaPlayer()
-
-    private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private val oldVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
     init {
         state = state.copy(loadingStatus = LoadingState.PENDING)
@@ -68,7 +66,6 @@ class DictionaryWordsViewModel @Inject constructor(
                     }
                 }
             }
-
         }
     }
 
@@ -138,48 +135,16 @@ class DictionaryWordsViewModel @Inject constructor(
                 searchDebounced(action.value)
             }
 
-            is DictionaryWordsAction.PlayAudio -> playAudio(
-                onStartListener = action.onStartListener,
-                word = action.word,
-                onCompletionListener = action.onCompletionListener,
-            )
-        }
-    }
-
-    // TODO maybe move it to compose
-    private fun playAudio(
-        onStartListener: () -> Unit,
-        word: WordRV,
-        onCompletionListener: () -> Unit,
-    ) {
-        if (player.isPlaying) return
-        onStartListener()
-
-        audioManager.setStreamVolume(
-            AudioManager.STREAM_MUSIC,
-            audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-            0
-        )
-
-        player.apply {
-            try {
-                reset()
-                setDataSource(getAudioPath(application, word.sound!!.fileName))
-                prepare()
-                start()
-            } catch (e: IOException) {
-                Timber.e("prepare() failed $e")
+            is DictionaryWordsAction.PlayAudio -> {
+                wordListAudioPlayer.playAudio(
+                    onCompletionListener = action.onCompletionListener,
+                    onStartListener = action.onStartListener,
+                    word = action.word,
+                )
             }
         }
-        player.setOnCompletionListener {
-            onCompletionListener()
-            audioManager.setStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                oldVolume,
-                0
-            )
-        }
     }
+
 
     private suspend fun searchWord(searchValue: String) {
         getSearchedWordListUseCase.getWords(searchValue, dictionaryId = dictionaryId)
