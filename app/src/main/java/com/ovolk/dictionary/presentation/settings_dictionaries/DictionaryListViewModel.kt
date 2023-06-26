@@ -40,7 +40,7 @@ class DictionaryListViewModel @Inject constructor(
     fun onAction(action: DictionaryListAction) {
         when (action) {
             is DictionaryListAction.OnPressDictionary -> {
-                    listener?.goToDictionaryWords(action.id)
+                listener?.goToDictionaryWords(action.id)
             }
 
             is DictionaryListAction.OnSelectDictionary -> {
@@ -68,9 +68,15 @@ class DictionaryListViewModel @Inject constructor(
             DictionaryListAction.DeleteDictionary -> {
                 state = state.copy(isDeleteDictionaryModalOpen = false)
                 viewModelScope.launch {
-                    val listToDelete = state.dictionaryList.filter { it.isSelected }.map { it.id }
+                    val listToDelete = state.dictionaryList.filter { it.isSelected }
+                    val listIdToDelete = listToDelete.map { it.id }
+                    val isActiveExist = listToDelete.find { it.isActive } != null
 
-                    when (val response = dictionaryUseCase.deleteDictionaries(listToDelete)) {
+                    val response = dictionaryUseCase.deleteDictionaries(
+                        listIdToDelete,
+                        isActiveExist = isActiveExist
+                    )
+                    when (response) {
                         is Either.Failure -> {
                             GlobalSnackbarManger.showGlobalSnackbar(
                                 duration = SnackbarDuration.Short,

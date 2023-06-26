@@ -6,18 +6,25 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.SnackbarDuration
 import com.google.gson.Gson
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
+import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarAlert
 import com.ovolk.dictionary.util.EXAM_REMINDER_INTENT_CODE
 import com.ovolk.dictionary.util.PushFrequency
 import com.ovolk.dictionary.util.getExamReminderDelayFromNow
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -28,6 +35,18 @@ class ExamReminder @Inject constructor(
     private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase
 ) {
     private val gson = Gson()
+    private val scope = CoroutineScope(Dispatchers.IO);
+
+    fun getIsAlarmExist(): Boolean {
+        val intent = AlarmReceiver.newIntent(application)
+
+        return PendingIntent.getBroadcast(
+            DictionaryApp.applicationContext(),
+            EXAM_REMINDER_INTENT_CODE,
+            intent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        ) != null
+    }
 
     fun updateReminder(frequency: Int, startHour: Int, startMinute: Int) {
         val delay =
@@ -83,6 +102,10 @@ class ExamReminder @Inject constructor(
             update()
         }
 
+        cancelReminder()
+    }
+
+    fun cancelReminder() {
         val alarmManager =
             application.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
         val intent = AlarmReceiver.newIntent(application)
@@ -97,7 +120,7 @@ class ExamReminder @Inject constructor(
         alarmManager.cancel(pendingIntent)
     }
 
-    private fun setInitialReminder() {
+     fun setInitialReminder() {
         val reminderSettings = appSettingsRepository.getAppSettings().reminder
         var frequency = reminderSettings.examReminderFrequency
         // if PushFrequency was reset when a user didn't have any word
@@ -137,12 +160,12 @@ class ExamReminder @Inject constructor(
         )
     }
 
-    // TODO figure out how reminder will be with dictionaries and if I change active dictionary
     suspend fun setInitialReminderIfNeeded() {
-        coroutineScope {
+        scope.launch {
             val activeDictionary = getActiveDictionaryUseCase.getDictionaryActive()
-            if(activeDictionary is Either.Success) {
-                val isWordListNoEmpty = getExamWordListUseCase.searchWordListSize(activeDictionary.value.id)
+            if (activeDictionary is Either.Success) {
+                val isWordListNoEmpty =
+                    getExamWordListUseCase.searchWordListSize(activeDictionary.value.id)
                 isWordListNoEmpty.collectLatest { count ->
                     /**
                      * On first install wordCount = 0, if user add one word, we setup reminder.
@@ -151,7 +174,20 @@ class ExamReminder @Inject constructor(
                     when (count) {
                         0 -> resetReminder()
                         1 -> {
-                            setInitialReminder()
+                            if (!getIsAlarmExist()) {
+                                setInitialReminder()
+                            }
+                        }
+
+                        else -> {
+                            if (!getIsAlarmExist()) {
+                                GlobalSnackbarManger.showGlobalSnackbar(
+                                    duration = SnackbarDuration.Long,
+                                    data = SnackBarAlert(message = application.getString(R.string.exam_reminder_receiver_alarm_was_canceled))
+                                )
+
+                                setInitialReminder()
+                            }
                         }
                     }
                 }

@@ -10,13 +10,24 @@ import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialo
 @Composable
 fun DeleteDictionaryDialog(
     dictionaryTitle: String,
+    isDictionaryActive: Boolean,
     onConfirmDelete: () -> Unit,
     onDecline: () -> Unit
 ) {
+    val deleteActiveDictionaryInfo = if (isDictionaryActive) {
+        "\n \n ${stringResource(id = R.string.dictionary_word_list_remove_active_dictionary)}"
+    } else ""
+
+    val description =
+        stringResource(id = R.string.dictionary_word_list_confirm_delete_description) + deleteActiveDictionaryInfo
+
     ConfirmDialog(
-        title = stringResource(id = R.string.dictionary_word_list_confirm_delete_title, dictionaryTitle),
-        description = stringResource(id = R.string.dictionary_word_list_confirm_delete_description),
-        descriptionColor= colorResource(id = R.color.red),
+        title = stringResource(
+            id = R.string.dictionary_word_list_confirm_delete_title,
+            dictionaryTitle
+        ),
+        description = description,
+        descriptionColor = colorResource(id = R.color.red),
         onAcceptClick = { onConfirmDelete() },
         onDeclineClick = { onDecline() }
     )
@@ -27,6 +38,18 @@ fun DeleteDictionaryDialog(
 fun DeleteDictionaryDialogPreview() {
     DeleteDictionaryDialog(
         dictionaryTitle = "EN-UK",
+        isDictionaryActive = true,
+        onConfirmDelete = { },
+        onDecline = { },
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DeleteDictionaryDialogPreview2() {
+    DeleteDictionaryDialog(
+        dictionaryTitle = "EN-UK",
+        isDictionaryActive = false,
         onConfirmDelete = { },
         onDecline = { },
     )

@@ -31,6 +31,7 @@ fun DictionaryWords(
 
     if (state.isDeleteConfirmModalOpen) {
         DeleteDictionaryDialog(
+            isDictionaryActive = state.dictionary?.isActive == true,
             dictionaryTitle = state.dictionary?.title ?: stringResource(id = R.string.unknown),
             onConfirmDelete = { onAction(DictionaryWordsAction.OnPressConfirmDelete) },
             onDecline = { onAction(DictionaryWordsAction.HandleDeleteDictionaryModal(false)) },

@@ -3,9 +3,11 @@ package com.ovolk.dictionary.domain.use_case.modify_dictionary
 import android.app.Application
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.mapper.DictionaryMapper
+import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.domain.repositories.DictionaryRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.Failure
 import com.ovolk.dictionary.domain.response.FailureMessage
@@ -25,6 +27,8 @@ class CrudDictionaryUseCase @Inject constructor(
     private val dictionaryRepository: DictionaryRepository,
     private val mapper: DictionaryMapper,
     private val application: Application,
+    private val examReminder: ExamReminder,
+    private val wordRepository: TranslatedWordRepository,
 ) {
     fun getDictionaryList(): Flow<List<Dictionary>> {
         return dictionaryRepository.getDictionaryList()
@@ -137,13 +141,24 @@ class CrudDictionaryUseCase @Inject constructor(
                 code = UNKNOWN_ERROR
             )
         )
-        else Either.Success(Success)
+        else {
+            if (isActive) {
+                setExamReminderIfNeeded(id)
+            }
+            Either.Success(Success)
+        }
     }
 
-    suspend fun deleteDictionaries(dictionaryListId: List<Long>): Either<Success, FailureMessage> {
+    suspend fun deleteDictionaries(
+        dictionaryListId: List<Long>,
+        isActiveExist: Boolean
+    ): Either<Success, FailureMessage> {
         val isDeleteSuccess = dictionaryRepository.deleteDictionaries(dictionaryListId)
 
         if (isDeleteSuccess) {
+            if (isActiveExist) {
+                examReminder.cancelReminder()
+            }
             return Either.Success(Success)
         }
 
@@ -152,6 +167,13 @@ class CrudDictionaryUseCase @Inject constructor(
             dictionaryListId.size,
         )
         return Either.Failure(FailureMessage(errorMessage))
+    }
+
+    private suspend fun setExamReminderIfNeeded(dictionaryId: Long) {
+        val listSize = wordRepository.getExamWordListSize(dictionaryId)
+        if (listSize > 0) {
+            examReminder.setInitialReminder()
+        }
     }
 
 }

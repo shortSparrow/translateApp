@@ -1,9 +1,6 @@
 package com.ovolk.dictionary.presentation.dictionary_words
 
 import android.app.Application
-import android.content.Context
-import android.media.AudioManager
-import android.media.MediaPlayer
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.LoadingState
-import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.FailureMessage
 import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
@@ -23,15 +19,12 @@ import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.domain.word_audio.WordListAudioPlayer
 import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import com.ovolk.dictionary.presentation.core.snackbar.SnackBarSuccess
-import com.ovolk.dictionary.util.helpers.getAudioPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,13 +33,13 @@ class DictionaryWordsViewModel @Inject constructor(
     private val application: Application,
     savedStateHandle: SavedStateHandle,
     private val crudDictionaryUseCase: CrudDictionaryUseCase,
-    private val setIsActiveDictionaryUseCase: SetIsActiveDictionaryUseCase
+    private val setIsActiveDictionaryUseCase: SetIsActiveDictionaryUseCase,
 ) : ViewModel() {
     val dictionaryId = checkNotNull(savedStateHandle.get<Long>("dictionaryId"))
     var state by mutableStateOf(DictionaryWordsState())
         private set
     var listener: Listener? = null
-    private val wordListAudioPlayer  =  WordListAudioPlayer()
+    private val wordListAudioPlayer = WordListAudioPlayer()
 
     private var searchJob: Job? = null
 
@@ -78,8 +71,12 @@ class DictionaryWordsViewModel @Inject constructor(
 
             DictionaryWordsAction.OnPressConfirmDelete -> {
                 viewModelScope.launch {
-                    when (val response =
-                        crudDictionaryUseCase.deleteDictionaries(listOf(dictionaryId))) {
+                    val response =
+                        crudDictionaryUseCase.deleteDictionaries(
+                            listOf(dictionaryId),
+                            isActiveExist = true
+                        )
+                    when (response) {
                         is Either.Failure -> {
                             GlobalSnackbarManger.showGlobalSnackbar(
                                 duration = SnackbarDuration.Short,

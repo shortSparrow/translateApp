@@ -37,16 +37,24 @@ fun SettingsDictionariesPresenter(
         val dictionaries = state.dictionaryList.filter { it.isSelected }
         val selectedDictionary = dictionaries.joinToString(", ") { it.title }
 
+        val isDeletedActive = dictionaries.find { it.isActive } != null
+        val deleteActiveDictionaryInfo = if (isDeletedActive) {
+            "\n \n ${stringResource(id = R.string.setting_dictionaries_screen_remove_active_dictionary)}"
+        } else ""
+
+        val description =
+            pluralStringResource(
+                id = R.plurals.setting_dictionaries_delete_dictionary_description,
+                count = dictionaries.size,
+            ) + deleteActiveDictionaryInfo
+
         ConfirmDialog(
-            title =   pluralStringResource(
+            title = pluralStringResource(
                 id = R.plurals.setting_dictionaries_delete_dictionary_title,
                 count = dictionaries.size,
                 selectedDictionary
             ),
-            description =  pluralStringResource(
-                id = R.plurals.setting_dictionaries_delete_dictionary_description,
-                count = dictionaries.size,
-            ),
+            description = description,
             descriptionColor = colorResource(id = R.color.red),
             onAcceptClick = { onAction(DictionaryListAction.DeleteDictionary) },
             onDeclineClick = {

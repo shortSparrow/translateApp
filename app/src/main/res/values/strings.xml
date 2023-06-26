@@ -144,6 +144,7 @@
     <string name="modify_dictionary_validation_lang_to_empty">Language to must be not empty</string>
 
 
+<!--     TODO remove to dictionaryList -->
     <!--  Settings Dictionaries -->
     <string name="setting_dictionaries_active_dialog_title">This dictionary active</string>
     <string name="setting_dictionaries_active_dialog_description">You mark the dictionary active for the languages you are currently learning.
@@ -158,12 +159,18 @@ When you create new word or new list this dictionary will be prefilled. Words to
     </plurals>
     <string name="setting_dictionaries_screen_title">Dictionaries</string>
     <string name="setting_dictionaries_screen_title_cd">Navigation button to Dictionaries screen</string>
+    <string name="setting_dictionaries_screen_remove_active_dictionary">You try to delete active dictionary, if you do it, exam reminders will stop until you select a new active dictionary</string>
+    <plurals name="setting_dictionaries_screen_dictionary_was_deleted">
+        <item quantity="one">Dictionary was deleted</item>
+        <item quantity="other">Dictionaries was deleted</item>
+    </plurals>
 
     <!--  Dictionary Word List -->
     <string name="dictionary_word_list_confirm_delete_title">Are you sure you want to delete %s dictionary?</string>
     <string name="dictionary_word_list_confirm_delete_description">All words in this dictionary will be deleted</string>
     <string name="dictionary_word_list_dictionary_marked_active">Congratulations %s now is active</string>
     <string name="dictionary_word_list_failed_load_words">Failed load words</string>
+    <string name="dictionary_word_list_remove_active_dictionary">You try to delete active dictionary, if you do it, exam reminders will stop until you select a new active dictionary</string>
 
     <!--  Welcome Screen Create First Dictionary -->
     <string name="create_first_dictionary_title">Create first dictionary</string>
@@ -256,6 +263,9 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="no_selected_dictionary_cd">There is no any selected dictionary</string>
     <string name="no_selected_dictionary_select_dictionary_message">Please select dictionary</string>
     <string name="no_selected_dictionary_select_dictionary_description">Each list must be attached to the dictionary</string>
+
+    <!--  Alarm Receiver  -->
+    <string name="exam_reminder_receiver_alarm_was_canceled">Your alarm has been cancelled, but don\'t worry, we\'ll automatically set it again</string>
 
     <!--Common -->
     <string name="app_name">Personal Dictionary</string>
