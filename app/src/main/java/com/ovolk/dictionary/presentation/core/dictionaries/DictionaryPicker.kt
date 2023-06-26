@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.compose.languages_picker
+package com.ovolk.dictionary.presentation.core.dictionaries
 
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.LinearEasing
@@ -51,7 +51,7 @@ const val HEADER_ANIMATION_TIME = 150
 const val HEIGHT_ANIMATION_TIME = 250
 
 @Composable
-fun SelectDictionaryPicker(
+fun DictionaryPicker(
     selectedDictionary: Dictionary?,
     dictionaryList: List<Dictionary>,
     validation: ValidateResult,
@@ -262,7 +262,7 @@ fun SelectDictionaryPicker(
 @Preview(showBackground = true)
 @Composable
 fun SelectLanguagePreview() {
-    SelectDictionaryPicker(
+    DictionaryPicker(
         selectedDictionary = Dictionary(
             id = 0L,
             title = "FR-PL",
@@ -296,7 +296,7 @@ fun SelectLanguagePreview() {
 @Preview(showBackground = true)
 @Composable
 fun SelectLanguagePreview2() {
-    SelectDictionaryPicker(
+    DictionaryPicker(
         selectedDictionary = Dictionary(
             id = 1L,
             title = "EN-UA",
@@ -331,7 +331,7 @@ fun SelectLanguagePreview2() {
 @Preview(showBackground = true)
 @Composable
 fun SelectLanguagePreview3() {
-    SelectDictionaryPicker(
+    DictionaryPicker(
         selectedDictionary = null,
         dictionaryList = emptyList(),
         validation = ValidateResult(errorMessage = "this field is required", successful = false),

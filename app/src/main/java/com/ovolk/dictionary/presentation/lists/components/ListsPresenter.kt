@@ -12,7 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
@@ -28,16 +30,15 @@ import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
-import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionaries
 import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionariesFoLists
 import com.ovolk.dictionary.presentation.core.dictionaries.NoSelectedDictionary
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.lists.ListsAction
 import com.ovolk.dictionary.presentation.lists.ListsState
-import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.SelectDictionaryPicker
+import com.ovolk.dictionary.presentation.core.dictionaries.DictionaryPicker
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ListsPresenter(
     state: ListsState,
@@ -61,13 +62,25 @@ fun ListsPresenter(
     if (state.isOpenDeleteListModal) {
         val count = state.list.filter { it.isSelected }.size
         ConfirmDialog(
-            title = pluralStringResource(id = R.plurals.lists_screen_confirm_delete_list_title, count = count),
-            description = pluralStringResource(id = R.plurals.lists_screen_confirm_delete_list_description, count = count),
+            title = pluralStringResource(
+                id = R.plurals.lists_screen_confirm_delete_list_title,
+                count = count
+            ),
+            description = pluralStringResource(
+                id = R.plurals.lists_screen_confirm_delete_list_description,
+                count = count
+            ),
             descriptionColor = colorResource(id = R.color.red),
             onAcceptClick = { onAction(ListsAction.ConfirmDeleteSelectedLists) },
             onDeclineClick = { onAction(ListsAction.DeclineDeleteSelectedLists) })
     }
 
+    val closeDictionaryPickerModifier = Modifier.pointerInteropFilter {
+        if (expanded) {
+            expanded = false
+        }
+        false
+    }
     Scaffold(
         floatingActionButton = {
             if (state.list.isNotEmpty()
@@ -82,7 +95,7 @@ fun ListsPresenter(
         }
     ) { contentPadding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
         ) {
@@ -91,7 +104,12 @@ fun ListsPresenter(
                 return@Scaffold
             }
 
-            Header(selectedLists = selectedLists, onAction = onAction)
+            Box(
+                modifier = closeDictionaryPickerModifier,
+            ) {
+                Header(selectedLists = selectedLists, onAction = onAction)
+            }
+
 
             Box(modifier = Modifier.zIndex(1f)) {
                 Layout(
@@ -105,7 +123,7 @@ fun ListsPresenter(
                                     }
                                 }
                         ) {
-                            SelectDictionaryPicker(
+                            DictionaryPicker(
                                 selectedDictionary = currentDictionary.value,
                                 dictionaryList = state.dictionaryList,
                                 validation = ValidateResult(successful = true),
@@ -126,39 +144,42 @@ fun ListsPresenter(
                 }
             }
 
+            Column(modifier = closeDictionaryPickerModifier) {
 
-            if (state.dictionaryList.isEmpty() && state.isLoadingList == LoadingState.SUCCESS) {
-                NoDictionariesFoLists(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
-            } else if (state.isLoadingList == LoadingState.SUCCESS && currentDictionary.value == null) {
-                NoSelectedDictionary()
-            } else if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty() && currentDictionary.value != null) {
-                NoListsInDictionary(onPressAddNewList = { onAction(ListsAction.OpenModalNewList) })
-            }
 
-            if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {
-                CompositionLocalProvider(
-                    LocalOverscrollConfiguration provides null
-                ) {
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            top = dimensionResource(id = R.dimen.gutter),
-                            bottom = 60.dp
-                        )
+                if (state.dictionaryList.isEmpty() && state.isLoadingList == LoadingState.SUCCESS) {
+                    NoDictionariesFoLists(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
+                } else if (state.isLoadingList == LoadingState.SUCCESS && currentDictionary.value == null) {
+                    NoSelectedDictionary()
+                } else if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty() && currentDictionary.value != null) {
+                    NoListsInDictionary(onPressAddNewList = { onAction(ListsAction.OpenModalNewList) })
+                }
+
+                if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {
+                    CompositionLocalProvider(
+                        LocalOverscrollConfiguration provides null
                     ) {
-                        items(items = state.list) { item ->
-                            ListItem(
-                                item = item,
-                                onAction = onAction,
-                                onItemClick = { listId: Long, listName: String ->
-                                    onAction(
-                                        ListsAction.OnListItemPress(
-                                            listId,
-                                            listName,
-                                        )
-                                    )
-                                },
-                                atLeastOneListSelected = atLeastOneListSelected
+                        LazyColumn(
+                            contentPadding = PaddingValues(
+                                top = dimensionResource(id = R.dimen.gutter),
+                                bottom = 60.dp
                             )
+                        ) {
+                            items(items = state.list) { item ->
+                                ListItem(
+                                    item = item,
+                                    onAction = onAction,
+                                    onItemClick = { listId: Long, listName: String ->
+                                        onAction(
+                                            ListsAction.OnListItemPress(
+                                                listId,
+                                                listName,
+                                            )
+                                        )
+                                    },
+                                    atLeastOneListSelected = atLeastOneListSelected
+                                )
+                            }
                         }
                     }
                 }
@@ -166,7 +187,6 @@ fun ListsPresenter(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

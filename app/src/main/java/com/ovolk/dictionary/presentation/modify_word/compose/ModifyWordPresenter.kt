@@ -51,7 +51,7 @@ import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
 import com.ovolk.dictionary.presentation.modify_word.Translates
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
-import com.ovolk.dictionary.presentation.modify_word.compose.languages_picker.SelectDictionaryPicker
+import com.ovolk.dictionary.presentation.core.dictionaries.DictionaryPicker
 import com.ovolk.dictionary.presentation.modify_word.compose.question_wrapper.QuestionWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
@@ -170,7 +170,7 @@ fun ModifyWordPresenter(
                 )
             }
             IgnoreHeightWrapper(modifier = Modifier.zIndex(2F), calculatedHeight = 100) {
-                SelectDictionaryPicker(
+                DictionaryPicker(
                     selectedDictionary = state.dictionary.collectAsState().value,
                     dictionaryList = state.dictionaryList,
                     validation = state.dictionaryError,
