@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DictionaryRepository {
     suspend fun addNewDictionary(dictionary: Dictionary): Long
+    suspend fun editDictionary(dictionary: Dictionary): Boolean
     suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Boolean
     fun getDictionaryList(): Flow<List<Dictionary>>
     suspend fun getCurrentActiveDictionary(): Dictionary?

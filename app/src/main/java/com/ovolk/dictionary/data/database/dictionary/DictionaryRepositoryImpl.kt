@@ -15,9 +15,16 @@ class DictionaryRepositoryImpl @Inject constructor(
         return dictionaryDao.addNewDictionary(dictionaryMapper.dictionaryToDictionaryDb(dictionary = dictionary))
     }
 
-    override suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Boolean {
-        val response = dictionaryDao.deleteDictionaries(dictionariesIdList)
+    override suspend fun editDictionary(dictionary: Dictionary): Boolean {
+        val response = dictionaryDao.editDictionary(
+            dictionary = dictionaryMapper.dictionaryToDictionaryDb(dictionary = dictionary)
+        )
         return response == OPERATION_SUCCESSFUL
+    }
+
+    override suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Boolean {
+        val countOfDeletedDictionaries = dictionaryDao.deleteDictionaries(dictionariesIdList)
+        return countOfDeletedDictionaries != -1 || countOfDeletedDictionaries != 0
     }
 
     override fun getDictionaryList(): Flow<List<Dictionary>> {

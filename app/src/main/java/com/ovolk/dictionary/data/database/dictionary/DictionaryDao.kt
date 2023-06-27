@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.ovolk.dictionary.data.model.DictionaryDb
 import com.ovolk.dictionary.util.DICTIONARIES
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +14,9 @@ import kotlinx.coroutines.flow.Flow
 interface DictionaryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewDictionary(dictionary: DictionaryDb): Long
+
+    @Update
+    suspend fun editDictionary(dictionary: DictionaryDb): Int
 
     @Query("DELETE FROM DICTIONARIES WHERE id IN (:dictionariesIdList)")
     suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Int

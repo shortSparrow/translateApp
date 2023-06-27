@@ -133,9 +133,9 @@ class CrudDictionaryUseCase @Inject constructor(
             langFromCode = langFromCode as String,
             isActive = isActive,
         )
-        val response = dictionaryRepository.addNewDictionary(dictionary = dictionary)
+        val response = dictionaryRepository.editDictionary(dictionary = dictionary)
 
-        return if (response == -1L) return Either.Failure(
+        return if (!response) return Either.Failure(
             FailureWithCode(
                 application.getString(R.string.something_wrong_try_again),
                 code = UNKNOWN_ERROR
