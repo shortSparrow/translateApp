@@ -13,13 +13,9 @@ import com.ovolk.dictionary.util.DEFAULT_DAILY_EXAM_WORDS_COUNT
 import com.ovolk.dictionary.util.DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE
 import com.ovolk.dictionary.util.EXAM_REMINDER_FREQUENCY
 import com.ovolk.dictionary.util.EXAM_REMINDER_TIME
-import com.ovolk.dictionary.util.IS_CHOOSE_LANGUAGE
 import com.ovolk.dictionary.util.IS_DOUBLE_LANGUAGE_EXAM_ENABLE
 import com.ovolk.dictionary.util.IS_WELCOME_SCREEN_PASSED
 import com.ovolk.dictionary.util.PushFrequency
-import com.ovolk.dictionary.util.SETTINGS_PREFERENCES
-import com.ovolk.dictionary.util.SETTINGS_VERSION
-import com.ovolk.dictionary.util.USER_STATE_PREFERENCES
 import com.ovolk.dictionary.util.showVariantsAvailableLanguages
 import javax.inject.Inject
 
@@ -75,7 +71,7 @@ class AppSettingsRepositoryImpl @Inject constructor(
     }
 
     override fun removeField(field: String) {
-        appSettingsPreferences.edit().remove(field)
+        appSettingsPreferences.edit().remove(field).apply()
     }
 
     inner class SaveSettings {

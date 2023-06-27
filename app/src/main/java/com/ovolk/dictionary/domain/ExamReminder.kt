@@ -10,6 +10,7 @@ import androidx.compose.material.SnackbarDuration
 import com.google.gson.Gson
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.workers.AlarmReceiver
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
@@ -23,6 +24,8 @@ import com.ovolk.dictionary.util.PushFrequency
 import com.ovolk.dictionary.util.getExamReminderDelayFromNow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +38,8 @@ class ExamReminder @Inject constructor(
     private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase
 ) {
     private val gson = Gson()
-    private val scope = CoroutineScope(Dispatchers.IO);
+    private val activeDictionaryScope = CoroutineScope(Dispatchers.IO)
+    private val wordsCountInDictionaryScope = CoroutineScope(Dispatchers.IO)
 
     fun getIsAlarmExist(): Boolean {
         val intent = AlarmReceiver.newIntent(application)
@@ -166,44 +170,55 @@ class ExamReminder @Inject constructor(
         )
     }
 
-    suspend fun setInitialReminderIfNeeded() {
-        scope.launch {
-            getActiveDictionaryUseCase.getDictionaryActiveFlow().collectLatest { activeDictionary ->
-                if (activeDictionary == null) return@collectLatest
-                val isWordListNoEmpty =
-                    getExamWordListUseCase.searchWordListSize(activeDictionary.id)
-                isWordListNoEmpty.collectLatest { count ->
-                    /**
-                     * On first install wordCount = 0, if user add one word, we setup reminder.
-                     * If user remove word and count = 0 we again reset reminder.
-                     * In any other cases we check if reminder is present, id if not, but must, setup one again
-                     */
+    private suspend fun listenWordsCountInDictionary(activeDictionary: Dictionary) {
+        wordsCountInDictionaryScope.launch {
+            val isWordListNoEmpty =
+                getExamWordListUseCase.searchWordListSize(activeDictionary.id)
+            var oldCount = 0
 
-                    when (count) {
-                        0 -> {
-                            if (getIsAlarmExist()) {
-                                disableReminderIfNoWords()
-                            }
+            isWordListNoEmpty.cancellable().collectLatest { count ->
+                if (oldCount == count) return@collectLatest
+                oldCount = count
+                /**
+                 * On first install wordCount = 0, if user add one word, we setup reminder.
+                 * If user remove word and count = 0 we again reset reminder.
+                 * In any other cases we check if reminder is present, id if not, but must, setup one again
+                 */
+
+                when (count) {
+                    0 -> {
+                        if (getIsAlarmExist()) {
+                            disableReminderIfNoWords()
                         }
+                    }
 
-                        1 -> {
-                            if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
-                                setInitialReminder()
-                            }
+                    1 -> {
+                        if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
+                            setInitialReminder()
                         }
+                    }
 
-                        else -> {
-                            if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
-                                GlobalSnackbarManger.showGlobalSnackbar(
-                                    duration = SnackbarDuration.Short,
-                                    data = SnackBarAlert(message = application.getString(R.string.exam_reminder_receiver_alarm_was_canceled))
-                                )
+                    else -> {
+                        if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
+                            GlobalSnackbarManger.showGlobalSnackbar(
+                                duration = SnackbarDuration.Short,
+                                data = SnackBarAlert(message = application.getString(R.string.exam_reminder_receiver_alarm_was_canceled))
+                            )
 
-                                setInitialReminder()
-                            }
+                            setInitialReminder()
                         }
                     }
                 }
+            }
+        }
+    }
+
+    suspend fun setInitialReminderIfNeeded() {
+        activeDictionaryScope.launch {
+            getActiveDictionaryUseCase.getDictionaryActiveFlow().collectLatest { activeDictionary ->
+                wordsCountInDictionaryScope.coroutineContext.cancelChildren()
+                if (activeDictionary == null) return@collectLatest
+                listenWordsCountInDictionary(activeDictionary)
             }
         }
     }

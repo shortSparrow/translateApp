@@ -2,7 +2,6 @@ package com.ovolk.dictionary.presentation.exam
 
 import android.app.Application
 import android.os.LocaleList
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,7 @@ import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
@@ -51,10 +51,12 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private val application: Application,
     private val savedStateHandle: SavedStateHandle,
     private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase,
+    appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
     private val listId = parseDefaultLongProps(savedStateHandle.get<Long>("listId"))
     private val listName = savedStateHandle.get<String>("listName")
-
+    val isDoubleLanguageExamEnable =
+        appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
 
     var listener: Listener? = null
     private val examLocalCache = ExamLocalCache.getInstance()
@@ -68,7 +70,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private fun getCurrentWord() = composeState.examWordList[composeState.activeWordPosition]
 
     private fun setupKeyboardLanguage() {
-        if (!examLocalCache.getIsDoubleLanguageExamEnable()) return
+        if (!isDoubleLanguageExamEnable) return
 
         editText?.imeHintLocales = LocaleList(Locale(getCurrentWord().langTo))
         val inputMethodManager = DictionaryApp.applicationContext()
@@ -279,7 +281,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                         isAllExamWordsLoaded = response.value.totalCount == list.size,
                         examListTotalCount = response.value.totalCount,
                         isLoading = false,
-                        isDoubleLanguageExamEnable = examLocalCache.getIsDoubleLanguageExamEnable()
+                        isDoubleLanguageExamEnable = isDoubleLanguageExamEnable
                     )
 
                     delay(100) // delay for apply keyboard locale

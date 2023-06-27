@@ -2,11 +2,11 @@ package com.ovolk.dictionary.domain.use_case.exam
 
 import android.app.Application
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.response.Either
@@ -37,8 +37,10 @@ class GetExamWordListUseCase @Inject constructor(
     handleDailyExamSettingsUseCase: HandleDailyExamSettingsUseCase,
     val mapper: WordMapper,
     private val application: Application,
+    appSettingsRepository: AppSettingsRepository,
 ) {
-    private val examLocalCache = ExamLocalCache.getInstance()
+    val isDoubleLanguageExamEnable =
+        appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
     private var getExamWordListCurrentPage: Int = 0
     private var isLoadingNextPage: Boolean = false
     private var totalCount: Int = 0
@@ -46,7 +48,7 @@ class GetExamWordListUseCase @Inject constructor(
         handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords.toInt()
 
     suspend fun searchWordListSize(dictionaryId: Long?) = coroutineScope {
-        return@coroutineScope if (dictionaryId != null) {
+        if (dictionaryId != null) {
             repository.searchWordListSizeByDictionary(dictionaryId = dictionaryId)
         } else {
             repository.searchWordListSize()
@@ -69,7 +71,6 @@ class GetExamWordListUseCase @Inject constructor(
         dictionaryId: Long?
     ): Either<ExamWordListUseCaseResponse, FailureMessage> =
         coroutineScope {
-
             if (dictionaryId == null) {
                 return@coroutineScope Either.Failure(FailureMessage(application.getString(R.string.get_exam_word_list_use_case_no_dictionary_id)))
             }
@@ -115,7 +116,7 @@ class GetExamWordListUseCase @Inject constructor(
                 }
 
                 val shouldInvertWord = Random.nextInt(0 until 2)
-                if (examLocalCache.getIsDoubleLanguageExamEnable() && shouldInvertWord == 1) {
+                if (isDoubleLanguageExamEnable && shouldInvertWord == 1) {
                     val randomInverseWordTranslateIndex =
                         Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
                     return@mapIndexed examWord.copy(

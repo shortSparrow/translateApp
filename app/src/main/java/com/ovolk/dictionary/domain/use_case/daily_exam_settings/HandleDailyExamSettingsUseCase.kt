@@ -22,7 +22,5 @@ class HandleDailyExamSettingsUseCase @Inject constructor(
             isDoubleLanguageExamEnable(isDoubleLanguageExamEnable)
             update()
         }
-
-
     }
 }

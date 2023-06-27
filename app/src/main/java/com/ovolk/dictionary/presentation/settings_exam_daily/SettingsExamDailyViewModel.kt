@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.data.in_memory_storage.ExamLocalCache
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.use_case.daily_exam_settings.HandleDailyExamSettingsUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
@@ -20,17 +20,18 @@ class SettingsExamDailyViewModel @Inject constructor(
     private val handleDailyExamSettingsUseCase: HandleDailyExamSettingsUseCase,
     private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase,
     private val application: Application,
+    appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
-    private val examLocalCache = ExamLocalCache.getInstance()
+    val isDoubleLanguageExamEnable = appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
     var state by mutableStateOf(
         SettingsExamDailyState(
             countOfWords = handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords,
-            isDoubleLanguageExamEnable = examLocalCache.getIsDoubleLanguageExamEnable()
+            isDoubleLanguageExamEnable = isDoubleLanguageExamEnable
         )
     )
     private var _initialState = SettingsExamDailyState(
         countOfWords = handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords,
-        isDoubleLanguageExamEnable = examLocalCache.getIsDoubleLanguageExamEnable(),
+        isDoubleLanguageExamEnable = isDoubleLanguageExamEnable,
     )
 
     init {
