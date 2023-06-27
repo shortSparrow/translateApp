@@ -30,6 +30,11 @@ class DictionaryRepositoryImpl @Inject constructor(
         return dictionaryMapper.dictionaryDbToDictionary(response)
     }
 
+    override fun getCurrentActiveDictionaryFlow(): Flow<Dictionary?> {
+        return dictionaryDao.getCurrentActiveDictionaryFlow()
+            .map { if (it != null) dictionaryMapper.dictionaryDbToDictionary(it) else null }
+    }
+
     override suspend fun getDictionaryListSize(): Int {
         return dictionaryDao.getDictionaryListSize()
     }

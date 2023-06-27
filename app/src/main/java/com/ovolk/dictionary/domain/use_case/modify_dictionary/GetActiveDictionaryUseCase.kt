@@ -17,4 +17,6 @@ class GetActiveDictionaryUseCase @Inject constructor(
         return if (dictionary != null) Either.Success(dictionary)
         else Either.Failure(FailureMessage(application.getString(R.string.get_active_dictionary_use_case_no_active_dictionary)))
     }
+
+     fun getDictionaryActiveFlow() = dictionaryRepository.getCurrentActiveDictionaryFlow()
 }

@@ -34,7 +34,8 @@ class AppSettingsRepositoryImpl @Inject constructor(
     )
 
     override fun getAppSettings(): AppSettings {
-        val isWelcomeScreenPassed = appSettingsPreferences.getBoolean(IS_WELCOME_SCREEN_PASSED, false)
+        val isWelcomeScreenPassed =
+            appSettingsPreferences.getBoolean(IS_WELCOME_SCREEN_PASSED, false)
 
         val reminderFrequency =
             appSettingsPreferences.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)
@@ -71,6 +72,10 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
     override fun setAppSettings(): SaveSettings {
         return this.SaveSettings()
+    }
+
+    override fun removeField(field: String) {
+        appSettingsPreferences.edit().remove(field)
     }
 
     inner class SaveSettings {

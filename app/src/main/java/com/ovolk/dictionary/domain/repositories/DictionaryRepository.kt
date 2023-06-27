@@ -8,6 +8,7 @@ interface DictionaryRepository {
     suspend fun deleteDictionaries(dictionariesIdList: List<Long>): Boolean
     fun getDictionaryList(): Flow<List<Dictionary>>
     suspend fun getCurrentActiveDictionary(): Dictionary?
+     fun getCurrentActiveDictionaryFlow(): Flow<Dictionary?>
     suspend fun getDictionaryListSize(): Int
     suspend fun getDictionary(dictionaryId: Long): Dictionary?
     fun getDictionaryFlow(dictionaryId: Long): Flow<Dictionary?>

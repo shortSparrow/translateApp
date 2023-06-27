@@ -16,26 +16,26 @@ import com.ovolk.dictionary.util.compose.BackHandler
 @Composable
 fun ModifyWordScreen(navController: NavHostController) {
 
-    fun showMessage(text: String) {
-        GlobalSnackbarManger.showGlobalSnackbar(
-            duration = SnackbarDuration.Short,
-            data = SnackBarSuccess(message = text),
-        )
-    }
-
     fun listener() = object : ModifyWordViewModel.Listener {
         override fun onDeleteWord() {
-            showMessage(
-                DictionaryApp.applicationContext()
-                    .getString(R.string.modify_word_success_delete_word)
+            // TODO maye add shack bars for all deletes
+            GlobalSnackbarManger.showGlobalSnackbar(
+                duration = SnackbarDuration.Short,
+                data = SnackBarSuccess(
+                    message = DictionaryApp.applicationContext()
+                        .getString(R.string.modify_word_success_delete_word)
+                ),
             )
             navController.popBackStack()
         }
 
         override fun onSaveWord() {
-            showMessage(
-                DictionaryApp.applicationContext()
-                    .getString(R.string.modify_word_saved_word_success)
+            GlobalSnackbarManger.showGlobalSnackbar(
+                duration = SnackbarDuration.Short,
+                data = SnackBarSuccess(
+                    message = DictionaryApp.applicationContext()
+                        .getString(R.string.modify_word_saved_word_success)
+                ),
             )
             navController.popBackStack()
         }

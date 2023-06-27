@@ -38,6 +38,9 @@ interface DictionaryDao {
     @Query("SELECT * FROM DICTIONARIES WHERE is_active=1 LIMIT 1")
     suspend fun getCurrentActiveDictionary(): DictionaryDb?
 
+    @Query("SELECT * FROM DICTIONARIES WHERE is_active=1 LIMIT 1")
+     fun getCurrentActiveDictionaryFlow(): Flow<DictionaryDb?>
+
     // affect all dictionaries which has is_active=true and replace value to is_active=false
     @Query("UPDATE $DICTIONARIES SET is_active=0 WHERE is_active = 1")
     suspend fun resetAllActiveDictionaries()

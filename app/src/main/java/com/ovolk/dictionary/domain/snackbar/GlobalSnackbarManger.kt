@@ -22,18 +22,18 @@ object GlobalSnackbarManger {
         duration: SnackbarDuration = SnackbarDuration.Short,
         data: SnackBarData,
         isHideOnAction: Boolean = false,
-        offset: SnackbarOffset =  SnackbarOffset(0.dp,(-80).dp)
+        offset: SnackbarOffset = SnackbarOffset(0.dp, (-80).dp)
     ) {
-        // configure snackbar
-        customSnackbarHostState.value = CustomSnackbarHostState(
-            duration = duration,
-            isHideOnAction = isHideOnAction,
-            data = data,
-            offset = offset,
-        )
-
-        // show configured snackbar
         coroutineScope.launch {
+            // configure snackbar
+            customSnackbarHostState.value = CustomSnackbarHostState(
+                duration = duration,
+                isHideOnAction = isHideOnAction,
+                data = data,
+                offset = offset,
+            )
+
+            // show configured snackbar
             customSnackbarHostState.value?.showSnackbar()
         }
     }

@@ -12,12 +12,12 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.workers.AlarmReceiver
 import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
-import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.core.snackbar.SnackBarAlert
+import com.ovolk.dictionary.util.EXAM_REMINDER_FREQUENCY
 import com.ovolk.dictionary.util.EXAM_REMINDER_INTENT_CODE
 import com.ovolk.dictionary.util.PushFrequency
 import com.ovolk.dictionary.util.getExamReminderDelayFromNow
@@ -105,6 +105,12 @@ class ExamReminder @Inject constructor(
         cancelReminder()
     }
 
+    private fun disableReminderIfNoWords() {
+        handleAlarmEnabling(PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+        appSettingsRepository.removeField(EXAM_REMINDER_FREQUENCY)
+        cancelReminder()
+    }
+
     fun cancelReminder() {
         val alarmManager =
             application.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
@@ -120,7 +126,7 @@ class ExamReminder @Inject constructor(
         alarmManager.cancel(pendingIntent)
     }
 
-     fun setInitialReminder() {
+    fun setInitialReminder() {
         val reminderSettings = appSettingsRepository.getAppSettings().reminder
         var frequency = reminderSettings.examReminderFrequency
         // if PushFrequency was reset when a user didn't have any word
@@ -162,27 +168,34 @@ class ExamReminder @Inject constructor(
 
     suspend fun setInitialReminderIfNeeded() {
         scope.launch {
-            val activeDictionary = getActiveDictionaryUseCase.getDictionaryActive()
-            if (activeDictionary is Either.Success) {
+            getActiveDictionaryUseCase.getDictionaryActiveFlow().collectLatest { activeDictionary ->
+                if (activeDictionary == null) return@collectLatest
                 val isWordListNoEmpty =
-                    getExamWordListUseCase.searchWordListSize(activeDictionary.value.id)
+                    getExamWordListUseCase.searchWordListSize(activeDictionary.id)
                 isWordListNoEmpty.collectLatest { count ->
                     /**
                      * On first install wordCount = 0, if user add one word, we setup reminder.
                      * If user remove word and count = 0 we again reset reminder.
+                     * In any other cases we check if reminder is present, id if not, but must, setup one again
                      */
+
                     when (count) {
-                        0 -> resetReminder()
+                        0 -> {
+                            if (getIsAlarmExist()) {
+                                disableReminderIfNoWords()
+                            }
+                        }
+
                         1 -> {
-                            if (!getIsAlarmExist()) {
+                            if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
                                 setInitialReminder()
                             }
                         }
 
                         else -> {
-                            if (!getIsAlarmExist()) {
+                            if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
                                 GlobalSnackbarManger.showGlobalSnackbar(
-                                    duration = SnackbarDuration.Long,
+                                    duration = SnackbarDuration.Short,
                                     data = SnackBarAlert(message = application.getString(R.string.exam_reminder_receiver_alarm_was_canceled))
                                 )
 
