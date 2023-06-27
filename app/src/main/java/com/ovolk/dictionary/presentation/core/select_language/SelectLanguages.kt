@@ -61,7 +61,7 @@ fun SelectLanguages(
                     PreferredLanguages(
                         languages = preferredLanguages,
                         onCheck = { language -> onSelect(language.langCode) },
-                        title = stringResource(id = R.string.settings_languages_from_to_selected_lang)
+                        title = stringResource(id = R.string.settings_languages_preferred_languages)
                     )
                 }
             }

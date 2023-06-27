@@ -49,7 +49,7 @@ class ModifyWordViewModel @Inject constructor(
     private val getListsUseCase: GetListsUseCase,
     private val addNewListUseCase: AddNewListUseCase,
     private val addChipUseCase: AddChipUseCase,
-    private val application: Application,
+    application: Application,
     private val savedStateHandle: SavedStateHandle,
     private val crudDictionaryUseCase: CrudDictionaryUseCase,
     private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase,
@@ -73,8 +73,14 @@ class ModifyWordViewModel @Inject constructor(
         launchRightMode()
 
         viewModelScope.launch {
+            var initialDictionaryListSize: Int? = null
             crudDictionaryUseCase.getDictionaryList().collectLatest { dictionaryList ->
                 composeState = composeState.copy(dictionaryList = dictionaryList)
+
+                if (initialDictionaryListSize == 0 && dictionaryList.size == 1 && composeState.dictionary.value == null) {
+                    composeState.dictionary.value = dictionaryList.first()
+                }
+                initialDictionaryListSize = dictionaryList.size
             }
         }
 
@@ -156,7 +162,10 @@ class ModifyWordViewModel @Inject constructor(
                 val selectedWordList =
                     if (action.dictionaryId == composeState.selectedWordList?.dictionaryId) composeState.selectedWordList else null
 
-                composeState = composeState.copy(selectedWordList = selectedWordList, dictionaryError = ValidateResult())
+                composeState = composeState.copy(
+                    selectedWordList = selectedWordList,
+                    dictionaryError = ValidateResult()
+                )
                 composeState.dictionary.value =
                     composeState.dictionaryList.find { it.id == action.dictionaryId }
             }
@@ -511,7 +520,8 @@ class ModifyWordViewModel @Inject constructor(
     }
 
     private fun launchEditMode(wordId: Long) {
-        val id = if (wordId == -1L) error("wordId is null") else wordId // TODO it should do usecase and return some error
+        val id =
+            if (wordId == -1L) error("wordId is null") else wordId // TODO it should do usecase and return some error
         getWordById(id)
     }
 

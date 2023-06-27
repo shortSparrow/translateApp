@@ -132,7 +132,7 @@
 
 
     <!--  Select Languages  -->
-    <string name="settings_languages_from_to_selected_lang">Selected languages</string>
+    <string name="settings_languages_preferred_languages">Preferred languages</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Dictionary %s already exist</string>
