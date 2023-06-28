@@ -4,31 +4,53 @@ import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.SnackbarDuration
 import com.google.gson.Gson
+import com.ovolk.dictionary.R
 import com.ovolk.dictionary.data.workers.AlarmReceiver
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.exam_reminder.ReminderTime
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
-import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
-import com.ovolk.dictionary.util.*
-import kotlinx.coroutines.coroutineScope
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
+import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarAlert
+import com.ovolk.dictionary.util.EXAM_REMINDER_FREQUENCY
+import com.ovolk.dictionary.util.EXAM_REMINDER_INTENT_CODE
+import com.ovolk.dictionary.util.PushFrequency
+import com.ovolk.dictionary.util.getExamReminderDelayFromNow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 class ExamReminder @Inject constructor(
     private val application: Application,
     private val getExamWordListUseCase: GetExamWordListUseCase,
-    private val getTimeReminder: GetTimeReminder
+    private val appSettingsRepository: AppSettingsRepository,
+    private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase
 ) {
     private val gson = Gson()
+    private val activeDictionaryScope = CoroutineScope(Dispatchers.IO)
+    private val wordsCountInDictionaryScope = CoroutineScope(Dispatchers.IO)
 
-    private val sharedPref: SharedPreferences = application.getSharedPreferences(
-        SETTINGS_PREFERENCES,
-        AppCompatActivity.MODE_PRIVATE
-    )
+    fun getIsAlarmExist(): Boolean {
+        val intent = AlarmReceiver.newIntent(application)
+
+        return PendingIntent.getBroadcast(
+            DictionaryApp.applicationContext(),
+            EXAM_REMINDER_INTENT_CODE,
+            intent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        ) != null
+    }
 
     fun updateReminder(frequency: Int, startHour: Int, startMinute: Int) {
         val delay =
@@ -40,11 +62,12 @@ class ExamReminder @Inject constructor(
         val time = ReminderTime(hours = startHour, minutes = startMinute)
         val timeGson = gson.toJson(time)
 
-        sharedPref.edit().apply {
-            putInt(EXAM_REMINDER_FREQUENCY, frequency)
-            putString(EXAM_REMINDER_TIME, timeGson)
-            apply()
+        appSettingsRepository.setAppSettings().apply {
+            examReminderFrequency(frequency)
+            examReminderTime(timeGson)
+            update()
         }
+
         if (frequency != PushFrequency.NONE) {
             setReminder(timeInMillis = delay, interval = frequency.toLong())
         } else {
@@ -78,11 +101,21 @@ class ExamReminder @Inject constructor(
     private fun resetReminder() {
         handleAlarmEnabling(PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
 
-        sharedPref.edit().apply {
-            putInt(EXAM_REMINDER_FREQUENCY, PushFrequency.NONE)
-            apply()
+        appSettingsRepository.setAppSettings().apply {
+            examReminderFrequency(PushFrequency.NONE)
+            update()
         }
 
+        cancelReminder()
+    }
+
+    private fun disableReminderIfNoWords() {
+        handleAlarmEnabling(PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+        appSettingsRepository.removeField(EXAM_REMINDER_FREQUENCY)
+        cancelReminder()
+    }
+
+    fun cancelReminder() {
         val alarmManager =
             application.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
         val intent = AlarmReceiver.newIntent(application)
@@ -97,28 +130,28 @@ class ExamReminder @Inject constructor(
         alarmManager.cancel(pendingIntent)
     }
 
-    private fun setInitialReminder() {
-        var frequency = sharedPref.getInt(EXAM_REMINDER_FREQUENCY, PushFrequency.ONCE_AT_DAY)
+    fun setInitialReminder() {
+        val reminderSettings = appSettingsRepository.getAppSettings().reminder
+        var frequency = reminderSettings.examReminderFrequency
         // if PushFrequency was reset when a user didn't have any word
         if (frequency == PushFrequency.NONE) {
             frequency = PushFrequency.ONCE_AT_DAY
         }
 
-        val time = getTimeReminder(sharedPref)
+        val time = reminderSettings.examReminderTime
         val delay =
             getExamReminderDelayFromNow(
                 frequencyDelay = frequency,
                 hours = time.hours,
                 minutes = time.minutes
             )
-
-        sharedPref.edit().apply {
-                putInt(EXAM_REMINDER_FREQUENCY, frequency)
-                putString(EXAM_REMINDER_TIME, gson.toJson(time))
-            apply()
+        appSettingsRepository.setAppSettings().apply {
+            examReminderFrequency(frequency)
+            examReminderTime(gson.toJson(time))
+            update()
         }
 
-        setReminder(timeInMillis = delay, interval = frequency.toLong());
+        setReminder(timeInMillis = delay, interval = frequency.toLong())
     }
 
     /**
@@ -137,21 +170,55 @@ class ExamReminder @Inject constructor(
         )
     }
 
+    private suspend fun listenWordsCountInDictionary(activeDictionary: Dictionary) {
+        wordsCountInDictionaryScope.launch {
+            val isWordListNoEmpty =
+                getExamWordListUseCase.searchWordListSize(activeDictionary.id)
+            var oldCount = 0
 
-    suspend fun setInitialReminderIfNeeded() {
-        coroutineScope {
-            val isWordListNoEmpty = getExamWordListUseCase.searchWordListSize()
-            isWordListNoEmpty.collectLatest { count ->
+            isWordListNoEmpty.cancellable().collectLatest { count ->
+                if (oldCount == count) return@collectLatest
+                oldCount = count
                 /**
                  * On first install wordCount = 0, if user add one word, we setup reminder.
                  * If user remove word and count = 0 we again reset reminder.
+                 * In any other cases we check if reminder is present, id if not, but must, setup one again
                  */
+
                 when (count) {
-                    0 -> resetReminder()
+                    0 -> {
+                        if (getIsAlarmExist()) {
+                            disableReminderIfNoWords()
+                        }
+                    }
+
                     1 -> {
-                        setInitialReminder()
+                        if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
+                            setInitialReminder()
+                        }
+                    }
+
+                    else -> {
+                        if (!getIsAlarmExist() && appSettingsRepository.getAppSettings().reminder.examReminderFrequency != PushFrequency.NONE) {
+                            GlobalSnackbarManger.showGlobalSnackbar(
+                                duration = SnackbarDuration.Short,
+                                data = SnackBarAlert(message = application.getString(R.string.exam_reminder_receiver_alarm_was_canceled))
+                            )
+
+                            setInitialReminder()
+                        }
                     }
                 }
+            }
+        }
+    }
+
+    suspend fun setInitialReminderIfNeeded() {
+        activeDictionaryScope.launch {
+            getActiveDictionaryUseCase.getDictionaryActiveFlow().collectLatest { activeDictionary ->
+                wordsCountInDictionaryScope.coroutineContext.cancelChildren()
+                if (activeDictionary == null) return@collectLatest
+                listenWordsCountInDictionary(activeDictionary)
             }
         }
     }

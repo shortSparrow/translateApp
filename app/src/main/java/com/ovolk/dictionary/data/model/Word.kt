@@ -1,7 +1,7 @@
 package com.ovolk.dictionary.data.model
 
 import androidx.room.*
-import androidx.room.ForeignKey.Companion.CASCADE
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.util.TRANSLATED_WORDS_HINTS
 import com.ovolk.dictionary.util.TRANSLATED_WORDS_TABLE_NAME
@@ -29,10 +29,21 @@ data class WordFullDb @Inject constructor(
 
     @Relation(parentColumn = "id", entityColumn = "word_id", entity = HintDb::class)
     val hints: List<HintDb>,
+
+    @Relation(parentColumn = "dictionary_id", entityColumn = "id", entity = DictionaryDb::class)
+    val dictionary: DictionaryDb,
 )
 
 
-@Entity(tableName = TRANSLATED_WORDS_TABLE_NAME)
+@Entity(
+    tableName = TRANSLATED_WORDS_TABLE_NAME,
+    foreignKeys = [ForeignKey(
+        entity = DictionaryDb::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("dictionary_id"),
+        onDelete = ForeignKey.CASCADE,
+    )],
+)
 @TypeConverters(SoundConvertor::class)
 data class WordInfoDb @Inject constructor(
     @PrimaryKey(autoGenerate = true)
@@ -41,12 +52,11 @@ data class WordInfoDb @Inject constructor(
     val value: String,
     val description: String,
     val sound: WordAudio?, // english sound
-    @ColumnInfo(name = "lang_from") val langFrom: String,
-    @ColumnInfo(name = "lang_to") val langTo: String,
     val transcription: String,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
     @ColumnInfo(name = "word_list_id") val wordListId: Long?,
+    @ColumnInfo(name = "dictionary_id") val dictionaryId: Long,
 )
 
 
@@ -56,7 +66,7 @@ data class WordInfoDb @Inject constructor(
         entity = WordInfoDb::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("word_id"),
-        onDelete = CASCADE,
+        onDelete = ForeignKey.CASCADE,
     )],
 )
 data class TranslateDb @Inject constructor(
@@ -78,7 +88,7 @@ data class TranslateDb @Inject constructor(
         entity = WordInfoDb::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("word_id"),
-        onDelete = CASCADE,
+        onDelete = ForeignKey.CASCADE,
     )],
 )
 data class HintDb @Inject constructor(

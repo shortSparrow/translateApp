@@ -4,6 +4,7 @@ data class SettingsExamDailyState(
     val countOfWords: String,
     val isStateChanges: Boolean = false,
     val isDoubleLanguageExamEnable: Boolean = false,
+    val languagesForDescription: List<String> = emptyList(),
 )
 
 sealed interface SettingsExamDailyAction {

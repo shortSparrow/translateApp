@@ -35,7 +35,7 @@ fun WordList(state: WordListState, onAction: (WordListAction) -> Unit) {
     ) { contentPadding ->
         Column(Modifier.padding(contentPadding)) {
             if (!state.isLoading && state.totalWordListSize == 0) {
-                EmptyDictionary(onAction = onAction)
+                WordListIsEmpty(onPressAddNewWord = { onAction(WordListAction.OnPressAddNewWord) })
             }
 
             if (!state.isLoading && state.totalWordListSize != 0) {

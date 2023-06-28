@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.lists.ListItem
 import com.ovolk.dictionary.presentation.lists.ListsAction
 
@@ -117,7 +118,8 @@ fun ComposableListItemPreview() {
             title = "Sport",
             isSelected = true,
             createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
+            updatedAt = System.currentTimeMillis(),
+            dictionaryId = 1L,
         ),
         onItemClick = { _: Long, _: String -> },
         onAction = {},
@@ -134,7 +136,8 @@ fun ComposableListItemPreview2() {
             title = "Sport",
             isSelected = false,
             createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
+            updatedAt = System.currentTimeMillis(),
+            dictionaryId = 1L,
         ),
         onItemClick = { _: Long, _: String -> },
         onAction = {},

@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.modify_word.WordAudio
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
@@ -34,7 +35,6 @@ import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.word_item.WordItem
 import com.ovolk.dictionary.presentation.list_full.ListFullAction
 import com.ovolk.dictionary.presentation.list_full.ListFullState
-import com.ovolk.dictionary.presentation.list_full.LoadingState
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)

@@ -1,29 +1,40 @@
 package com.ovolk.dictionary.presentation.navigation.stack
 
-import androidx.navigation.*
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.ovolk.dictionary.presentation.dictionary_words.DictionaryWordsScreen
 import com.ovolk.dictionary.presentation.list_full.ListFullScreen
+import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
+import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryScreen
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
 import com.ovolk.dictionary.presentation.navigation.graph.Graph
+import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListScreen
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyScreen
-import com.ovolk.dictionary.presentation.settings_languages.SettingsLanguagesScreen
-import com.ovolk.dictionary.presentation.settings_languages_to_from.SettingsLanguagesFromScreen
-import com.ovolk.dictionary.presentation.settings_languages_to_from.components.SettingsLanguagesToScreen
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 
-enum class CommonRotes { MODIFY_WORD, FULL_LIST, SETTINGS_LANGUAGES, SETTINGS_LANGUAGES_FROM, SETTINGS_LANGUAGES_TO, EXAM_REMINDER, EXAM_DAILY }
+enum class CommonRotes { MODIFY_WORD, FULL_LIST, DICTIONARY_LIST, EXAM_REMINDER, EXAM_DAILY, MODIFY_DICTIONARY, DICTIONARY_WORDS }
 sealed class CommonScreen(val route: String) {
     object ModifyWord :
-        CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}")
-    object FullList : CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}")
-    object SettingsLanguages : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES}")
-    object SettingsLanguagesFrom : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_FROM}")
-    object SettingsLanguagesTo : CommonScreen("${CommonRotes.SETTINGS_LANGUAGES_TO}")
+        CommonScreen("${CommonRotes.MODIFY_WORD}/mode={mode}?wordId={wordId}&wordValue={wordValue}&listId={listId}&dictionaryId={dictionaryId}")
+
+    object FullList :
+        CommonScreen("${CommonRotes.FULL_LIST}?listId={listId}&dictionaryId={dictionaryId}")
+
+    object DictionaryList : CommonScreen("${CommonRotes.DICTIONARY_LIST}")
     object ExamReminder : CommonScreen("${CommonRotes.EXAM_REMINDER}")
-    object ExamDaily: CommonScreen("${CommonRotes.EXAM_DAILY}")
+    object ExamDaily : CommonScreen("${CommonRotes.EXAM_DAILY}")
+    object ModifyDictionary :
+        CommonScreen("${CommonRotes.MODIFY_DICTIONARY}/mode={mode}?dictionaryId={dictionaryId}")
+
+    object DictionaryWords :
+        CommonScreen("${CommonRotes.DICTIONARY_WORDS}?dictionaryId={dictionaryId}")
 }
 
 
@@ -54,6 +65,10 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
                     type = NavType.LongType
                     defaultValue = -1L
                 },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             )
         ) {
             ModifyWordScreen(navController)
@@ -65,24 +80,26 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
                 navArgument("listId") {
                     type = NavType.LongType
                     defaultValue = -1L
-                }
+                },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             ),
         ) { backStackEntry ->
             val listId = backStackEntry.arguments?.getLong("listId") ?: -1L
-            ListFullScreen(navController = navController, listId = listId)
+            val dictionaryId = backStackEntry.arguments?.getLong("dictionaryId") ?: -1L
+            ListFullScreen(
+                navController = navController,
+                listId = listId,
+                dictionaryId = dictionaryId
+            )
         }
 
-        composable(route = CommonScreen.SettingsLanguages.route) {
-            SettingsLanguagesScreen(navController = navController)
+        composable(route = CommonScreen.DictionaryList.route) {
+            DictionaryListScreen(navController = navController)
         }
 
-        composable(route = CommonScreen.SettingsLanguagesFrom.route) {
-            SettingsLanguagesFromScreen(navController = navController)
-        }
-
-        composable(route = CommonScreen.SettingsLanguagesTo.route) {
-            SettingsLanguagesToScreen(navController = navController)
-        }
 
         composable(route = CommonScreen.ExamReminder.route) {
             ExamReminderScreen(navController = navController)
@@ -90,6 +107,32 @@ fun NavGraphBuilder.commonNavGraph(navController: NavHostController) {
 
         composable(route = CommonScreen.ExamDaily.route) {
             SettingsExamDailyScreen(navController = navController)
+        }
+        composable(
+            route = CommonScreen.ModifyDictionary.route,
+            arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = ModifyDictionaryModes.MODE_ADD.toString()
+                },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
+            )
+        ) {
+            ModifyDictionaryScreen(navController = navController)
+        }
+
+        composable(
+            route = CommonScreen.DictionaryWords.route, arguments = listOf(
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
+            )
+        ) {
+            DictionaryWordsScreen(navController = navController)
         }
     }
 }

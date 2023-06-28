@@ -60,7 +60,7 @@ fun SettingsListPreview() {
                 title = stringResource(id = R.string.settings_language_item_title),
                 contentDescription = stringResource(id = R.string.settings_language_cd_item_title),
                 iconId = R.drawable.language,
-                navigateTo = SettingsNavigation.LANGUAGE_SETTINGS
+                navigateTo = SettingsNavigation.DICTIONARY_LIST
             ),
             SettingsItem(
                 title = stringResource(id = R.string.settings_exam_reminder_item_title),

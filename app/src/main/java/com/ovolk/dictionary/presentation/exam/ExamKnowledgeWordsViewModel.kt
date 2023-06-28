@@ -5,9 +5,11 @@ import android.os.LocaleList
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
@@ -19,10 +21,15 @@ import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
+import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
+import com.ovolk.dictionary.domain.response.Either
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.domain.use_case.exam.GetExamWordListUseCase
 import com.ovolk.dictionary.domain.use_case.exam.UpdateWordPriorityUseCase
+import com.ovolk.dictionary.domain.use_case.modify_dictionary.GetActiveDictionaryUseCase
 import com.ovolk.dictionary.domain.use_case.modify_word.ModifyWordUseCase
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.NEXT
 import com.ovolk.dictionary.presentation.exam.NavigateButtons.PREVIOUS
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +38,10 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
+fun parseDefaultLongProps(value: Long?): Long? {
+    if (value == -1L) return null
+    return value
+}
 
 @HiltViewModel
 class ExamKnowledgeWordsViewModel @Inject constructor(
@@ -38,7 +49,15 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private val updateWordPriorityUseCase: UpdateWordPriorityUseCase,
     private val modifyWordUseCase: ModifyWordUseCase,
     private val application: Application,
+    private val savedStateHandle: SavedStateHandle,
+    private val getActiveDictionaryUseCase: GetActiveDictionaryUseCase,
+    appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
+    private val listId = parseDefaultLongProps(savedStateHandle.get<Long>("listId"))
+    private val listName = savedStateHandle.get<String>("listName")
+    val isDoubleLanguageExamEnable =
+        appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
+
     var listener: Listener? = null
     private val examLocalCache = ExamLocalCache.getInstance()
     var composeState by mutableStateOf(ExamKnowledgeState())
@@ -51,13 +70,33 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     private fun getCurrentWord() = composeState.examWordList[composeState.activeWordPosition]
 
     private fun setupKeyboardLanguage() {
-        if (!examLocalCache.getIsDoubleLanguageExamEnable()) return
+        if (!isDoubleLanguageExamEnable) return
 
         editText?.imeHintLocales = LocaleList(Locale(getCurrentWord().langTo))
         val inputMethodManager = DictionaryApp.applicationContext()
             .getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.restartInput(editText)
 
+    }
+
+    init {
+        initialLaunch()
+    }
+
+    private fun initialLaunch() {
+        viewModelScope.launch {
+            composeState = composeState.copy(
+                dictionaryId = parseDefaultLongProps(savedStateHandle.get<Long>("dictionaryId"))
+                    ?: kotlin.run {
+                        when (val activeDictionary =
+                            getActiveDictionaryUseCase.getDictionaryActive()) {
+                            is Either.Failure -> null
+                            is Either.Success -> activeDictionary.value.id
+                        }
+                    }
+            )
+            loadWordsList()
+        }
     }
 
     fun onAction(action: ExamAction) {
@@ -121,10 +160,10 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             is ExamAction.OnSelectMode -> {
                 composeState = ExamKnowledgeState(
                     mode = action.mode,
-                    listId = composeState.listId,
-                    listName = composeState.listName
+                    listName = composeState.listName,
+                    dictionaryId = composeState.dictionaryId,
                 )
-                loadWordsList(composeState.listId, listName = composeState.listName)
+                loadWordsList()
             }
 
             ExamAction.OnLoadNextPageWords -> {
@@ -132,17 +171,31 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                     viewModelScope.launch {
                         val response =
                             getExamWordListUseCase.loadNextPage(
-                                composeState.listId,
-                                mode = composeState.mode
+                                listId = listId,
+                                mode = composeState.mode,
+                                dictionaryId = composeState.dictionaryId
                             )
                                 ?: return@launch
-                        val newList = composeState.examWordList.plus(response.examWordList)
 
-                        composeState = composeState.copy(
-                            examWordList = newList,
-                            isAllExamWordsLoaded = response.totalCount == newList.size,
-                            examListTotalCount = response.totalCount
-                        )
+                        when (response) {
+                            is Either.Failure -> {
+                                GlobalSnackbarManger.showGlobalSnackbar(
+                                    duration = SnackbarDuration.Short,
+                                    data = SnackBarError(message = response.value.message),
+                                )
+                            }
+
+                            is Either.Success -> {
+                                val newList =
+                                    composeState.examWordList.plus(response.value.examWordList)
+
+                                composeState = composeState.copy(
+                                    examWordList = newList,
+                                    isAllExamWordsLoaded = response.value.totalCount == newList.size,
+                                    examListTotalCount = response.value.totalCount
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -171,7 +224,7 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             }
 
             ExamAction.OnNavigateToCreateFirstWord -> {
-                listener?.onNavigateToCreateFirstWord()
+                listener?.onNavigateToCreateFirstWord(listId = listId)
 
                 // temporary solution for updating exam list after create first word
                 viewModelScope.launch {
@@ -183,18 +236,20 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                 }
             }
 
-            is ExamAction.LoadExamList -> {
-                val listId = if (action.listId == -1L) null else action.listId
-                loadWordsList(listId = listId, listName = action.listName)
+            is ExamAction.ReloadLoadExamList -> {
+                initialLaunch()
             }
 
+            ExamAction.OnPressAddDictionary -> {
+                listener?.goToDictionaryList()
+                composeState = composeState.copy(shouldLoadWordListAgain = true)
+            }
         }
     }
 
-    private fun loadWordsList(listId: Long?, listName: String? = null) {
+    private fun loadWordsList() {
         composeState = composeState.copy(
             isLoading = true,
-            listId = listId,
             listName = listName ?: "",
             shouldLoadWordListAgain = false
         )
@@ -202,24 +257,37 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
             val response = getExamWordListUseCase(
                 isInitialLoad = true,
                 listId = listId,
-                mode = composeState.mode
+                mode = composeState.mode,
+                dictionaryId = composeState.dictionaryId
             )
-            val list: List<ExamWord> = response.examWordList
-            if (list.isNotEmpty()) {
-                list[0].status = ExamWordStatus.IN_PROCESS
-                examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
+            when (response) {
+                is Either.Failure -> {
+                    GlobalSnackbarManger.showGlobalSnackbar(
+                        duration = SnackbarDuration.Short,
+                        data = SnackBarError(message = response.value.message),
+                    )
+                    composeState = composeState.copy(isLoading = false)
+                }
+
+                is Either.Success -> {
+                    val list: List<ExamWord> = response.value.examWordList
+                    if (list.isNotEmpty()) {
+                        list[0].status = ExamWordStatus.IN_PROCESS
+                        examLocalCache.setExamStatus(ExamStatus.IN_PROGRESS)
+                    }
+
+                    composeState = composeState.copy(
+                        examWordList = list,
+                        isAllExamWordsLoaded = response.value.totalCount == list.size,
+                        examListTotalCount = response.value.totalCount,
+                        isLoading = false,
+                        isDoubleLanguageExamEnable = isDoubleLanguageExamEnable
+                    )
+
+                    delay(100) // delay for apply keyboard locale
+                    setupKeyboardLanguage()
+                }
             }
-
-            composeState = composeState.copy(
-                examWordList = list,
-                isAllExamWordsLoaded = response.totalCount == list.size,
-                examListTotalCount = response.totalCount,
-                isLoading = false,
-                isDoubleLanguageExamEnable = examLocalCache.getIsDoubleLanguageExamEnable()
-            )
-
-            delay(100) // delay for apply keyboard locale
-            setupKeyboardLanguage()
         }
     }
 
@@ -357,7 +425,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
     }
 
     interface Listener {
-        fun onNavigateToCreateFirstWord()
+        fun onNavigateToCreateFirstWord(listId: Long?)
         fun onNavigateToHome()
+        fun goToDictionaryList()
     }
 }

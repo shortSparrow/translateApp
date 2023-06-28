@@ -8,6 +8,7 @@ const val TRANSLATED_WORDS_TRANSLATIONS = "word_translations"
 const val TRANSLATED_WORDS_HINTS = "word_hints"
 const val TRANSLATED_WORDS_LISTS = "word_lists"
 const val DELAYED_UPDATE_WORDS_PRIORITY = "delayed_updated_words_priority"
+const val DICTIONARIES = "dictionaries"
 
 const val EXAM_WORD_ANSWERS_TABLE_NAME = "exam_word_answers"
 
@@ -16,14 +17,16 @@ const val EXAM_WORD_ANSWER_LIST_SIZE = 6
 // PREFERENCES
 const val SETTINGS_PREFERENCES = "my_preferences"
 const val USER_STATE_PREFERENCES = "user_state_preferences"
+const val APP_SETTINGS = "app_settings"
 
 // PREFERENCES KEYS
 const val EXAM_REMINDER_FREQUENCY = "exam_reminder_frequency"
 const val EXAM_REMINDER_TIME = "exam_reminder_time"
 const val IS_DOUBLE_LANGUAGE_EXAM_ENABLE = "is_double_language_exam_enable"
-const val IS_CHOOSE_LANGUAGE = "is_choose_language"
-const val SHOW_VARIANTS_EXAM_AVAILABLE_LANGUAGES = "show_variants_exam_available_languages"
+const val IS_CHOOSE_LANGUAGE = "is_choose_language" // TODO remove after migration in next version
+const val IS_WELCOME_SCREEN_PASSED = "is_welcome_screen_passed"
 const val DAILY_EXAM_SETTINGS = "daily_exam_settings"
+const val SETTINGS_VERSION = "settings_version" // was added to version 1.0.6
 
 // LANGUAGES
 const val UKRAINE_COUNTRY_CODE = "ua"

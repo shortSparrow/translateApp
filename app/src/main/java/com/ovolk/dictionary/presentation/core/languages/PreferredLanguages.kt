@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.select_languages.Language
-import com.ovolk.dictionary.presentation.select_languages.components.LanguageCheckBox
+import com.ovolk.dictionary.presentation.core.select_language.LanguageListItem
 
 @Composable
 fun PreferredLanguages(
@@ -45,7 +45,7 @@ fun PreferredLanguages(
             }
         )
         languages.forEach { language ->
-            LanguageCheckBox(
+            LanguageListItem(
                 language = language,
                 onCheck = { language -> onCheck(language) })
         }

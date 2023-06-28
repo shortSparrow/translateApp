@@ -4,25 +4,19 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.ovolk.dictionary.presentation.select_languages.LangFromScreen
-import com.ovolk.dictionary.presentation.select_languages.LanguagesToScreen
+import com.ovolk.dictionary.presentation.create_first_dictionary.CreateFirstDictionary
 
-fun NavGraphBuilder.selectLanguagesGraph(navController: NavHostController) {
+fun NavGraphBuilder.welcomeScreenGraph(navController: NavHostController) {
     navigation(
-        route = Graph.SELECT_LANGUAGES,
-        startDestination = SelectLanguagesScreens.LangFrom.route
+        route = Graph.WELCOME_SCREEN,
+        startDestination = WelcomeScreens.CreateFirstDictionary.route
     ) {
-        composable(route = SelectLanguagesScreens.LangFrom.route) {
-            LangFromScreen(navController)
-        }
-
-        composable(route = SelectLanguagesScreens.LangTo.route) {
-            LanguagesToScreen(navController)
+        composable(route = WelcomeScreens.CreateFirstDictionary.route) {
+            CreateFirstDictionary(navController)
         }
     }
 }
 
-sealed class SelectLanguagesScreens(val route: String) {
-    object LangFrom : SelectLanguagesScreens("LANGUAGES_FROM")
-    object LangTo : SelectLanguagesScreens("LANGUAGES_TO")
+sealed class WelcomeScreens(val route: String) {
+    object CreateFirstDictionary : WelcomeScreens("create_first_dictionary")
 }

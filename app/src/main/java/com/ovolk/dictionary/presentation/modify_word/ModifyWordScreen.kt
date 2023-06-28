@@ -1,38 +1,41 @@
 package com.ovolk.dictionary.presentation.modify_word
 
-import android.widget.Toast
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.snackbar.GlobalSnackbarManger
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.core.snackbar.SnackBarSuccess
+import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_word.compose.ModifyWordPresenter
+import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
 import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
 fun ModifyWordScreen(navController: NavHostController) {
 
-    fun showMessage(text: String) {
-        Toast.makeText(
-            DictionaryApp.applicationContext(),
-            text,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
     fun listener() = object : ModifyWordViewModel.Listener {
         override fun onDeleteWord() {
-            showMessage(
-                DictionaryApp.applicationContext()
-                    .getString(R.string.modify_word_success_delete_word)
+            // TODO maye add shack bars for all deletes
+            GlobalSnackbarManger.showGlobalSnackbar(
+                duration = SnackbarDuration.Short,
+                data = SnackBarSuccess(
+                    message = DictionaryApp.applicationContext()
+                        .getString(R.string.modify_word_success_delete_word)
+                ),
             )
             navController.popBackStack()
         }
 
         override fun onSaveWord() {
-            showMessage(
-                DictionaryApp.applicationContext()
-                    .getString(R.string.modify_word_saved_word_success)
+            GlobalSnackbarManger.showGlobalSnackbar(
+                duration = SnackbarDuration.Short,
+                data = SnackBarSuccess(
+                    message = DictionaryApp.applicationContext()
+                        .getString(R.string.modify_word_saved_word_success)
+                ),
             )
             navController.popBackStack()
         }
@@ -40,11 +43,14 @@ fun ModifyWordScreen(navController: NavHostController) {
         override fun goBack() {
             navController.popBackStack()
         }
+
+        override fun toAddNewDictionary() {
+            navController.navigate("${CommonRotes.MODIFY_DICTIONARY}/mode=${ModifyDictionaryModes.MODE_ADD}")
+        }
     }
 
     val viewModel = hiltViewModel<ModifyWordViewModel>()
     val state = viewModel.composeState
-    val languageState = viewModel.languageState
     val translateState = viewModel.translateState
     val hintState = viewModel.hintState
     val recordState = viewModel.recordAudio.recordState
@@ -60,7 +66,6 @@ fun ModifyWordScreen(navController: NavHostController) {
 
     ModifyWordPresenter(
         state = state,
-        languageState = languageState,
         translateState = translateState,
         hintState = hintState,
         recordState = recordState,

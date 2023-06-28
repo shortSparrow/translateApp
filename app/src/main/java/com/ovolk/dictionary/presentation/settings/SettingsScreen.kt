@@ -14,8 +14,8 @@ fun SettingsScreen(navController: NavHostController) {
     fun listener() = object : SettingsViewModel.Listener {
         override fun navigate(direction: SettingsNavigation) {
             when (direction) {
-                SettingsNavigation.LANGUAGE_SETTINGS -> {
-                    navController.navigate("${CommonRotes.SETTINGS_LANGUAGES}")
+                SettingsNavigation.DICTIONARY_LIST -> {
+                    navController.navigate("${CommonRotes.DICTIONARY_LIST}")
                 }
                 SettingsNavigation.EXAM_REMINDER_SETTINGS -> {
                     navController.navigate("${CommonRotes.EXAM_REMINDER}")

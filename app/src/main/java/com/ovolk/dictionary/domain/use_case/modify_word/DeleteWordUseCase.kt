@@ -1,6 +1,6 @@
 package com.ovolk.dictionary.domain.use_case.modify_word
 
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import javax.inject.Inject
 
 class DeleteWordUseCase @Inject constructor(

@@ -3,7 +3,11 @@ package com.ovolk.dictionary.presentation.modify_word.compose.lists
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -14,20 +18,19 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 
 @Composable
-fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMark: Boolean) {
+fun ListItem(isSelected:Boolean, wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMark: Boolean) {
 
     val borderColor =
-        if (wordListInfo.isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
+        if (isSelected) colorResource(id = R.color.green) else colorResource(id = R.color.blue_2)
 
     ConstraintLayout {
         val (dd, mark) = createRefs()
@@ -72,7 +75,7 @@ fun ListItem(wordListInfo: ModifyWordListItem, onItemsPress: () -> Unit, withMar
             }
         }
 
-        if (wordListInfo.isSelected && withMark) {
+        if (isSelected && withMark) {
             Image(
                 painter = painterResource(
                     id = R.drawable.check_mark,
@@ -100,10 +103,12 @@ fun ComposableListItemPreview() {
         wordListInfo = ModifyWordListItem(
             title = "My List",
             count = 10,
-            id = 1L
+            id = 1L,
+            dictionaryId = 1L,
         ),
         onItemsPress = {},
         withMark = false,
+        isSelected = false
     )
 }
 
@@ -114,9 +119,11 @@ fun ComposableListItemPreview2() {
         wordListInfo = ModifyWordListItem(
             title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
             count = 10,
-            id = 1L
+            id = 1L,
+            dictionaryId = 1L,
         ),
         onItemsPress = {},
         withMark = false,
+        isSelected = true
     )
 }
