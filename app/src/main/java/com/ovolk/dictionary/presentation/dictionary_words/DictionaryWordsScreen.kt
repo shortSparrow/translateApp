@@ -8,8 +8,7 @@ import com.ovolk.dictionary.presentation.dictionary_words.components.DictionaryW
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
-import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
-import com.ovolk.dictionary.presentation.navigation.stack.CommonScreen
+import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
 
 @Composable
 fun DictionaryWordsScreen(navController: NavHostController) {

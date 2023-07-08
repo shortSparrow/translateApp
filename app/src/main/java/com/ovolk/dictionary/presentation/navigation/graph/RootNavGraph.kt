@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.ovolk.dictionary.presentation.navigation.stack.MainTabNavigator
+import com.ovolk.dictionary.presentation.navigation.MainTabNavigatorWrapper
 
 
 object Graph {
@@ -30,7 +30,7 @@ fun RootNavigationGraph(navController: NavHostController, isWelcomeScreenPassed:
     ) {
         welcomeScreenGraph(navController = navController)
         composable(route = Graph.MAIN_TAB_BAR) {
-            MainTabNavigator()
+            MainTabNavigatorWrapper()
         }
     }
 }

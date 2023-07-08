@@ -9,7 +9,7 @@ import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
 import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.MainActivity
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
-import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
+import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
 import com.ovolk.dictionary.util.PASSED_SEARCH_WORD
 import kotlinx.coroutines.launch

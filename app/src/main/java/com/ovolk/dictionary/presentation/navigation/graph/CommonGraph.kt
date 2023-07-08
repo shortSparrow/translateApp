@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.navigation.stack
+package com.ovolk.dictionary.presentation.navigation.graph
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -13,7 +13,6 @@ import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryScreen
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
-import com.ovolk.dictionary.presentation.navigation.graph.Graph
 import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListScreen
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyScreen
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen

@@ -10,7 +10,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.ovolk.dictionary.presentation.exam.ExamScreen
 import com.ovolk.dictionary.presentation.lists.ListsScreen
-import com.ovolk.dictionary.presentation.navigation.stack.commonNavGraph
 import com.ovolk.dictionary.presentation.settings.SettingsScreen
 import com.ovolk.dictionary.presentation.word_list.HomeScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
@@ -79,10 +78,10 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
             ListsScreen(navController = navController)
         }
 
-
         composable(route = MainTabBottomBar.Lists.route) {
             ListsScreen(navController = navController)
         }
+
         composable(route = MainTabBottomBar.Settings.route) {
             SettingsScreen(navController = navController)
         }
