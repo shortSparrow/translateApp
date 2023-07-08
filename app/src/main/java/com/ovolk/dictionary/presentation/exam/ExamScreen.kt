@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.exam
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +22,6 @@ import com.ovolk.dictionary.presentation.navigation.bottomTabNavigate
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabBottomBar
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
-import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
 fun ExamScreen(navController: NavHostController) {

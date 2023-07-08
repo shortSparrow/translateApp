@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.modify_word
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -11,7 +12,6 @@ import com.ovolk.dictionary.presentation.core.snackbar.SnackBarSuccess
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_word.compose.ModifyWordPresenter
 import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
-import com.ovolk.dictionary.util.compose.BackHandler
 
 @Composable
 fun ModifyWordScreen(navController: NavHostController) {

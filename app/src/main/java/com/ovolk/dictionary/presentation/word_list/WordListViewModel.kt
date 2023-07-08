@@ -60,7 +60,6 @@ class WordListViewModel @Inject constructor(
         getSearchedWordListUseCase.getWords(searchValue)
             .collectLatest {
                 val list = it.list
-//                    .map { it.copy(translates = it.translates.filter { it.isHidden == false }) } // now do in usecasse
                     .run {
                         if (searchValue.isEmpty()) this else this.sortedWith(compareBy { l -> l.value.length })
                     }
