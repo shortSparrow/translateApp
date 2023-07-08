@@ -1,10 +1,15 @@
 package com.ovolk.dictionary.presentation.lists.components
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -30,12 +35,13 @@ import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dictionaries.DictionaryPicker
 import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionariesFoLists
 import com.ovolk.dictionary.presentation.core.dictionaries.NoSelectedDictionary
 import com.ovolk.dictionary.presentation.core.floating.AddButton
+import com.ovolk.dictionary.presentation.core.scrollableWrapper.ScrollableWrapperScreen
 import com.ovolk.dictionary.presentation.lists.ListsAction
 import com.ovolk.dictionary.presentation.lists.ListsState
-import com.ovolk.dictionary.presentation.core.dictionaries.DictionaryPicker
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
@@ -146,13 +152,18 @@ fun ListsPresenter(
 
             Column(modifier = closeDictionaryPickerModifier) {
 
-
                 if (state.dictionaryList.isEmpty() && state.isLoadingList == LoadingState.SUCCESS) {
-                    NoDictionariesFoLists(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
+                    ScrollableWrapperScreen {
+                        NoDictionariesFoLists(onPressAddNewDictionary = { onAction(ListsAction.PressAddNewDictionary) })
+                    }
                 } else if (state.isLoadingList == LoadingState.SUCCESS && currentDictionary.value == null) {
-                    NoSelectedDictionary()
+                    ScrollableWrapperScreen {
+                        NoSelectedDictionary()
+                    }
                 } else if (state.isLoadingList == LoadingState.SUCCESS && state.list.isEmpty() && currentDictionary.value != null) {
-                    NoListsInDictionary(onPressAddNewList = { onAction(ListsAction.OpenModalNewList) })
+                    ScrollableWrapperScreen {
+                        NoListsInDictionary(onPressAddNewList = { onAction(ListsAction.OpenModalNewList) })
+                    }
                 }
 
                 if (state.isLoadingList == LoadingState.SUCCESS && state.list.isNotEmpty()) {

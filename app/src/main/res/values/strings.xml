@@ -84,7 +84,7 @@
     <string name="exam_counter">%1$d from %2$d</string>
     <string name="exam_show_hints">show hints</string>
     <string name="exam_hide_hints">hide hints</string>
-    <string name="exam_show_variants">show variants</string>
+    <string name="exam_show_variants">show options</string>
     <string name="exam_hide_variants">hide variants</string>
     <string name="exam_your_answer">Your answer: %s</string>
     <string name="exam_correct_answer">Great, your answer is correct :)</string>

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
+import com.ovolk.dictionary.presentation.core.scrollableWrapper.ScrollableWrapperComponent
 
 
 @Composable
@@ -33,30 +34,33 @@ fun InfoDialog(
     val buttonText = buttonText ?: stringResource(id = R.string.yes)
 
     BaseDialog(onDismissRequest = onDismissRequest) {
-        Text(
-            text = message,
-            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter)),
-            fontWeight = titleWeight,
-            fontSize = titleFontSize ?: dimensionResource(id = R.dimen.dialog_title_font_size).value.sp,
-            textAlign = textAlign,
-            color = colorResource(id = R.color.grey),
-        )
-
-        if (description != null) {
+        ScrollableWrapperComponent {
             Text(
-                text = description,
+                text = message,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter)),
-                fontWeight = descriptionWeight,
-                fontSize = descriptionFontSize
-                    ?: dimensionResource(id = R.dimen.dialog_description_font_size).value.sp,
+                fontWeight = titleWeight,
+                fontSize = titleFontSize
+                    ?: dimensionResource(id = R.dimen.dialog_title_font_size).value.sp,
                 textAlign = textAlign,
                 color = colorResource(id = R.color.grey),
             )
 
-        }
+            if (description != null) {
+                Text(
+                    text = description,
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter)),
+                    fontWeight = descriptionWeight,
+                    fontSize = descriptionFontSize
+                        ?: dimensionResource(id = R.dimen.dialog_description_font_size).value.sp,
+                    textAlign = textAlign,
+                    color = colorResource(id = R.color.grey),
+                )
 
-        OutlinedButton(onClick = onClick) {
-            Text(text = buttonText)
+            }
+
+            OutlinedButton(onClick = onClick) {
+                Text(text = buttonText)
+            }
         }
     }
 }

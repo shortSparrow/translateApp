@@ -61,7 +61,7 @@ class GetExamWordListUseCase @Inject constructor(
         dictionaryId: Long?
     ): Either<ExamWordListUseCaseResponse, FailureMessage>? {
         if (isLoadingNextPage) return null
-        return invoke(listId = listId, mode = mode, dictionaryId = dictionaryId)
+        return invoke(false, listId = listId, mode = mode, dictionaryId = dictionaryId)
     }
 
     suspend operator fun invoke(
@@ -100,12 +100,36 @@ class GetExamWordListUseCase @Inject constructor(
                 )
             }
 
-            val examWordList = request.shuffled().mapIndexed { index, examWord ->
+            val examWordList = request.shuffled().mapIndexed { index, tempExamWord ->
                 val from = index * EXAM_WORD_ANSWER_LIST_SIZE
                 val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
 
                 val randomWordTranslateIndex =
-                    Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
+                    Random(System.currentTimeMillis()).nextInt(0 until tempExamWord.translates.size)
+
+
+                val shouldInvertWord = Random.nextInt(0 until 2)
+                val examWord = if (isDoubleLanguageExamEnable && shouldInvertWord == 1) {
+                    val randomInverseWordTranslateIndex =
+                        Random(System.currentTimeMillis()).nextInt(0 until tempExamWord.translates.size)
+                    tempExamWord.copy(
+                        value = tempExamWord.translates[randomInverseWordTranslateIndex].value,
+                        initialTranslates = listOf(
+                            Translate(
+                                value = tempExamWord.value,
+                                id = 0L,
+                                localId = 0L,
+                                createdAt = 0L,
+                                updatedAt = 0L,
+                                isHidden = false,
+                            )
+                        ),
+                        langTo = tempExamWord.langFrom,
+                        langFrom = tempExamWord.langTo,
+                    )
+                } else {
+                    tempExamWord
+                }
 
                 // // only for available languages for this feature
                 if (showVariantsAvailableLanguages.contains(examWord.langTo.uppercase())) {
@@ -115,28 +139,7 @@ class GetExamWordListUseCase @Inject constructor(
                         .toMutableList()
                 }
 
-                val shouldInvertWord = Random.nextInt(0 until 2)
-                if (isDoubleLanguageExamEnable && shouldInvertWord == 1) {
-                    val randomInverseWordTranslateIndex =
-                        Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
-                    return@mapIndexed examWord.copy(
-                        value = examWord.translates[randomInverseWordTranslateIndex].value,
-                        initialTranslates = listOf(
-                            Translate(
-                                value = examWord.value,
-                                id = 0L,
-                                localId = 0L,
-                                createdAt = 0L,
-                                updatedAt = 0L,
-                                isHidden = false,
-                            )
-                        ),
-                        langTo = examWord.langFrom,
-                        langFrom = examWord.langTo,
-                    )
-                } else {
-                    return@mapIndexed examWord
-                }
+                return@mapIndexed examWord
             }
 
             Either.Success(

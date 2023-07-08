@@ -34,6 +34,7 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialogType
+import com.ovolk.dictionary.presentation.core.scrollableWrapper.ScrollableWrapperComponent
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
 import com.ovolk.dictionary.util.compose.OnLifecycleEvent
@@ -80,6 +81,7 @@ fun RecordAudioWrapper(
                     isPermissionDeniedDialog = false
                 }
             }
+
             else -> {}
         }
     }
@@ -194,17 +196,19 @@ fun RecordAudioWrapper(
                 BottomSheetScaffold(
                     backgroundColor = Color.Transparent,
                     scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetScaffoldState),
-                    modifier = Modifier.padding(top = 70.dp),
+                    modifier = Modifier.padding(top = 0.dp),
                     sheetContent = {
                         if (bottomSheetScaffoldState.isCollapsed && isSlideUpComplete) {
                             closeBottomSheetModal()
                         }
 
-                        RecordAudio(
-                            word = word,
-                            recordState = recordState,
-                            onAction = onAction,
-                        )
+                        ScrollableWrapperComponent {
+                            RecordAudio(
+                                word = word,
+                                recordState = recordState,
+                                onAction = onAction,
+                            )
+                        }
 
                     },
                     sheetPeekHeight = 0.dp
