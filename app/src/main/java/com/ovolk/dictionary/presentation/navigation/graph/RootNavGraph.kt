@@ -4,23 +4,23 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.ovolk.dictionary.presentation.navigation.stack.MainTabNavigator
+import com.ovolk.dictionary.presentation.navigation.MainTabNavigatorWrapper
 
 
 object Graph {
     const val ROOT = "root_graph"
-    const val SELECT_LANGUAGES = "select_languages"
+    const val WELCOME_SCREEN = "welcome_screen"
     const val MAIN_TAB_BAR = "main_tab_bar"
     const val COMMON = "common"
 }
 
 @Composable
-fun RootNavigationGraph(navController: NavHostController, getIsChosenLanguage: ()-> Boolean) {
+fun RootNavigationGraph(navController: NavHostController, isWelcomeScreenPassed: Boolean) {
 
-    val startDestination = if (getIsChosenLanguage()) {
+    val startDestination = if (isWelcomeScreenPassed) {
         Graph.MAIN_TAB_BAR
     } else {
-        Graph.SELECT_LANGUAGES
+        Graph.WELCOME_SCREEN
     }
 
     NavHost(
@@ -28,9 +28,9 @@ fun RootNavigationGraph(navController: NavHostController, getIsChosenLanguage: (
         route = Graph.ROOT,
         startDestination = startDestination
     ) {
-        selectLanguagesGraph(navController = navController)
+        welcomeScreenGraph(navController = navController)
         composable(route = Graph.MAIN_TAB_BAR) {
-            MainTabNavigator()
+            MainTabNavigatorWrapper()
         }
     }
 }

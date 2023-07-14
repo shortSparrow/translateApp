@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -33,8 +32,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.DictionaryApp
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialog
-import com.ovolk.dictionary.presentation.core.dialog.ConfirmDialogType
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
+import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialogType
+import com.ovolk.dictionary.presentation.core.scrollableWrapper.ScrollableWrapperComponent
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
 import com.ovolk.dictionary.util.compose.OnLifecycleEvent
@@ -42,7 +42,7 @@ import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordAudioWrapper(
     word: String,
@@ -81,6 +81,7 @@ fun RecordAudioWrapper(
                     isPermissionDeniedDialog = false
                 }
             }
+
             else -> {}
         }
     }
@@ -136,12 +137,12 @@ fun RecordAudioWrapper(
 
     if (isPermissionDeniedDialog) {
         ConfirmDialog(
-            message = stringResource(id = R.string.modify_word_enable_audio_permission),
+            title = stringResource(id = R.string.modify_word_enable_audio_permission),
             onAcceptClick = ::goToSettings,
             onDismissRequest = ::closePermissionDeniedDialog,
             onDeclineClick = ::closePermissionDeniedDialog,
             confirmButtonText = stringResource(id = R.string.modify_word_enable_audio_go_to_settings),
-            type = ConfirmDialogType.NO_RED
+            type = ConfirmDialogType.NO_BUTTON_RED
         )
     }
 
@@ -195,17 +196,19 @@ fun RecordAudioWrapper(
                 BottomSheetScaffold(
                     backgroundColor = Color.Transparent,
                     scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetScaffoldState),
-                    modifier = Modifier.padding(top = 70.dp),
+                    modifier = Modifier.padding(top = 0.dp),
                     sheetContent = {
                         if (bottomSheetScaffoldState.isCollapsed && isSlideUpComplete) {
                             closeBottomSheetModal()
                         }
 
-                        RecordAudio(
-                            word = word,
-                            recordState = recordState,
-                            onAction = onAction,
-                        )
+                        ScrollableWrapperComponent {
+                            RecordAudio(
+                                word = word,
+                                recordState = recordState,
+                                onAction = onAction,
+                            )
+                        }
 
                     },
                     sheetPeekHeight = 0.dp

@@ -2,7 +2,7 @@ package com.ovolk.dictionary.domain.use_case.exam
 
 import com.ovolk.dictionary.data.mapper.WordMapper
 import com.ovolk.dictionary.data.model.UpdatePriority
-import com.ovolk.dictionary.domain.TranslatedWordRepository
+import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import javax.inject.Inject
 
 class UpdateWordPriorityUseCase @Inject constructor(

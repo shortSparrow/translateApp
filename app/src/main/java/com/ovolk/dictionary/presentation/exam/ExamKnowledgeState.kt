@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.exam
 
+import android.widget.EditText
 import androidx.compose.runtime.Stable
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
@@ -27,7 +28,9 @@ sealed interface ExamAction {
     data class OnLongPressHiddenTranslate(val translateId: Long) : ExamAction
     data class CloseTheEndExamModal(val behavior: CompleteAlertBehavior) : ExamAction
     object OnNavigateToCreateFirstWord : ExamAction
-    data class LoadExamList(val listId: Long, val listName: String? = null) : ExamAction
+    object ReloadLoadExamList : ExamAction
+    data class SetEditText(val editText: EditText?) : ExamAction
+    object OnPressAddDictionary : ExamAction
 }
 
 
@@ -46,8 +49,10 @@ data class ExamKnowledgeState(
     val isVariantsExpanded: Boolean = false,
     val isHintsExpanded: Boolean = false,
 
-    val listId: Long? = null, // when show words only from this list
     val listName: String = "",
+    val dictionaryId: Long? = null,
+
+    val isDoubleLanguageExamEnable: Boolean = false,
 
     // modal
     val isExamEnd: Boolean = false,

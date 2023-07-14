@@ -10,7 +10,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.ovolk.dictionary.presentation.exam.ExamScreen
 import com.ovolk.dictionary.presentation.lists.ListsScreen
-import com.ovolk.dictionary.presentation.navigation.stack.commonNavGraph
 import com.ovolk.dictionary.presentation.settings.SettingsScreen
 import com.ovolk.dictionary.presentation.word_list.HomeScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE
@@ -19,7 +18,9 @@ import com.ovolk.dictionary.util.DEEP_LINK_BASE
 enum class MainTabRotes { EXAM, HOME, LISTS, SETTINGS }
 sealed class MainTabBottomBar(val route: String) {
     object Home : MainTabBottomBar("${MainTabRotes.HOME}?searchedWord={searchedWord}")
-    object Exam : MainTabBottomBar("${MainTabRotes.EXAM}?listName={listName}&listId={listId}")
+    object Exam :
+        MainTabBottomBar("${MainTabRotes.EXAM}?listName={listName}&listId={listId}&dictionaryId={dictionaryId}")
+
     object Lists : MainTabBottomBar("${MainTabRotes.LISTS}")
     object Settings : MainTabBottomBar("${MainTabRotes.SETTINGS}")
 }
@@ -63,22 +64,24 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
                 navArgument("listId") {
                     type = NavType.LongType
                     defaultValue = -1L
-                }
+                },
+                navArgument("dictionaryId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             )
-        ) { backStackEntry ->
-            val listName = backStackEntry.arguments?.getString("listName") ?: ""
-            val listId = backStackEntry.arguments?.getLong("listId") ?: -1L
-            ExamScreen(navController = navController, listName = listName, listId = listId)
+        ) {
+            ExamScreen(navController = navController)
         }
 
         composable(route = MainTabBottomBar.Lists.route) {
             ListsScreen(navController = navController)
         }
 
-
         composable(route = MainTabBottomBar.Lists.route) {
             ListsScreen(navController = navController)
         }
+
         composable(route = MainTabBottomBar.Settings.route) {
             SettingsScreen(navController = navController)
         }

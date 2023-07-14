@@ -10,6 +10,7 @@ class ExamWord(
     val value: String,
     val hints: List<HintItem>,
     val langTo: String,
+    val langFrom: String,
     var answerVariants: MutableList<ExamAnswerVariant>,
     initialTranslates: List<Translate>,
     initialPriority: Int,
@@ -19,5 +20,27 @@ class ExamWord(
     var givenAnswer by mutableStateOf("")
     var priority by mutableStateOf(initialPriority)
     var translates by mutableStateOf<List<Translate>>(initialTranslates)
+
+    fun copy(
+        id: Long = this.id,
+        value: String = this.value,
+        hints: List<HintItem> = this.hints,
+        langTo: String = this.langTo,
+        langFrom: String = this.langFrom,
+        answerVariants: MutableList<ExamAnswerVariant> = this.answerVariants,
+        initialTranslates: List<Translate> = this.translates,
+        initialPriority: Int = this.priority,
+        initialStatus: ExamWordStatus = this.status,
+    ) = ExamWord(
+        id = id,
+        value = value,
+        hints = hints,
+        langTo = langTo,
+        answerVariants = answerVariants,
+        initialPriority = initialPriority,
+        initialTranslates = initialTranslates,
+        initialStatus = initialStatus,
+        langFrom = langFrom,
+    )
 }
 

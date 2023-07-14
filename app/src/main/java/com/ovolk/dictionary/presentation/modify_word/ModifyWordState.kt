@@ -2,16 +2,19 @@ package com.ovolk.dictionary.presentation.modify_word
 
 import androidx.compose.runtime.Stable
 import com.ovolk.dictionary.domain.SimpleError
-import com.ovolk.dictionary.domain.model.modify_word.ModifyWordListItem
-import com.ovolk.dictionary.domain.model.modify_word.SelectLanguage
+import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
 import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
+import kotlinx.coroutines.flow.MutableStateFlow
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
+enum class WordAlreadyExistActions { REPLACE, CLOSE, GO_TO_WORD }
+
 
 data class AddNewLangModal(
     val isOpen: Boolean = false,
@@ -20,11 +23,11 @@ data class AddNewLangModal(
 
 data class InitialState(
     val composeState: ComposeState = ComposeState(),
-    val languageState: Languages = Languages(),
     val translateState: Translates = Translates(),
     val hintState: Hints = Hints(),
     val recordAudio: RecordAudioHandler
 )
+
 
 @Stable
 data class Translates(
@@ -42,14 +45,6 @@ data class Hints(
     val editableHint: HintItem? = null
 )
 
-@Stable
-data class Languages(
-    val languageFromList: List<SelectLanguage> = emptyList(),
-    val languageToList: List<SelectLanguage> = emptyList(),
-    val selectLanguageFromError: ValidateResult = ValidateResult(),
-    val selectLanguageToError: ValidateResult = ValidateResult(),
-    val addNewLangModal: AddNewLangModal = AddNewLangModal(),
-)
 
 data class ComposeState(
     val word: String = "",
@@ -59,9 +54,9 @@ data class ComposeState(
     val soundFileName: String? = null,
     val priorityValue: String = DEFAULT_PRIORITY_VALUE.toString(),
     val priorityError: ValidateResult = ValidateResult(),
-    val wordListInfo: ModifyWordListItem? = null,
     @Stable
     val wordLists: List<ModifyWordListItem> = emptyList(),
+    val selectedWordList: ModifyWordListItem? = null,
     val isAdditionalFieldVisible: Boolean = false,
     val modalError: SimpleError = SimpleError(
         isError = false,
@@ -76,6 +71,10 @@ data class ComposeState(
     val isOpenDeleteWordModal: Boolean = false,
     val isFieldDescribeModalOpen: Boolean = false,
     val fieldDescribeModalQuestion: String = "",
+    val isOpenModalWordAlreadyExist: Boolean = false,
+    val dictionaryList: List<Dictionary> = emptyList(),
+    val dictionary: MutableStateFlow<Dictionary?> = MutableStateFlow(null),
+    val dictionaryError: ValidateResult = ValidateResult(),
 )
 
 data class RecordAudioState(
@@ -88,6 +87,10 @@ data class RecordAudioState(
     val isChangesExist: Boolean = false
 )
 
+data class LocalState(
+    val alreadyExistWordId: Long? = null
+)
+
 sealed interface RecordAudioAction {
     object StartRecording : RecordAudioAction
     object StopRecording : RecordAudioAction
@@ -98,15 +101,15 @@ sealed interface RecordAudioAction {
     object OpenBottomSheet : RecordAudioAction
 }
 
+
 sealed interface ModifyWordAction {
     object ResetModalError : ModifyWordAction
     data class HandleAddNewListModal(val isOpen: Boolean) : ModifyWordAction
     data class HandleSelectModal(val isOpen: Boolean) : ModifyWordAction
-    data class OnSelectLanguage(val type: LanguagesType, val language: SelectLanguage) :
+    data class OnSelectDictionary(val dictionaryId: Long) :
         ModifyWordAction
 
-    data class PressAddNewLanguage(val type: LanguagesType) : ModifyWordAction
-    object CloseAddNewLanguageModal : ModifyWordAction
+    object PressAddNewDictionary : ModifyWordAction
     data class OnChangeWord(val value: String) : ModifyWordAction
     data class OnChangeEnglishTranscription(val value: String) : ModifyWordAction
     data class OnChangeDescription(val value: String) : ModifyWordAction
@@ -119,7 +122,9 @@ sealed interface ModifyWordAction {
     object DeleteWord : ModifyWordAction
     data class GoBack(val withValidateUnsavedChanges: Boolean = true) : ModifyWordAction
     object ToggleUnsavedChanges : ModifyWordAction
-    data class ToggleFieldDescribeModalOpen(val question:String) : ModifyWordAction
+    data class ToggleFieldDescribeModalOpen(val question: String) : ModifyWordAction
+    data class HandleWordAlreadyExistModal(val action: WordAlreadyExistActions) : ModifyWordAction
+
 }
 
 sealed interface ModifyWordHintsAction {

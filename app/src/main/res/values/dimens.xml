@@ -4,5 +4,8 @@
     <dimen name="gutter">20dp</dimen>
     <dimen name="medium_gutter">30dp</dimen>
     <dimen name="large_gutter">40dp</dimen>
+    <dimen name="dialog_title_font_size">17sp</dimen>
+    <dimen name="dialog_description_font_size">13sp</dimen>
+
     <integer name="input_max_lines">1</integer>
 </resources>
