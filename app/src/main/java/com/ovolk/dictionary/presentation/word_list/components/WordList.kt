@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.SearchBar
 import com.ovolk.dictionary.presentation.core.floating.AddButton
@@ -43,7 +42,7 @@ fun WordList(state: WordListState, onAction: (WordListAction) -> Unit) {
                     Modifier.padding(
                         start = dimensionResource(id = R.dimen.gutter),
                         end = dimensionResource(id = R.dimen.gutter),
-                        top = 20.dp
+                        top = dimensionResource(id = R.dimen.gutter)
                     )
                 ) {
                     SearchBar(

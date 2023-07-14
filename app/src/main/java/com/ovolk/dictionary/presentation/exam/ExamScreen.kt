@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.exam
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -20,8 +21,7 @@ import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.navigation.bottomTabNavigate
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabBottomBar
 import com.ovolk.dictionary.presentation.navigation.graph.MainTabRotes
-import com.ovolk.dictionary.presentation.navigation.stack.CommonRotes
-import com.ovolk.dictionary.util.compose.BackHandler
+import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
 
 @Composable
 fun ExamScreen(navController: NavHostController) {
@@ -31,6 +31,24 @@ fun ExamScreen(navController: NavHostController) {
     val currentDestination = navController.currentDestination
     val examLocalCache = ExamLocalCache.getInstance()
     val isInterruptExamPopupShown = examLocalCache.isInterruptExamPopupShown.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
+            override fun onNavigateToCreateFirstWord(listId: Long?) {
+                navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
+            }
+
+            override fun onNavigateToHome() {
+                navController.navigate(MainTabBottomBar.Home.route) {
+                    popUpTo(MainTabBottomBar.Home.route) { inclusive = true }
+                }
+            }
+
+            override fun goToDictionaryList() {
+                navController.navigate("${CommonRotes.DICTIONARY_LIST}")
+            }
+        }
+    }
 
     LaunchedEffect(currentDestination) {
         currentDestination?.route?.let {
@@ -46,7 +64,7 @@ fun ExamScreen(navController: NavHostController) {
     DisposableEffect(lifecycleOwner.value) {
         val lifecycle = lifecycleOwner.value.lifecycle
         val observer = LifecycleEventObserver { owner, event ->
-            if(event == Lifecycle.Event.ON_CREATE && state.shouldLoadWordListAgain) {
+            if (event == Lifecycle.Event.ON_CREATE && state.shouldLoadWordListAgain) {
                 onAction(ExamAction.ReloadLoadExamList)
             }
         }
@@ -65,23 +83,6 @@ fun ExamScreen(navController: NavHostController) {
         }
     }
 
-    if (viewModel.listener == null) {
-        viewModel.listener = object : ExamKnowledgeWordsViewModel.Listener {
-            override fun onNavigateToCreateFirstWord(listId: Long?) {
-                navController.navigate("${CommonRotes.MODIFY_WORD}/mode=${ModifyWordModes.MODE_ADD}?listId=${listId}")
-            }
-
-            override fun onNavigateToHome() {
-                navController.navigate(MainTabBottomBar.Home.route) {
-                    popUpTo(MainTabBottomBar.Home.route) { inclusive = true }
-                }
-            }
-
-            override fun goToDictionaryList() {
-                navController.navigate("${CommonRotes.DICTIONARY_LIST}")
-            }
-        }
-    }
 
     if (isInterruptExamPopupShown.value) {
         ConfirmDialog(

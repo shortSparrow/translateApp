@@ -1,8 +1,12 @@
 package com.ovolk.dictionary.presentation.settings.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,11 +26,14 @@ import com.ovolk.dictionary.presentation.settings.SettingsAction
 @Composable
 fun SettingsList(list: List<SettingsItem>, onAction: (SettingsAction) -> Unit) {
 
-    Column {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Column(
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.gutter))
-                .weight(1f)
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.gutter))
         ) {
             list.forEach {
                 SettingsItem(
@@ -66,6 +73,12 @@ fun SettingsListPreview() {
                 title = stringResource(id = R.string.settings_exam_reminder_item_title),
                 contentDescription = stringResource(id = R.string.settings_exam_reminder_cd_item_title),
                 iconId = R.drawable.exam_reminder,
+                navigateTo = SettingsNavigation.EXAM_REMINDER_SETTINGS
+            ),
+            SettingsItem(
+                title = stringResource(id = R.string.settings_daily_exam_item_title),
+                contentDescription = stringResource(id = R.string.settings_daily_exam_cd_item_title),
+                iconId = R.drawable.exam,
                 navigateTo = SettingsNavigation.EXAM_REMINDER_SETTINGS
             ),
         ),

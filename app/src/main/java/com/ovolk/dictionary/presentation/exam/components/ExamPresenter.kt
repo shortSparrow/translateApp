@@ -1,7 +1,14 @@
 package com.ovolk.dictionary.presentation.exam.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -20,13 +27,13 @@ import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.presentation.core.dictionaries.NoActiveDictionary
 import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.scrollableWrapper.ScrollableWrapperScreen
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeState
 import com.ovolk.dictionary.presentation.exam.ExamMode
 import com.ovolk.dictionary.presentation.exam.components.empty_exam.EmptyExam
 import com.ovolk.dictionary.presentation.exam.components.modal.SelectExamMode
 import com.ovolk.dictionary.presentation.exam.components.variants_and_hints.VariantsAndHints
-import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionaries
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewExamListAllStatus
 
 @Composable
@@ -62,7 +69,6 @@ fun ExamPresenter(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(bottom = 10.dp)
     ) {
         Header(
             title = title,
@@ -99,84 +105,83 @@ fun ExamPresenter(
             val answerIsWrong = currentWord.status == ExamWordStatus.FAIL
 
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.gutter))
+                    .padding(vertical = dimensionResource(id = R.dimen.gutter))
             ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.exam_counter,
-                        state.activeWordPosition + 1,
-                        state.examListTotalCount
-                    ),
-                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                )
-                ExamList(
-                    examWordList = state.examWordList,
-                    isAllExamWordsLoaded = state.isAllExamWordsLoaded,
-                    activeWordPosition = state.activeWordPosition,
-                    onAction = onAction,
-                )
-            }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.exam_counter,
+                            state.activeWordPosition + 1,
+                            state.examListTotalCount
+                        ),
+                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
+                    )
+                    ExamList(
+                        examWordList = state.examWordList,
+                        isAllExamWordsLoaded = state.isAllExamWordsLoaded,
+                        activeWordPosition = state.activeWordPosition,
+                        onAction = onAction,
+                    )
+                }
 
-            Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
-                InputWord(
-                    word = currentWord.value,
-                    answerValue = state.answerValue,
-                    onAction = onAction,
-                    currentWordFreeze = currentWordFreeze,
-                    isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable
-                )
+                Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
+                    InputWord(
+                        word = currentWord.value,
+                        answerValue = state.answerValue,
+                        onAction = onAction,
+                        currentWordFreeze = currentWordFreeze,
+                        isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable
+                    )
 
-                NavigationPart(
-                    answerIsCorrect = answerIsCorrect,
-                    answerIsWrong = answerIsWrong,
-                    givenAnswer = currentWord.givenAnswer,
-                    currentInputValue = state.answerValue,
-                    activeWordPosition = state.activeWordPosition,
-                    listSize = state.examWordList.size,
-                    onAction = onAction
-                )
-                WordIsCheckedPart(
-                    currentInputValue = state.answerValue,
-                    status = currentWord.status,
-                    currentWordFreeze = currentWordFreeze,
-                    isTranslateExpanded = state.isTranslateExpanded,
-                    isHiddenTranslateDescriptionExpanded = state.isHiddenTranslateDescriptionExpanded,
-                    translates = currentWord.translates,
-                    onAction = onAction
-                )
-
-                if (!currentWordFreeze) {
-                    VariantsAndHints(
-                        isVariantsExpanded = state.isVariantsExpanded,
-                        isHintsExpanded = state.isHintsExpanded,
-                        hints = currentWord.hints,
-                        answerVariants = currentWord.answerVariants,
+                    NavigationPart(
+                        answerIsCorrect = answerIsCorrect,
+                        answerIsWrong = answerIsWrong,
+                        givenAnswer = currentWord.givenAnswer,
+                        currentInputValue = state.answerValue,
+                        activeWordPosition = state.activeWordPosition,
+                        listSize = state.examWordList.size,
                         onAction = onAction
                     )
+                    WordIsCheckedPart(
+                        currentInputValue = state.answerValue,
+                        status = currentWord.status,
+                        currentWordFreeze = currentWordFreeze,
+                        isTranslateExpanded = state.isTranslateExpanded,
+                        isHiddenTranslateDescriptionExpanded = state.isHiddenTranslateDescriptionExpanded,
+                        translates = currentWord.translates,
+                        onAction = onAction
+                    )
+
+                    if (!currentWordFreeze) {
+                        VariantsAndHints(
+                            isVariantsExpanded = state.isVariantsExpanded,
+                            isHintsExpanded = state.isHintsExpanded,
+                            hints = currentWord.hints,
+                            answerVariants = currentWord.answerVariants,
+                            onAction = onAction
+                        )
+                    }
                 }
             }
         }
 
         if (!state.isLoading && state.dictionaryId == null) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                NoActiveDictionary(onPressAddNewDictionary = { onAction(ExamAction.OnPressAddDictionary) })
+            Box(modifier = Modifier.weight(1f)) {
+                ScrollableWrapperScreen {
+                    NoActiveDictionary(onPressAddNewDictionary = { onAction(ExamAction.OnPressAddDictionary) })
+                }
             }
         }
 
         if (!state.isLoading && currentWord == null && state.dictionaryId != null) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                EmptyExam(onAction = onAction)
+            Box(modifier = Modifier.weight(1f)) {
+                ScrollableWrapperScreen {
+                    EmptyExam(onAction = onAction)
+                }
             }
         }
     }
