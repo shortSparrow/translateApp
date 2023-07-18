@@ -3,7 +3,7 @@ package com.ovolk.dictionary.domain.use_case.word_list
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 data class SearchWordListResponse(
@@ -26,12 +26,12 @@ class GetSearchedWordListUseCase @Inject constructor(
                 )
             }
 
-//        return@coroutineScope list.map { l -> l.map { it.copy(translates = it.translates.filter { !it.isHidden }) }}
+        val totalCont = repository.searchWordListSize()
 
-        return@coroutineScope list.map { l ->
+        return@coroutineScope list.combine(totalCont) { list, count ->
             SearchWordListResponse(
-                list = l.map { it.copy(translates = it.translates.filter { !it.isHidden }) },
-                total = l.size
+                list = list.map { it.copy(translates = it.translates.filter { !it.isHidden }) },
+                total = count
             )
         }
     }
