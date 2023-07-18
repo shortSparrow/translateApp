@@ -49,7 +49,8 @@ android {
 
         // release
         release {
-            minifyEnabled false
+            minifyEnabled = true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -74,7 +75,6 @@ android {
     }
     buildFeatures {
         compose true
-        dataBinding true
     }
 
     // Allow references to generated code

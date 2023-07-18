@@ -3,11 +3,11 @@ package com.ovolk.dictionary.presentation
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.databinding.ktx.BuildConfig
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
+import com.ovolk.dictionary.BuildConfig
 import com.ovolk.dictionary.data.workers.IncreasePriorityForOldWordsWorker
 import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
 import dagger.hilt.android.HiltAndroidApp
