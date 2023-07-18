@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.ovolk.dictionary.domain.model.select_languages.Language{ *; }
+-keep class com.ovolk.dictionary.domain.model.migrate_2_3.OldHints{ *; }
+-keep class com.ovolk.dictionary.domain.model.migrate_2_3.OldTranslate{ *; }
+-keep class com.ovolk.dictionary.data.database.migration.Lang{ *; }
+
