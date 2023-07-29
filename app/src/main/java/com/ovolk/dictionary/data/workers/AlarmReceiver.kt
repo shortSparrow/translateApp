@@ -1,6 +1,5 @@
 package com.ovolk.dictionary.data.workers
 
-import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -31,8 +30,7 @@ class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var examReminder: ExamReminder
 
-    @Inject
-    lateinit var application: Application
+    val application = DictionaryApp.applicationContext()
 
     private var soundUri =
         Uri.parse("$SCHEME_ANDROID_RESOURCE://${application.packageName}/${R.raw.reminder_sound}")
