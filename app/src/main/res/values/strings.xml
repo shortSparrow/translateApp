@@ -301,6 +301,7 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="add_new_dictionary">Add new dictionary</string>
     <string name="make_active">Make active</string>
     <string name="try_again">Try again</string>
+    <string name="see_all">see all</string>
 
     <string name="cd_go_back">Go Back</string>
     <string name="cd_close_dialog">Close dialog</string>

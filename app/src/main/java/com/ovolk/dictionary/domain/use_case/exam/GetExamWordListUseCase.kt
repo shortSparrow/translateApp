@@ -104,9 +104,6 @@ class GetExamWordListUseCase @Inject constructor(
                 val from = index * EXAM_WORD_ANSWER_LIST_SIZE
                 val to = from + EXAM_WORD_ANSWER_LIST_SIZE - 1
 
-                val randomWordTranslateIndex =
-                    Random(System.currentTimeMillis()).nextInt(0 until tempExamWord.translates.size)
-
 
                 val shouldInvertWord = Random.nextInt(0 until 2)
                 val examWord = if (isDoubleLanguageExamEnable && shouldInvertWord == 1) {
@@ -126,10 +123,15 @@ class GetExamWordListUseCase @Inject constructor(
                         ),
                         langTo = tempExamWord.langFrom,
                         langFrom = tempExamWord.langTo,
+                        isInverseWord = true,
+                        inverseValueList = tempExamWord.translates.map { it.value }
                     )
                 } else {
                     tempExamWord
                 }
+
+                val randomWordTranslateIndex =
+                    Random(System.currentTimeMillis()).nextInt(0 until examWord.translates.size)
 
                 // // only for available languages for this feature
                 if (showVariantsAvailableLanguages.contains(examWord.langTo.uppercase())) {

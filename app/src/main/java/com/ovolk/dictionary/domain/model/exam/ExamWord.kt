@@ -12,6 +12,8 @@ class ExamWord(
     val langTo: String,
     val langFrom: String,
     var answerVariants: MutableList<ExamAnswerVariant>,
+    val isInverseWord: Boolean = false,
+    val inverseValueList: List<String> = emptyList(),
     initialTranslates: List<Translate>,
     initialPriority: Int,
     initialStatus: ExamWordStatus = ExamWordStatus.UNPROCESSED,
@@ -31,6 +33,8 @@ class ExamWord(
         initialTranslates: List<Translate> = this.translates,
         initialPriority: Int = this.priority,
         initialStatus: ExamWordStatus = this.status,
+        isInverseWord: Boolean = this.isInverseWord,
+        inverseValueList: List<String> = this.inverseValueList,
     ) = ExamWord(
         id = id,
         value = value,
@@ -41,6 +45,8 @@ class ExamWord(
         initialTranslates = initialTranslates,
         initialStatus = initialStatus,
         langFrom = langFrom,
+        isInverseWord = isInverseWord,
+        inverseValueList = inverseValueList
     )
 }
 

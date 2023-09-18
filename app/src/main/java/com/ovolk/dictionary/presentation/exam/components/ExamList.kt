@@ -2,7 +2,10 @@ package com.ovolk.dictionary.presentation.exam.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -16,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.BaselineShift
@@ -25,7 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamWord
-import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.*
+import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.FAIL
+import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.IN_PROCESS
+import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.SUCCESS
+import com.ovolk.dictionary.domain.model.exam.ExamWordStatus.UNPROCESSED
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewExamListAllStatus
