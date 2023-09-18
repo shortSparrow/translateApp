@@ -136,7 +136,8 @@ fun ExamPresenter(
                         answerValue = state.answerValue,
                         onAction = onAction,
                         currentWordFreeze = currentWordFreeze,
-                        isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable
+                        isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable,
+                        isAutoSuggestEnable = state.isAutoSuggestEnable
                     )
 
                     NavigationPart(

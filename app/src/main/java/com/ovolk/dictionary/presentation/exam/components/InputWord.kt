@@ -44,6 +44,7 @@ fun InputWord(
     onAction: (ExamAction) -> Unit,
     currentWordFreeze: Boolean = false,
     isDoubleLanguageExamEnable: Boolean,
+    isAutoSuggestEnable: Boolean,
 ) {
     var isIncreaseWordListVisible by remember {
         mutableStateOf(false)
@@ -101,7 +102,8 @@ fun InputWord(
         LocaleAbleInput(
             answerValue = answerValue,
             onAction = onAction,
-            currentWordFreeze = currentWordFreeze
+            currentWordFreeze = currentWordFreeze,
+            isAutoSuggestEnable = isAutoSuggestEnable,
         )
     } else {
         val focusManager = LocalFocusManager.current
@@ -112,8 +114,8 @@ fun InputWord(
             label = { Text(text = stringResource(id = R.string.word_translate)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Send,
+                autoCorrect = isAutoSuggestEnable
             ),
-
             keyboardActions = KeyboardActions(
                 onSend = {
                     // answer and go to the next word
@@ -123,7 +125,7 @@ fun InputWord(
                     }
                     onAction(ExamAction.OnPressNavigate(NavigateButtons.NEXT))
                     focusManager.moveFocus(FocusDirection.Down)
-                }
+                },
             ),
         )
     }
@@ -140,7 +142,8 @@ fun InputWordPreview() {
             onAction = {},
             isDoubleLanguageExamEnable = true,
             isInverseWord = true,
-            inverseWordValues = listOf("Hello World", "2")
+            inverseWordValues = listOf("Hello World", "2"),
+            isAutoSuggestEnable = true
         )
     }
 }

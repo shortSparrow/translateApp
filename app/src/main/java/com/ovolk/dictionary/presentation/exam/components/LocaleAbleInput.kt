@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.exam.components
 
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,10 +19,10 @@ import com.ovolk.dictionary.presentation.exam.NavigateButtons
 fun LocaleAbleInput(
     answerValue: String,
     onAction: (ExamAction) -> Unit,
-    currentWordFreeze: Boolean = false
+    currentWordFreeze: Boolean = false,
+    isAutoSuggestEnable: Boolean = true,
 ) {
     val focusManager = LocalFocusManager.current
-
 
     fun setUpEditText(editTextComponent: TextInputEditText) {
         editTextComponent.addTextChangedListener {
@@ -48,7 +49,14 @@ fun LocaleAbleInput(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             val view = LayoutInflater.from(context).inflate(R.layout.exam_input, null, false)
-            setUpEditText(view.findViewById(R.id.editText))
+
+            val editText = view.findViewById<TextInputEditText>(R.id.editText)
+            if (!isAutoSuggestEnable) {
+                editText.inputType =
+                    InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            }
+            setUpEditText(editText)
+
 
             view // return the view
         },

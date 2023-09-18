@@ -27,6 +27,7 @@ const val IS_CHOOSE_LANGUAGE = "is_choose_language" // TODO remove after migrati
 const val IS_WELCOME_SCREEN_PASSED = "is_welcome_screen_passed"
 const val DAILY_EXAM_SETTINGS = "daily_exam_settings"
 const val SETTINGS_VERSION = "settings_version" // was added to version 1.0.6
+const val IS_EXAM_AUTO_SUGGEST_ENABLE = "is_exam_auto_suggest_enable"
 
 // LANGUAGES
 const val UKRAINE_COUNTRY_CODE = "ua"

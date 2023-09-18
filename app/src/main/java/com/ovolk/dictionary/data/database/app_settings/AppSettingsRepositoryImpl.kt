@@ -14,6 +14,7 @@ import com.ovolk.dictionary.util.DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE
 import com.ovolk.dictionary.util.EXAM_REMINDER_FREQUENCY
 import com.ovolk.dictionary.util.EXAM_REMINDER_TIME
 import com.ovolk.dictionary.util.IS_DOUBLE_LANGUAGE_EXAM_ENABLE
+import com.ovolk.dictionary.util.IS_EXAM_AUTO_SUGGEST_ENABLE
 import com.ovolk.dictionary.util.IS_WELCOME_SCREEN_PASSED
 import com.ovolk.dictionary.util.PushFrequency
 import com.ovolk.dictionary.util.showVariantsAvailableLanguages
@@ -53,6 +54,8 @@ class AppSettingsRepositoryImpl @Inject constructor(
             DEFAULT_DAILY_EXAM_WORDS_COUNT.toString()
         ) ?: DEFAULT_DAILY_EXAM_WORDS_COUNT.toString()
 
+        val isExamAutoSuggestEnable =
+            appSettingsPreferences.getBoolean(IS_EXAM_AUTO_SUGGEST_ENABLE, true)
 
         return AppSettings(
             isWelcomeScreenPassed = isWelcomeScreenPassed,
@@ -62,7 +65,8 @@ class AppSettingsRepositoryImpl @Inject constructor(
             reminder = ReminderSettings(
                 examReminderFrequency = reminderFrequency,
                 examReminderTime = examReminderTime
-            )
+            ),
+            isExamAutoSuggestEnable = isExamAutoSuggestEnable
         )
     }
 
@@ -96,6 +100,10 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
         fun isWelcomeScreenPassed(value: Boolean) = apply {
             appSettingsUpdatedValue[IS_WELCOME_SCREEN_PASSED] = value
+        }
+
+        fun isExamAutoSuggestEnable(value: Boolean) = apply {
+            appSettingsUpdatedValue[IS_EXAM_AUTO_SUGGEST_ENABLE] = value
         }
 
 

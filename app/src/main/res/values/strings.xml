@@ -144,7 +144,7 @@
     <string name="modify_dictionary_validation_lang_to_empty">Language to must be not empty</string>
 
 
-<!--     TODO remove to dictionaryList -->
+    <!--     TODO remove to dictionaryList -->
     <!--  Settings Dictionaries -->
     <string name="setting_dictionaries_active_dialog_title">This dictionary active</string>
     <string name="setting_dictionaries_active_dialog_description">You mark the dictionary active for the languages you are currently learning.
@@ -188,6 +188,8 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="settings_daily_exam_words_is_double_lang_exam_description_part_4">&#160;and you will have to translate it into&#160;</string>
     <string name="settings_daily_exam_default_language_from">language from</string>
     <string name="settings_daily_exam_default_language_to">language to</string>
+    <string name="settings_daily_exam_is_auto_suggest_enable_title">Text auto-suggest</string>
+    <string name="settings_daily_exam_is_auto_suggest_enable_description">If you turn on auto-suggest, you\'ll see a prompt at the top of the keyboard as you type. If you write \"hell\", you will see \"hello\", \"hell\", \"help\", etc. If this flag is off, you won\'t see these prompts</string>
 
 
     <!-- Lists Screen  -->

@@ -22,16 +22,21 @@ class SettingsExamDailyViewModel @Inject constructor(
     private val application: Application,
     appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
-    val isDoubleLanguageExamEnable = appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
+    private val appSettings = appSettingsRepository.getAppSettings()
+    val isDoubleLanguageExamEnable = appSettings.isDoubleLanguageExamEnable
+    private val isAutoSuggestEnable = appSettings.isExamAutoSuggestEnable
+
     var state by mutableStateOf(
         SettingsExamDailyState(
             countOfWords = handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords,
-            isDoubleLanguageExamEnable = isDoubleLanguageExamEnable
+            isDoubleLanguageExamEnable = isDoubleLanguageExamEnable,
+            isAutoSuggestEnable = isAutoSuggestEnable
         )
     )
     private var _initialState = SettingsExamDailyState(
         countOfWords = handleDailyExamSettingsUseCase.getDailyExamSettings().countOfWords,
         isDoubleLanguageExamEnable = isDoubleLanguageExamEnable,
+        isAutoSuggestEnable = isAutoSuggestEnable,
     )
 
     init {
@@ -68,8 +73,9 @@ class SettingsExamDailyViewModel @Inject constructor(
 
             SettingsExamDailyAction.OnSaveChanges -> {
                 handleDailyExamSettingsUseCase.saveDailyExamSettings(
-                    state.countOfWords,
-                    state.isDoubleLanguageExamEnable
+                    dailyNumberWords = state.countOfWords,
+                    isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable,
+                    isAutoSuggestEnable = state.isAutoSuggestEnable
                 )
                 resetInitialState()
             }
@@ -78,11 +84,18 @@ class SettingsExamDailyViewModel @Inject constructor(
                 state = state.copy(isDoubleLanguageExamEnable = !state.isDoubleLanguageExamEnable)
                 state = state.copy(isStateChanges = stateHasChanged())
             }
+
+            SettingsExamDailyAction.OnToggleIsAutoSuggestEnable -> {
+                state = state.copy(isAutoSuggestEnable = !state.isAutoSuggestEnable)
+                state = state.copy(isStateChanges = stateHasChanged())
+            }
         }
     }
 
     private fun stateHasChanged(): Boolean {
-        return state.countOfWords != _initialState.countOfWords || state.isDoubleLanguageExamEnable != _initialState.isDoubleLanguageExamEnable
+        return state.countOfWords != _initialState.countOfWords ||
+                state.isDoubleLanguageExamEnable != _initialState.isDoubleLanguageExamEnable ||
+                state.isAutoSuggestEnable != _initialState.isAutoSuggestEnable
     }
 
     private fun resetInitialState() {
