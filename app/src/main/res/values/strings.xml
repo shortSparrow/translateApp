@@ -85,7 +85,7 @@
     <string name="exam_show_hints">show hints</string>
     <string name="exam_hide_hints">hide hints</string>
     <string name="exam_show_variants">show options</string>
-    <string name="exam_hide_variants">hide variants</string>
+    <string name="exam_hide_variants">hide options</string>
     <string name="exam_your_answer">Your answer: %s</string>
     <string name="exam_correct_answer">Great, your answer is correct :)</string>
     <string name="exam_hidden_translate_description">If you think answer is correct you can add this word like "hidden translate". Hidden translate this is special translates which does not visible on main page list, but taken into account on exam.\n\nHidden translates has different background color. You can change hidden status by long tab on translate</string>

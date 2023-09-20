@@ -10,7 +10,7 @@ const val TRANSLATED_WORDS_LISTS = "word_lists"
 const val DELAYED_UPDATE_WORDS_PRIORITY = "delayed_updated_words_priority"
 const val DICTIONARIES = "dictionaries"
 
-const val EXAM_WORD_ANSWERS_TABLE_NAME = "exam_word_answers"
+const val EXAM_WORD_ANSWERS_TABLE_NAME = "exam_word_answers" // TODO must be dropped in 1.0.9
 
 const val EXAM_WORD_ANSWER_LIST_SIZE = 6
 
@@ -32,7 +32,7 @@ const val IS_EXAM_AUTO_SUGGEST_ENABLE = "is_exam_auto_suggest_enable"
 // LANGUAGES
 const val UKRAINE_COUNTRY_CODE = "ua"
 const val UKRAINE_LANGUAGE_CODE = "uk"
-val showVariantsAvailableLanguages = listOf("UK")
+val showVariantsAvailableLanguages = listOf("UK", "EN")
 
 const val DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE = false
 const val EXAM_REMINDER_INTENT_CODE = 101

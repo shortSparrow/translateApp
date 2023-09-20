@@ -7,7 +7,6 @@ import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.exam.ExamWord
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
-import com.ovolk.dictionary.domain.repositories.ExamWordAnswerRepository
 import com.ovolk.dictionary.domain.repositories.TranslatedWordRepository
 import com.ovolk.dictionary.domain.response.Either
 import com.ovolk.dictionary.domain.response.FailureMessage
@@ -17,7 +16,6 @@ import com.ovolk.dictionary.presentation.exam.ExamMode.DAILY_MODE
 import com.ovolk.dictionary.presentation.exam.ExamMode.INFINITY_MODE
 import com.ovolk.dictionary.util.EXAM_WORD_ANSWER_LIST_SIZE
 import com.ovolk.dictionary.util.showVariantsAvailableLanguages
-import com.ovolk.dictionary.util.temporarryAnswerList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -33,11 +31,11 @@ data class ExamWordListUseCaseResponse(
 
 class GetExamWordListUseCase @Inject constructor(
     private val repository: TranslatedWordRepository,
-    private val examWordAnswerRepository: ExamWordAnswerRepository,
     handleDailyExamSettingsUseCase: HandleDailyExamSettingsUseCase,
     val mapper: WordMapper,
     private val application: Application,
     appSettingsRepository: AppSettingsRepository,
+    private val getExamAnswersUseCase: GetExamAnswersUseCase
 ) {
     val isDoubleLanguageExamEnable =
         appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
@@ -174,27 +172,9 @@ class GetExamWordListUseCase @Inject constructor(
     // get 60 random Answer Variants
     private suspend fun getExamAnswerVariants(examWordListCount: Int) = coroutineScope {
         val limit = examWordListCount * EXAM_WORD_ANSWER_LIST_SIZE
-        val list = examWordAnswerRepository.getWordAnswerList(limit)
 
-        if (list.isEmpty()) {
-            fillAnswerVariantsDb()
-            examWordAnswerRepository.getWordAnswerList(limit)
-        } else {
-            list
-        }
-    }
+        return@coroutineScope getExamAnswersUseCase.getAnswerList("en", limit)
 
-    private suspend fun fillAnswerVariantsDb() {
-        val newList = mutableListOf<ExamAnswerVariant>()
-        for (wordItem in temporarryAnswerList) {
-            newList.add(
-                ExamAnswerVariant(
-                    value = wordItem,
-                )
-            )
-        }
-
-        examWordAnswerRepository.setWordAnswerList(newList)
     }
 
 }

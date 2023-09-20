@@ -1,15 +1,11 @@
 package com.ovolk.dictionary.data.mapper
 
 import com.ovolk.dictionary.data.model.HintDb
-import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
 import com.ovolk.dictionary.data.model.TranslateDb
 import com.ovolk.dictionary.data.model.UpdatePriority
 import com.ovolk.dictionary.data.model.UpdatePriorityDb
 import com.ovolk.dictionary.data.model.WordFullDb
 import com.ovolk.dictionary.data.model.WordInfoDb
-import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
-import com.ovolk.dictionary.domain.model.exam.ExamWord
-import com.ovolk.dictionary.domain.model.exam.ExamWordStatus
 import com.ovolk.dictionary.domain.model.modify_word.ModifyWord
 import com.ovolk.dictionary.domain.model.modify_word.WordRV
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
