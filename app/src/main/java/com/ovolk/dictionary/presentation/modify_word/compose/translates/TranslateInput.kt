@@ -88,7 +88,8 @@ fun TranslateInput(
             onClick = { onAction(ModifyWordTranslatesAction.OnPressAddTranslate) },
             modifier = Modifier
                 .padding(start = 20.dp, top = 30.dp)
-                .width(85.dp)
+                .widthIn(85.dp)
+
         ) {
             Text(
                 text = translatesState.editableTranslate?.let { stringResource(id = R.string.edit).uppercase() }

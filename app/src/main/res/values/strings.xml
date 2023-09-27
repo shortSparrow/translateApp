@@ -21,7 +21,7 @@
     <string name="modify_word_input_translate">Enter translation</string>
     <string name="modify_word_description">Description</string>
     <string name="modify_word_transcription">Word transcription</string>
-    <string name="modify_word_input_hint">Input hint</string>
+    <string name="modify_word_input_hint">Word hint</string>
     <string name="modify_word_cancel_edit">Cancel edit</string>
     <string name="modify_word_success_save_word">Word saved successfully</string>
     <string name="modify_word_success_delete_word">Word was deleted</string>
@@ -70,9 +70,9 @@
     <string name="modify_word_select_language_placeholder">select language</string>
     <string name="modify_word_record_delete_cd">Delete this record</string>
     <string name="modify_word_record_cd">Recording button</string>
-    <string name="modify_word_add_new_record_cd">Add bew record button</string>
+    <string name="modify_word_add_new_record_cd">Add new record button</string>
     <string name="modify_word_change_record_cd">Change current record button</string>
-    <string name="modify_word_field_describe_cd">field describe</string>
+    <string name="modify_word_field_describe_cd">Icon for showing modal screen with description why this files is needed</string>
     <string name="modify_word_show_next_hint_cd">show next hint</string>
     <string name="modify_word_validation_dictionary_not_selected">dictionary not selected</string>
     <string name="modify_word_validation_dictionary_not_contain_languages">dictionary dose not contain languages</string>
@@ -249,7 +249,7 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="set_is_active_dictionary_use_case_cant_mark_dictionary_active">Something went wrong, dictionary was not set as active, try again</string>
 
     <!--  GetActiveDictionaryUseCase  -->
-    <string name="get_exam_word_list_use_case_no_dictionary_id">You don\'t pass dictionary</string>
+    <string name="get_exam_word_list_use_case_no_dictionary_id">You did not specify a dictionary</string>
 
     <!--  No Active Dictionary Component  -->
     <string name="no_active_dictionary_image_cd">There is not active dictionary</string>
@@ -280,7 +280,6 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="no">No</string>
     <string name="error_happened">Error happened</string>
     <string name="audio_has_been_added">audio has been added</string>
-    <string name="next">next</string>
     <string name="finish">finish</string>
     <string name="check_answer">check answer</string>
     <string name="add_audio_success">audio added successfully</string>
@@ -304,6 +303,8 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="make_active">Make active</string>
     <string name="try_again">Try again</string>
     <string name="see_all">see all</string>
+    <string name="stay">stay here</string>
+    <string name="go">go</string>
 
     <string name="cd_go_back">Go Back</string>
     <string name="cd_close_dialog">Close dialog</string>

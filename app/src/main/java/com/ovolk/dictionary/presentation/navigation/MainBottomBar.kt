@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -84,7 +85,13 @@ fun MainBottomBar(navController: NavHostController) {
 
                 BottomNavigationItem(
                     icon = { Icon(screen.icon, contentDescription = null) },
-                    label = { Text(screen.text) },
+                    label = {
+                        Text(
+                            screen.text,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
                     selected = selected,
                     onClick = {
                         // ignoring navigation if current tab equals selected

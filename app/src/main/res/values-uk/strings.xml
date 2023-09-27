@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- cd - content description  -->
+
+
+    <!--  Routes  -->
+    <string name="home">Головна</string>
+    <string name="exam">Екзамен</string>
+    <string name="lists">Списки</string>
+    <string name="settings">Налаштування</string>
+
+    <!--WordList Screen -->
+    <string name="word_list_empty_dictionary">У вас немає жодного слова</string>
+    <string name="word_list_add_first_word">Додайте перше слово</string>
+    <string name="word_list_nothing_found">Нічого не знайдено</string>
+    <string name="word_list_empty_exam_list">У вас немає слів у вашому словнику, додайте кільа щоб почати екзамен</string>
+
+    <!--Modify Word Screen -->
+    <string name="modify_word_select_translated_language">Оберіть мову перекладу</string>
+    <string name="modify_word_word_hint">Слово</string>
+    <string name="modify_word_input_translate">Введіть переклад</string>
+    <string name="modify_word_description">Опис</string>
+    <string name="modify_word_transcription">Транскрипція</string>
+    <string name="modify_word_input_hint">Підказка</string>
+    <string name="modify_word_cancel_edit">Відмінити</string>
+    <string name="modify_word_success_save_word">Слово було успішно збережено</string>
+    <string name="modify_word_success_delete_word">Слово було видалено</string>
+    <string name="modify_word_invalid_word_value">Неправильне слово</string>
+    <string name="modify_word_priority">Пріорітетність</string>
+    <string name="modify_word_additional">Додатково</string>
+    <string name="modify_word_microphone">Запис вимови</string>
+    <string name="modify_word_add_new_word">Додати нове слово</string>
+    <string name="modify_word_toolbar_title_add">Додати нове слово</string>
+    <string name="modify_word_toolbar_title_edit">Змінити слово</string>
+    <string name="modify_word_confirm_delete_title">Ви впевнені, що хочете видалити це слово?</string>
+    <string name="modify_word_enable_audio_permission">Дозвіл на використання мікрофона вимкнено,увімкніть його в налаштуваннях</string>
+    <string name="modify_word_enable_audio_go_to_settings">ПЕРЕЙТИ В НАЛАШТУВАННЯ</string>
+    <string name="modify_word_cd_selected_mark">помічено як обране</string>
+    <string name="modify_word_select_lists_dialog_title">Обрати Список</string>
+    <string name="modify_word_select_lists_dialog_description">"У вас немає жодного списка. Натисніть Додати Новий Список щоб додати його"</string>
+    <string name="modify_word_select_lists_dialog_add_list">Додати Новий Список</string>
+    <string name="modify_word_select_list">Обраний список</string>
+    <string name="modify_word_add_to_list">Додати До Списку</string>
+    <string name="modify_word_dialog_add_new_list_placeholder">Ім\'я списку</string>
+    <string name="modify_word_dialog_add_new_list_title">Додайте новий список</string>
+    <string name="modify_word_saved_word_success">Слово збережено успішно</string>
+    <string name="modify_word_language_picker_from">з</string>
+    <string name="modify_word_language_picker_to">на</string>
+    <string name="modify_word_validate_add_empty_field">це поле обов\'язкове, впишіть переклад і натисніть додати</string>
+    <string name="modify_word_record_listen">прослухати</string>
+    <string name="modify_word_unsaved_changes">Якщо ви підете то втратете всі незбережені дані</string>
+    <string name="modify_word_field_describe_translation">
+        Ви можете додати кілька перекладів для одного слова. Крім того, якщо ви довго натискаєте на переклад, ви додаєте/видаляєте його з прихованих перекладів.
+         \n\nПриховані переклади – це переклади, які позначені темним кольором і їх не видно на головному екрані, але вони враховуються під час іспиту.
+         \n\nКорисно для мов, які мають різні закінчення для відмінків або родів (англійське "pretty" можна перекласти українською як: "гарний", "гарна", "гарне")
+    </string>
+    <string name="modify_word_field_describe_priority">
+        Пріоритет впливає на те, як часто ви будете бачити слово під час іспиту, чим він вищий - тим частіше слово показується на іспиті. Щоразу, коли ви відповідаєте правильно, пріоритет зменшується на 1, якщо ви відповідаєте неправильно, збільшується на 1.
+    </string>
+    <string name="modify_word_field_describe_lists">
+        Ви можете додати слово до спеціального списку, наприклад до списку Спорт, куди ви поміщаєте всі слова, пов\'язані зі спортом
+    </string>
+    <string name="modify_word_field_describe_hint">
+        Підказки – це спеціальні слова чи речення, які допоможуть вам під час іспиту, якщо у вас будуть сумніви. Наприклад, для слова "костюм" підказкою може бути "одяг бізнесменів"
+    </string>
+    <string name="modify_word_dialog_word_already_exist_title">Слово \"%s\" вже існує</string>
+    <string name="modify_word_dialog_word_already_exist_description">Ви можете замінити старе слово на це або переглянути існуюче слово</string>
+    <string name="modify_word_dialog_word_already_exist_replace">Замінити слово</string>
+    <string name="modify_word_dialog_word_already_exist_go_to_word">Переглянути існуюче</string>
+    <string name="modify_word_select_language_placeholder">виберіть мову</string>
+    <string name="modify_word_record_delete_cd">Видалити цей запис</string>
+    <string name="modify_word_record_cd">Іконнка мікрофона (кнопка для вимкання запусу)</string>
+    <string name="modify_word_add_new_record_cd">Кнопка для стоврення нового запису</string>
+    <string name="modify_word_change_record_cd">Кнопка для заміни існуючого запису</string>
+    <string name="modify_word_field_describe_cd">Кнонка для відкриття модального вікна з поясненням для чого потрібне це поле</string>
+    <string name="modify_word_show_next_hint_cd">Показати наступну підказку</string>
+    <string name="modify_word_validation_dictionary_not_selected">словник не вибрано</string>
+    <string name="modify_word_validation_dictionary_not_contain_languages">В словнику немає мови</string>
+
+
+    <!-- Exam Screen -->
+    <string name="exam_counter_toolbar_title_daily_mode">Щоденний екзамен</string>
+    <string name="exam_counter_toolbar_title_infinity_mode">Нескінченний екзамен</string>
+    <string name="exam_counter">%1$d з %2$d</string>
+    <string name="exam_show_hints">показати підказки</string>
+    <string name="exam_hide_hints">показати підказки</string>
+    <string name="exam_show_variants">показати варіанти</string>
+    <string name="exam_hide_variants">сховати варіанти</string>
+    <string name="exam_your_answer">Ваша відповідь: %s</string>
+    <string name="exam_correct_answer">Чудово, ваша відповідь правильна :)</string>
+    <string name="exam_hidden_translate_description">Якщо ви вважаєте, що відповідь правильна, ви можете додати таке слово, як "прихований переклад". Приховані переклади - це спеціальні переклади, які не відображаються в списку головної сторінки, але враховуються на іспиті.\n\nПриховані переклади мають інший колір фону. Ви можете прибрати або додати слово до прихованого перекладу за допомогою довгого натискання на слово</string>
+    <string name="exam_show_current_translates">показати переклади</string>
+    <string name="exam_hide_current_translates">сховати переклади</string>
+    <string name="exam_alert_select_mode_title">Обрати варіант екзамену</string>
+    <string name="exam_alert_complete_daily_exam_tile">Кінець</string>
+    <string name="exam_alert_complete_daily_exam_description">Вітаємо, ви закінчили щоденний екзамен</string>
+    <string name="exam_complete_infinity_exam">Вітаємо, ви закінчили нескінченний екзамен</string>
+    <string name="exam_list_name">(%s)</string>
+    <string name="exam_show_variants_unavailable">Показ варіантів наразі недоступний для цієї мови</string>
+    <string name="exam_add_hidden_translate">додати прихований переклад</string>
+    <string name="exam_hidden_translate_description_title">*Що таке прихований переклад?</string>
+    <string name="exam_daily_mode">Щоденний екзамен</string>
+    <string name="exam_infinity_mode">Нескінченний екзамен</string>
+    <string name="exam_complete_alert_go_home">На головну</string>
+    <string name="exam_complete_alert_stay_here">Я залишусь тут</string>
+    <string name="exam_next_word_button_cd">Наступне слово</string>
+    <string name="exam_prev_word_button_cd">Попереднє слово</string>
+    <string name="exam_select_exam_daily_mode_cd">кнопка для обрання щоденного екзамену</string>
+    <string name="exam_interrupt">Ви впенені що хочете перервати екзамен?</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_language_item_title">мова</string>
+    <string name="settings_language_cd_item_title">перейти до нашалтувань ямови</string>
+    <string name="settings_exam_reminder_item_title">нагадування про екзамен</string>
+    <string name="settings_exam_reminder_cd_item_title">перейти до налаштувань нагадувань про езкамен</string>
+
+    <string name="settings_daily_exam_item_title">Щоденний екзамен</string>
+    <string name="settings_daily_exam_cd_item_title">перейти до налаштувань щоденного екзамену</string>
+
+
+    <!-- Settings exam reminder -->
+    <string name="settings_exam_reminder_screen_title">Налаштування нагадувань про екзамен</string>
+    <string name="settings_exam_reminder_label">Частота екзамену</string>
+    <string name="settings_exam_reminder_left_before_next_reminder">Залишилось часу до наступного екзамену:</string>
+    <string name="settings_exam_reminder_time_push_notification">Оберіть час для пуш повідомлення:</string>
+    <string name="settings_exam_reminder_frequency_disable">вимкнути</string>
+    <string name="settings_exam_reminder_frequency_once_a_day">раз на день</string>
+    <string name="settings_exam_reminder_frequency_once_every_2_days">раз на 2 дні</string>
+    <string name="settings_exam_reminder_frequency_once_every_3_days">раз на 3 дні</string>
+    <string name="settings_exam_reminder_frequency_once_every_6_days">раз на 6 днів</string>
+    <string name="exam_reminder_chanel_name">Нагадування про екзамен</string>
+
+
+    <!--  Select Languages  -->
+    <string name="settings_languages_preferred_languages">Бажані мови</string>
+
+    <!-- Modify Dictionary Screen   -->
+    <string name="modify_dictionary_dictionary_already_exist_title">Словник %s вже існує</string>
+    <string name="modify_dictionary_dictionary_name_placeholder">ім\'я словника</string>
+    <string name="modify_dictionary_screen_title_mode_add">Додати новий словник</string>
+    <string name="modify_dictionary_screen_title_mode_edit">Редагувати %s словник</string>
+    <string name="modify_dictionary_validation_title_empty">заголовок не може бути порожнім</string>
+    <string name="modify_dictionary_validation_lang_from_empty">Це поле не може бути порожнім</string>
+    <string name="modify_dictionary_validation_lang_to_empty">Це поле не може бути порожнім</string>
+
+
+    <!--     TODO remove to dictionaryList -->
+    <!--  Settings Dictionaries -->
+    <string name="setting_dictionaries_active_dialog_title">Цей словник активний</string>
+    <string name="setting_dictionaries_active_dialog_description">Позначте словник активним для мов, які ви зараз вивчаєте. Слова для щоденного іспиту братимуться із цього словника</string>
+    <plurals name="setting_dictionaries_delete_dictionary_title">
+        <item quantity="one">Ви впенені що хочете видалити %s словник</item>
+        <item quantity="few">Ви впенені що хочете видалити  %s словників</item>
+        <item quantity="many">Ви впенені що хочете видалити  %s словників</item>
+    </plurals>
+    <plurals name="setting_dictionaries_delete_dictionary_description">
+        <item quantity="one">Всі слова в словнику будуть видалені</item>
+        <item quantity="few">Всі слова в цих словниках будуть видалені</item>
+        <item quantity="many">Всі слова в цих словниках будуть видалені</item>
+    </plurals>
+    <string name="setting_dictionaries_screen_title">Словники</string>
+    <string name="setting_dictionaries_screen_title_cd">Кнопка навігаці до екрану словників</string>
+    <string name="setting_dictionaries_screen_remove_active_dictionary">Ви намагаєтесб видалити активний словник, якщо ви це зробите, нагадування екзамену буде зупинено доки ви не оберете новий активний словник</string>
+    <plurals name="setting_dictionaries_screen_dictionary_was_deleted">
+        <item quantity="one">Словник було видалено</item>
+        <item quantity="few">Словники було видалено</item>
+        <item quantity="many">Словники було видалено</item>
+    </plurals>
+
+    <!--  Dictionary Word List -->
+    <string name="dictionary_word_list_confirm_delete_title">Ви впевнені що хочете видалити %s словник?</string>
+    <string name="dictionary_word_list_confirm_delete_description">Всі слова в словнику будуть видалені</string>
+    <string name="dictionary_word_list_dictionary_marked_active">Вітаємо %s тепер активний</string>
+    <string name="dictionary_word_list_failed_load_words">Помилка завантаження слів</string>
+    <string name="dictionary_word_list_remove_active_dictionary">Ви намагаєтеся видалити активний словник, якщо ви це зробите, нагадування екзамену буду зупинено, доки ви не оберете новий активний словник</string>
+
+    <!--  Welcome Screen Create First Dictionary -->
+    <string name="create_first_dictionary_title">Створіть перший словник</string>
+    <string name="create_first_dictionary_title_placeholder">Назва словника</string>
+
+
+    <!-- Settings Exam Daily Screen -->
+    <string name="settings_daily_exam_screen_title">Налаштування щоденного екзамену</string>
+    <string name="settings_daily_exam_words_count_description">Вкажіть кількість слів для щоденного екзамену</string>
+    <string name="settings_daily_exam_words_count_label">Кількість слів</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_label">Чи використовувати подвійний екзамен</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_description_part_1">Під час проходження екзамену мови будуть змінюватися. Перше слово буде&#160;</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_description_part_2">&#160;і ви повинні будете вписати переклад&#160;</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_description_part_3">&#160;і друге навпаки буде &#160;</string>
+    <string name="settings_daily_exam_words_is_double_lang_exam_description_part_4">&#160;і ви повинні будете перекласти на&#160;</string>
+    <string name="settings_daily_exam_default_language_from">мова з</string>
+    <string name="settings_daily_exam_default_language_to">мова на</string>
+    <string name="settings_daily_exam_is_auto_suggest_enable_title">Текст авто-заповнення</string>
+    <string name="settings_daily_exam_is_auto_suggest_enable_description">Якщо ви ввімкнете авто-заповнення, ви побачите підказку у верхній частині клавіатури під час введення. Якщо ви напишете \"hell\", ви побачите \"hello\", \"hell\", \"help\", тощо. Якщо цей прапорець вимкнено, то цих підказок не буде</string>
+
+
+    <!-- Lists Screen  -->
+    <string name="lists_screen_add_new_list_label">Назва нового списку</string>
+    <string name="lists_screen_title">Списки</string>
+    <string name="lists_screen_add_new_list">Додати новий список</string>
+    <string name="lists_screen_no_list_for_dictionary">Для цього словника немає жодного списку</string>
+    <string name="lists_screen_add_new_list_dialog_title">Додати Новий Список</string>
+    <string name="lists_screen_rename_list_dialog_title">Переназвати Список</string>
+    <plurals name="lists_screen_confirm_delete_list_title">
+        <item quantity="one">Ви впевнені, що хочете видалити цей список?</item>
+        <item quantity="few">Ви впевнені, що хочете видалити ці списки?</item>
+        <item quantity="many">Ви впевнені, що хочете видалити ці списки?</item>
+    </plurals>
+    <plurals name="lists_screen_confirm_delete_list_description">
+        <item quantity="one">Ви видалите тільки список, всі слова залишаться</item>
+        <item quantity="few">Ви видалите тільки ці списки, всі слова залишаться</item>
+        <item quantity="many">Ви видалите тільки ці списки, всі слова залишаться</item>
+    </plurals>
+    <string name="lists_screen_modal_error">Не може бути пустим</string>
+
+    <string name="lists_screen_cd_deleted_selected_lists">Видалити вибрані списки</string>
+    <string name="lists_screen_cd_rename_selected_list">Переназвати вибрані списки</string>
+    <string name="lists_screen_cd_mark">Іконка заланої галочки</string>
+    <string name="lists_screen_cd_add_new_list">додати новий список</string>
+
+    <!--  Full Lists Screen  -->
+    <string name="full_lists_cd_word_description">опис</string>
+    <string name="full_lists_cd_play_sound">прослухати аудіо запис</string>
+    <string name="full_lists_cd_delete_selected_words">видалити вибрані слова</string>
+    <string name="full_lists_title">Full Lists</string>
+    <string name="full_lists_add_new_word">Додати нове слово</string>
+    <string name="full_lists_list_is_empty">Наразі у вас немає жодного слова :(</string>
+    <string name="full_lists_cd_list_is_empty">іконка порожнього списоку</string>
+    <string name="full_lists_cd_add_new_list">додати новий список</string>
+
+
+    <!--Validation -->
+    <string name="validation_required_field">Це поле обовʼязкове</string>
+
+
+    <!-- Reminder -->
+    <string name="reminder_push_exam_title">Час до повторення слів</string>
+    <string name="reminder_push_exam_description">Пройдіть іспит, щоб перевірити, наскільки добре ви вивчили слова</string>
+
+
+    <!--  CrudDictionaryUseCase  -->
+    <string name="crud_dictionary_use_case_dictionary_not_exist">Цього словника не існує</string>
+    <string name="crud_dictionary_use_case_dictionary_already_exist">Словник з тими ж мовами вже існує</string>
+    <plurals name="crud_dictionary_use_case_cant_delete_dictionary">
+        <item quantity="one">Неможливо видалити цей словник</item>
+        <item quantity="few">Неможливо видалити ці словники</item>
+        <item quantity="many">Неможливо видалити ці словники</item>
+    </plurals>
+
+    <!--  GetActiveDictionaryUseCase  -->
+    <string name="get_active_dictionary_use_case_no_active_dictionary">Немає активного словника </string>
+
+    <!--  SetIsActiveDictionaryUseCase  -->
+    <string name="set_is_active_dictionary_use_case_cant_mark_dictionary_active">Щось пішло не так, словник не було встановлено як активний, повторіть спробу</string>
+
+    <!--  GetActiveDictionaryUseCase  -->
+    <string name="get_exam_word_list_use_case_no_dictionary_id">Ви не вказали словник</string>
+
+    <!--  No Active Dictionary Component  -->
+    <string name="no_active_dictionary_image_cd">Немає активного словника</string>
+    <string name="no_active_dictionary_message">Схоже, у вас немає активного словника</string>
+    <string name="no_active_dictionary_description">Створіть перший словник, куди ви можете розмістити свої списки</string>
+
+    <!--  No Any Dictionary Component  -->
+    <string name="no_any_dictionary_image_cd">Немає жодного словника</string>
+    <string name="no_any_dictionary_message">Схоже, у вас немає жодного словника</string>
+    <string name="no_any_dictionary_description">Створіть перший словник, в якому ви зможете створити списки</string>
+
+    <!--    No Selected Dictionary Component-->
+    <string name="no_selected_dictionary_cd">Немає жодного вибраного словника</string>
+    <string name="no_selected_dictionary_select_dictionary_message">Будьласка виберіть словник</string>
+    <string name="no_selected_dictionary_select_dictionary_description">Кожен список повинен бути прикріплений до яккогось словника</string>
+
+    <!--  Alarm Receiver  -->
+    <string name="exam_reminder_receiver_alarm_was_canceled">Ваше нагадування про екзамен було скасоване системою, але не хвилюйтеся, ми автоматично встановимо його знову</string>
+
+    <!--Common -->
+    <string name="app_name">Personal Dictionary</string>
+    <string name="save">Зберегти</string>
+    <string name="add">Додати</string>
+    <string name="edit">Редагувати</string>
+    <string name="delete">Видалити</string>
+    <string name="yes">Так</string>
+    <string name="ok">Ок</string>
+    <string name="no">Ні</string>
+    <string name="error_happened">Сталася помилка</string>
+    <string name="audio_has_been_added">аудіо було додане</string>
+    <string name="finish">кінець</string>
+    <string name="check_answer">перевірити відповідь</string>
+    <string name="add_audio_success">аудуо було додано успішно</string>
+    <string name="word_translate">переклад слова</string>
+    <string name="play_sound">Play sound</string>
+    <string name="field_is_required">Це поле обовʼязкове</string>
+    <string name="show_more">Показати більше</string>
+    <string name="show_less">Показати менше</string>
+    <string name="nothing_found">Нічого не знайшли :(</string>
+    <string name="frequency">частота</string>
+    <string name="search_word_placeholder">Пошук...</string>
+    <string name="add_new">додати нове</string>
+    <string name="app_version">версія %s</string>
+    <string name="field_cant_be_empty">це поле не може бути порожнім</string>
+    <string name="something_wrong">Щось пішло не так</string>
+    <string name="something_wrong_try_again">Щось пішло не так, спробуйте ще раз</string>
+    <string name="unknown">невідомо</string>
+    <string name="create_dictionary">створити словник</string>
+    <string name="create_first_dictionary">створити перший словник</string>
+    <string name="add_new_dictionary">Додати новий словник</string>
+    <string name="make_active">Зробити активним</string>
+    <string name="try_again">Спробуйте ще раз</string>
+    <string name="see_all">побачити всі</string>
+    <string name="stay">залишитися</string>
+    <string name="go">піти</string>
+
+    <string name="cd_go_back">Піти назад</string>
+    <string name="cd_close_dialog">Закрити модальне вікно</string>
+    <string name="cd_nothing_found">Нічого не знайдено</string>
+    <string name="cd_search_icon">Іконка пошуку</string>
+    <string name="cd_arrow_lang">стрілка відкриття діалогу вибору</string>
+    <string name="cd_lang_icon">іконка мови</string>
+    <string name="cd_action_error">Сталася помилка</string>
+    <string name="cd_action_success">Іконка успішної дії</string>
+    <string name="cd_action_information">Іконка інформації</string>
+    <string name="cd_action_alert">Іконка важливої дії</string>
+    <string name="cd_show_more_icon">Відкрити контекстне меню</string>
+    <string name="cd_add_new_word_to_dictionary">Додати нове слово до словника</string>
+    <string name="cd_add_cancel_edit">Скасувати редагування</string>
+    <string name="cd_validation_error">Інформація не валідна</string>
+
+</resources>
