@@ -176,3 +176,14 @@ fun ConfirmDialogWithDescription3() {
         onDeclineClick = {}
     )
 }
+
+@Preview(showBackground = true)
+@Composable
+fun ConfirmDialogWithDescriptionPreview4() {
+    ConfirmDialog(
+        title = "Are you want to delete this values?",
+        onAcceptClick = { },
+        onDeclineClick = { },
+        confirmButtonText="GO TO THE SETTINGS"
+    )
+}
