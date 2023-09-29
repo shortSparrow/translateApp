@@ -9,6 +9,7 @@ data class AppSettings(
     val isDoubleLanguageExamEnable: Boolean,
     val examCountWords: String,
     val isExamAutoSuggestEnable: Boolean,
+    val appLanguageCode: String
 )
 
 data class ReminderSettings(

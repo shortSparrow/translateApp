@@ -8,8 +8,11 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.ovolk.dictionary.BuildConfig
+import com.ovolk.dictionary.data.database.app_settings.AppSettingsRepositoryImpl
 import com.ovolk.dictionary.data.workers.IncreasePriorityForOldWordsWorker
 import com.ovolk.dictionary.data.workers.UpdateWordsPriorityWorker
+import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
+import com.ovolk.dictionary.domain.use_case.localization.SetAppLanguageUseCase
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,6 +28,19 @@ class DictionaryApp : Application(), Configuration.Provider {
     override fun getWorkManagerConfiguration(): Configuration {
         return workerConfiguration
     }
+
+    // Must be set for both DictionaryApp and MainActivity
+    // DictionaryApp - needed because sometimes we use DictionaryApp.applicationContext().getString(...)
+    // MainActivity - needed because often we use stringResource(...)
+    override fun attachBaseContext(base: Context) {
+        val appLanguageCode = AppSettingsRepositoryImpl(
+            base,
+            GetTimeReminder()
+        ).getAppSettings().appLanguageCode
+
+        super.attachBaseContext(SetAppLanguageUseCase().setLocale(base, appLanguageCode))
+    }
+
 
     init {
         instance = this

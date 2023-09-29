@@ -131,9 +131,17 @@
     <string name="settings_exam_reminder_frequency_once_every_6_days">раз на 6 днів</string>
     <string name="exam_reminder_chanel_name">Нагадування про екзамен</string>
 
+    <!-- Settings Language Screen -->
+    <string name="settings_languages_title">Мови</string>
+    <string name="settings_languages_title_cd_item_title">перейти до налаштувань мови</string>
 
     <!--  Select Languages  -->
     <string name="settings_languages_preferred_languages">Бажані мови</string>
+
+    <!--  App Localization  -->
+    <string name="app_localization_title">Мова</string>
+    <string name="app_localization_search_lang_placeholder">Пошук мови</string>
+    <string name="app_localization_search_current_language">Мова:&#160;</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Словник %s вже існує</string>

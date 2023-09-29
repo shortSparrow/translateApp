@@ -130,9 +130,17 @@
     <string name="settings_exam_reminder_frequency_once_every_6_days">once every 6 days</string>
     <string name="exam_reminder_chanel_name">Exam reminder</string>
 
+    <!-- Settings Language Screen -->
+    <string name="settings_languages_title">Languages</string>
+    <string name="settings_languages_title_cd_item_title">go to the daily exam settings</string>
 
     <!--  Select Languages  -->
     <string name="settings_languages_preferred_languages">Preferred languages</string>
+
+    <!--  App Localization  -->
+    <string name="app_localization_title">Localization</string>
+    <string name="app_localization_search_lang_placeholder">Search language</string>
+    <string name="app_localization_search_current_language">Language:&#160;</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Dictionary %s already exist</string>

@@ -29,6 +29,10 @@ fun SettingsScreen(navController: NavHostController) {
                     SettingsNavigation.EXAM_DAILY_SETTINGS -> {
                         navController.navigate("${CommonRotes.EXAM_DAILY}")
                     }
+
+                    SettingsNavigation.LOCALIZATION -> {
+                        navController.navigate("${CommonRotes.LOCALIZATION}")
+                    }
                 }
             }
         }

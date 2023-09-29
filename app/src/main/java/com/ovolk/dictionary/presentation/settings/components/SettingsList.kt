@@ -81,6 +81,12 @@ fun SettingsListPreview() {
                 iconId = R.drawable.exam,
                 navigateTo = SettingsNavigation.EXAM_REMINDER_SETTINGS
             ),
+            SettingsItem(
+                title = stringResource(R.string.settings_languages_title),
+                contentDescription = stringResource(R.string.settings_languages_title_cd_item_title),
+                iconId = R.drawable.localization,
+                navigateTo = SettingsNavigation.LOCALIZATION
+            ),
         ),
         onAction = {}
     )

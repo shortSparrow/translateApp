@@ -31,6 +31,14 @@ data class SettingsState(
             iconId = R.drawable.exam,
             navigateTo = SettingsNavigation.EXAM_DAILY_SETTINGS
         ),
+        SettingsItem(
+            title = DictionaryApp.applicationContext()
+                .getString(R.string.settings_languages_title),
+            contentDescription = DictionaryApp.applicationContext()
+                .getString(R.string.settings_languages_title_cd_item_title),
+            iconId = R.drawable.localization,
+            navigateTo = SettingsNavigation.LOCALIZATION
+        ),
     )
 )
 

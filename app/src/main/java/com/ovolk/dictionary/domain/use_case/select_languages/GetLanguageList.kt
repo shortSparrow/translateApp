@@ -12,7 +12,7 @@ class GetLanguageList @Inject constructor(
     val application: Application,
 ) {
 
-     fun getLanguageList( selectedLangCode: String? = null): List<Language> {
+    fun getLanguageList(selectedLangCode: String? = null): List<Language> {
         val languageRaw = application.resources.openRawResource(R.raw.languges).bufferedReader()
             .use { it.readText() }
         val gson = Gson()
@@ -27,10 +27,17 @@ class GetLanguageList @Inject constructor(
                 } else {
                     lang
                 }
-
             }
         }
 
         return languageList
+    }
+
+    fun getIntersectionLanguageList(
+        selectedLangCode: String? = null,
+        intersectionLanguageCodes: List<String>
+    ): List<Language> {
+        val list = getLanguageList(selectedLangCode = selectedLangCode)
+        return list.filter { intersectionLanguageCodes.contains(it.langCode) }
     }
 }

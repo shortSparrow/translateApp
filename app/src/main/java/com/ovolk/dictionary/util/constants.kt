@@ -28,11 +28,14 @@ const val IS_WELCOME_SCREEN_PASSED = "is_welcome_screen_passed"
 const val DAILY_EXAM_SETTINGS = "daily_exam_settings"
 const val SETTINGS_VERSION = "settings_version" // was added to version 1.0.6
 const val IS_EXAM_AUTO_SUGGEST_ENABLE = "is_exam_auto_suggest_enable"
+const val APP_LANGUAGE_CODE = "app_language"
 
 // LANGUAGES
 const val UKRAINE_COUNTRY_CODE = "ua"
 const val UKRAINE_LANGUAGE_CODE = "uk"
 val showVariantsAvailableLanguages = listOf("UK", "EN")
+val appLanguages = listOf("uk", "en")
+const val DEFAULT_APP_LANGUAGE = "en"
 
 const val DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE = false
 const val EXAM_REMINDER_INTENT_CODE = 101
