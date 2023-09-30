@@ -34,7 +34,7 @@ const val APP_LANGUAGE_CODE = "app_language"
 const val UKRAINE_COUNTRY_CODE = "ua"
 const val UKRAINE_LANGUAGE_CODE = "uk"
 val showVariantsAvailableLanguages = listOf("UK", "EN")
-val appLanguages = listOf("uk", "en")
+val supportedAppLanguages = listOf("uk", "en")
 const val DEFAULT_APP_LANGUAGE = "en"
 
 const val DEFAULT_IS_DOUBLE_LANGUAGE_EXAM_ENABLE = false

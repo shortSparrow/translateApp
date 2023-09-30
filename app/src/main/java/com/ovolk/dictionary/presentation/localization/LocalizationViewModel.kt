@@ -11,7 +11,7 @@ import com.ovolk.dictionary.domain.use_case.localization.SetAppLanguageUseCase
 import com.ovolk.dictionary.domain.use_case.select_languages.GetLanguageList
 import com.ovolk.dictionary.presentation.DictionaryApp
 import com.ovolk.dictionary.presentation.core.snackbar.SnackBarError
-import com.ovolk.dictionary.util.appLanguages
+import com.ovolk.dictionary.util.supportedAppLanguages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class LocalizationViewModel @Inject constructor(
         val langList =
             getLanguageList.getIntersectionLanguageList(
                 selectedLangCode = appLanguageCode,
-                intersectionLanguageCodes = appLanguages
+                intersectionLanguageCodes = supportedAppLanguages
             )
 
         _state = _state.copy(languageList = langList)
@@ -62,19 +62,10 @@ class LocalizationViewModel @Inject constructor(
 
             is LocalizationAction.OnConfirmChangeAppLanguage -> {
                 action.languageCode?.let { languageCode ->
-                    SetAppLanguageUseCase().setLocale(
+                    setAppLanguageUseCase.setAppLanguage(
                         DictionaryApp.applicationContext(),
                         languageCode
                     )
-
-                    appSettingsRepository.setAppSettings().apply {
-                        appLanguage(languageCode)
-                        updateSynchronously()
-                    }
-
-//                    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(languageCode)
-//                    AppCompatDelegate.setApplicationLocales(appLocale)
-                    setAppLanguageUseCase.relaunchApp(DictionaryApp.applicationContext())
 
                     val newAppLanguage =
                         _state.languageList.find { it.langCode == languageCode }

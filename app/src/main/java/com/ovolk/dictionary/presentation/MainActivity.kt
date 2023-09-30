@@ -1,7 +1,6 @@
 package com.ovolk.dictionary.presentation
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -11,10 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.data.database.app_settings.AppSettingsMigration
-import com.ovolk.dictionary.data.database.app_settings.AppSettingsRepositoryImpl
 import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
-import com.ovolk.dictionary.domain.use_case.exam_remibder.GetTimeReminder
 import com.ovolk.dictionary.domain.use_case.localization.SetAppLanguageUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.SetupInitialDestinationUseCase
@@ -37,25 +34,17 @@ class MainActivity : AppCompatActivity() {
     lateinit var appSettingsRepository: AppSettingsRepository
 
     @Inject
+    lateinit var setupLanguageUseCase: SetAppLanguageUseCase
+
+    @Inject
     lateinit var setupInitialDestinationUseCase: SetupInitialDestinationUseCase
 
     private val appSettingsMigration = AppSettingsMigration(DictionaryApp.applicationContext())
 
-    // Must be set for both DictionaryApp and MainActivity
-    // DictionaryApp - needed because sometimes we use DictionaryApp.applicationContext().getString(...)
-    // MainActivity - needed because often we use stringResource(...)
-    override fun attachBaseContext(base: Context) {
-        val appLanguageCode = AppSettingsRepositoryImpl(
-            base,
-            GetTimeReminder()
-        ).getAppSettings().appLanguageCode
-
-        super.attachBaseContext(SetAppLanguageUseCase().setLocale(base, appLanguageCode))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        setupLanguageUseCase.initializeAppLanguage()
         instance = this
         setupNavigation()
 
