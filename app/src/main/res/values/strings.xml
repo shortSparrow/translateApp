@@ -129,6 +129,14 @@
     <string name="settings_exam_reminder_frequency_once_every_3_days">once every 3 days</string>
     <string name="settings_exam_reminder_frequency_once_every_6_days">once every 6 days</string>
     <string name="exam_reminder_chanel_name">Exam reminder</string>
+    <string name="exam_reminder_no_permission_title">No permission for exam reminder</string>
+    <string name="exam_reminder_no_permission_request_button">Provide permission</string>
+    <string name="exam_reminder_no_permission_permanent_message">Enable push notification permission in the app settings</string>
+    <string name="exam_reminder_no_permission_permanent_action">Settings</string>
+    <string name="exam_reminder_no_permission_help_dialog_title">Push notification</string>
+    <string name="exam_reminder_no_permission_help_dialog_message">The app sends you push notifications when it\'s time to repeat the words. If you do not grant this permission, push notifications will not come</string>
+    <string name="exam_reminder_push_chanel_disable_title">Push chanel is disabled, enable one to get ability get reminders</string>
+    <string name="exam_reminder_push_chanel_disable_button">Enable chanel</string>
 
     <!-- Settings Language Screen -->
     <string name="settings_languages_title">Languages</string>
@@ -276,6 +284,10 @@ When you create new word or new list this dictionary will be prefilled. Words to
 
     <!--  Alarm Receiver  -->
     <string name="exam_reminder_receiver_alarm_was_canceled">Your alarm has been cancelled, but don\'t worry, we\'ll automatically set it again</string>
+
+    <!--MainRuntimePermission -->
+    <string name="runtime_permission_reminder_push_title">Reminder permission</string>
+    <string name="runtime_permission_reminder_push_message">This app reminds you to repeat words, we use push notifications for this feature. Enable them for the best experience</string>
 
     <!--Common -->
     <string name="app_name">Personal Dictionary</string>

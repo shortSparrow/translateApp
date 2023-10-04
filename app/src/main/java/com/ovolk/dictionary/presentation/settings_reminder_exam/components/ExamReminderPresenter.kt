@@ -3,7 +3,12 @@ package com.ovolk.dictionary.presentation.settings_reminder_exam.components
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,10 +37,11 @@ fun ExamReminderPresenter(
     onAction: (OnExamReminderAction) -> Unit,
     goBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
     val paddingVertical = dimensionResource(id = R.dimen.small_gutter)
     val timePickerDialog = TimePickerDialog(
-        LocalContext.current,
+        context,
         { _, hour: Int, minute: Int ->
             onAction(OnExamReminderAction.OnChangeTime(hours = hour, minutes = minute))
         }, state.timeHours, state.timeMinutes, true
@@ -91,6 +97,8 @@ fun ExamReminderPresenter(
                         color = colorResource(id = R.color.grey_2)
                     )
                 }
+
+                ReminderPermission()
             }
 
             Box(
@@ -116,7 +124,7 @@ fun ExamReminderPresenter(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun ExamReminderPresenterPreview() {
     ExamReminderPresenter(

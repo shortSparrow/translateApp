@@ -18,6 +18,7 @@ import com.ovolk.dictionary.util.EXAM_REMINDER_TIME
 import com.ovolk.dictionary.util.IS_DOUBLE_LANGUAGE_EXAM_ENABLE
 import com.ovolk.dictionary.util.IS_EXAM_AUTO_SUGGEST_ENABLE
 import com.ovolk.dictionary.util.IS_WELCOME_SCREEN_PASSED
+import com.ovolk.dictionary.util.PERMISSIONS_WAS_REQUESTED_ONCE
 import com.ovolk.dictionary.util.PushFrequency
 import com.ovolk.dictionary.util.showVariantsAvailableLanguages
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -65,6 +66,11 @@ class AppSettingsRepositoryImpl @Inject constructor(
             DEFAULT_APP_LANGUAGE
         ) ?: DEFAULT_APP_LANGUAGE
 
+        val permissionsWasRequestedOnce = appSettingsPreferences.getStringSet(
+            PERMISSIONS_WAS_REQUESTED_ONCE,
+            emptySet<String>()
+        ) ?: emptySet<String>()
+
         return AppSettings(
             isWelcomeScreenPassed = isWelcomeScreenPassed,
             showVariantsExamAvailableLanguages = showVariantsAvailableLanguages,
@@ -76,6 +82,7 @@ class AppSettingsRepositoryImpl @Inject constructor(
             ),
             isExamAutoSuggestEnable = isExamAutoSuggestEnable,
             appLanguageCode = appLanguageCode,
+            permissionsWasRequestedOnce = permissionsWasRequestedOnce
         )
     }
 
@@ -119,8 +126,14 @@ class AppSettingsRepositoryImpl @Inject constructor(
             appSettingsUpdatedValue[APP_LANGUAGE_CODE] = value
         }
 
+        fun addPermissionWasRequestedOnce(value: String) = apply {
+            val data = getAppSettings().permissionsWasRequestedOnce.plus(value)
+
+            appSettingsUpdatedValue[PERMISSIONS_WAS_REQUESTED_ONCE] = data
+        }
+
         fun update(): SharedPreferences.Editor {
-           return appSettingsPreferences.edit().apply {
+            return appSettingsPreferences.edit().apply {
                 appSettingsUpdatedValue.entries.forEach { it ->
                     if (it.value is String) {
                         putString(it.key, (it.value as String))
@@ -139,6 +152,10 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
                     if (it.value is Boolean) {
                         putBoolean(it.key, (it.value as Boolean))
+                    }
+
+                    if (it.value is Set<*>) {
+                        putStringSet(it.key, (it.value as Set<String>))
                     }
                 }
                 apply()

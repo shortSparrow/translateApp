@@ -130,7 +130,14 @@
     <string name="settings_exam_reminder_frequency_once_every_3_days">раз на 3 дні</string>
     <string name="settings_exam_reminder_frequency_once_every_6_days">раз на 6 днів</string>
     <string name="exam_reminder_chanel_name">Нагадування про екзамен</string>
-
+    <string name="exam_reminder_no_permission_title">Немає дозволів для нагадування</string>
+    <string name="exam_reminder_no_permission_request_button">Надати дозвіл</string>
+    <string name="exam_reminder_no_permission_permanent_message">Увімкніть дозвіл на пуш повідомлення в налаштуваннях</string>
+    <string name="exam_reminder_no_permission_permanent_action">Налаштування</string>
+    <string name="exam_reminder_no_permission_help_dialog_title">Пуш сповіщення</string>
+    <string name="exam_reminder_no_permission_help_dialog_message">Додаток надсилає вам пуш сповіщення коли настає час повторити слова. Якщо ви не надасте цей дозвіл пуш сповідщення не будуть приходити</string>
+    <string name="exam_reminder_push_chanel_disable_title">Push канал вимкнено, увімкніть його, щоб отримати можливість отримувати нагадування</string>
+    <string name="exam_reminder_push_chanel_disable_button">Увімкнути канал</string>
     <!-- Settings Language Screen -->
     <string name="settings_languages_title">Мови</string>
     <string name="settings_languages_title_cd_item_title">перейти до налаштувань мови</string>
@@ -282,6 +289,10 @@
 
     <!--  Alarm Receiver  -->
     <string name="exam_reminder_receiver_alarm_was_canceled">Ваше нагадування про екзамен було скасоване системою, але не хвилюйтеся, ми автоматично встановимо його знову</string>
+
+    <!--MainRuntimePermission -->
+    <string name="runtime_permission_reminder_push_title">Дозволи для нагадування</string>
+    <string name="runtime_permission_reminder_push_message">Ця програма нагадує вам про повтрювання слів, для цієї функції ми використовуємо push-повідомлення. Увімкніть їх для найкращого досвіду</string>
 
     <!--Common -->
     <string name="app_name">Personal Dictionary</string>
