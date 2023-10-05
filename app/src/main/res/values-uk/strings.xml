@@ -117,6 +117,7 @@
 
     <string name="settings_daily_exam_item_title">Щоденний екзамен</string>
     <string name="settings_daily_exam_cd_item_title">перейти до налаштувань щоденного екзамену</string>
+    <string name="settings_daily_exam_complaints_and_suggestions">Скарги і пропозиції</string>
 
 
     <!-- Settings exam reminder -->
@@ -293,6 +294,28 @@
     <!--MainRuntimePermission -->
     <string name="runtime_permission_reminder_push_title">Дозволи для нагадування</string>
     <string name="runtime_permission_reminder_push_message">Ця програма нагадує вам про повтрювання слів, для цієї функції ми використовуємо push-повідомлення. Увімкніть їх для найкращого досвіду</string>
+
+    <!--  Complaints and suggestions  -->
+    <string name="complaints_and_suggestions_bottom_sheet_header_title">Привіт, шановний користувачу 👋</string>
+    <string name="complaints_and_suggestions_bottom_sheet_header_message">Тут ти можеш повідомити про помилку або запропонувати покращення</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_icon_cd">значок повідомлення про помилку</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_title">Повідомити про помилку</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_message">Якщо ви знайшли помилку, повідомте мене</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_description_1">Напишіть мені на&#160;</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_description_2">&#160;і я спробую виправити її якомога швидше</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_icon_cd">Значок пропозиції</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_title">Запропонуйте покращення</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_message">Якщо у вас є ідея щодо нового функціоналу</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_description_1">Маєте гарну ідею для цієї програми? Напишіть мені&#160;</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_description_2">&#160;і, можливо, я її зроблю 💪</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_icon_cd">Іконнка зірочок</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_title">Можливі покращення</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_message">Список найближчих покращеннь</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_disclaimer">*Немає гарантії, що ці функції будуть реалізовані, але розробник хоче їх додати</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_no_features">- Наразі немає нових функцій у розробці. Запропонуйте свою ідею!</string>
 
     <!--Common -->
     <string name="app_name">Personal Dictionary</string>

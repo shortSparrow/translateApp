@@ -40,5 +40,9 @@ fun SettingsScreen(navController: NavHostController) {
 
     val state = viewModel.state
 
-    SettingsList(list = state.settingsList, onAction = viewModel::onAction)
+    SettingsList(
+        settingsList = state.settingsList,
+        nearestFeatureList = state.nearestFeatureList,
+        onAction = viewModel::onAction,
+    )
 }

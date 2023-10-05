@@ -1,6 +1,7 @@
 package com.ovolk.dictionary.presentation.settings
 
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.domain.model.nearest_feature.NearestFeature
 import com.ovolk.dictionary.domain.model.settings.SettingsItem
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 import com.ovolk.dictionary.presentation.DictionaryApp
@@ -39,7 +40,8 @@ data class SettingsState(
             iconId = R.drawable.localization,
             navigateTo = SettingsNavigation.LOCALIZATION
         ),
-    )
+    ),
+    val nearestFeatureList: List<NearestFeature> = emptyList()
 )
 
 

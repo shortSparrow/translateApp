@@ -116,6 +116,7 @@
 
     <string name="settings_daily_exam_item_title">Daily exam</string>
     <string name="settings_daily_exam_cd_item_title">go to the daily exam settings</string>
+    <string name="settings_daily_exam_complaints_and_suggestions">Complaints and suggestions</string>
 
 
     <!-- Settings exam reminder -->
@@ -288,6 +289,28 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <!--MainRuntimePermission -->
     <string name="runtime_permission_reminder_push_title">Reminder permission</string>
     <string name="runtime_permission_reminder_push_message">This app reminds you to repeat words, we use push notifications for this feature. Enable them for the best experience</string>
+
+    <!--  Complaints and suggestions  -->
+    <string name="complaints_and_suggestions_bottom_sheet_header_title">Hello, dear user 👋</string>
+    <string name="complaints_and_suggestions_bottom_sheet_header_message">Here you can report a bug or offer improvements</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_icon_cd">bug report icon</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_title">Report a bug</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_message">If you found a bug, just let me know</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_description_1">Write me to&#160;</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_description_2">&#160;and i try to fix one as soon as possible</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_icon_cd">opinion icon</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_title">Offer a feature</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_message">If you have an idea for a new feature</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_description_1">Have a good idea for this app? Write me to&#160;</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_description_2">&#160;and probably I develop it 💪</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_icon_cd">stars icon</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_title">Probable next features</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_message">List of nearest possible features</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_disclaimer">*There is no guarantee that these features will be implemented, but the developer wants to add them</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_no_features">- Currently there are no new features in development. Offer you idea!</string>
 
     <!--Common -->
     <string name="app_name">Personal Dictionary</string>
