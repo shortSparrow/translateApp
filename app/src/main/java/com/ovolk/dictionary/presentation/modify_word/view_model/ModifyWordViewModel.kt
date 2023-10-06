@@ -17,7 +17,6 @@ import com.ovolk.dictionary.presentation.modify_word.ModifyWordHintsAction
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordTranslatesAction
 import com.ovolk.dictionary.presentation.modify_word.RecordAudioAction
-import com.ovolk.dictionary.presentation.modify_word.helpers.ViewModelRecordAudioHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
@@ -36,7 +35,7 @@ class ModifyWordViewModel @Inject constructor(
     val wordGlobalPart: WordGlobalPart,
     val wordTranslatesPart: WordTranslatesPart,
     private val wordHintsPart: WordHintsPart,
-    private val recordAudioPart: ViewModelRecordAudioHandler,
+    private val recordAudioPart: RecordAudioPart,
 ) : ViewModel() {
 
     var listener: Listener? = null

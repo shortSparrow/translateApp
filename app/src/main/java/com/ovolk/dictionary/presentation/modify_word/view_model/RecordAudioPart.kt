@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.modify_word.helpers
+package com.ovolk.dictionary.presentation.modify_word.view_model
 
 import android.app.Application
 import android.content.Context
@@ -42,7 +42,7 @@ abstract class ViewModelRecordAudioSlice {
 }
 
 
-class ViewModelRecordAudioHandler @Inject constructor(
+class RecordAudioPart @Inject constructor(
     private val modifyWordUseCase: ModifyWordUseCase,
     val application: Application
 ) : ViewModelRecordAudioSlice() {
@@ -127,6 +127,7 @@ class ViewModelRecordAudioHandler @Inject constructor(
     }
 
     private fun startRecording() {
+        if (recordState.value.isRecordPlaying) return
         deleteTempRecordingAndMarkToDeleteFile()
         tempFileName = generateFileName()
         val file = File(getAudioPath(application, tempFileName!!))
