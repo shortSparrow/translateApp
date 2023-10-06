@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.nearest_feature.NearestFeature
@@ -59,14 +60,17 @@ fun ComplaintAndSuggestionDrawer(
 
     val brush = Brush.horizontalGradient(listOf(Color(0xFF08a8e5), Color(0xFF2eebd8)))
 
+    // get 400 or if screen height less than take screen height - 100 (horizontal orientation)
+    val height = min(configuration.screenHeightDp.dp - 100.dp, 400.dp)
+
     val anchors = mapOf(
         configuration.screenHeightDp.px.toFloat() to BottomDrawerValue.Closed,
-        LocalDensity.current.run { 400.dp.toPx() } to BottomDrawerValue.Expanded
+        LocalDensity.current.run { height.toPx() } to BottomDrawerValue.Expanded
     )
 
     Column(
         modifier = Modifier
-            .height(400.dp)
+            .height(height)
             .fillMaxSize()
     ) {
         val swipeable = Modifier

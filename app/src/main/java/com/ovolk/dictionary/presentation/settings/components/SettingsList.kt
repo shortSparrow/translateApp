@@ -31,7 +31,6 @@ fun SettingsList(
     val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-
     fun closeModal() {
         scope.launch {
             drawerState.close()
