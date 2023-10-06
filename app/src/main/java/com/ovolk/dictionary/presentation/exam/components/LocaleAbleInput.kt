@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -23,6 +24,8 @@ fun LocaleAbleInput(
     isAutoSuggestEnable: Boolean = true,
 ) {
     val focusManager = LocalFocusManager.current
+    val updatedCurrentWordFreeze =
+        rememberUpdatedState(currentWordFreeze) // needed because in setOnEditorActionListener currentWordFreeze will be always initial
 
     fun setUpEditText(editTextComponent: TextInputEditText) {
         editTextComponent.addTextChangedListener {
@@ -31,7 +34,7 @@ fun LocaleAbleInput(
 
         editTextComponent.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                if (!currentWordFreeze) {
+                if (!updatedCurrentWordFreeze.value) {
                     onAction(ExamAction.OnCheckAnswer)
                 }
                 onAction(ExamAction.OnPressNavigate(NavigateButtons.NEXT))
