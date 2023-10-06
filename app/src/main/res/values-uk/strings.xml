@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- cd - content description  -->
 
@@ -171,15 +171,15 @@
         <item quantity="many">Ви впенені що хочете видалити  %s словників</item>
     </plurals>
     <plurals name="dictionary_list_delete_dictionary_description">
-        <item quantity="one">Всі слова в словнику будуть видалені</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Всі слова в словнику будуть видалені</item>
         <item quantity="few">Всі слова в цих словниках будуть видалені</item>
         <item quantity="many">Всі слова в цих словниках будуть видалені</item>
     </plurals>
     <string name="dictionary_list_screen_title">Словники</string>
     <string name="dictionary_list_screen_title_cd">Кнопка навігаці до екрану словників</string>
-    <string name="dictionary_list_screen_remove_active_dictionary">Ви намагаєтесб видалити активний словник, якщо ви це зробите, нагадування екзамену буде зупинено доки ви не оберете новий активний словник</string>
+    <string name="dictionary_list_screen_remove_active_dictionary">Ви намагаєтеся видалити активний словник, якщо ви це зробите, нагадування екзамену буде зупинено доки ви не оберете новий активний словник</string>
     <plurals name="dictionary_list_screen_dictionary_was_deleted">
-        <item quantity="one">Словник було видалено</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Словник було видалено</item>
         <item quantity="few">Словники було видалено</item>
         <item quantity="many">Словники було видалено</item>
     </plurals>
@@ -219,12 +219,12 @@
     <string name="lists_screen_add_new_list_dialog_title">Додати Новий Список</string>
     <string name="lists_screen_rename_list_dialog_title">Переназвати Список</string>
     <plurals name="lists_screen_confirm_delete_list_title">
-        <item quantity="one">Ви впевнені, що хочете видалити цей список?</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Ви впевнені, що хочете видалити цей список?</item>
         <item quantity="few">Ви впевнені, що хочете видалити ці списки?</item>
         <item quantity="many">Ви впевнені, що хочете видалити ці списки?</item>
     </plurals>
     <plurals name="lists_screen_confirm_delete_list_description">
-        <item quantity="one">Ви видалите тільки список, всі слова залишаться</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Ви видалите тільки список, всі слова залишаться</item>
         <item quantity="few">Ви видалите тільки ці списки, всі слова залишаться</item>
         <item quantity="many">Ви видалите тільки ці списки, всі слова залишаться</item>
     </plurals>
@@ -259,7 +259,7 @@
     <string name="crud_dictionary_use_case_dictionary_not_exist">Цього словника не існує</string>
     <string name="crud_dictionary_use_case_dictionary_already_exist">Словник з тими ж мовами вже існує</string>
     <plurals name="crud_dictionary_use_case_cant_delete_dictionary">
-        <item quantity="one">Неможливо видалити цей словник</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Неможливо видалити цей словник</item>
         <item quantity="few">Неможливо видалити ці словники</item>
         <item quantity="many">Неможливо видалити ці словники</item>
     </plurals>
