@@ -7,27 +7,18 @@ import com.ovolk.dictionary.domain.model.lists.ModifyWordListItem
 import com.ovolk.dictionary.domain.model.modify_word.ValidateResult
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.Translate
-import com.ovolk.dictionary.domain.model.select_languages.LanguagesType
-import com.ovolk.dictionary.presentation.modify_word.helpers.RecordAudioHandler
 import com.ovolk.dictionary.util.DEFAULT_PRIORITY_VALUE
 import kotlinx.coroutines.flow.MutableStateFlow
 
 enum class ModifyWordModes { MODE_ADD, MODE_EDIT }
 enum class WordAlreadyExistActions { REPLACE, CLOSE, GO_TO_WORD }
 
-
-data class AddNewLangModal(
-    val isOpen: Boolean = false,
-    val type: LanguagesType? = null
-)
-
 data class InitialState(
     val composeState: ComposeState = ComposeState(),
     val translateState: Translates = Translates(),
     val hintState: Hints = Hints(),
-    val recordAudio: RecordAudioHandler
+    val recordAudio: RecordAudioState = RecordAudioState()
 )
-
 
 @Stable
 data class Translates(
@@ -44,7 +35,6 @@ data class Hints(
     val error: ValidateResult = ValidateResult(),
     val editableHint: HintItem? = null
 )
-
 
 data class ComposeState(
     val word: String = "",

@@ -5,7 +5,7 @@ import com.ovolk.dictionary.presentation.create_first_dictionary.CreateFirstDict
 import com.ovolk.dictionary.presentation.dictionary_words.DictionaryWordsViewModel
 import com.ovolk.dictionary.presentation.exam.ExamKnowledgeWordsViewModel
 import com.ovolk.dictionary.presentation.localization.LocalizationViewModel
-import com.ovolk.dictionary.presentation.modify_word.ModifyWordViewModel
+import com.ovolk.dictionary.presentation.modify_word.view_model.ModifyWordViewModel
 import com.ovolk.dictionary.presentation.settings.SettingsViewModel
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyViewModel
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderViewModel
