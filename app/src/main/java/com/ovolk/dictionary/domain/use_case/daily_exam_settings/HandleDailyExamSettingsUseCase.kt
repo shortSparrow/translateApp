@@ -16,10 +16,15 @@ class HandleDailyExamSettingsUseCase @Inject constructor(
         return DailyExamSettings(countOfWords = countOfWords)
     }
 
-    fun saveDailyExamSettings(dailyNumberWords: String, isDoubleLanguageExamEnable: Boolean) {
+    fun saveDailyExamSettings(
+        dailyNumberWords: String,
+        isDoubleLanguageExamEnable: Boolean,
+        isAutoSuggestEnable: Boolean
+    ) {
         appSettingsRepository.setAppSettings().apply {
             dailyExamWordsCount(dailyNumberWords)
             isDoubleLanguageExamEnable(isDoubleLanguageExamEnable)
+            isExamAutoSuggestEnable(isAutoSuggestEnable)
             update()
         }
     }

@@ -29,6 +29,10 @@ fun SettingsScreen(navController: NavHostController) {
                     SettingsNavigation.EXAM_DAILY_SETTINGS -> {
                         navController.navigate("${CommonRotes.EXAM_DAILY}")
                     }
+
+                    SettingsNavigation.LOCALIZATION -> {
+                        navController.navigate("${CommonRotes.LOCALIZATION}")
+                    }
                 }
             }
         }
@@ -36,5 +40,9 @@ fun SettingsScreen(navController: NavHostController) {
 
     val state = viewModel.state
 
-    SettingsList(list = state.settingsList, onAction = viewModel::onAction)
+    SettingsList(
+        settingsList = state.settingsList,
+        nearestFeatureList = state.nearestFeatureList,
+        onAction = viewModel::onAction,
+    )
 }

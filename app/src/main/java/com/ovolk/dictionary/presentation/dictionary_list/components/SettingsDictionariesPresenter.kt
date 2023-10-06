@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.settings_dictionaries.components
+package com.ovolk.dictionary.presentation.dictionary_list.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,8 +26,8 @@ import com.ovolk.dictionary.presentation.core.dictionaries.NoDictionaries
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.header.TwoButtonOffset
-import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
-import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListState
+import com.ovolk.dictionary.presentation.dictionary_list.DictionaryListAction
+import com.ovolk.dictionary.presentation.dictionary_list.DictionaryListState
 
 @Composable
 fun SettingsDictionariesPresenter(
@@ -42,18 +42,18 @@ fun SettingsDictionariesPresenter(
 
         val isDeletedActive = dictionaries.find { it.isActive } != null
         val deleteActiveDictionaryInfo = if (isDeletedActive) {
-            "\n \n ${stringResource(id = R.string.setting_dictionaries_screen_remove_active_dictionary)}"
+            "\n \n ${stringResource(id = R.string.dictionary_list_screen_remove_active_dictionary)}"
         } else ""
 
         val description =
             pluralStringResource(
-                id = R.plurals.setting_dictionaries_delete_dictionary_description,
+                id = R.plurals.dictionary_list_delete_dictionary_description,
                 count = dictionaries.size,
             ) + deleteActiveDictionaryInfo
 
         ConfirmDialog(
             title = pluralStringResource(
-                id = R.plurals.setting_dictionaries_delete_dictionary_title,
+                id = R.plurals.dictionary_list_delete_dictionary_title,
                 count = dictionaries.size,
                 selectedDictionary
             ),
@@ -108,7 +108,7 @@ fun SettingsDictionariesPresenter(
                 titleHorizontalOffset = TwoButtonOffset,
                 withBackButton = true,
                 onBackButtonClick = onBack,
-                title = stringResource(id = R.string.setting_dictionaries_screen_title),
+                title = stringResource(id = R.string.dictionary_list_screen_title),
                 secondRightIcon = secondRightIcon,
                 onSecondRightIconClick = {
                     onAction(DictionaryListAction.ToggleOpenDeleteDictionaryModal(true))

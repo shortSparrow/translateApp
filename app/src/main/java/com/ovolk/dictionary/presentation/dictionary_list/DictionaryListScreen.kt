@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.settings_dictionaries
+package com.ovolk.dictionary.presentation.dictionary_list
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -6,7 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
-import com.ovolk.dictionary.presentation.settings_dictionaries.components.SettingsDictionariesPresenter
+import com.ovolk.dictionary.presentation.dictionary_list.components.SettingsDictionariesPresenter
 
 
 @Composable

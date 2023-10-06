@@ -53,6 +53,7 @@ data class ExamKnowledgeState(
     val dictionaryId: Long? = null,
 
     val isDoubleLanguageExamEnable: Boolean = false,
+    val isAutoSuggestEnable: Boolean = false,
 
     // modal
     val isExamEnd: Boolean = false,

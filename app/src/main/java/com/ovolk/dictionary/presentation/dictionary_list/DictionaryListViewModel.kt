@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.settings_dictionaries
+package com.ovolk.dictionary.presentation.dictionary_list
 
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.getValue

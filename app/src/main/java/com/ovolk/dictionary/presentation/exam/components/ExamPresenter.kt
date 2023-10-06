@@ -130,11 +130,14 @@ fun ExamPresenter(
 
                 Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.gutter))) {
                     InputWord(
+                        isInverseWord = currentWord.isInverseWord,
+                        inverseWordValues = currentWord.inverseValueList,
                         word = currentWord.value,
                         answerValue = state.answerValue,
                         onAction = onAction,
                         currentWordFreeze = currentWordFreeze,
-                        isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable
+                        isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable,
+                        isAutoSuggestEnable = state.isAutoSuggestEnable
                     )
 
                     NavigationPart(

@@ -1,13 +1,21 @@
 package com.ovolk.dictionary.presentation.exam.components
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -18,33 +26,73 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.core.text_field.OutlinedErrableTextField
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.exam.NavigateButtons
 
+
 @Composable
 fun InputWord(
+    isInverseWord: Boolean = false,
+    inverseWordValues: List<String> = emptyList(),
     word: String,
     answerValue: String,
     onAction: (ExamAction) -> Unit,
     currentWordFreeze: Boolean = false,
     isDoubleLanguageExamEnable: Boolean,
+    isAutoSuggestEnable: Boolean,
 ) {
-    Box(
+    var isIncreaseWordListVisible by remember {
+        mutableStateOf(false)
+    }
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
                 top = dimensionResource(id = R.dimen.medium_gutter),
                 bottom = dimensionResource(id = R.dimen.gutter)
-            ), contentAlignment = Alignment.Center
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = word,
             fontWeight = FontWeight.Bold,
             color = colorResource(id = R.color.grey),
             fontSize = 20.sp,
+        )
+        Spacer(Modifier.width(10.dp))
+
+        if (isInverseWord && inverseWordValues.size > 1) {
+            Text(
+                text = stringResource(id = R.string.see_all),
+                color = colorResource(id = R.color.blue),
+                modifier = Modifier
+                    .clickable { isIncreaseWordListVisible = true }
+                    .padding(horizontal = 5.dp, vertical = 2.dp),
+            )
+        }
+    }
+
+    if (isIncreaseWordListVisible) {
+        MyDialog(
+            onDismissRequest = { isIncreaseWordListVisible = false },
+            content = {
+                LazyColumn() {
+                    items(inverseWordValues) { word ->
+                        Text(
+                            text = word,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.grey),
+                            fontSize = 20.sp,
+                        )
+                    }
+                }
+            },
+            title = "All values",
         )
     }
 
@@ -54,7 +102,8 @@ fun InputWord(
         LocaleAbleInput(
             answerValue = answerValue,
             onAction = onAction,
-            currentWordFreeze = currentWordFreeze
+            currentWordFreeze = currentWordFreeze,
+            isAutoSuggestEnable = isAutoSuggestEnable,
         )
     } else {
         val focusManager = LocalFocusManager.current
@@ -65,8 +114,8 @@ fun InputWord(
             label = { Text(text = stringResource(id = R.string.word_translate)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Send,
+                autoCorrect = isAutoSuggestEnable
             ),
-
             keyboardActions = KeyboardActions(
                 onSend = {
                     // answer and go to the next word
@@ -76,7 +125,7 @@ fun InputWord(
                     }
                     onAction(ExamAction.OnPressNavigate(NavigateButtons.NEXT))
                     focusManager.moveFocus(FocusDirection.Down)
-                }
+                },
             ),
         )
     }
@@ -91,7 +140,10 @@ fun InputWordPreview() {
             word = "Green",
             answerValue = "Зелений",
             onAction = {},
-            isDoubleLanguageExamEnable = true
+            isDoubleLanguageExamEnable = true,
+            isInverseWord = true,
+            inverseWordValues = listOf("Hello World", "2"),
+            isAutoSuggestEnable = true
         )
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -50,7 +51,7 @@ fun CreateFirstDictionaryScreen(
                 )
 
 
-                Box(modifier = Modifier.padding(top = 40.dp)) {
+                Box(modifier = Modifier.padding(top = 40.dp).align(Alignment.CenterHorizontally)) {
                     LanguagesPicker(
                         languageToName = state.languageToCode,
                         languageFromName = state.languageFromCode,

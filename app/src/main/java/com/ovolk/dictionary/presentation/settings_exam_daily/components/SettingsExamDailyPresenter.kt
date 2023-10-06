@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.switch_raw.SwitchRow
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyAction
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyState
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
@@ -79,7 +80,16 @@ fun SettingsExamDailyPresenter(
                 CombineExamSwitch(
                     languagesForDescription = state.languagesForDescription,
                     isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable,
-                    onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleDoubleLanguageExam) })
+                    onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleDoubleLanguageExam) }
+                )
+
+                SwitchRow(
+                    isEnable = state.isAutoSuggestEnable,
+                    onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleIsAutoSuggestEnable) },
+                    description = stringResource(id = R.string.settings_daily_exam_is_auto_suggest_enable_description),
+                    title = stringResource(id = R.string.settings_daily_exam_is_auto_suggest_enable_title)
+                )
+
             }
 
             Box(

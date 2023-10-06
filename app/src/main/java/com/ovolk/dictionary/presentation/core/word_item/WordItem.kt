@@ -1,7 +1,12 @@
 package com.ovolk.dictionary.presentation.core.word_item
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -18,9 +23,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
@@ -62,8 +65,7 @@ fun WordItem(
                 .padding(16.dp)
                 .clickable { onWordClick(word.id) },
             elevation = 3.dp,
-
-            ) {
+        ) {
             Surface(modifier = Modifier.padding(8.dp)) {
                 Column {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {

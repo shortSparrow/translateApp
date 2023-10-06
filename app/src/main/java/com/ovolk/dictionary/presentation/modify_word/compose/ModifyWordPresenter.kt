@@ -116,7 +116,10 @@ fun ModifyWordPresenter(
         ConfirmDialog(
             title = stringResource(id = R.string.modify_word_unsaved_changes),
             onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
-            onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
+            onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) },
+            declineButtonText = stringResource(id = R.string.stay),
+            confirmButtonText = stringResource(id = R.string.go)
+        )
     }
 
     if (state.isFieldDescribeModalOpen) {
