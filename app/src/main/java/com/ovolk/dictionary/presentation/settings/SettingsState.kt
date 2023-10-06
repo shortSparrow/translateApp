@@ -10,9 +10,9 @@ data class SettingsState(
     val settingsList: List<SettingsItem> = listOf(
         SettingsItem(
             title = DictionaryApp.applicationContext()
-                .getString(R.string.setting_dictionaries_screen_title),
+                .getString(R.string.dictionary_list_screen_title),
             contentDescription = DictionaryApp.applicationContext()
-                .getString(R.string.setting_dictionaries_screen_title_cd),
+                .getString(R.string.dictionary_list_screen_title_cd),
             iconId = R.drawable.language,
             navigateTo = SettingsNavigation.DICTIONARY_LIST
         ),

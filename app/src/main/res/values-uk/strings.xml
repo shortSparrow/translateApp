@@ -163,22 +163,22 @@
 
     <!--     TODO remove to dictionaryList -->
     <!--  Settings Dictionaries -->
-    <string name="setting_dictionaries_active_dialog_title">Цей словник активний</string>
-    <string name="setting_dictionaries_active_dialog_description">Позначте словник активним для мов, які ви зараз вивчаєте. Слова для щоденного іспиту братимуться із цього словника</string>
-    <plurals name="setting_dictionaries_delete_dictionary_title">
+    <string name="dictionary_list_active_dialog_title">Цей словник активний</string>
+    <string name="dictionary_list_active_dialog_description">Позначте словник активним для мов, які ви зараз вивчаєте. Слова для щоденного іспиту братимуться із цього словника</string>
+    <plurals name="dictionary_list_delete_dictionary_title">
         <item quantity="one">Ви впенені що хочете видалити %s словник</item>
         <item quantity="few">Ви впенені що хочете видалити  %s словників</item>
         <item quantity="many">Ви впенені що хочете видалити  %s словників</item>
     </plurals>
-    <plurals name="setting_dictionaries_delete_dictionary_description">
+    <plurals name="dictionary_list_delete_dictionary_description">
         <item quantity="one">Всі слова в словнику будуть видалені</item>
         <item quantity="few">Всі слова в цих словниках будуть видалені</item>
         <item quantity="many">Всі слова в цих словниках будуть видалені</item>
     </plurals>
-    <string name="setting_dictionaries_screen_title">Словники</string>
-    <string name="setting_dictionaries_screen_title_cd">Кнопка навігаці до екрану словників</string>
-    <string name="setting_dictionaries_screen_remove_active_dictionary">Ви намагаєтесб видалити активний словник, якщо ви це зробите, нагадування екзамену буде зупинено доки ви не оберете новий активний словник</string>
-    <plurals name="setting_dictionaries_screen_dictionary_was_deleted">
+    <string name="dictionary_list_screen_title">Словники</string>
+    <string name="dictionary_list_screen_title_cd">Кнопка навігаці до екрану словників</string>
+    <string name="dictionary_list_screen_remove_active_dictionary">Ви намагаєтесб видалити активний словник, якщо ви це зробите, нагадування екзамену буде зупинено доки ви не оберете новий активний словник</string>
+    <plurals name="dictionary_list_screen_dictionary_was_deleted">
         <item quantity="one">Словник було видалено</item>
         <item quantity="few">Словники було видалено</item>
         <item quantity="many">Словники було видалено</item>

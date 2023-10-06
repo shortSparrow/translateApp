@@ -14,7 +14,7 @@ import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryModes
 import com.ovolk.dictionary.presentation.modify_dictionary.ModifyDictionaryScreen
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordModes
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordScreen
-import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListScreen
+import com.ovolk.dictionary.presentation.dictionary_list.DictionaryListScreen
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyScreen
 import com.ovolk.dictionary.presentation.settings_reminder_exam.ExamReminderScreen
 import com.ovolk.dictionary.util.DEEP_LINK_BASE

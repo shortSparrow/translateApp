@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.settings_dictionaries.components
+package com.ovolk.dictionary.presentation.dictionary_list.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary
 import com.ovolk.dictionary.presentation.core.dialog.info_dialog.InfoDialog
-import com.ovolk.dictionary.presentation.settings_dictionaries.DictionaryListAction
+import com.ovolk.dictionary.presentation.dictionary_list.DictionaryListAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -63,8 +63,8 @@ fun DictionaryItem(
     if (isStartDescriptionModalOpen) {
         InfoDialog(
             onDismissRequest = { isStartDescriptionModalOpen = false },
-            message = stringResource(id = R.string.setting_dictionaries_active_dialog_title),
-            description = stringResource(id = R.string.setting_dictionaries_active_dialog_description),
+            message = stringResource(id = R.string.dictionary_list_active_dialog_title),
+            description = stringResource(id = R.string.dictionary_list_active_dialog_description),
             onClick = { isStartDescriptionModalOpen = false },
             buttonText = stringResource(id = R.string.ok),
         )
