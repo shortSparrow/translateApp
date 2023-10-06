@@ -75,7 +75,7 @@ jobs:
       - run: sudo apt-get -y install openjdk-11-jdk
         shell: bash
 
-      - name: Setup verions code
+      - name: Setup version code
         run: |
           echo "VERSION_CODE=${{ github.run_number }}" > release.properties
 

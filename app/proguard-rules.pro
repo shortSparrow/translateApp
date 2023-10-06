@@ -24,4 +24,5 @@
 -keep class com.ovolk.dictionary.domain.model.migrate_2_3.OldHints{ *; }
 -keep class com.ovolk.dictionary.domain.model.migrate_2_3.OldTranslate{ *; }
 -keep class com.ovolk.dictionary.data.database.migration.Lang{ *; }
-
+-keep class com.ovolk.dictionary.data.model.NearestFeatureFirestore{ *; }
+-keep class com.ovolk.dictionary.data.model.NearestFeatureFirestore$*{ *; }
