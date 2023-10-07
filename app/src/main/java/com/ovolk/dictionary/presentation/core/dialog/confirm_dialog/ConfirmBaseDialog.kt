@@ -16,12 +16,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
-import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.utils.getDescription
-import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.utils.getTitle
+import com.ovolk.dictionary.presentation.core.dialog.CoreDialog
 
 @Composable
 fun ConfirmBaseDialog(
@@ -46,7 +43,7 @@ fun ConfirmBaseDialog(
         ConfirmDialogType.NO_RED -> colorResource(id = R.color.blue)
     }
 
-    BaseDialog(
+    CoreDialog(
         onDismissRequest = {
             if (onDismissRequest != null) {
                 onDismissRequest()

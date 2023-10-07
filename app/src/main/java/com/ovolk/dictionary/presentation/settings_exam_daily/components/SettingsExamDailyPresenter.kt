@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.switch_raw.SwitchRow
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyAction
@@ -56,26 +55,24 @@ fun SettingsExamDailyPresenter(
                     .weight(1f)
                     .fillMaxWidth(1f),
             ) {
-                FlowRow {
-                    Text(
-                        text = stringResource(id = R.string.settings_daily_exam_words_count_description),
-                        modifier = Modifier.padding(top = 20.dp, end = 20.dp)
-                    )
-                    OutlinedTextField(
-                        value = state.countOfWords,
-                        onValueChange = { onAction(SettingsExamDailyAction.ChangeCountOfWords(it)) },
-                        label = { Text(text = stringResource(id = R.string.settings_daily_exam_words_count_label)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                            }
-                        ),
-                    )
-                }
+                Text(
+                    text = stringResource(id = R.string.settings_daily_exam_words_count_description),
+                    modifier = Modifier.padding(top = 20.dp, end = 20.dp)
+                )
+                OutlinedTextField(
+                    value = state.countOfWords,
+                    onValueChange = { onAction(SettingsExamDailyAction.ChangeCountOfWords(it)) },
+                    label = { Text(text = stringResource(id = R.string.settings_daily_exam_words_count_label)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
+                )
 
                 CombineExamSwitch(
                     languagesForDescription = state.languagesForDescription,

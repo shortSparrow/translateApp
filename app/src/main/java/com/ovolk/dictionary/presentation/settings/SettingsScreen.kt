@@ -6,7 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
-import com.ovolk.dictionary.presentation.settings.components.SettingsList
+import com.ovolk.dictionary.presentation.settings.components.SettingsListPresenter
 
 
 @Composable
@@ -40,7 +40,7 @@ fun SettingsScreen(navController: NavHostController) {
 
     val state = viewModel.state
 
-    SettingsList(
+    SettingsListPresenter(
         settingsList = state.settingsList,
         nearestFeatureList = state.nearestFeatureList,
         onAction = viewModel::onAction,

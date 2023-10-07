@@ -20,9 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep class com.ovolk.dictionary.domain.use_case.exam.ExamAnswer{*;}
+-keepattributes Signature
+-keep class com.google.gson.reflect.TypeToken { *; }
+
 -keep class com.ovolk.dictionary.domain.model.select_languages.Language{ *; }
 -keep class com.ovolk.dictionary.domain.model.migrate_2_3.OldHints{ *; }
 -keep class com.ovolk.dictionary.domain.model.migrate_2_3.OldTranslate{ *; }
 -keep class com.ovolk.dictionary.data.database.migration.Lang{ *; }
 -keep class com.ovolk.dictionary.data.model.NearestFeatureFirestore{ *; }
--keep class com.ovolk.dictionary.data.model.NearestFeatureFirestore$*{ *; }
+-keep class * extends com.google.gson.reflect.TypeToken

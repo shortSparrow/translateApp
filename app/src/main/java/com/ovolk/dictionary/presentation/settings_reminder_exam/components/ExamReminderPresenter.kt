@@ -79,7 +79,10 @@ fun ExamReminderPresenter(
                     modifier = Modifier.padding(vertical = paddingVertical),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(id = R.string.settings_exam_reminder_time_push_notification))
+                    Text(
+                        text = stringResource(id = R.string.settings_exam_reminder_time_push_notification),
+                        modifier = Modifier.weight(1f)
+                    )
                     Text(
                         text = state.reminderTime,
                         modifier = Modifier
@@ -94,7 +97,8 @@ fun ExamReminderPresenter(
                             ),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = colorResource(id = R.color.grey_2)
+                        color = colorResource(id = R.color.grey_2),
+                        maxLines = 1
                     )
                 }
 
