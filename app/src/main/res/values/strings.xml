@@ -48,7 +48,8 @@
     <string name="modify_word_language_picker_to">to</string>
     <string name="modify_word_validate_add_empty_field">this field is required, input translate and press add</string>
     <string name="modify_word_record_listen">listen</string>
-    <string name="modify_word_unsaved_changes">If you go back you lose unsaved changes</string>
+    <string name="modify_word_unsaved_changes_title">Go back?</string>
+    <string name="modify_word_unsaved_changes_message">If you go back you lose unsaved changes</string>
     <string name="modify_word_field_describe_translation">
         You can add multiple translations for a word. Also, if you long press on a translation you will add/remove it from the hidden translations.
         \n\nHidden translations are translations that are marked in dark color and are not visible on the main screen, but they are taken into account during the exam.
@@ -150,6 +151,7 @@
     <string name="app_localization_title">Localization</string>
     <string name="app_localization_search_lang_placeholder">Search language</string>
     <string name="app_localization_search_current_language">Language:&#160;</string>
+    <string name="app_localization_change_app_language_dialog_title">Change app language to %s</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Dictionary %s already exist</string>

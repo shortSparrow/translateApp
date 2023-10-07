@@ -31,7 +31,10 @@ fun LocalizationPresenter(state: LocalizationState, onAction: (LocalizationActio
         Column {
             if (state.isConfirmAppChangeLanguageModalOpen) {
                 ConfirmDialog(
-                    title = "Change app language to ${state.isConfirmAppChangeLanguage?.nativeName}",
+                    title = stringResource(
+                        id = R.string.app_localization_change_app_language_dialog_title,
+                        state.isConfirmAppChangeLanguage?.nativeName.toString()
+                    ),
                     onAcceptClick = { onAction(LocalizationAction.OnConfirmChangeAppLanguage(state.isConfirmAppChangeLanguage?.langCode)) },
                     onDeclineClick = {
                         onAction(LocalizationAction.OnCloseConfirmChangeAppLanguageModal)

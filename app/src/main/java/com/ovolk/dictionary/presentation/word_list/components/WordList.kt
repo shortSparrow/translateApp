@@ -12,6 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.presentation.core.ScreenPaddingWrapper
 import com.ovolk.dictionary.presentation.core.SearchBar
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.word_item.WordItem
@@ -34,7 +35,9 @@ fun WordList(state: WordListState, onAction: (WordListAction) -> Unit) {
     ) { contentPadding ->
         Column(Modifier.padding(contentPadding)) {
             if (!state.isLoading && state.totalWordListSize == 0) {
-                WordListIsEmpty(onPressAddNewWord = { onAction(WordListAction.OnPressAddNewWord) })
+                ScreenPaddingWrapper {
+                    WordListIsEmpty(onPressAddNewWord = { onAction(WordListAction.OnPressAddNewWord) })
+                }
             }
 
             if (!state.isLoading && state.totalWordListSize != 0) {
@@ -53,7 +56,9 @@ fun WordList(state: WordListState, onAction: (WordListAction) -> Unit) {
                 }
 
                 if (state.filteredWordList.isEmpty()) {
-                    NothingFound()
+                    ScreenPaddingWrapper {
+                        NothingFound()
+                    }
                 }
 
                 LazyColumn {

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.Dictionary
+import com.ovolk.dictionary.presentation.core.ScreenPaddingWrapper
 import com.ovolk.dictionary.presentation.core.SearchBar
 import com.ovolk.dictionary.presentation.core.floating.AddButton
 import com.ovolk.dictionary.presentation.core.word_item.WordItem
@@ -57,11 +58,15 @@ fun DictionaryWords(
                 onAction = onAction,
             )
             if (state.loadingStatus == LoadingState.FAILED) {
-                FailedLoadDictionary()
+               ScreenPaddingWrapper {
+                   FailedLoadDictionary()
+               }
             }
 
             if (state.loadingStatus == LoadingState.SUCCESS && state.totalWordListSize == 0) {
-                WordListIsEmpty(onPressAddNewWord = { onAction(DictionaryWordsAction.OnPressAddNewWord) })
+                ScreenPaddingWrapper {
+                    WordListIsEmpty(onPressAddNewWord = { onAction(DictionaryWordsAction.OnPressAddNewWord) })
+                }
             }
 
             if (state.loadingStatus == LoadingState.SUCCESS) {

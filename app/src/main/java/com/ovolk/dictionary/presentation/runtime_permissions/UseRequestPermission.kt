@@ -2,10 +2,10 @@ package com.ovolk.dictionary.presentation.runtime_permissions
 
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -78,4 +78,9 @@ fun UseRequestPermission(
         }
     }
 
+    // Without component preview crashes
+    Box {
+
+    }
 }
+

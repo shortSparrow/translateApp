@@ -197,6 +197,7 @@ fun RecordAudioWrapper(
                     backgroundColor = Color.Transparent,
                     scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetScaffoldState),
                     modifier = Modifier.padding(top = 0.dp),
+                    sheetShape = MaterialTheme.shapes.small,
                     sheetContent = {
                         if (bottomSheetScaffoldState.isCollapsed && isSlideUpComplete) {
                             closeBottomSheetModal()

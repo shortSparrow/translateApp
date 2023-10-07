@@ -1,87 +1,86 @@
 package com.ovolk.dictionary.presentation.settings.components
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomDrawer
-import androidx.compose.material.BottomDrawerValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberBottomDrawerState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.ovolk.dictionary.BuildConfig
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.domain.model.nearest_feature.NearestFeature
 import com.ovolk.dictionary.domain.model.settings.SettingsItem
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 import com.ovolk.dictionary.presentation.settings.SettingsAction
-import com.ovolk.dictionary.util.helpers.get_preview_models.getPreviewNearestFeatureList
-import kotlinx.coroutines.launch
 
-
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsList(
     settingsList: List<SettingsItem>,
-    nearestFeatureList: List<NearestFeature>,
     onAction: (SettingsAction) -> Unit,
+    onComplaintsButtonCLick: () -> Unit,
 ) {
-    val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
-    fun closeModal() {
-        scope.launch {
-            drawerState.close()
-        }
-    }
-
-    fun onComplaintsButtonCLick() {
-        scope.launch { drawerState.expand() }
-    }
-
-    if (drawerState.isOpen) {
-        BackHandler() {
-            closeModal()
-        }
-    }
-
-    // close bottomSheet on Open state (available only Closed and Expanded)
-    LaunchedEffect(key1 = drawerState.isExpanded) {
-        if(!drawerState.isExpanded && !drawerState.isClosed) {
-            closeModal()
-        }
-    }
-
-    BottomDrawer(
-        drawerState = drawerState,
-        drawerShape = RoundedCornerShape(
-            bottomStart = 0.dp,
-            bottomEnd = 0.dp,
-            topStart = 20.dp,
-            topEnd = 20.dp,
-        ),
-        gesturesEnabled = false,
-        drawerContent = {
-            ComplaintAndSuggestionDrawer(
-                nearestFeatureList = nearestFeatureList,
-                drawerState = drawerState
-            )
-        }
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
     ) {
-        ComplaintAndSuggestionDrawerBody(
-            settingsList = settingsList,
-            onAction = onAction,
-            onComplaintsButtonCLick = { onComplaintsButtonCLick() }
-        )
-    }
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.gutter))
+            ) {
+                settingsList.forEach {
+                    SettingsItem(item = it,
+                        onClick = { item -> onAction(SettingsAction.OnPressSettings(item)) })
+                }
 
+                TextButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = { onComplaintsButtonCLick() },
+                ) {
+                    Text(text = stringResource(id = R.string.settings_daily_exam_complaints_and_suggestions), textAlign = TextAlign.Center)
+                }
+            }
+
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = dimensionResource(id = R.dimen.small_gutter))
+            ) {
+                Text(
+                    text = stringResource(id = R.string.app_version, BuildConfig.VERSION_NAME),
+                    color = colorResource(id = R.color.light_grey),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-fun SettingsListPreview() {
+@Preview(showBackground = true)
+fun ComplaintAndSuggestionDrawerBodyPreview() {
     SettingsList(
         settingsList = listOf(
             SettingsItem(
@@ -109,7 +108,7 @@ fun SettingsListPreview() {
                 navigateTo = SettingsNavigation.LOCALIZATION
             ),
         ),
-        nearestFeatureList = getPreviewNearestFeatureList(),
         onAction = {},
+        onComplaintsButtonCLick = { }
     )
 }

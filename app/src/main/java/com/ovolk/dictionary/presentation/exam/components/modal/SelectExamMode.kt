@@ -20,8 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.ovolk.dictionary.R
+import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.exam.ExamMode
 import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
@@ -29,7 +29,7 @@ import com.ovolk.dictionary.util.compose.click_effects.clickWithoutFeedback
 
 @Composable
 fun SelectExamMode(mode: ExamMode, onAction: (ExamAction) -> Unit) {
-    Dialog(onDismissRequest = { onAction(ExamAction.ToggleSelectModeModal(false)) }) {
+    BaseDialog(onDismissRequest = { onAction(ExamAction.ToggleSelectModeModal(false)) }) {
         Surface(shape = RoundedCornerShape(10.dp)) {
             Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.gutter))) {
                 Text(

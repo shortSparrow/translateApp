@@ -179,9 +179,8 @@ fun ComplaintAndSuggestionDrawer(
                     expandedComponent = {
                         Text(
                             text = stringResource(id = R.string.complaints_and_suggestions_bottom_sheet_next_features_disclaimer),
-                            color = colorResource(
-                                id = R.color.orange
-                            )
+                            color = colorResource( id = R.color.orange),
+                            fontSize = 12.sp
                         )
                         Spacer(modifier = Modifier.height(15.dp))
                         Column {

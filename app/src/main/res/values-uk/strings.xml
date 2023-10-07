@@ -49,7 +49,8 @@
     <string name="modify_word_language_picker_to">на</string>
     <string name="modify_word_validate_add_empty_field">це поле обов\'язкове, впишіть переклад і натисніть додати</string>
     <string name="modify_word_record_listen">прослухати</string>
-    <string name="modify_word_unsaved_changes">Якщо ви підете то втратете всі незбережені дані</string>
+    <string name="modify_word_unsaved_changes_title">Піти назад?</string>
+    <string name="modify_word_unsaved_changes_message">Якщо ви підете то втратете всі незбережені дані</string>
     <string name="modify_word_field_describe_translation">
         Ви можете додати кілька перекладів для одного слова. Крім того, якщо ви довго натискаєте на переклад, ви додаєте/видаляєте його з прихованих перекладів.
          \n\nПриховані переклади – це переклади, які позначені темним кольором і їх не видно на головному екрані, але вони враховуються під час іспиту.
@@ -150,6 +151,7 @@
     <string name="app_localization_title">Мова</string>
     <string name="app_localization_search_lang_placeholder">Пошук мови</string>
     <string name="app_localization_search_current_language">Мова:&#160;</string>
+    <string name="app_localization_change_app_language_dialog_title">Змінити мовн програми на %s</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Словник %s вже існує</string>
