@@ -1,12 +1,16 @@
 package com.ovolk.dictionary.presentation.settings.components
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomDrawerValue
+import androidx.compose.material.DrawerDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.R
@@ -53,6 +57,13 @@ fun SettingsListPresenter(
             onAction = onAction,
             onComplaintsButtonCLick = { onComplaintsButtonCLick() }
         )
+        if (swipeableState.targetValue == BottomDrawerValue.Open || swipeableState.targetValue == BottomDrawerValue.Expanded) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(DrawerDefaults.scrimColor)
+            )
+        }
         ComplaintAndSuggestionDrawer(
             swipeableState = swipeableState,
             nearestFeatureList = nearestFeatureList
