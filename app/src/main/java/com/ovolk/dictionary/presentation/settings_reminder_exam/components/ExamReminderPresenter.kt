@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminder
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
 import com.ovolk.dictionary.util.PushFrequency
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExamReminderPresenter(
     state: SettingsReminderExamState,
@@ -59,7 +61,7 @@ fun ExamReminderPresenter(
                     .weight(1f)
                     .fillMaxWidth(1f)
             ) {
-                Row(
+                androidx.compose.foundation.layout.FlowRow(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = paddingVertical)
                 ) {
@@ -102,7 +104,7 @@ fun ExamReminderPresenter(
                     )
                 }
 
-                ReminderPermission()
+//                ReminderPermission()
             }
 
             Box(
