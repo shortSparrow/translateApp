@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.Surface
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberSwipeableState
@@ -28,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -45,6 +45,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
@@ -70,17 +71,25 @@ fun ComplaintAndSuggestionDrawer(
     val screenHeight = configuration.screenHeightDp.dp
     val availableScreenHeight = screenHeight - BottomNavigationHeight
 
+    // for small screen availableScreenHeight - 100.dp may be less thant height. In this case case Open and Expanded
+    // sates must be the same, but this will crash app (because same keys). To avoid crash add +1.dp
+    val expandedHeight = max(availableScreenHeight - 100.dp, height) + 1.dp
+
     val anchors = mapOf(
         LocalDensity.current.run { screenHeight.toPx() } to BottomDrawerValue.Closed,
         LocalDensity.current.run { (availableScreenHeight - height).toPx() } to BottomDrawerValue.Open,
+        LocalDensity.current.run { (availableScreenHeight - expandedHeight).toPx() } to BottomDrawerValue.Expanded,
     )
 
-    Surface(
+    Box(
         modifier = Modifier
             .offset { IntOffset(0, swipeableState.offset.value.roundToInt()) }
-            .height(height),
-        shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
-    ) {
+            .height(expandedHeight)
+            .clip(shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+            .background(Color.White)
+        ,
+
+        ) {
         val swipeable = Modifier
             .swipeable(
                 state = swipeableState,
@@ -90,7 +99,11 @@ fun ComplaintAndSuggestionDrawer(
                 resistance = null
             )
 
-        Column {
+        val toExpanded = swipeableState.progress.to == BottomDrawerValue.Expanded
+        val fromExpandedToOpen = swipeableState.progress.from == BottomDrawerValue.Expanded &&
+                swipeableState.progress.to == BottomDrawerValue.Open
+        val currentHeight = if (toExpanded || fromExpandedToOpen) expandedHeight else height
+        Column(Modifier.height(currentHeight)) {
             Box(swipeable) {
                 Column(
                     modifier = Modifier
@@ -206,7 +219,6 @@ fun ComplaintAndSuggestionDrawer(
                             }
                         }
                     )
-
                 }
             }
         }

@@ -57,7 +57,7 @@ fun SettingsListPresenter(
             onAction = onAction,
             onComplaintsButtonCLick = { onComplaintsButtonCLick() }
         )
-        if (swipeableState.targetValue == BottomDrawerValue.Open) {
+        if (swipeableState.targetValue == BottomDrawerValue.Open || swipeableState.targetValue == BottomDrawerValue.Expanded) {
             Box(
                 Modifier
                     .fillMaxSize()
