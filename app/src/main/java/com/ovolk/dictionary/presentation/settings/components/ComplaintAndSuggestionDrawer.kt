@@ -75,40 +75,12 @@ fun ComplaintAndSuggestionDrawer(
         LocalDensity.current.run { (availableScreenHeight - height).toPx() } to BottomDrawerValue.Open,
     )
 
-
-//    val squareSize = 50.dp
-//
-//    val swipeableState = rememberSwipeableState(1)
-//    val sizePx = with(LocalDensity.current) { ((842).dp - BottomNavigationHeight).toPx() }
-//    val anchors = mapOf(0f to 0, sizePx to 1) // Maps anchor points (in px) to states
-//
-//    Box(
-//        modifier = Modifier
-//            .offset { IntOffset(0, swipeableState.offset.value.roundToInt()) }
-//            .size(100.dp)
-//            .background(Color.LightGray)
-//    ) {
-//        Box(
-//            Modifier
-//                .swipeable(
-//                    state = swipeableState,
-//                    anchors = anchors,
-//                    thresholds = { _, _ -> FractionalThreshold(0.3f) },
-//                    orientation = Orientation.Vertical
-//                )
-//                .size(squareSize)
-//                .background(Color.DarkGray)
-//        )
-//    }
-
     Surface(
         modifier = Modifier
             .offset { IntOffset(0, swipeableState.offset.value.roundToInt()) }
-            .background(Color.Yellow, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
             .height(height),
         shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
     ) {
-
         val swipeable = Modifier
             .swipeable(
                 state = swipeableState,

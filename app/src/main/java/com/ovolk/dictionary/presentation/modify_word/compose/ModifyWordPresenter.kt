@@ -118,8 +118,8 @@ fun ModifyWordPresenter(
             description = stringResource(id = R.string.modify_word_unsaved_changes_message),
             onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
             onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) },
-            declineButtonText = stringResource(id = R.string.stay),
-            confirmButtonText = stringResource(id = R.string.go),
+            declineButtonText = stringResource(id = R.string.stay).replaceFirstChar { it.uppercase() },
+            confirmButtonText = stringResource(id = R.string.go).replaceFirstChar { it.uppercase() },
         )
     }
 
