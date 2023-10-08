@@ -1,17 +1,14 @@
 package com.ovolk.dictionary.presentation.settings.components
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomDrawer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberBottomDrawerState
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.nearest_feature.NearestFeature
 import com.ovolk.dictionary.domain.model.settings.SettingsItem
@@ -28,55 +25,39 @@ fun SettingsListPresenter(
     nearestFeatureList: List<NearestFeature>,
     onAction: (SettingsAction) -> Unit,
 ) {
-    val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
+    val swipeableState = rememberSwipeableState(BottomDrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     fun closeModal() {
         scope.launch {
-            drawerState.close()
+            swipeableState.animateTo(BottomDrawerValue.Closed)
         }
     }
 
     fun onComplaintsButtonCLick() {
-        scope.launch { drawerState.expand() }
+        scope.launch {
+            swipeableState.animateTo(BottomDrawerValue.Open)
+
+        }
     }
 
-    if (drawerState.isOpen) {
+    if (swipeableState.currentValue == BottomDrawerValue.Open) {
         BackHandler() {
             closeModal()
         }
     }
 
-    // close bottomSheet on Open state (available only Closed and Expanded)
-    LaunchedEffect(key1 = drawerState.isExpanded) {
-        if(!drawerState.isExpanded && !drawerState.isClosed) {
-            closeModal()
-        }
-    }
-
-    BottomDrawer(
-        drawerState = drawerState,
-        drawerShape = RoundedCornerShape(
-            bottomStart = 0.dp,
-            bottomEnd = 0.dp,
-            topStart = 20.dp,
-            topEnd = 20.dp,
-        ),
-        gesturesEnabled = false,
-        drawerContent = {
-            ComplaintAndSuggestionDrawer(
-                nearestFeatureList = nearestFeatureList,
-                drawerState = drawerState
-            )
-        }
-    ) {
+    Box {
         SettingsList(
             settingsList = settingsList,
             onAction = onAction,
             onComplaintsButtonCLick = { onComplaintsButtonCLick() }
         )
+        ComplaintAndSuggestionDrawer(
+            swipeableState = swipeableState,
+            nearestFeatureList = nearestFeatureList
+        )
     }
-
 }
 
 @Preview(showBackground = true)

@@ -1,9 +1,12 @@
 package com.ovolk.dictionary.presentation.exam.components.variants_and_hints
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.domain.model.exam.ExamAnswerVariant
 import com.ovolk.dictionary.domain.model.modify_word.modify_word_chip.HintItem
@@ -42,20 +46,31 @@ fun VariantsAndHints(
                 )
 
             if (answerVariants.isNotEmpty()) {
-                OutlinedButton(onClick = { onAction(ExamAction.ToggleShowVariants) }) {
-                    Text(
-                        text = variantsText.uppercase(),
-                        color = colorResource(id = R.color.blue)
-                    )
+                Box(modifier = Modifier.weight(1f)) {
+                    Box {
+                        OutlinedButton(onClick = { onAction(ExamAction.ToggleShowVariants) }) {
+                            Text(
+                                text = variantsText.uppercase(),
+                                color = colorResource(id = R.color.blue)
+                            )
+                        }
+                    }
                 }
+            }
+            if(answerVariants.isNotEmpty() && hints.isNotEmpty()) {
+                Spacer(modifier = Modifier.width(15.dp))
             }
 
             if (hints.isNotEmpty()) {
-                OutlinedButton(onClick = { onAction(ExamAction.ToggleHints) }) {
-                    Text(
-                        text = hintsText.uppercase(),
-                        color = colorResource(id = R.color.blue)
-                    )
+                Box(modifier = Modifier.weight(1f)) {
+                    Box {
+                        OutlinedButton(onClick = { onAction(ExamAction.ToggleHints) }) {
+                            Text(
+                                text = hintsText.uppercase(),
+                                color = colorResource(id = R.color.blue)
+                            )
+                        }
+                    }
                 }
             }
         }

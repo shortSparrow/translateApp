@@ -151,7 +151,7 @@
     <string name="app_localization_title">Мова</string>
     <string name="app_localization_search_lang_placeholder">Пошук мови</string>
     <string name="app_localization_search_current_language">Мова:&#160;</string>
-    <string name="app_localization_change_app_language_dialog_title">Змінити мовн програми на %s</string>
+    <string name="app_localization_change_app_language_dialog_title">Змінити мову додатка на %s</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Словник %s вже існує</string>
