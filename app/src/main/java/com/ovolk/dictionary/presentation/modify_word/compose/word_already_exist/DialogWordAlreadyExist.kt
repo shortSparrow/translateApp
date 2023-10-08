@@ -1,16 +1,13 @@
 package com.ovolk.dictionary.presentation.modify_word.compose.word_already_exist
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -22,6 +19,7 @@ import com.ovolk.dictionary.presentation.core.dialog.MyDialog
 import com.ovolk.dictionary.presentation.modify_word.ModifyWordAction
 import com.ovolk.dictionary.presentation.modify_word.WordAlreadyExistActions
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DialogWordAlreadyExist(onAction: (ModifyWordAction) -> Unit, wordValue: String) {
 
@@ -56,13 +54,12 @@ fun DialogWordAlreadyExist(onAction: (ModifyWordAction) -> Unit, wordValue: Stri
         onDismissRequest = ::onClose,
         content = {
             Text(text = stringResource(id = R.string.modify_word_dialog_word_already_exist_description))
-            Row(
+            FlowRow(
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp)
             ) {
-                Box(Modifier.weight(1f)) {
                     OutlinedButton(onClick = ::onReplace) {
                         Text(
                             text = stringResource(id = R.string.modify_word_dialog_word_already_exist_replace),
@@ -70,17 +67,13 @@ fun DialogWordAlreadyExist(onAction: (ModifyWordAction) -> Unit, wordValue: Stri
                             textAlign = TextAlign.Center
                         )
                     }
-                }
-                Spacer(modifier = Modifier.width(15.dp))
-                Box(Modifier.weight(1f)) {
-                    OutlinedButton(onClick = ::onGoToWord, Modifier.align(Alignment.BottomEnd)) {
+                    OutlinedButton(onClick = ::onGoToWord,) {
                         Text(
                             text = stringResource(id = R.string.modify_word_dialog_word_already_exist_go_to_word),
                             color = colorResource(id = R.color.blue),
                             textAlign = TextAlign.Center
                         )
                     }
-                }
             }
         }
     )
