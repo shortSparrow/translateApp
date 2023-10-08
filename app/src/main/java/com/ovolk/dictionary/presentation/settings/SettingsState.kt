@@ -5,11 +5,12 @@ import com.ovolk.dictionary.domain.model.nearest_feature.NearestFeature
 import com.ovolk.dictionary.domain.model.settings.SettingsItem
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 import com.ovolk.dictionary.presentation.DictionaryApp
+import com.ovolk.dictionary.presentation.MainActivity
 
 data class SettingsState(
     val settingsList: List<SettingsItem> = listOf(
         SettingsItem(
-            title = DictionaryApp.applicationContext()
+            title = MainActivity.getMainActivity()
                 .getString(R.string.dictionary_list_screen_title),
             contentDescription = DictionaryApp.applicationContext()
                 .getString(R.string.dictionary_list_screen_title_cd),
@@ -17,7 +18,7 @@ data class SettingsState(
             navigateTo = SettingsNavigation.DICTIONARY_LIST
         ),
         SettingsItem(
-            title = DictionaryApp.applicationContext()
+            title = MainActivity.getMainActivity()
                 .getString(R.string.settings_exam_reminder_item_title),
             contentDescription = DictionaryApp.applicationContext()
                 .getString(R.string.settings_exam_reminder_cd_item_title),
@@ -25,7 +26,7 @@ data class SettingsState(
             navigateTo = SettingsNavigation.EXAM_REMINDER_SETTINGS
         ),
         SettingsItem(
-            title = DictionaryApp.applicationContext()
+            title = MainActivity.getMainActivity()
                 .getString(R.string.settings_daily_exam_item_title),
             contentDescription = DictionaryApp.applicationContext()
                 .getString(R.string.settings_daily_exam_cd_item_title),
@@ -33,7 +34,7 @@ data class SettingsState(
             navigateTo = SettingsNavigation.EXAM_DAILY_SETTINGS
         ),
         SettingsItem(
-            title = DictionaryApp.applicationContext()
+            title = MainActivity.getMainActivity()
                 .getString(R.string.settings_languages_title),
             contentDescription = DictionaryApp.applicationContext()
                 .getString(R.string.settings_languages_title_cd_item_title),

@@ -62,7 +62,6 @@ fun ExamReminderPresenter(
                     .fillMaxWidth(1f)
             ) {
                 androidx.compose.foundation.layout.FlowRow(
-                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = paddingVertical)
                 ) {
                     Text(text = stringResource(id = R.string.settings_exam_reminder_label))
