@@ -41,7 +41,7 @@ fun HintInput(
                         modifier = Modifier
                             .clickable { onAction(ModifyWordHintsAction.CancelEditHint) },
                         textAlign = TextAlign.Right,
-                        text = stringResource(id = R.string.cd_add_cancel_edit)
+                        text = stringResource(id = R.string.modify_word_cancel_edit)
                     )
                 }
             }
@@ -60,7 +60,7 @@ fun HintInput(
             onClick = { onAction(ModifyWordHintsAction.OnPressAddHint) },
             modifier = Modifier
                 .padding(start = 20.dp, top = 30.dp)
-                .width(85.dp)
+                .widthIn(85.dp)
         ) {
             Text(
                 text = hintsState.editableHint

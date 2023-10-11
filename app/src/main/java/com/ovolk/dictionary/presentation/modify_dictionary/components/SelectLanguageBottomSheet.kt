@@ -68,9 +68,9 @@ fun SelectLanguageBottomSheet(
         }
     }
 
-
     ModalBottomSheetLayout(
         sheetState = bottomSheetScaffoldState,
+        sheetShape = MaterialTheme.shapes.small,
         sheetContent = {
             Column(
                 modifier = Modifier

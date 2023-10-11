@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
+import com.ovolk.dictionary.presentation.core.dialog.CoreDialog
 import com.ovolk.dictionary.presentation.core.scrollableWrapper.ScrollableWrapperComponent
 
 
@@ -33,7 +33,7 @@ fun InfoDialog(
 ) {
     val buttonText = buttonText ?: stringResource(id = R.string.yes)
 
-    BaseDialog(onDismissRequest = onDismissRequest) {
+    CoreDialog(onDismissRequest = onDismissRequest) {
         ScrollableWrapperComponent {
             Text(
                 text = message,

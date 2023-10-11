@@ -1,7 +1,15 @@
 package com.ovolk.dictionary.presentation.core.dialog
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -21,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.ovolk.dictionary.R
 
 
@@ -31,8 +38,7 @@ fun MyDialog(
     content: @Composable ColumnScope.() -> Unit,
     title: String
 ) {
-
-    Dialog(onDismissRequest = { onDismissRequest() }) {
+    BaseDialog(onDismissRequest = { onDismissRequest() }) {
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))

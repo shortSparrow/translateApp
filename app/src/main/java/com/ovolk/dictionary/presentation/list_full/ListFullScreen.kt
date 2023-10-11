@@ -1,5 +1,6 @@
 package com.ovolk.dictionary.presentation.list_full
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,7 +19,8 @@ fun ListFullScreen(navController: NavHostController, listId: Long, dictionaryId:
     LaunchedEffect(Unit) {
         viewModel.listener = object : ListsFullViewModel.Listener {
             override fun navigateToExam(listId: Long, listName: String, dictionaryId: Long?) {
-                navController.navigate("${MainTabRotes.EXAM}?listName=${listName}&listId=${listId}&dictionaryId=${dictionaryId}")
+                val encodedMultilineListName = Uri.encode(listName)
+                navController.navigate("${MainTabRotes.EXAM}?listName=${encodedMultilineListName}&listId=${listId}&dictionaryId=${dictionaryId}")
             }
 
             override fun navigateToEditWord(wordId: Long) {

@@ -1,4 +1,4 @@
-package com.ovolk.dictionary.presentation.settings_dictionaries
+package com.ovolk.dictionary.presentation.dictionary_list
 
 import com.ovolk.dictionary.domain.LoadingState
 import com.ovolk.dictionary.domain.model.dictionary.SelectableDictionary

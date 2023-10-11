@@ -6,7 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 import com.ovolk.dictionary.presentation.navigation.graph.CommonRotes
-import com.ovolk.dictionary.presentation.settings.components.SettingsList
+import com.ovolk.dictionary.presentation.settings.components.SettingsListPresenter
 
 
 @Composable
@@ -29,6 +29,10 @@ fun SettingsScreen(navController: NavHostController) {
                     SettingsNavigation.EXAM_DAILY_SETTINGS -> {
                         navController.navigate("${CommonRotes.EXAM_DAILY}")
                     }
+
+                    SettingsNavigation.LOCALIZATION -> {
+                        navController.navigate("${CommonRotes.LOCALIZATION}")
+                    }
                 }
             }
         }
@@ -36,5 +40,9 @@ fun SettingsScreen(navController: NavHostController) {
 
     val state = viewModel.state
 
-    SettingsList(list = state.settingsList, onAction = viewModel::onAction)
+    SettingsListPresenter(
+        settingsList = state.settingsList,
+        nearestFeatureList = state.nearestFeatureList,
+        onAction = viewModel::onAction,
+    )
 }

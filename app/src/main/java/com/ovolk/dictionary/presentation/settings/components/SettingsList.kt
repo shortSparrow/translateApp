@@ -1,5 +1,7 @@
 package com.ovolk.dictionary.presentation.settings.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,13 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovolk.dictionary.BuildConfig
 import com.ovolk.dictionary.R
@@ -22,47 +27,62 @@ import com.ovolk.dictionary.domain.model.settings.SettingsItem
 import com.ovolk.dictionary.domain.model.settings.SettingsNavigation
 import com.ovolk.dictionary.presentation.settings.SettingsAction
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SettingsList(list: List<SettingsItem>, onAction: (SettingsAction) -> Unit) {
+fun SettingsList(
+    settingsList: List<SettingsItem>,
+    onAction: (SettingsAction) -> Unit,
+    onComplaintsButtonCLick: () -> Unit,
+) {
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceBetween
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
     ) {
         Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.gutter))
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            list.forEach {
-                SettingsItem(
-                    item = it,
-                    onClick = { item -> onAction(SettingsAction.OnPressSettings(item)) }
+            Column(
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.gutter))
+            ) {
+                settingsList.forEach {
+                    SettingsItem(item = it,
+                        onClick = { item -> onAction(SettingsAction.OnPressSettings(item)) })
+                }
+
+                TextButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = { onComplaintsButtonCLick() },
+                ) {
+                    Text(text = stringResource(id = R.string.settings_daily_exam_complaints_and_suggestions), textAlign = TextAlign.Center)
+                }
+            }
+
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = dimensionResource(id = R.dimen.small_gutter))
+            ) {
+                Text(
+                    text = stringResource(id = R.string.app_version, BuildConfig.VERSION_NAME),
+                    color = colorResource(id = R.color.light_grey),
+                    fontWeight = FontWeight.Bold
                 )
             }
-        }
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = dimensionResource(id = R.dimen.small_gutter))
-        ) {
-            Text(
-                text = stringResource(id = R.string.app_version, BuildConfig.VERSION_NAME),
-                color = colorResource(id = R.color.light_grey),
-                fontWeight = FontWeight.Bold
-            )
         }
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-fun SettingsListPreview() {
+@Preview(showBackground = true)
+fun ComplaintAndSuggestionDrawerBodyPreview() {
     SettingsList(
-        list = listOf(
+        settingsList = listOf(
             SettingsItem(
                 title = stringResource(id = R.string.settings_language_item_title),
                 contentDescription = stringResource(id = R.string.settings_language_cd_item_title),
@@ -81,7 +101,14 @@ fun SettingsListPreview() {
                 iconId = R.drawable.exam,
                 navigateTo = SettingsNavigation.EXAM_REMINDER_SETTINGS
             ),
+            SettingsItem(
+                title = stringResource(R.string.settings_languages_title),
+                contentDescription = stringResource(R.string.settings_languages_title_cd_item_title),
+                iconId = R.drawable.localization,
+                navigateTo = SettingsNavigation.LOCALIZATION
+            ),
         ),
-        onAction = {}
+        onAction = {},
+        onComplaintsButtonCLick = { }
     )
 }

@@ -21,7 +21,7 @@
     <string name="modify_word_input_translate">Enter translation</string>
     <string name="modify_word_description">Description</string>
     <string name="modify_word_transcription">Word transcription</string>
-    <string name="modify_word_input_hint">Input hint</string>
+    <string name="modify_word_input_hint">Word hint</string>
     <string name="modify_word_cancel_edit">Cancel edit</string>
     <string name="modify_word_success_save_word">Word saved successfully</string>
     <string name="modify_word_success_delete_word">Word was deleted</string>
@@ -48,7 +48,8 @@
     <string name="modify_word_language_picker_to">to</string>
     <string name="modify_word_validate_add_empty_field">this field is required, input translate and press add</string>
     <string name="modify_word_record_listen">listen</string>
-    <string name="modify_word_unsaved_changes">If you go back you lose unsaved changes</string>
+    <string name="modify_word_unsaved_changes_title">Go back?</string>
+    <string name="modify_word_unsaved_changes_message">If you go back you lose unsaved changes</string>
     <string name="modify_word_field_describe_translation">
         You can add multiple translations for a word. Also, if you long press on a translation you will add/remove it from the hidden translations.
         \n\nHidden translations are translations that are marked in dark color and are not visible on the main screen, but they are taken into account during the exam.
@@ -70,9 +71,9 @@
     <string name="modify_word_select_language_placeholder">select language</string>
     <string name="modify_word_record_delete_cd">Delete this record</string>
     <string name="modify_word_record_cd">Recording button</string>
-    <string name="modify_word_add_new_record_cd">Add bew record button</string>
+    <string name="modify_word_add_new_record_cd">Add new record button</string>
     <string name="modify_word_change_record_cd">Change current record button</string>
-    <string name="modify_word_field_describe_cd">field describe</string>
+    <string name="modify_word_field_describe_cd">Icon for showing modal screen with description why this files is needed</string>
     <string name="modify_word_show_next_hint_cd">show next hint</string>
     <string name="modify_word_validation_dictionary_not_selected">dictionary not selected</string>
     <string name="modify_word_validation_dictionary_not_contain_languages">dictionary dose not contain languages</string>
@@ -85,7 +86,7 @@
     <string name="exam_show_hints">show hints</string>
     <string name="exam_hide_hints">hide hints</string>
     <string name="exam_show_variants">show options</string>
-    <string name="exam_hide_variants">hide variants</string>
+    <string name="exam_hide_variants">hide options</string>
     <string name="exam_your_answer">Your answer: %s</string>
     <string name="exam_correct_answer">Great, your answer is correct :)</string>
     <string name="exam_hidden_translate_description">If you think answer is correct you can add this word like "hidden translate". Hidden translate this is special translates which does not visible on main page list, but taken into account on exam.\n\nHidden translates has different background color. You can change hidden status by long tab on translate</string>
@@ -116,6 +117,7 @@
 
     <string name="settings_daily_exam_item_title">Daily exam</string>
     <string name="settings_daily_exam_cd_item_title">go to the daily exam settings</string>
+    <string name="settings_daily_exam_complaints_and_suggestions">Complaints and suggestions</string>
 
 
     <!-- Settings exam reminder -->
@@ -129,10 +131,27 @@
     <string name="settings_exam_reminder_frequency_once_every_3_days">once every 3 days</string>
     <string name="settings_exam_reminder_frequency_once_every_6_days">once every 6 days</string>
     <string name="exam_reminder_chanel_name">Exam reminder</string>
+    <string name="exam_reminder_no_permission_title">No permission for exam reminder</string>
+    <string name="exam_reminder_no_permission_request_button">Provide permission</string>
+    <string name="exam_reminder_no_permission_permanent_message">Enable push notification permission in the app settings</string>
+    <string name="exam_reminder_no_permission_permanent_action">Settings</string>
+    <string name="exam_reminder_no_permission_help_dialog_title">Push notification</string>
+    <string name="exam_reminder_no_permission_help_dialog_message">The app sends you push notifications when it\'s time to repeat the words. If you do not grant this permission, push notifications will not come</string>
+    <string name="exam_reminder_push_chanel_disable_title">Push chanel is disabled, enable one to get ability get reminders</string>
+    <string name="exam_reminder_push_chanel_disable_button">Enable chanel</string>
 
+    <!-- Settings Language Screen -->
+    <string name="settings_languages_title">Languages</string>
+    <string name="settings_languages_title_cd_item_title">go to the daily exam settings</string>
 
     <!--  Select Languages  -->
     <string name="settings_languages_preferred_languages">Preferred languages</string>
+
+    <!--  App Localization  -->
+    <string name="app_localization_title">Localization</string>
+    <string name="app_localization_search_lang_placeholder">Search language</string>
+    <string name="app_localization_search_current_language">Language:&#160;</string>
+    <string name="app_localization_change_app_language_dialog_title">Change app language to %s</string>
 
     <!-- Modify Dictionary Screen   -->
     <string name="modify_dictionary_dictionary_already_exist_title">Dictionary %s already exist</string>
@@ -144,23 +163,22 @@
     <string name="modify_dictionary_validation_lang_to_empty">Language to must be not empty</string>
 
 
-<!--     TODO remove to dictionaryList -->
-    <!--  Settings Dictionaries -->
-    <string name="setting_dictionaries_active_dialog_title">This dictionary active</string>
-    <string name="setting_dictionaries_active_dialog_description">You mark the dictionary active for the languages you are currently learning.
+    <!--  Dictionary List -->
+    <string name="dictionary_list_active_dialog_title">This dictionary active</string>
+    <string name="dictionary_list_active_dialog_description">You mark the dictionary active for the languages you are currently learning.
 When you create new word or new list this dictionary will be prefilled. Words to daily exam will take from this dictionary</string>
-    <plurals name="setting_dictionaries_delete_dictionary_title">
+    <plurals name="dictionary_list_delete_dictionary_title">
         <item quantity="one">Are you sure you want to delete %s dictionary</item>
         <item quantity="other">Are you sure you want to delete %s dictionaries</item>
     </plurals>
-    <plurals name="setting_dictionaries_delete_dictionary_description">
+    <plurals name="dictionary_list_delete_dictionary_description">
         <item quantity="one">All words in dictionary will be deleted</item>
         <item quantity="other">All words in these dictionaries will be deleted</item>
     </plurals>
-    <string name="setting_dictionaries_screen_title">Dictionaries</string>
-    <string name="setting_dictionaries_screen_title_cd">Navigation button to Dictionaries screen</string>
-    <string name="setting_dictionaries_screen_remove_active_dictionary">You try to delete active dictionary, if you do it, exam reminders will stop until you select a new active dictionary</string>
-    <plurals name="setting_dictionaries_screen_dictionary_was_deleted">
+    <string name="dictionary_list_screen_title">Dictionaries</string>
+    <string name="dictionary_list_screen_title_cd">Navigation button to Dictionaries screen</string>
+    <string name="dictionary_list_screen_remove_active_dictionary">You try to delete active dictionary, if you do it, exam reminders will stop until you select a new active dictionary</string>
+    <plurals name="dictionary_list_screen_dictionary_was_deleted">
         <item quantity="one">Dictionary was deleted</item>
         <item quantity="other">Dictionaries was deleted</item>
     </plurals>
@@ -188,6 +206,8 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="settings_daily_exam_words_is_double_lang_exam_description_part_4">&#160;and you will have to translate it into&#160;</string>
     <string name="settings_daily_exam_default_language_from">language from</string>
     <string name="settings_daily_exam_default_language_to">language to</string>
+    <string name="settings_daily_exam_is_auto_suggest_enable_title">Text auto-suggest</string>
+    <string name="settings_daily_exam_is_auto_suggest_enable_description">If you turn on auto-suggest, you\'ll see a prompt at the top of the keyboard as you type. If you write \"hell\", you will see \"hello\", \"hell\", \"help\", etc. If this flag is off, you won\'t see these prompts</string>
 
 
     <!-- Lists Screen  -->
@@ -247,7 +267,7 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="set_is_active_dictionary_use_case_cant_mark_dictionary_active">Something went wrong, dictionary was not set as active, try again</string>
 
     <!--  GetActiveDictionaryUseCase  -->
-    <string name="get_exam_word_list_use_case_no_dictionary_id">You don\'t pass dictionary</string>
+    <string name="get_exam_word_list_use_case_no_dictionary_id">You did not specify a dictionary</string>
 
     <!--  No Active Dictionary Component  -->
     <string name="no_active_dictionary_image_cd">There is not active dictionary</string>
@@ -267,6 +287,32 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <!--  Alarm Receiver  -->
     <string name="exam_reminder_receiver_alarm_was_canceled">Your alarm has been cancelled, but don\'t worry, we\'ll automatically set it again</string>
 
+    <!--MainRuntimePermission -->
+    <string name="runtime_permission_reminder_push_title">Reminder permission</string>
+    <string name="runtime_permission_reminder_push_message">This app reminds you to repeat words, we use push notifications for this feature. Enable them for the best experience</string>
+
+    <!--  Complaints and suggestions  -->
+    <string name="complaints_and_suggestions_bottom_sheet_header_title">Hello, dear user 👋</string>
+    <string name="complaints_and_suggestions_bottom_sheet_header_message">Here you can report a bug or offer improvements</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_icon_cd">bug report icon</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_title">Report a bug</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_message">If you found a bug, just let me know</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_description_1">Write me to&#160;</string>
+    <string name="complaints_and_suggestions_bottom_sheet_bug_description_2">&#160;and i try to fix one as soon as possible</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_icon_cd">opinion icon</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_title">Offer a feature</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_message">If you have an idea for a new feature</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_description_1">Have a good idea for this app? Write me to&#160;</string>
+    <string name="complaints_and_suggestions_bottom_sheet_opinion_description_2">&#160;and probably I develop it 💪</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_icon_cd">stars icon</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_title">Probable next features</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_message">List of nearest possible features</string>
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_disclaimer">*There is no guarantee that these features will be implemented, but the developer wants to add them</string>
+
+    <string name="complaints_and_suggestions_bottom_sheet_next_features_no_features">- Currently there are no new features in development. Offer you idea!</string>
+
     <!--Common -->
     <string name="app_name">Personal Dictionary</string>
     <string name="save">Save</string>
@@ -278,7 +324,6 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="no">No</string>
     <string name="error_happened">Error happened</string>
     <string name="audio_has_been_added">audio has been added</string>
-    <string name="next">next</string>
     <string name="finish">finish</string>
     <string name="check_answer">check answer</string>
     <string name="add_audio_success">audio added successfully</string>
@@ -301,6 +346,9 @@ When you create new word or new list this dictionary will be prefilled. Words to
     <string name="add_new_dictionary">Add new dictionary</string>
     <string name="make_active">Make active</string>
     <string name="try_again">Try again</string>
+    <string name="see_all">see all</string>
+    <string name="stay">stay here</string>
+    <string name="go">go</string>
 
     <string name="cd_go_back">Go Back</string>
     <string name="cd_close_dialog">Close dialog</string>

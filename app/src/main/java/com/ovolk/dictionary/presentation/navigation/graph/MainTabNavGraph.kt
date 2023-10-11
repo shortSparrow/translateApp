@@ -53,7 +53,7 @@ fun MainTabNavGraph(navController: NavHostController, modifier: Modifier) {
             route = MainTabBottomBar.Exam.route,
             deepLinks = listOf(navDeepLink {
                 uriPattern =
-                    "${DEEP_LINK_BASE}/${MainTabRotes.EXAM}?listName={listName}&listId={listId}"
+                    "${DEEP_LINK_BASE}/${MainTabRotes.EXAM}?listName={listName}&listId={listId}&dictionaryId={dictionaryId}"
             }),
             arguments = listOf(
                 navArgument("listName") {

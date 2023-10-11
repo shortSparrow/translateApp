@@ -7,29 +7,27 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ovolk.dictionary.data.database.dictionary.DictionaryDao
-import com.ovolk.dictionary.data.database.exam.ExamWordAnswerDao
 import com.ovolk.dictionary.data.database.migration.migrateFrom1To2
 import com.ovolk.dictionary.data.database.migration.migrateFrom2To3
 import com.ovolk.dictionary.data.database.migration.migrateFrom3To4
 import com.ovolk.dictionary.data.database.migration.migrateFrom4To5
 import com.ovolk.dictionary.data.database.migration.migrateFrom5To6
+import com.ovolk.dictionary.data.database.migration.migrateFrom6To7
 import com.ovolk.dictionary.data.database.word_lists.ListsDao
 import com.ovolk.dictionary.data.database.words.TranslatedWordDao
+import com.ovolk.dictionary.data.model.DictionaryDb
 import com.ovolk.dictionary.data.model.HintDb
 import com.ovolk.dictionary.data.model.ListItemDb
-import com.ovolk.dictionary.data.model.PotentialExamAnswerDb
 import com.ovolk.dictionary.data.model.TranslateDb
 import com.ovolk.dictionary.data.model.UpdatePriorityDb
 import com.ovolk.dictionary.data.model.WordInfoDb
-import com.ovolk.dictionary.data.model.DictionaryDb
 
 @Database(
-    version = 6,
+    version = 7,
     entities = [
         WordInfoDb::class,
         TranslateDb::class,
         HintDb::class,
-        PotentialExamAnswerDb::class,
         ListItemDb::class,
         UpdatePriorityDb::class,
         DictionaryDb::class,
@@ -38,7 +36,6 @@ import com.ovolk.dictionary.data.model.DictionaryDb
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun translatedWordDao(): TranslatedWordDao
-    abstract fun examWordAnswerDao(): ExamWordAnswerDao
     abstract fun dictionaryDaoDao(): DictionaryDao
     abstract fun listsDao(): ListsDao
 
@@ -77,6 +74,12 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val migration_6_7: Migration = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                migrateFrom6To7(database)
+            }
+        }
+
         fun getInstance(application: Application): AppDatabase {
             INSTANCE?.let {
                 return it
@@ -98,6 +101,7 @@ abstract class AppDatabase : RoomDatabase() {
                         migration_3_4,
                         migration_4_5,
                         migration_5_6,
+                        migration_6_7
                     )
                     .build()
 

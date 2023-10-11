@@ -38,6 +38,7 @@ import androidx.compose.ui.zIndex
 import com.ovolk.dictionary.R
 import com.ovolk.dictionary.presentation.core.dialog.confirm_dialog.ConfirmDialog
 import com.ovolk.dictionary.presentation.core.dialog.info_dialog.InfoDialog
+import com.ovolk.dictionary.presentation.core.dictionaries.DictionaryPicker
 import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.ignore_height_wrapper.IgnoreHeightWrapper
 import com.ovolk.dictionary.presentation.modify_word.ComposeState
@@ -51,7 +52,6 @@ import com.ovolk.dictionary.presentation.modify_word.RecordAudioState
 import com.ovolk.dictionary.presentation.modify_word.Translates
 import com.ovolk.dictionary.presentation.modify_word.compose.alerts.AddToList
 import com.ovolk.dictionary.presentation.modify_word.compose.hints.HintPart
-import com.ovolk.dictionary.presentation.core.dictionaries.DictionaryPicker
 import com.ovolk.dictionary.presentation.modify_word.compose.question_wrapper.QuestionWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.record_audio.RecordAudioWrapper
 import com.ovolk.dictionary.presentation.modify_word.compose.text_fields.TextFieldDescription
@@ -114,9 +114,13 @@ fun ModifyWordPresenter(
 
     if (state.isOpenUnsavedChanges) {
         ConfirmDialog(
-            title = stringResource(id = R.string.modify_word_unsaved_changes),
+            title = stringResource(id = R.string.modify_word_unsaved_changes_title),
+            description = stringResource(id = R.string.modify_word_unsaved_changes_message),
             onAcceptClick = { onAction(ModifyWordAction.GoBack(false)) },
-            onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) })
+            onDeclineClick = { onAction(ModifyWordAction.ToggleUnsavedChanges) },
+            declineButtonText = stringResource(id = R.string.stay).replaceFirstChar { it.uppercase() },
+            confirmButtonText = stringResource(id = R.string.go).replaceFirstChar { it.uppercase() },
+        )
     }
 
     if (state.isFieldDescribeModalOpen) {
@@ -260,7 +264,7 @@ fun ModifyWordPresenter(
                 Button(
                     onClick = { onAction(ModifyWordAction.OnPressSaveWord) },
                     modifier = Modifier
-                        .padding(top = 20.dp)
+                        .padding(vertical = dimensionResource(id = R.dimen.gutter))
                         .fillMaxWidth(1f)
                 ) {
                     Text(

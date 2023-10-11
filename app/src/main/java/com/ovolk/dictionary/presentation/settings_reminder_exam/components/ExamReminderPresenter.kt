@@ -3,7 +3,13 @@ package com.ovolk.dictionary.presentation.settings_reminder_exam.components
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,16 +32,18 @@ import com.ovolk.dictionary.presentation.settings_reminder_exam.SettingsReminder
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
 import com.ovolk.dictionary.util.PushFrequency
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExamReminderPresenter(
     state: SettingsReminderExamState,
     onAction: (OnExamReminderAction) -> Unit,
     goBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
     val paddingVertical = dimensionResource(id = R.dimen.small_gutter)
     val timePickerDialog = TimePickerDialog(
-        LocalContext.current,
+        context,
         { _, hour: Int, minute: Int ->
             onAction(OnExamReminderAction.OnChangeTime(hours = hour, minutes = minute))
         }, state.timeHours, state.timeMinutes, true
@@ -53,8 +61,7 @@ fun ExamReminderPresenter(
                     .weight(1f)
                     .fillMaxWidth(1f)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                androidx.compose.foundation.layout.FlowRow(
                     modifier = Modifier.padding(vertical = paddingVertical)
                 ) {
                     Text(text = stringResource(id = R.string.settings_exam_reminder_label))
@@ -73,7 +80,10 @@ fun ExamReminderPresenter(
                     modifier = Modifier.padding(vertical = paddingVertical),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(id = R.string.settings_exam_reminder_time_push_notification))
+                    Text(
+                        text = stringResource(id = R.string.settings_exam_reminder_time_push_notification),
+                        modifier = Modifier.weight(1f)
+                    )
                     Text(
                         text = state.reminderTime,
                         modifier = Modifier
@@ -88,9 +98,12 @@ fun ExamReminderPresenter(
                             ),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = colorResource(id = R.color.grey_2)
+                        color = colorResource(id = R.color.grey_2),
+                        maxLines = 1
                     )
                 }
+
+//                ReminderPermission()
             }
 
             Box(
@@ -116,7 +129,7 @@ fun ExamReminderPresenter(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun ExamReminderPresenterPreview() {
     ExamReminderPresenter(

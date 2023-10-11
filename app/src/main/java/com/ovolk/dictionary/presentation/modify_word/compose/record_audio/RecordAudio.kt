@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -35,8 +36,12 @@ fun RecordAudio(
     recordState: RecordAudioState,
     onAction: (RecordAudioAction) -> Unit,
 ) {
+    val deleteIconDisabled =
+        !recordState.isTempRecordExist || recordState.isRecordPlaying
+
     val deleteIconColor =
-        if (recordState.isTempRecordExist) colorResource(id = R.color.red) else colorResource(id = R.color.grey)
+        if (deleteIconDisabled) colorResource(id = R.color.grey)
+        else colorResource(id = R.color.red)
 
     val micIconColor =
         if (recordState.isRecording) colorResource(id = R.color.blue) else colorResource(id = R.color.black)
@@ -70,13 +75,14 @@ fun RecordAudio(
     LaunchedEffect(recordState.isRecordPlaying) {
         while (recordState.isRecordPlaying) {
             delay(1000)
-            timer -= 1
+            timer = kotlin.math.max(timer - 1, 0)
         }
         timer = recordDuration
     }
 
     LaunchedEffect(recordState.existingRecordDuration) {
-        recordDuration = (recordState.existingRecordDuration / 1000).toInt()
+        recordDuration =
+            kotlin.math.ceil((recordState.existingRecordDuration.toDouble() / 1000.0)).toInt()
         timer = recordDuration
     }
 
@@ -119,7 +125,7 @@ fun RecordAudio(
                         end.linkTo(listen.end)
                         top.linkTo(parent.top)
                     }
-                    .opacityClick(isDisabled = !recordState.isTempRecordExist) {
+                    .opacityClick(isDisabled = deleteIconDisabled) {
                         onAction(RecordAudioAction.DeleteRecord)
                     },
                 tint = deleteIconColor,
@@ -180,6 +186,7 @@ fun RecordAudio(
                         top.linkTo(mic.top)
                         bottom.linkTo(mic.bottom)
                         start.linkTo(mic.end, margin = 30.dp)
+                        width = Dimension.fillToConstraints
                     }
                     .opacityClick(isDisabled = listenIsDisabled) {
                         onAction(RecordAudioAction.ListenRecord)

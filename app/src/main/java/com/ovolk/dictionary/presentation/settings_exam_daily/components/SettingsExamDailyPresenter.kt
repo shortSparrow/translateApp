@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.flow_row.FlowRow
 import com.ovolk.dictionary.presentation.core.header.Header
+import com.ovolk.dictionary.presentation.core.switch_raw.SwitchRow
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyAction
 import com.ovolk.dictionary.presentation.settings_exam_daily.SettingsExamDailyState
 import com.ovolk.dictionary.util.MAX_BUTTON_WIDTH
@@ -55,31 +55,38 @@ fun SettingsExamDailyPresenter(
                     .weight(1f)
                     .fillMaxWidth(1f),
             ) {
-                FlowRow {
-                    Text(
-                        text = stringResource(id = R.string.settings_daily_exam_words_count_description),
-                        modifier = Modifier.padding(top = 20.dp, end = 20.dp)
-                    )
-                    OutlinedTextField(
-                        value = state.countOfWords,
-                        onValueChange = { onAction(SettingsExamDailyAction.ChangeCountOfWords(it)) },
-                        label = { Text(text = stringResource(id = R.string.settings_daily_exam_words_count_label)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                            }
-                        ),
-                    )
-                }
+                Text(
+                    text = stringResource(id = R.string.settings_daily_exam_words_count_description),
+                    modifier = Modifier.padding(top = 20.dp, end = 20.dp)
+                )
+                OutlinedTextField(
+                    value = state.countOfWords,
+                    onValueChange = { onAction(SettingsExamDailyAction.ChangeCountOfWords(it)) },
+                    label = { Text(text = stringResource(id = R.string.settings_daily_exam_words_count_label)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
+                )
 
                 CombineExamSwitch(
                     languagesForDescription = state.languagesForDescription,
                     isDoubleLanguageExamEnable = state.isDoubleLanguageExamEnable,
-                    onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleDoubleLanguageExam) })
+                    onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleDoubleLanguageExam) }
+                )
+
+                SwitchRow(
+                    isEnable = state.isAutoSuggestEnable,
+                    onCheckedChange = { onAction(SettingsExamDailyAction.OnToggleIsAutoSuggestEnable) },
+                    description = stringResource(id = R.string.settings_daily_exam_is_auto_suggest_enable_description),
+                    title = stringResource(id = R.string.settings_daily_exam_is_auto_suggest_enable_title)
+                )
+
             }
 
             Box(

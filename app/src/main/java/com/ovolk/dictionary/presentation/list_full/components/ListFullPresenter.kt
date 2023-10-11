@@ -7,7 +7,6 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -15,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -35,6 +33,7 @@ import com.ovolk.dictionary.presentation.core.header.Header
 import com.ovolk.dictionary.presentation.core.word_item.WordItem
 import com.ovolk.dictionary.presentation.list_full.ListFullAction
 import com.ovolk.dictionary.presentation.list_full.ListFullState
+import com.ovolk.dictionary.presentation.word_list.components.WordListIsEmpty
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
@@ -80,35 +79,7 @@ fun ListFullPresenter(
             )
 
             if (state.noAnyWords && state.loadingStatusWordList == LoadingState.SUCCESS) {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        vertical = dimensionResource(id = R.dimen.large_gutter)
-                    ),
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    item {
-                        Image(
-                            painter = painterResource(id = R.drawable.empty_list),
-                            contentDescription = stringResource(id = R.string.full_lists_cd_list_is_empty),
-                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.gutter))
-                        )
-                        Text(
-                            text = stringResource(id = R.string.full_lists_list_is_empty),
-                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.medium_gutter)),
-                            fontSize = 20.sp,
-                            color = colorResource(id = R.color.grey_2)
-                        )
-
-                        Button(onClick = { onAction(ListFullAction.AddNewWord) }) {
-                            Text(
-                                text = stringResource(id = R.string.full_lists_add_new_word).uppercase(),
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
+                WordListIsEmpty(onPressAddNewWord = {onAction(ListFullAction.AddNewWord)})
             }
 
             if (state.loadingStatusWordList == LoadingState.SUCCESS) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -40,7 +41,8 @@ fun SettingsItem(item: SettingsItem, onClick: (item: SettingsItem) -> Unit) {
         ) {
             Icon(
                 painter = painterResource(id = item.iconId),
-                contentDescription = item.contentDescription
+                contentDescription = item.contentDescription,
+                modifier = Modifier.size(24.dp)
             )
             Text(
                 text = item.title.uppercase(),

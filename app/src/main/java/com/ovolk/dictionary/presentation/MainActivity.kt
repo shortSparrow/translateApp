@@ -11,6 +11,7 @@ import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.ovolk.dictionary.data.database.app_settings.AppSettingsMigration
 import com.ovolk.dictionary.domain.ExamReminder
 import com.ovolk.dictionary.domain.repositories.AppSettingsRepository
+import com.ovolk.dictionary.domain.use_case.localization.SetAppLanguageUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.GetSearchedWordListUseCase
 import com.ovolk.dictionary.domain.use_case.word_list.SetupInitialDestinationUseCase
 import com.ovolk.dictionary.presentation.core.snackbar.CustomGlobalSnackbar
@@ -32,6 +33,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var appSettingsRepository: AppSettingsRepository
 
     @Inject
+    lateinit var setupLanguageUseCase: SetAppLanguageUseCase
+
+    @Inject
     lateinit var setupInitialDestinationUseCase: SetupInitialDestinationUseCase
 
     private val appSettingsMigration = AppSettingsMigration(DictionaryApp.applicationContext())
@@ -39,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        setupLanguageUseCase.initializeAppLanguage()
+        instance = this
         setupNavigation()
 
         appSettingsMigration.runMigrationIfNeeded() // do it not in coroutine, application must wait until migration will be done
@@ -73,4 +79,11 @@ class MainActivity : AppCompatActivity() {
         setupInitialDestinationUseCase.setup(intent = intent, lifecycleScope = lifecycleScope)
     }
 
+    companion object {
+        private var instance: MainActivity? = null
+
+        fun getMainActivity(): MainActivity {
+            return instance!!
+        }
+    }
 }

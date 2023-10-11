@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovolk.dictionary.R
-import com.ovolk.dictionary.presentation.core.dialog.BaseDialog
+import com.ovolk.dictionary.presentation.core.dialog.CoreDialog
 import com.ovolk.dictionary.presentation.exam.CompleteAlertBehavior
 import com.ovolk.dictionary.presentation.exam.ExamAction
 import com.ovolk.dictionary.presentation.exam.ExamMode
@@ -30,7 +30,7 @@ fun ExamEndDialog(mode: ExamMode, onAction: (ExamAction) -> Unit) {
         else stringResource(id = R.string.exam_complete_infinity_exam)
 
 
-    BaseDialog(
+    CoreDialog(
         onDismissRequest = { onAction(ExamAction.CloseTheEndExamModal(CompleteAlertBehavior.STAY_HERE)) },
     ) {
 

@@ -34,12 +34,13 @@ jobs:
       - shell: bash
         run: echo "${{ secrets.KEYSTORE }}" | base64 -d > $GITHUB_WORKSPACE/upload-keystore.jks
 
-      - name: Build Signed APK
+      - name: Setup Credentials
         run: |
           echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/upload-keystore.jks" > release.properties
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> release.properties
           echo "STORE_PASSWORD=${{secrets.STORE_PASSWORD}}" >> release.properties
           echo "ALIAS=${{ secrets.ALIAS }}" >> release.properties
+          echo "FIRESTORE_WEB_KEY=${{ secrets.FIRESTORE_WEB_KEY }}" >> release.properties
 
       - name: build release
         run: ./gradlew assembleRelease
@@ -74,9 +75,13 @@ jobs:
       - run: sudo apt-get -y install openjdk-11-jdk
         shell: bash
 
-      - name: Setup verions code
+      - name: Setup version code
         run: |
           echo "VERSION_CODE=${{ github.run_number }}" > release.properties
+
+      - name: Setup Credentials
+        run: |
+          echo "FIRESTORE_WEB_KEY=${{ secrets.FIRESTORE_WEB_KEY }}" >> release.properties
 
       - name: Run test
         run: ./gradlew test

@@ -55,8 +55,9 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
 ) : ViewModel() {
     private val listId = parseDefaultLongProps(savedStateHandle.get<Long>("listId"))
     private val listName = savedStateHandle.get<String>("listName")
-    val isDoubleLanguageExamEnable =
-        appSettingsRepository.getAppSettings().isDoubleLanguageExamEnable
+    private val appSettings = appSettingsRepository.getAppSettings()
+    val isDoubleLanguageExamEnable = appSettings.isDoubleLanguageExamEnable
+    private val isAutoSuggestEnable = appSettings.isExamAutoSuggestEnable
 
     var listener: Listener? = null
     private val examLocalCache = ExamLocalCache.getInstance()
@@ -281,7 +282,8 @@ class ExamKnowledgeWordsViewModel @Inject constructor(
                         isAllExamWordsLoaded = response.value.totalCount == list.size,
                         examListTotalCount = response.value.totalCount,
                         isLoading = false,
-                        isDoubleLanguageExamEnable = isDoubleLanguageExamEnable
+                        isDoubleLanguageExamEnable = isDoubleLanguageExamEnable,
+                        isAutoSuggestEnable = isAutoSuggestEnable
                     )
 
                     delay(100) // delay for apply keyboard locale
